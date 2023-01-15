@@ -1,5 +1,6 @@
 
 from api.models import *
+from api.models.domains import *
 from api.views import LoginView
 
 from rest_framework.test import APIRequestFactory, force_authenticate, APIClient
@@ -27,21 +28,18 @@ def create_user(
         password: str,
         username: str,
         UserClass,
-        is_manager: bool = False,
+        is_admin: bool = False,
     ):
-    two_fa = TwoFactorAuth(method=1)
-    two_fa.save()
 
     auth = Auth(
-        role=2 if is_manager else 1,
+        role=2 if is_admin else 1,
         email=email,
-        is_superuser=is_manager,
+        is_superuser=is_admin,
         username=username,
         first_name=first_name,
         last_name=last_name,
         is_active=True,
         password=password,
-        two_factor=two_fa
     )
     auth.set_password(password)
     auth.save()
@@ -55,7 +53,7 @@ def random_user_password() -> str:
     return 'secretpassword'
 
 
-def create_random_manager() -> Manager:
+def create_random_admin() -> Admin:
     fake = Faker()
     name = fake.name()
 
@@ -65,12 +63,12 @@ def create_random_manager() -> Manager:
         fake.email(),
         random_user_password(),
         name,
-        Manager,
+        Admin,
         True
     )
 
 
-def create_random_pentester() -> Pentester:
+def create_random_customer() -> Customer:
     fake = Faker()
     name = fake.name()
 
@@ -80,6 +78,6 @@ def create_random_pentester() -> Pentester:
         fake.email(),
         random_user_password(),
         name,
-        Pentester,
+        Customer,
         False
     )

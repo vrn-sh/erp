@@ -1,58 +1,70 @@
-from rest_framework import viewsets, permissions
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.response import Response
-from rest_framework.status import (
-        HTTP_400_BAD_REQUEST,
-        HTTP_200_OK,
-        HTTP_403_FORBIDDEN,
-        HTTP_404_NOT_FOUND,
-        HTTP_406_NOT_ACCEPTABLE
-        )
-
-from api.serializers import *
-
-from api.permissions import IsManager, IsOwner, IsPentester, PostOnly
-
 """This module stores the generic viewsets used when basic CRUD is required
 
-- TwoFactorViewset: 2FA class CRUD
 - AuthViewset: Auth class CRUD
-- RegisterViewset: Pentester creation route
-- PentesterViewset: Pentester CRUD
-- ManagerViewset: Manager CRUD
+- RegisterViewset: Customer creation route
+- CustomerViewset: Customer CRUD
+- AdminViewset: Admin CRUD
+- NodeViewset: Node class CRUD
+- AddressViewset: Address class CRUD (no preloaded data)
 """
 
+from typing import List
+from rest_framework import viewsets, permissions
+from rest_framework.authentication import TokenAuthentication
 
-class TwoFactorViewset(viewsets.ModelViewSet):
-    queryset = TwoFactorAuth.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsManager | IsOwner]
-    authentication_classes = [TokenAuthentication]
-    serializer_class = TwoFactorAuthSerializer
+from api.serializers import AdminSerializer, CustomerSerializer, AuthSerializer
+
+from api.models import Admin, Auth, Customer
+
+from api.permissions import IsAdmin, IsOwner, PostOnly
 
 
-class RegisterViewset(viewsets.ModelViewSet):
-    queryset = Pentester.objects.all()
+class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+
+    """
+        RegisterViewset:
+            Binding to CustomerSerializer in order to register new account
+    """
+
+    queryset = Customer.objects.all()
     permission_classes = [PostOnly]
-    authentication_classes = []
-    serializer_class = PentesterSerializer
+    authentication_classes: List[type[TokenAuthentication]] = []
+    serializer_class = CustomerSerializer
 
+class CustomerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
-class PentesterViewset(viewsets.ModelViewSet):
-    queryset = Pentester.objects.all()
-    permission_classes = []
-    authentication_classes = []
-    serializer_class = PentesterSerializer
+    """
+        CustomerViewset
+            CRUD operations for Customer model (encompasses Auth model as well)
+    """
 
-
-class ManagerViewset(viewsets.ModelViewSet):
-    queryset = Manager.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsManager]
+    queryset = Customer.objects.all()
+    permission_classes = [permissions.IsAuthenticated & IsAdmin | IsOwner]
     authentication_classes = [TokenAuthentication]
-    serializer_class = ManagerSerializer
+    serializer_class = CustomerSerializer
 
 
-class AuthViewset(viewsets.ModelViewSet):
+class AdminViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+
+    """
+       AdminViewset
+            CRUD operations for Admin model (encompasses Auth model as well)
+    """
+
+    queryset = Admin.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = AdminSerializer
+
+
+class AuthViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+
+    """
+        AuthViewset
+            currently unused but might be useful later
+    """
+
     queryset = Auth.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsManager | IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsAdmin | IsOwner]
     authentication_classes = [TokenAuthentication]
     serializer_class = AuthSerializer
