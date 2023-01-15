@@ -16,11 +16,11 @@ from api.views.viewsets import RegisterViewset, CustomerViewset, AdminViewset
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
    openapi.Info(
-      title="ARKultur API",
-      default_version='v2',
-      description="API storing and managing GeoJSON data for the ARKultur service",
-      terms_of_service="https://arkultur.creative-rift.com/terms",
-      contact=openapi.Contact(email="contact@arkultur.creative-rift.com"),
+      title="voron API",
+      default_version='1.0',
+      description="API storing and managing notes, users, and stuff",
+      terms_of_service="https://voron.sh/terms",
+      contact=openapi.Contact(email="contact@voron.sh"),
       license=openapi.License(name="MIT License"),
    ),
    public=True,
