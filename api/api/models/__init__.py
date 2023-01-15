@@ -64,7 +64,7 @@ class Auth(AbstractUser):
 
     def send_confirm_email(self) -> int:
         """sends account-confirmation email"""
-        url = f'https://arkultur.creative-rift.com/confirm?token={self.tmp_token}'
+        url = f'https://voron.sh/confirm?token={self.tmp_token}'
         return send_mail(
             f'Welcome {self.first_name} !',
             f'Hello and welcome!\nPlease click on the following link to confirm your account:{url}',
@@ -75,7 +75,7 @@ class Auth(AbstractUser):
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
-        url = f'https://arkultur.creative-rift.com/reset?token={self.tmp_token}'
+        url = f'https://voron.sh/reset?token={self.tmp_token}'
         return send_mail(
             f'{self.first_name}, reset your password',
             f'Please click on the following link to reset your password:{url}',

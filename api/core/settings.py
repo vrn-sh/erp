@@ -34,7 +34,7 @@ EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = 'no-reply@arkultur.creative-rift.com'
+DEFAULT_FROM_EMAIL = 'no-reply@voron.sh'
 
 TRENCH_AUTH = {
     "USER_MFA_MODEL": "trench.MFAMethod",
@@ -48,7 +48,7 @@ TRENCH_AUTH = {
     "CONFIRM_BACKUP_CODES_REGENERATION_WITH_CODE": True,
     "ALLOW_BACKUP_CODES_REGENERATION": True,
     "ENCRYPT_BACKUP_CODES": True,
-    "APPLICATION_ISSUER_NAME": "ARKultur",
+    "APPLICATION_ISSUER_NAME": "voron.sh",
     "MFA_METHODS": {
         "email": {
             "VERBOSE_NAME": "email",
