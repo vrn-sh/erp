@@ -1,32 +1,29 @@
-import os
+"""Initiates first user on bare deployments"""
 from django.core.management.base import BaseCommand
 
-from api.models import Manager, Auth, TwoFactorAuth
+from api.models import Admin, Auth
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        if Manager.objects.count() == 0:
-            two_fa = TwoFactorAuth(method=1)
-            two_fa.save()
-
+    """Command creating the first user (admin) if database does not have any."""
+    def handle(self, *_, **__):
+        if Admin.objects.count() == 0:
             auth = Auth(
                     role=2,
-                    email='sheev.palpatine@naboo.net',
+                    email='admin@voron.sh',
                     is_superuser=True,
-                    username='the_emperor',
-                    first_name='sheev',
-                    last_name='palpatine',
+                    username='admin',
+                    first_name='admin',
+                    last_name='user',
                     is_active=True,
-                    password='sidious1337',
-                    two_factor=two_fa
+                    password='!ChangeMe!',
                 )
             auth.save()
 
-            manager = Manager(auth=auth)
-            manager.save()
+            admin = Admin(auth=auth)
+            admin.save()
 
-            print(f'[+] Manager user {manager} has been created.')
+            print(f'[+] Admin user {admin} has been created.')
 
         else:
-            print('[!] Manager user has already been created.')
+            print('[!] Admin user has already been created.')
