@@ -7,95 +7,26 @@ body {
 }
 
 .container {
-    margin: 1rem;
     text-align: center;
 }
 
-.nav {
-    background-color: #FCFBFD;
-    color: black;
-    display: flex;
-    align-items: stretch;
-    gap: 2rem;
-    padding: 0 1rem;
-    border-bottom: #0000002d 1px solid;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-.site-title {
-    font-size: 2rem;
-    font-family: "Poppins-Bold";
-    margin: 0;
-}
-
-.nav ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    display: flex;
-    width: 95%;
-    justify-content: space-between;
-}
-
-.nav-left {
-    display: flex;
-    gap: 1rem;
-}
-
-.nav-right {
-    display: flex;
-}
-
-.login {
-    color: white;
-    background-color: #7C44F3;
-    padding: 1rem;
-}
-
-.login:hover{
-    background-color: #632add;
-    transition: .5s ease-in-out;
-}
-
-.nav a {
-    color: inherit;
-    text-decoration: none;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding: .25rem;
-}
-
-.nav li {
-    border-radius: 0.2rem;
-}
-.nav li.active:not(.login) {
-    background-color: #d9d4f0;
-}
-
-.nav li:hover:not(.login) {
-    background-color: #eae6ee;
-    transition: .5s ease-in-out;
-}
-
 .footer {
-    position: fixed;
     bottom: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: black;
+    color: --black;
     border-top: #0000002d 1px solid;
-    padding: 1rem;
+    padding: .5rem;
 }
 
 .footer p {
-    margin: .5rem;
+    margin: .2rem;
     padding: 0;
 }
+
 .footer ul {
     padding: 0;
     margin: 0;
@@ -106,10 +37,5 @@ body {
 
 .footer a {
     text-decoration: underline;
-    color: black;
-}
-
-@font-face {
-    font-family: "Poppins-Bold";
-    src: local("Poppins-Bold"), url("./fonts/Poppins-bold.ttf") format("truetype");
+    color: --black;
 }

@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
-import { Link, useResolvedPath, useMatch } from "react-router-dom";
+import { Link } from "react-scroll";
+import "../main.scss"
 
 export default function NavBar() {
     return (
@@ -7,13 +7,12 @@ export default function NavBar() {
             <Link to="/" className="site-title">voron</Link>
             <ul>
                 <div className="nav-left">
-                    <CustomLink to="/">Home</CustomLink>
-                    <CustomLink to="/About">About</CustomLink>
-                    <CustomLink to="/Team">Team</CustomLink>
-                    <CustomLink to="/Contact">Contact</CustomLink>
+                    <CustomLink to="#home">Home</CustomLink>
+                    <CustomLink to="#about">About</CustomLink>
+                    <CustomLink to="#team">Team</CustomLink>
                 </div>
                 <div className="nav-right">
-                    <CustomLink to="/signup">Sign up</CustomLink>
+                    <Link to="/signup">Sign up</Link>
                     <li className="login">
                         <Link to="/Login">
                             Log in
@@ -26,13 +25,11 @@ export default function NavBar() {
 }
 
 function CustomLink({ to, children, ...props }: {to: string; children: string}) {
-    const resolvedPath = useResolvedPath(to)
-    const isActive = useMatch({ path: resolvedPath.pathname })
     return (
-        <li className={isActive ? "active" : ""}>
-            <Link to={to} {...props}>
+        <li>
+            <a href={to} {...props}>
                 {children}
-            </Link>
+            </a>
         </li>
     ) 
 }

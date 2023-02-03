@@ -1,7 +1,6 @@
-import React from "react"
 import "../main.scss"
 
-const Footer = () => {
+export default function Footer() {
     return (
         <div className="footer">
             <h2 className="site-title">voron</h2>
@@ -9,19 +8,21 @@ const Footer = () => {
             <p>Contact voron@djnn.sh</p>
             <div className="policy-link">
                 <ul>
-                    <li>
-                        <a>Legal Stuff</a>
-                    </li>
-                    <li>
-                        <a href="/">Privacy Policy</a>
-                    </li>
-                    <li>
-                        <a href="/">Security</a>
-                    </li>
+                    <CustomLink to="/">Legal Stuff</CustomLink>
+                    <CustomLink to="/">Privacy Policy</CustomLink>
+                    <CustomLink to="/">TeSecurityam</CustomLink>
                 </ul>
             </div>
         </div>
     )
 }
 
-export default Footer
+function CustomLink({ to, children, ...props }: {to: string; children: string}) {
+    return (
+        <li>
+            <a href={to} {...props}>
+                {children}
+            </a>
+        </li>
+    ) 
+}

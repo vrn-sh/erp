@@ -1,15 +1,13 @@
-import NavBar from "./component/NavBar"
 import Login from "./pages/LogIn"
 import SignUp from "./pages/SignUp"
 import { Route, Routes } from "react-router-dom"
-import Home from "./pages/Home"
+import Home from "./pages/Home/Home"
 import About from "./pages/About"
-import Footer from "./component/Footer"
+import "./global-variable.scss"
 
 function App() {  
   return (
     <>
-      <NavBar />
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />}></Route>
@@ -18,7 +16,6 @@ function App() {
           <Route path="/signup" element={<SignUp />}></Route>
         </Routes>
       </div>
-      <Footer />
     </>
   )
 }
