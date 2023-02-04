@@ -1,0 +1,18 @@
+:root {
+    --black: black;
+    --white: white;
+    --basic-bg: #FCFBFD;
+    --primary-btn: #7C44F3;
+    --primary-hover-btn: #632add;
+}
+
+//FONT
+@font-face {
+    font-family: "Poppins-Bold";
+    src: local("Poppins-Bold"), url("./fonts/Poppins-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Poppins-Regular";
+    src: local("Poppins-Regular"), url("./fonts/Poppins-Regular.ttf") format("truetype");
+}
