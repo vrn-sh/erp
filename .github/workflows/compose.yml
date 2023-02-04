@@ -1,0 +1,26 @@
+name: Compose
+
+on:
+  pull_request:
+    branches:
+      - "current"
+      - "next"
+    workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: copy .env file
+        run: cp api/.env-dist api/.env
+
+      - name: Start containers to check if it builds
+        run: docker-compose -f "docker-compose.yml" up -d --build
+
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f "docker-compose.yml" down
