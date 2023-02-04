@@ -33,3 +33,7 @@ logs
 */__pycache__
 */venv
 *.pyc
+
+# Deployment & docker stuff
+.env
+./volumes
