@@ -39,7 +39,18 @@ export class SignUp extends React.Component <SignUpProps, SignUpState>{
     }
 
     
-    handleSubmit = (event : any) => {}
+    handleSubmit = (event : any) => {
+        event.preventDefault();
+        let validity = true;
+        Object.values(this.state.errors).forEach(
+          (val) => val.length > 0 && (validity = false)
+        );
+        if(validity == true){
+           console.log("Registering can be done");
+        }else{
+           console.log("You cannot be registered!!!")
+        }
+    }
 
     constructor(props: SignUpProps) {
         super(props);
@@ -89,7 +100,7 @@ export class SignUp extends React.Component <SignUpProps, SignUpState>{
                                     {errors.password.length > 0 &&  <span style={{color: "red"}}>{errors.password}</span>}
                                 </div>              
                                 <div className='submit'>
-                                    <button>Register Me</button>
+                                    <button>Register</button>
                                 </div>
                             </form>
                         </div>
