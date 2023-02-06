@@ -1,6 +1,7 @@
 import NavBar from "../../component/NavBar/NavBar"
 import Footer from "../../component/Footer/Footer"
 import "./Home.scss"
+import About from "./About/About"
 
 export default function Home() {
     return (
@@ -17,9 +18,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div id="about" className="about">
-                    <h1>About</h1>
-                </div>
+                <About />
 
                 <div id="team" className="team">
                     <h1>Team</h1>
