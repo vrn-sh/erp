@@ -11,9 +11,9 @@ export default function Team() {
                     <MemberBox role="Front-end developper">Clara</MemberBox>
                 </div>
                 <div className="grid">
-                    <MemberBox role="Front-end developper">Camelia</MemberBox>
-                    <MemberBox role="Front-end developper">Blacky</MemberBox>
-                    <MemberBox role="Front-end developper">Clara</MemberBox>
+                    <MemberBox role="Back-end developper">Djnn</MemberBox>
+                    <MemberBox role="Back-end developper">Naadi</MemberBox>
+                    <MemberBox role="Back-end developper">Mat</MemberBox>
                 </div>
             </div>
         </div>
