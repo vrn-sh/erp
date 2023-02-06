@@ -2,6 +2,7 @@ import NavBar from "../../component/NavBar/NavBar"
 import Footer from "../../component/Footer/Footer"
 import "./Home.scss"
 import About from "./About/About"
+import Team from "./Team/Team"
 
 export default function Home() {
     return (
@@ -19,10 +20,7 @@ export default function Home() {
                 </div>
 
                 <About />
-
-                <div id="team" className="team">
-                    <h1>Team</h1>
-                </div>
+                <Team />
             </section>
             <Footer />
         </>
