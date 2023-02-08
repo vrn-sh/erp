@@ -63,12 +63,27 @@ Please describe in detail what exactly where you doing on the application, and a
 
 ## features
 
-TBD
+For now, our dashboard does not come with many features. There are two roles users can have, which are `Manager` and `Pentester`.
+Each `Manager` can create a team of `Pentester` for a specific mission. Both roles can be edited, and users can be added or removed
+from a mission.
+
+Once the mission has started, `Pentester`s can share notes, findings & prepare their report through the dashboard.
 
 ## roadmap
 
-TBD
+We want to provide a set of automation to make the process of pentests easiers:
+
+### Recon automation
+- [ ] add a `Censys` or `Shodan` API integration that can automatically fetch recon info from a specified IP range.
+- [ ] add a `crt.sh` module that will fetch SSL certificate info from a domain name
+- [ ] add a `hunter.io` module to get email patterns for specific companies
+
+More are to come and be expected of course, but this is our main features
+
+### Compliance
+- [ ] automatically block recon-requests on IP ranges / certs that are not in the rules of engagement
+- [ ] generate final pentest report automatically
 
 ## known-issues and caveats
 
-TBD
+We do not plan on providing active recon tools & scanning for now, as it may be illegal depending on the countries.
