@@ -1,0 +1,55 @@
+{
+    "sectionTitle": "Meet our team",
+    "sectionSubtitle": "Hand picked, free roaming, eco-friendly raised developers from various parts of the world",
+    "members": [
+        {
+            "name": "Mat",
+            "avatar": "#",
+            "description": "i don no wat doing but am here lel i guess i do stuff",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "djnn",
+            "avatar": "#",
+            "description": "i don no wat doing",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "naadi",
+            "avatar": "#",
+            "description": "i don no wat doing",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "Camelia",
+            "avatar": "#",
+            "description": "i don no wat doing",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "Blacky",
+            "avatar": "#",
+            "description": "i don no wat doing",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "Clara",
+            "avatar": "#",
+            "description": "i don no wat doing",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "Some random contributors",
+            "avatar": "#",
+            "description": "we out here too",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        }
+    ]
+}

@@ -6,100 +6,73 @@
     height: 100vh;
     justify-content: center;
     align-items: center;
+    font-family: "Poppins";
+}
+
+.heading {
+    margin: 2rem 0;
+    font-size: 1.5rem
 }
 
 .team h1 {
-    font-family: "Poppins-Black";
     font-size: 2rem;
-}
-
-.team span {
     color: var(--primary-btn);
-    margin-left: 8%;
 }
 
-.member {
+.carrousel {
+    width: 70%;
     display: flex;
-    width: 80%;
-    height: 70%;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.carroussel-item {
+    width: 50%;
 }
 
-.grid {
-    width: 100%;
+.socials a {
+    text-decoration: none;
+    color: black;
+    transition: all 0.2s ease-in-out;
+
+}
+
+.timezone {
+    font-style: italic;
+}
+
+.socials {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-size: 4rem;
+    color: black;
+}
+.socials a:hover {
+    color: var(--primary-btn);
+}
+
+.avatar-wrapper img {
+    width: 20rem;
+    height: 20rem;
+    border-radius: 100%;
+}
+
+.carrousel button {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-size: 5rem;
+    background: none;
+    width: 25%;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+.caroussel-nav-sub {
+    font-size: 1.2rem;
 }
 
-//for linear border
-.member-card {
-    width: 80%;
-    max-height: 30%;
-    padding: 1px;
-    margin: 1rem;
-    background: linear-gradient(to right, var(--primary-btn), var(--black));
-    border-radius: 18px;
-}
-   
-.member-content {
-    width: 100%;
-    height: 100%;
-    border-radius: 18px;
-    background: var(--basic-bg);
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-}
-
-//content in box
-.photo {
-    background-color: bisque;
-    width: 5rem;
-    height: 5rem;
-    border-radius: 6px;
-}
-
-.info-box {
-    width: 80%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    margin-left: 2rem;
-    align-items: flex-start;
-    justify-content: center;
-    text-align: start;
-}
-
-.name, .role {
-    padding: 0;
-    margin: 0;
-}
-
-.name {
-    font-family: "Poppins-Medium";
-    font-size: 18px;
-    margin-bottom: 1rem;
-}
-
-.role {
-    font-family: "Poppins-Light";
-    font-size: 15px;
-}
-
-@media screen and (max-width: 1270px){
-    .photo {
-        width: 70px;
-        height: 70px;
-    }
-
-    .info-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
-        width: 100%;
-        height: 100%;
-    }
+.carrousel button:hover {
+    color: var(--primary-btn);
+    cursor: pointer;
 }

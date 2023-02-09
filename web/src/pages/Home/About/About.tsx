@@ -12,14 +12,14 @@ export default function About() {
           <p>{strings.catchHighlight}</p>
           <ul>
             {strings.bullets.map((bullet) => (
-              <li>{bullet}</li>
+              <li key={bullet}>{bullet}</li>
             ))}
           </ul>
         </div>
       </div>
       <div className="about-more">
-        {strings.more.map((item) => (
-          <div>
+        {strings.more.map((item, idx) => (
+          <div key={idx}>
             <h2>{item.title}</h2>
             <p>{item.desc}</p>
           </div>
