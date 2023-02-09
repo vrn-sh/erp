@@ -21,6 +21,8 @@ jobs:
       - name: Start containers to check if it builds
         run: docker-compose -f "docker-compose.yml" up -d --build
 
+      # FIXME(bogdan): check services health here (maybe through postman collection?)
+
       - name: Stop containers
         if: always()
         run: docker-compose -f "docker-compose.yml" down
