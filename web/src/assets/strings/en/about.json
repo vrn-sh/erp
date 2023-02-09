@@ -1,0 +1,25 @@
+{
+    "catch": "You a pentester yet ?",
+    "catchHighlight": "A pentester's team workflow enhancer that's:",
+    "catchCTA": "Join voron",
+    "bullets": [
+        "Efficient",
+        "Fast",
+        "Easy to use",
+        "Built for your workflow"
+    ],
+    "more": [
+        {
+            "title": "Voron ?",
+            "desc": "Voron is a platform that allows service providers to test deployed defenses and processes to ensure the sustainability of the system, through the missions to infiltrate corporate networks which are provided by Voron."
+        },
+        {
+            "title": "Makes you trustworthy",
+            "desc": "Voron ensures that the companies who will be tested had already authorized computer attacks on their information networks."
+        },
+        {
+            "title": "Generates neat reports",
+            "desc": "Voron will provide a report detailing the findings and various vulnerabilities, while attesting that the rules of engagement are being followed."
+        }
+    ]
+}
