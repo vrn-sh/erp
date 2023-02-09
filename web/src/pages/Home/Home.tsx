@@ -9,16 +9,14 @@ export default function Home() {
         <>
             <NavBar />
             <section>
-
                 <div id="home" className="home">
                     <div className="loader">
                         <div className="home-container">
                             <h1>VORON</h1>
-                            <h4>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</h4>
+                            <h4>In <span>efficiency</span> we trust.</h4>
                         </div>
                     </div>
                 </div>
-
                 <About />
                 <Team />
             </section>
