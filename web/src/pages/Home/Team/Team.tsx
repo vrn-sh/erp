@@ -9,6 +9,7 @@ interface cardProps {
 
 interface member {
   name: string;
+  avatar: string;
   description: string;
   timezone: string;
   github: string;
@@ -51,7 +52,7 @@ const MemberCard: FunctionComponent<cardProps> = ({ member }) => {
   return (
     <div className="carroussel-item">
       <div className="avatar-wrapper">
-        <img src={`/avatarph.png`} alt="avatar"></img>
+        <img src={member.avatar !== '#' ?  member.avatar : `/avatarph.png`} alt="avatar"></img>
       </div>
       <h2>{member.name}</h2>
       <p>{member.description}</p>
