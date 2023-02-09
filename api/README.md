@@ -34,18 +34,22 @@ Install setup:
 # go to the project root directory
 cd voron
 
+# setup your own .env file
+cp .env-dist .env
+vim .env # put your actual .env values here
+
 # run the database setup script:
 # - will assume you're running Ubuntu for the postgresql installation etc
 # - will automatically install packages, such as Postgresql 15.
 #
 # [!] if you have another install running on port 5432, it could create conflicts!
-./scripts/setup.sh
+./../toolbox/scripts/setup.sh
 
 # create a virtual env
 python -m venv ~/.local/venv_core
 
 # enable the virtual env
-. ~/.local/venv_voron/bin/activate
+. ~/.local/venv_core/bin/activate
 
 # install pip dependencies
 pip install -r requirements.txt
@@ -54,7 +58,7 @@ pip install -r requirements.txt
 python manage.py runserver 8080
 
 # if you need to create new migrations (make sure postgresql is running and you have your env values set up)
-python manage.py makemigrations
+python manage.py makemigrations # OPTIONAL
 python manage.py migrate
 
 # or, if you wish to interact with the models directly:
@@ -80,8 +84,12 @@ If you're just planning on _using_ the API, but not develop on it, you can easil
 # build the image
 docker build . -t core
 
+# Optionally, create your own .env file
+cp .env-dist .env
+vim .env
+
 # run on port 8080 (assuming postgresql daemon is running and migrations have been done)
-docker run -p "8080:8080" core
+docker run -p "8080:8080" --env-file .env core
 
 ```
 

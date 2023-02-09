@@ -1,0 +1,105 @@
+//team
+
+.team {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.team h1 {
+    font-family: "Poppins-Black";
+    font-size: 2rem;
+}
+
+.team span {
+    color: var(--primary-btn);
+    margin-left: 8%;
+}
+
+.member {
+    display: flex;
+    width: 80%;
+    height: 70%;
+}
+
+.grid {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+//for linear border
+.member-card {
+    width: 80%;
+    max-height: 30%;
+    padding: 1px;
+    margin: 1rem;
+    background: linear-gradient(to right, var(--primary-btn), var(--black));
+    border-radius: 18px;
+}
+   
+.member-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    background: var(--basic-bg);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+//content in box
+.photo {
+    background-color: bisque;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 6px;
+}
+
+.info-box {
+    width: 80%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 2rem;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: start;
+}
+
+.name, .role {
+    padding: 0;
+    margin: 0;
+}
+
+.name {
+    font-family: "Poppins-Medium";
+    font-size: 18px;
+    margin-bottom: 1rem;
+}
+
+.role {
+    font-family: "Poppins-Light";
+    font-size: 15px;
+}
+
+@media screen and (max-width: 1270px){
+    .photo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .info-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+}

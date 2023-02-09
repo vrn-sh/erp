@@ -1,0 +1,27 @@
+
+// About
+.about {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: start;
+    margin: 10%;
+    height: 100vh;
+}
+
+.about h1 {
+    font-family: "Poppins-Black";
+    font-size: 2rem;
+}
+
+.about span {
+    color: var(--primary-btn);
+    margin-left: 2%;
+}
+
+.about p {
+    font-family: "Poppins-Medium";
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    text-align: justify;
+}
