@@ -1,13 +1,18 @@
+"""helper functions for unit tests"""
 
-from api.models import *
-from api.models.domains import *
-from api.views import LoginView
-
-from rest_framework.test import APIRequestFactory, force_authenticate, APIClient
-
+from typing import Any
 from faker import Faker
 
-def login_as(email: str, password: str):
+from rest_framework.test import APIRequestFactory
+
+from api.models import *
+from api.views import LoginView
+
+
+
+
+def login_as(email: str, password: str) -> str:
+    """login as specific user (email/password)"""
     login = LoginView.as_view()
     fct = APIRequestFactory()
     body = {
@@ -18,7 +23,7 @@ def login_as(email: str, password: str):
     request = fct.post('/login', data=body, format='json')
     response = login(request)
     assert response.status_code == 201
-    return response.data['token']
+    return response.data['token'] # type: ignore
 
 
 def create_user(
@@ -27,9 +32,11 @@ def create_user(
         email: str,
         password: str,
         username: str,
-        UserClass,
+        UserClass: Any ,
         is_admin: bool = False,
-    ):
+    ) -> Any:
+
+    """create a user that is already validated"""
 
     auth = Auth(
         role=2 if is_admin else 1,
@@ -50,10 +57,12 @@ def create_user(
 
 
 def random_user_password() -> str:
+    """give password to user"""
     return 'secretpassword'
 
 
 def create_random_admin() -> Admin:
+    """create an admin with random name & email"""
     fake = Faker()
     name = fake.name()
 
@@ -69,6 +78,7 @@ def create_random_admin() -> Admin:
 
 
 def create_random_customer() -> Customer:
+    """create customer with random mail & email"""
     fake = Faker()
     name = fake.name()
 
