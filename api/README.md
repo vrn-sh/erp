@@ -43,7 +43,7 @@ vim .env # put your actual .env values here
 # - will automatically install packages, such as Postgresql 15.
 #
 # [!] if you have another install running on port 5432, it could create conflicts!
-./scripts/setup.sh
+./../toolbox/scripts/setup.sh
 
 # create a virtual env
 python -m venv ~/.local/venv_core
