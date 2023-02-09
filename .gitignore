@@ -6,6 +6,7 @@
 web/yarn.lock
 */dist
 */node_modules
+web/package-lock.json
 
 # Logs
 logs
@@ -33,3 +34,7 @@ logs
 */__pycache__
 */venv
 *.pyc
+
+# Deployment & docker stuff
+.env
+./volumes

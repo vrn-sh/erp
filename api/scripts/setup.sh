@@ -46,4 +46,5 @@ install_requirements || exit 1
 . ${VENV_PATH}/bin/activate
 
 install_postgresql
+python3 manage.py makemigrations
 python3 manage.py migrate

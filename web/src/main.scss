@@ -10,31 +10,6 @@ body {
     text-align: center;
 }
 
-.footer {
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: --black;
-    border-top: #0000002d 1px solid;
-    padding: .5rem;
-}
-
-.footer p {
-    margin: .2rem;
-    padding: 0;
-}
-
-.footer ul {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-}
-
 .footer a {
     text-decoration: underline;
     color: --black;

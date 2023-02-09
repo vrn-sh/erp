@@ -9,10 +9,33 @@
 //FONT
 @font-face {
     font-family: "Poppins-Bold";
-    src: local("Poppins-Bold"), url("./fonts/Poppins-Bold.ttf") format("truetype");
+    src: local("Poppins-Bold"), url("./fonts/poppins/Poppins-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Poppins-Black";
+    src: local("Poppins-Black"), url("./fonts/poppins/Poppins-Black.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "Poppins-Regular";
-    src: local("Poppins-Regular"), url("./fonts/Poppins-Regular.ttf") format("truetype");
+    src: local("Poppins-Regular"), url("./fonts/poppins/Poppins-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Poppins-Medium";
+    src: local("Poppins-Medium"), url("./fonts/poppins/Poppins-Medium.ttf") format("truetype");
+}
+:root {
+    --black: black;
+    --white: white;
+    --basic-bg: #FCFBFD;
+    --primary-btn: #7C44F3;
+    --primary-hover-btn: #632add;
+}
+
+//FONT
+@font-face {
+    font-family: "Poppins-Bold";
+    src: local("Poppins-Bold"), url("./fonts/Poppins-Bold.ttf") format("truetype");
 }
