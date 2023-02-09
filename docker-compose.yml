@@ -1,6 +1,34 @@
 version: '3.9'
 services:
 
+  mailserver:
+    image: docker.io/mailserver/docker-mailserver:latest
+    container_name: mailserver
+    hostname: mail
+    domainname: djnn.sh
+    ports:
+      - "25:25"
+      - "143:143"
+      - "587:587"
+      - "993:993"
+    volumes:
+      - ./volumes/mail/data/:/var/mail/
+      - ./volumes/mail/state/:/var/mail-state/
+      - ./volumes/mail/logs/:/var/log/mail/
+      - ./volumes/mail/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - ENABLE_SPAMASSASSIN=1
+      - SPAMASSASSIN_SPAM_TO_INBOX=1
+      - ENABLE_CLAMAV=1
+      - ENABLE_FAIL2BAN=1
+      - ENABLE_POSTGREY=1
+      - ENABLE_SASLAUTHD=0
+      - ONE_DIR=1
+    cap_add:
+      - NET_ADMIN
+    restart: always
+
   nginx:
     image: nginx:1.23.2
     ports:
