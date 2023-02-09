@@ -8,7 +8,6 @@ from typing import List
 
 from rest_framework import permissions
 from api.models import Auth, Customer, Admin
-from api.models.domains import Address, Node
 
 
 class MethodOnly(permissions.BasePermission):
