@@ -50,4 +50,4 @@ python manage.py makemigrations
 python manage.py migrate
 
 echo "$(date) - Starting task"
-exec gunicorn api.wsgi --config gunicorn.conf.py
+exec gunicorn core.wsgi --config gunicorn.conf.py
