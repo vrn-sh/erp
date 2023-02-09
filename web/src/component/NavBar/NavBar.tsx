@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import "./NavBar.scss"
+
 export default function NavBar() {
     return (
         <nav className="nav">
-            <Link to="/" className="site-title">voron</Link>
+            <Link to="#home" className="site-title">voron</Link>
             <ul>
                 <div className="nav-left">
                     <CustomLink to="#home">Home</CustomLink>

@@ -26,10 +26,8 @@ function MemberBox({ children, role, ...props }: {children: string; role: string
             <div className="member-content">
                 <div className="photo" />
                 <div className="info-box">
-                    <div>
-                        <h4 className="name">{children}</h4>
-                        <h5 className="role">{role}</h5>
-                    </div>
+                    <h4 className="name">{children}</h4>
+                    <h5 className="role">{role}</h5>
                 </div>
             </div>
         </div>
