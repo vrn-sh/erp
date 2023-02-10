@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import Home from "./pages/Home/Home"
 import About from "./pages/Home/About/About"
 import "./global-variable.scss"
-import Login from "./pages/LogIn"
+import Login from "./pages/Login/LogIn"
 import SignUp from "./pages/SignUp"
 
 function App() {  
