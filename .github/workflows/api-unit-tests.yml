@@ -54,6 +54,7 @@ jobs:
 
           DOMAIN_NAME: localhost:3000
           PRODUCTION: 0
+          TEST: 1
 
           SENDGRID_API_KEY: something
           SENDGIRD_SENDER: important.person@email.com
