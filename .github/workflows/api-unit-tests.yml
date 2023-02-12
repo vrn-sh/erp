@@ -23,7 +23,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_DB: voron
-          POSTGRES_USER: user_name
+          POSTGRES_USER: runner
           POSTGRES_PASSWORD: very_secure_password
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
@@ -46,7 +46,7 @@ jobs:
         env:
           DEBUG: "0"
           POSTGRES_DB: voron
-          POSTGRES_USER: user_name
+          POSTGRES_USER: runner
           POSTGRES_PASSWORD: very_secure_password
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
