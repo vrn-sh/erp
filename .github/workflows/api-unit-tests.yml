@@ -1,0 +1,76 @@
+name: run API's unit tests
+
+on:
+  push:
+    workflow_dispatch:
+
+
+jobs:
+
+  # check if the app successfully builds
+  run-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_DB: voron
+      POSTGRES_USER: user_name
+      POSTGRES_PASSWORD: very_secure_password
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+
+    services:
+      database:
+        image: postgres:15
+        env:
+          POSTGRES_DB: voron
+          POSTGRES_USER: user_name
+          POSTGRES_PASSWORD: very_secure_password
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+           python-version: 3.10
+      - name: Install requirements
+        run: |
+            cd api
+            pip install -r requirements.txt
+            pip install -U coverage
+
+      - name: Run tests
+        env:
+          DEBUG: "0"
+          POSTGRES_DB: voron
+          POSTGRES_USER: user_name
+          POSTGRES_PASSWORD: very_secure_password
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          DJANGO_SETTINGS_MODULE: core.settings
+        run: |
+            coverage run python manage.py test
+            coverage report -m
+
+
+  build-docker:
+    runs-on: ubuntu-latest
+    needs: [run-tests]
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build docker image
+        run: |
+          cd api
+          docker build -t voron/erp:${GITHUB_SHA::7} -t voron/erp:latest .
+
