@@ -52,6 +52,12 @@ jobs:
           POSTGRES_PORT: 5432
           DJANGO_SETTINGS_MODULE: core.settings
 
+          DOMAIN_NAME: localhost:3000
+          PRODUCTION: 0
+
+          SENDGRID_API_KEY: something
+          SENDGIRD_SENDER: important.person@email.com
+
         run: |
             cd api
             pip install -r requirements.txt
