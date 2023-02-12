@@ -22,11 +22,9 @@ jobs:
       database:
         image: postgres:15
         env:
-          POSTGRES_DB: voron
-          POSTGRES_USER: runner
-          POSTGRES_PASSWORD: very_secure_password
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         options: >-
@@ -45,16 +43,15 @@ jobs:
       - name: Install requirements & run tests
         env:
           DEBUG: "0"
-          POSTGRES_DB: voron
-          POSTGRES_USER: runner
-          POSTGRES_PASSWORD: very_secure_password
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           DJANGO_SETTINGS_MODULE: core.settings
 
           DOMAIN_NAME: localhost:3000
           PRODUCTION: 0
-          TEST: 1
+          CI: 1
 
           SENDGRID_API_KEY: something
           SENDGIRD_SENDER: important.person@email.com
