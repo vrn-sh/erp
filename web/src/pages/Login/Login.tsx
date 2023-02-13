@@ -11,6 +11,8 @@ export default function Login() {
     const [pwd, setPwd] = useState('')
     const [errorEmail, setErrorEmail] = useState('')
     const [errorPwd, setErrorPwd] = useState('')
+    const [pwdType, setPwdType] = useState('password')
+    const [pwdIcon, setPwdIcon] = useState(eyeOff)
     
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -29,6 +31,16 @@ export default function Login() {
             setErrorPwd("Password should have at least 8 characters.")
         } else {
             setErrorPwd("")
+        }
+    }
+
+    const handleShowPwd = () => {
+        if (pwdType === "password") {
+            setPwdType("text")
+            setPwdIcon(eye)
+        } else {
+            setPwdType("password")
+            setPwdIcon(eyeOff)
         }
     }
 
@@ -64,8 +76,8 @@ export default function Login() {
 
                                 <label>Password</label>
                                 <div className='input-pwd'>
-                                    <input type="password" className="form-control" onChange={checkPwd}/>
-                                    <span style={{ color: "#8A8A8A"}}><Icon icon={eyeOff} /></span>
+                                    <input type={pwdType} className="form-control" onChange={checkPwd}/>
+                                    <span onClick={handleShowPwd}><Icon icon={pwdIcon} /></span>
                                 </div>
                                 <p className='error'>{errorPwd}</p>
 
