@@ -3,6 +3,7 @@ import strings from "../../../assets/strings/en/team.json";
 import { FunctionComponent, useEffect, useState } from "react";
 import { MdOutlineNavigateNext, MdNavigateBefore } from "react-icons/md";
 import { AiFillGithub } from 'react-icons/ai'
+import { CSSTransition } from "react-transition-group";
 interface cardProps {
   member: member;
 }
@@ -16,16 +17,35 @@ interface member {
 }
 
 export default function Team() {
-  const [teamMember, setTeamMember] = useState(0);
+  const [teamMemberIndex, setTeamMemberIndex] = useState(0);
+  const [teamMemberComponents, setTeamMemberComponents] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [animate, setAnimate] = useState(false);
 
   const nextMember = () => {
-    if (teamMember + 1 > strings.members.length - 1) setTeamMember(0);
-    else setTeamMember(teamMember + 1);
+    if (teamMemberIndex + 1 > strings.members.length - 1) setTeamMemberIndex(0);
+    else setTeamMemberIndex(teamMemberIndex + 1);
+    setAnimate(true);
+    setTimeout(() => {
+      setAnimate(false);
+    }, 300)
   };
   const previousMember = () => {
-    if (teamMember - 1 < 0) setTeamMember(strings.members.length - 1);
-    else setTeamMember(teamMember - 1);
+    if (teamMemberIndex - 1 < 0) setTeamMemberIndex(strings.members.length - 1);
+    else setTeamMemberIndex(teamMemberIndex - 1);
+    setAnimate(true);
+    setTimeout(() => {
+      setAnimate(false);
+    }, 300)
   };
+
+  useEffect(() => {
+    strings.members.forEach((member, idx) => {
+      const newComp = <MemberCard member={member} key={idx}/>
+      setTeamMemberComponents((state: any) => [...state, newComp])
+    })
+    setIsLoading(false);
+  }, [teamMemberIndex])
 
   return (
     <div id="team" className="team">
@@ -38,7 +58,13 @@ export default function Team() {
           <MdNavigateBefore />
           <p className="caroussel-nav-sub">Previous</p>
         </button>
-        <MemberCard member={strings.members[teamMember]} />
+        <CSSTransition
+          timeout={600}
+          in={animate}
+          classNames="fade"
+        >
+        {!isLoading ? teamMemberComponents[teamMemberIndex] : <p>Loading our awesome members...</p>}
+        </CSSTransition>
         <button onClick={() => nextMember()}>
           <MdOutlineNavigateNext />
           <p className="caroussel-nav-sub">Next</p>
@@ -48,7 +74,7 @@ export default function Team() {
   );
 }
 
-const MemberCard: FunctionComponent<cardProps> = ({ member }) => {
+const MemberCard: React.FC<cardProps> = ({ member }) => {
   return (
     <div className="carroussel-item">
       <div className="avatar-wrapper">
