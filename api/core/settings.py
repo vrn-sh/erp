@@ -157,6 +157,20 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
     DEBUG = True
     ALLOWED_HOSTS = ['*']
+elif os.environ.get('CI') and os.environ.get('CI')  == '1':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
+    SECRET_KEY = 'django-insecure-234kj23h4jkj2134ho20d109fu3f0943f03hg34g094318943f'
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
 else:
     DATABASES = {
         'default': {
