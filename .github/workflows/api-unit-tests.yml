@@ -61,28 +61,17 @@ jobs:
         run: |
             cd api
             pip install -r requirements.txt
-            pytest --cov=. --cov-report xml tests
+            pip install -U coverage
+            coverage run manage.py test
+            coverage report -m --format=markdown > coverage.md
             cd -
-
-      - name: Code Coverage Report
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: ./api/coverage.xml
-          badge: true
-          fail_below_min: true
-          format: markdown
-          hide_branch_rate: false
-          hide_complexity: true
-          indicators: true
-          output: both
-          thresholds: '60 80'
 
       - name: Report test coverage as PR comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
           recreate: true
-          path: code-coverage-results.md
+          path: api/coverage.md
 
   build-docker:
     runs-on: ubuntu-latest
