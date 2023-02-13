@@ -10,7 +10,7 @@ export default function Footer() {
                 <ul>
                     <CustomLink to="/">Legal Stuff</CustomLink>
                     <CustomLink to="/">Privacy Policy</CustomLink>
-                    <CustomLink to="/">TeSecurityam</CustomLink>
+                    <CustomLink to="/">Security</CustomLink>
                 </ul>
             </div>
         </div>
