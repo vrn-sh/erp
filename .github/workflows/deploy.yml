@@ -17,7 +17,6 @@ jobs:
         username: ${{ secrets.USERNAME }}
         port: ${{ secrets.PORT }}
         key: ${{ secrets.SSH_KEY }}
-
         script: |
           cd erp
 

@@ -1,0 +1,161 @@
+.login-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.login-text {
+  background-color: #F4F5F8;
+  display: flex;
+  width: 30%;
+  margin: 0;
+  padding: 2rem;
+  justify-content: center;
+  text-align: left;
+  align-items: center;
+}
+
+.login-container h2 {
+  font-family: "Poppins-Black";
+  font-size: 2rem;
+}
+
+.login-text h1 {
+  font-family: "Poppins-Regular";
+  font-size: 2.5rem;
+}
+
+.login-form {
+  display: flex;
+  width: 80%;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-bold{
+  font-weight: normal;
+  font-size: 16px;
+}
+
+p, div {
+  font-family: Lato;
+}
+    
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  max-width: 80%;
+  min-width: 100px;
+  min-height: 400px;
+}
+
+.form-group {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}  
+
+label {
+  color: var(--gray-btn);
+  margin-top: 1rem;
+  margin-bottom: -.6rem;
+  margin-left: .5rem;
+  padding: 0 .5rem;
+  font-family: "Poppins-Regular";
+  font-size: 13px;
+  z-index: 2;
+  background-color: white;
+}
+
+input {
+  width: 100%;
+  height: 2.7rem;
+  padding: .5rem 1rem;
+  letter-spacing: .15em;
+  font-size: 14px;
+  font-family: "Poppins-Regular";
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid var(--gray-btn);
+}
+
+input::placeholder {
+  font-size: 1.2em;
+  font-weight: lighter;
+}
+
+.input-pwd {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+.input-pwd span {
+  font-size: 1.2rem;
+  outline: none;
+  margin-left: -2rem;
+  cursor: pointer;
+  color: var(--gray-btn);
+}
+
+button {
+  min-width: 100%;
+  cursor: pointer;
+  margin-right: 0.25em;
+  margin-top: 0.5em;
+  padding:  0.938em;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--primary-btn);
+  color: white;
+}
+
+button:hover {
+  background-color: var(--primary-hover-btn);
+  color: #fefefe;
+  transition: .2s ease-in-out;
+}
+
+.email,
+.password {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.submit {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.error {
+  width: 100%;
+  font-family: "Poppins-Regular";
+  text-align: left;
+  font-size: 13px;
+  color: red;
+  margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 1270px) {
+  .login-text {
+    display: none;
+  }
+  .form-wrapper {
+    width: 100%;
+  }
+}
