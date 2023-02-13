@@ -3,52 +3,52 @@
     "sectionSubtitle": "Hand picked, free roaming, eco-friendly raised developers from various parts of the world",
     "members": [
         {
-            "name": "Mat",
-            "avatar": "#",
-            "description": "i don no wat doing but am here lel i guess i do stuff",
-            "timezone": "GMT+1",
+            "name": "Matteo",
+            "avatar": "https://avatars.githubusercontent.com/u/60545269?v=4",
+            "description": "back-end engineer",
+            "timezone": "gmt",
             "github": "https://github.com/TheOrionsB"
         },
         {
             "name": "djnn",
             "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
-            "description": "tech lead / back-end & off. security enthusiast",
+            "description": "tech lead  & offensive security enthusiast - PGP: 0xA43B3C34B2FF11CF",
             "timezone": "utc+9",
             "github": "https://github.com/bogdzn"
         },
         {
             "name": "naadi",
-            "avatar": "#",
-            "description": "i don no wat doing",
-            "timezone": "GMT+1",
-            "github": "https://github.com/TheOrionsB"
+            "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
+            "description": "irregular back-end engineer",
+            "timezone": "utc+9",
+            "github": "https://github.com/lambdina"
         },
         {
             "name": "Camelia",
             "avatar": "#",
-            "description": "i don no wat doing",
+            "description": "front-end engineer",
             "timezone": "GMT+1",
-            "github": "https://github.com/TheOrionsB"
+            "github": "https://github.com/samacamelia"
         },
         {
             "name": "Blacky",
-            "avatar": "#",
-            "description": "i don no wat doing",
-            "timezone": "GMT+1",
+            "avatar": "https://avatars.githubusercontent.com/u/49866160?v=4",
+            "description": "back-end engineer",
+            "timezone": "gmt+1",
             "github": "https://github.com/TheOrionsB"
         },
         {
             "name": "Clara",
-            "avatar": "#",
-            "description": "i don no wat doing",
-            "timezone": "GMT+1",
-            "github": "https://github.com/TheOrionsB"
+            "avatar": "https://avatars.githubusercontent.com/u/56248408?v=4",
+            "description": "undergraduate student in computer science",
+            "timezone": "utc+9",
+            "github": "https://github.com/claraxuxu"
         },
         {
-            "name": "Some random contributors",
+            "name": "nathan",
             "avatar": "https://avatars.githubusercontent.com/u/44578736?v=4",
-            "description": "they do stuff i guess",
-            "timezone": "GMT+1",
+            "description": "occasional contributor",
+            "timezone": "gmt+1",
             "github": "https://github.com/TheOrionsB"
         }
     ]
