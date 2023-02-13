@@ -4,7 +4,7 @@ import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import "./Login.scss"
 
-const REGEX = RegExp(/^\s?[A-Z0–9]+[A-Z0–9._+-]{0,}@[A-Z0–9._+-]+\.[A-Z0–9]{2,4}\s?$/i);
+const REGEX = RegExp(/^\S+@\S+\.\S+$/);
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -17,9 +17,9 @@ export default function Login() {
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
 
-        if (REGEX.test(email) === false) {
+        if (!REGEX.test(email)) {
             setErrorEmail("Please enter valid email address.")
-        } else {
+        } else if (REGEX.test(email)){
             setErrorEmail("")
         }
     }
@@ -57,11 +57,11 @@ export default function Login() {
             <section className="login-container">
 
                 <div className="login-text" id="login-text">
-                    <p>
+                    <div>
                         <h2>voron</h2>
-                        <h1>Lorem ipsum dolor sit amet consectet. Neque.</h1>
+                        <h1>{import.meta.env.VITE_REACT_APP_SLOGAN}</h1>
                         <span className="no-bold">Lorem ipsum dolor sit amet consectetur. Quis platea lectus.</span>
-                    </p>
+                    </div>
                 </div>
 
                 <div className="login-form" id="login-form">
