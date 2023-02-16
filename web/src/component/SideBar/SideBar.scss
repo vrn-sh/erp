@@ -1,0 +1,68 @@
+.top-bar {
+    background: #FCFBFD;
+    height: 10vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site-title {
+    font-size: 2rem;
+    font-family: "Poppins-Bold";
+    text-decoration: none;
+    color: var(--black);
+    margin: 0;
+}
+
+.sidebar {
+    background-color: var(--basic-bg);
+    width: 250px;
+    height: 90vh;
+}
+
+.sidebar-container {
+    width: 100%;
+}
+
+// SubMenu
+.sidebar-link {
+    display: flex;
+    text-decoration: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    list-style: none;
+    height: 100%;
+    font-size: 17px;
+    font-family: "Poppins-Regular";
+}
+
+.sidebar-link:hover, .dropdown-menu:hover {
+    background-color: var(--gray-btn);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+}
+
+.sidebar-item {
+    display: flex;
+    color: car(--black);
+    justify-content: space-between;
+}
+
+.menu-txt {
+    margin-left: 1rem;
+    color: var(--black);
+}
+
+.dropdown-menu {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--black);
+    font-size: 17px;
+    font-family: "Poppins-Regular";
+    padding: 10px;
+    padding-left: 3rem;
+    list-style: none;
+}
