@@ -1,10 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import "./SideBar.scss"
 import { SideBarData } from './SideBarData';
-import SubMenu
- from './SubMenu';
+import SubMenu from './SubMenu';
+
 export default function SideBar() {
     return (
         <>
