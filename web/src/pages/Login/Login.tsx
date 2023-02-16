@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Icon } from 'react-icons-kit';
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
@@ -13,6 +14,7 @@ export default function Login() {
     const [errorPwd, setErrorPwd] = useState('')
     const [pwdType, setPwdType] = useState('password')
     const [pwdIcon, setPwdIcon] = useState(eyeOff)
+    const navigate = useNavigate();
     
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -47,6 +49,7 @@ export default function Login() {
     const submit = () => {
         if (email != "" && pwd.length > 7) {
             console.log("Log in successfully!")
+            navigate("/dashboard")
         } else {
            console.log("Something is wrong")
         }
