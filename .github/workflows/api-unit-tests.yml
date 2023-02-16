@@ -6,6 +6,8 @@ on:
   pull_request:
     workflow_dispatch:
 
+permissions:
+  pull-requests: write
 
 jobs:
 
@@ -70,7 +72,8 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
-          recreate: true
+          hide_and_recreate: true
+          hide_classify: "OUTDATED"
           path: api/coverage.md
 
   build-docker:
