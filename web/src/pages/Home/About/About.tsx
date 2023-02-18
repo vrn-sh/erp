@@ -1,3 +1,4 @@
+import React from 'react';
 import './About.scss';
 import strings from '../../../assets/strings/en/about.json';
 
@@ -7,7 +8,7 @@ export default function About() {
             <div className="about-main-row">
                 <div className="about-catch">
                     <h1>{strings.catch}</h1>
-                    <button>{strings.catchCTA}</button>
+                    <button type="button">{strings.catchCTA}</button>
                 </div>
                 <div className="about-bullets">
                     <p>{strings.catchHighlight}</p>

@@ -1,3 +1,4 @@
+import React from 'react';
 import NavBar from '../../component/NavBar/NavBar';
 import Footer from '../../component/Footer/Footer';
 import './Home.scss';

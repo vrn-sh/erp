@@ -4,7 +4,7 @@ import { eyeOff } from 'react-icons-kit/feather/eyeOff';
 import { eye } from 'react-icons-kit/feather/eye';
 import './Login.scss';
 
-const REGEX = RegExp(/^\S+@\S+\.\S+$/);
+const REGEX = /^\S+@\S+\.\S+$/;
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -45,10 +45,10 @@ export default function Login() {
     };
 
     const submit = () => {
-        if (email != '' && pwd.length > 7) {
-            console.log('Log in successfully!');
+        if (email !== '' && pwd.length > 7) {
+            // TODO: Integrate login
         } else {
-            console.log('Something is wrong');
+            // TODO: Error handling
         }
     };
 
@@ -71,29 +71,40 @@ export default function Login() {
                         <h2>Welcome back!</h2>
 
                         <div className="form-group">
-                            <label>Email</label>
+                            <label htmlFor="email">Email</label>
                             <input
+                                id="email"
                                 type="text"
                                 className="form-control"
                                 onChange={checkEmail}
                             />
                             <p className="error">{errorEmail}</p>
 
-                            <label>Password</label>
+                            <label htmlFor="input">Password</label>
                             <div className="input-pwd">
                                 <input
                                     type={pwdType}
                                     className="form-control"
                                     onChange={checkPwd}
                                 />
-                                <span onClick={handleShowPwd}>
+                                <button
+                                    className="not-a-button"
+                                    type="button"
+                                    onClick={handleShowPwd}
+                                >
                                     <Icon icon={pwdIcon} />
-                                </span>
+                                </button>
                             </div>
                             <p className="error">{errorPwd}</p>
 
                             <div className="submit">
-                                <button onClick={submit}>LOG IN</button>
+                                <button
+                                    className="submit-button"
+                                    type="button"
+                                    onClick={submit}
+                                >
+                                    LOG IN
+                                </button>
                             </div>
                         </div>
                     </div>

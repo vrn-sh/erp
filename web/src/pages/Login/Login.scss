@@ -4,6 +4,8 @@
   height: 100vh;
 }
 
+
+
 .login-text {
   background-color: #F4F5F8;
   display: flex;
@@ -102,7 +104,9 @@ input::placeholder {
   font-size: 1.2rem;
 }
 
-.input-pwd span {
+.input-pwd button {
+  border: none;
+  background: none;
   font-size: 1.2rem;
   outline: none;
   margin-left: -2rem;
@@ -110,7 +114,7 @@ input::placeholder {
   color: var(--gray-btn);
 }
 
-button {
+.submit-button {
   min-width: 100%;
   cursor: pointer;
   margin-right: 0.25em;
@@ -122,7 +126,7 @@ button {
   color: white;
 }
 
-button:hover {
+.submit-button:hover {
   background-color: var(--primary-hover-btn);
   color: #fefefe;
   transition: .2s ease-in-out;

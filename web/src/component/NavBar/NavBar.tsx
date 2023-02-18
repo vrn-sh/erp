@@ -1,6 +1,23 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.scss';
 
+function CustomLink({
+    to,
+    children,
+    ...props
+}: {
+    to: string;
+    children: string;
+}) {
+    return (
+        <li>
+            <a href={to} {...props}>
+                {children}
+            </a>
+        </li>
+    );
+}
 export default function NavBar() {
     return (
         <nav className="nav">
@@ -21,22 +38,5 @@ export default function NavBar() {
                 </div>
             </ul>
         </nav>
-    );
-}
-
-function CustomLink({
-    to,
-    children,
-    ...props
-}: {
-    to: string;
-    children: string;
-}) {
-    return (
-        <li>
-            <a href={to} {...props}>
-                {children}
-            </a>
-        </li>
     );
 }

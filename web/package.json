@@ -22,7 +22,9 @@
     "react-dom": "^18.2.0",
     "react-icons-kit": "^2.0.0",
     "react-router-dom": "^6.8.0",
-    "recharts": "^2.1.16"
+    "recharts": "^2.1.16",
+    "vite": "^3.2.3",
+    "@vitejs/plugin-react": "^2.2.0"
   },
   "devDependencies": {
     "@testing-library/react": "^13.4.0",
@@ -30,7 +32,6 @@
     "@types/react-dom": "^18.0.8",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "@vitejs/plugin-react": "^2.2.0",
     "@vitest/coverage-c8": "^0.28.5",
     "eslint": "8.31.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -47,7 +48,6 @@
     "prettier": "^2.8.2",
     "sass": "^1.56.1",
     "typescript": "^4.6.4",
-    "vite": "^3.2.3",
     "vitest": "^0.28.5"
   }
 }

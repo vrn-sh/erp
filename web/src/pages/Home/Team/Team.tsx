@@ -1,3 +1,4 @@
+import React from 'react';
 import './Team.scss';
 
 export default function Team() {

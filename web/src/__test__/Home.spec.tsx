@@ -1,7 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import React from 'react';
-import { screen, render } from '@testing-library/react';
-import { Route, Routes } from 'react-router-dom';
+import { render } from '@testing-library/react';
 import Home from '../pages/Home/Home';
 
 describe('Testing Home page', () => {

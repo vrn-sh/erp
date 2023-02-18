@@ -1,21 +1,5 @@
+import React from 'react';
 import './Footer.scss';
-
-export default function Footer() {
-    return (
-        <div className="footer">
-            <h2 className="site-title">voron</h2>
-            <p>Copyright ©2023 VORON, Inc.</p>
-            <p>Contact voron@djnn.sh</p>
-            <div className="policy-link">
-                <ul>
-                    <CustomLink to="/">Legal Stuff</CustomLink>
-                    <CustomLink to="/">Privacy Policy</CustomLink>
-                    <CustomLink to="/">Security</CustomLink>
-                </ul>
-            </div>
-        </div>
-    );
-}
 
 function CustomLink({
     to,
@@ -31,5 +15,22 @@ function CustomLink({
                 {children}
             </a>
         </li>
+    );
+}
+
+export default function Footer() {
+    return (
+        <div className="footer">
+            <h2 className="site-title">voron</h2>
+            <p>Copyright ©2023 VORON, Inc.</p>
+            <p>Contact voron@djnn.sh</p>
+            <div className="policy-link">
+                <ul>
+                    <CustomLink to="/">Legal Stuff</CustomLink>
+                    <CustomLink to="/">Privacy Policy</CustomLink>
+                    <CustomLink to="/">Security</CustomLink>
+                </ul>
+            </div>
+        </div>
     );
 }

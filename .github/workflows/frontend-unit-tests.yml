@@ -16,11 +16,6 @@ jobs:
         with:
           cmd: install # will run `yarn install` command
           dir: 'web' # will run `yarn test` in `frontend` sub folder
-      - name: Build production bundle
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build # will run `yarn build:prod` command
-          dir: 'web' # will run `yarn test` in `frontend` sub folder
       - name: Test the app
         uses: borales/actions-yarn@v4
         with:
@@ -30,4 +25,9 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: test:coverage
+          dir: 'web' # will run `yarn test` in `frontend` sub folder
+      - name: Build production bundle
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build # will run `yarn build:prod` command
           dir: 'web' # will run `yarn test` in `frontend` sub folder
