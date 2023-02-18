@@ -1,9 +1,12 @@
-import "./Team.scss"
+import React from 'react';
+import './Team.scss';
 
 export default function Team() {
     return (
         <div id="team" className="team">
-            <h1>Voron<span>Team</span></h1>
+            <h1>
+                Voron<span>Team</span>
+            </h1>
             <div className="member">
                 <div className="grid">
                     <MemberBox role="Front-end developper">Camelia</MemberBox>
@@ -17,10 +20,17 @@ export default function Team() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-function MemberBox({ children, role, ...props }: {children: string; role: string}) {
+function MemberBox({
+    children,
+    role,
+    ...props
+}: {
+    children: string;
+    role: string;
+}) {
     return (
         <div className="member-card">
             <div className="member-content">
@@ -31,5 +41,5 @@ function MemberBox({ children, role, ...props }: {children: string; role: string
                 </div>
             </div>
         </div>
-    ) 
+    );
 }

@@ -1,0 +1,28 @@
+name: CI
+on: [push]
+
+jobs:
+  build:
+    name: Lint the codebase
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
+          dir: 'web' # will run `yarn test` in `frontend` sub folder
+      - name: Lints the app
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: lint # will run `yarn test` command
+          dir: 'web' # will run `yarn test` in `frontend` sub folder
+      - name: Build production bundle
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build # will run `yarn build:prod` command
+          dir: 'web' # will run `yarn test` in `frontend` sub folder
