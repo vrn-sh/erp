@@ -38,8 +38,7 @@ docker-compose up
 
 ### locally
 
-Please have a look at the various `README` located in the `web` and `api`
-directories, as they will provide more informations regarding how to run the app locally.
+Please follow [this link](./toolbox/docs/INSTALL_LOCALLY.md).
 
 ## how to contribute ?
 
