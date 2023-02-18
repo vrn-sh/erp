@@ -1,4 +1,22 @@
-import "./Footer.scss"
+import React from 'react';
+import './Footer.scss';
+
+function CustomLink({
+    to,
+    children,
+    ...props
+}: {
+    to: string;
+    children: string;
+}) {
+    return (
+        <li>
+            <a href={to} {...props}>
+                {children}
+            </a>
+        </li>
+    );
+}
 
 export default function Footer() {
     return (
@@ -10,19 +28,9 @@ export default function Footer() {
                 <ul>
                     <CustomLink to="/">Legal Stuff</CustomLink>
                     <CustomLink to="/">Privacy Policy</CustomLink>
-                    <CustomLink to="/">TeSecurityam</CustomLink>
+                    <CustomLink to="/">Security</CustomLink>
                 </ul>
             </div>
         </div>
-    )
-}
-
-function CustomLink({ to, children, ...props }: {to: string; children: string}) {
-    return (
-        <li>
-            <a href={to} {...props}>
-                {children}
-            </a>
-        </li>
-    ) 
+    );
 }

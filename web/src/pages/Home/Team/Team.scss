@@ -1,12 +1,11 @@
 //team
-
 .team {
     display: flex;
     flex-direction: column;
     height: 100vh;
     justify-content: center;
     align-items: center;
-    font-family: "Poppins";
+    font-family: "Poppins-Regular";
 }
 
 .heading {
@@ -28,6 +27,8 @@
 .carroussel-item {
     width: 50%;
 }
+
+
 
 .socials a {
     text-decoration: none;

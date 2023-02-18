@@ -10,20 +10,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Install SSH Key
+    - name: deploy to voron.djnn.sh
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         port: ${{ secrets.PORT }}
         key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd erp
 
-    - name: Execute deploy commands
-      run: |
-        cd erp
+          git switch current
+          git checkout .
 
-        git switch current
-        git checkout .
-
-        git pull origin current
-        printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down && sudo docker compose up -d
+          git pull origin current
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker image prune -af
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose up -d
