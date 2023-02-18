@@ -33,7 +33,7 @@ export default function NavBar() {
                 <div className="nav-right">
                     <Link to="/signup">Sign up</Link>
                     <li className="login">
-                        <Link to="/Login">Log in</Link>
+                        <Link to="/login">Log in</Link>
                     </li>
                 </div>
             </ul>
