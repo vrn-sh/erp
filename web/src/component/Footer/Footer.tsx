@@ -1,4 +1,4 @@
-import "./Footer.scss"
+import './Footer.scss';
 
 export default function Footer() {
     return (
@@ -14,15 +14,22 @@ export default function Footer() {
                 </ul>
             </div>
         </div>
-    )
+    );
 }
 
-function CustomLink({ to, children, ...props }: {to: string; children: string}) {
+function CustomLink({
+    to,
+    children,
+    ...props
+}: {
+    to: string;
+    children: string;
+}) {
     return (
         <li>
             <a href={to} {...props}>
                 {children}
             </a>
         </li>
-    ) 
+    );
 }
