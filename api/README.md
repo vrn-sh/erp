@@ -43,8 +43,8 @@ vim .env # put your actual .env values here
 # add the DOMAIN_NAME value from your .env file in /etc/hosts
 # we will use voron.lan in that example
 #
-#
-sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
+# RUN THIS AS ROOT
+echo "127.0.0.1   voron.lan" >> /etc/hosts
 
 # run the database setup script:
 # - will assume you're running Ubuntu for the postgresql installation etc
