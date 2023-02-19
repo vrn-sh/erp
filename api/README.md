@@ -22,12 +22,14 @@ This API manages all operations performed by the CRUD platform.
 If you want to run locally the application, you should first run the `setup` scripts,
 and then run it as you would normally for a Python.
 
+Up-to-date information on how to install the app can be found [here](../toolbox/docs/CONTRIBUTE.md)
+
+<details>
+
 > Note: it is recommanded to use [ASDF](https://asdf-vm.com/guide/getting-started.html) to ensure maximum compatibility.
 > In our case, we use it to specify the Python version, which is currently `3.10.8`
 
 Install setup:
-
-<details>
 
 ```bash
 
@@ -37,6 +39,12 @@ cd voron
 # setup your own .env file
 cp .env-dist .env
 vim .env # put your actual .env values here
+
+# add the DOMAIN_NAME value from your .env file in /etc/hosts
+# we will use voron.lan in that example
+#
+#
+sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
 
 # run the database setup script:
 # - will assume you're running Ubuntu for the postgresql installation etc
@@ -88,6 +96,12 @@ docker build . -t core
 cp .env-dist .env
 vim .env
 
+# add the DOMAIN_NAME value from your .env file in /etc/hosts
+# we will use voron.lan in that example
+#
+#
+sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
+
 # run on port 8080 (assuming postgresql daemon is running and migrations have been done)
 docker run -p "8080:8080" --env-file .env core
 
@@ -96,26 +110,6 @@ docker run -p "8080:8080" --env-file .env core
 </details>
 
 ---
-
-## 🎖 Features
-
-### 🧑 Authentication
-
-Authentication is done by providing your email and password.
-You then get a `Token` you can use as a `Bearer <Token>` in the `Authorization` field of your requests.
-
-<details>
-
-#### Support for 2FA
-
--> Three methods should be supported by this project:
- - [x] Authenticator app
- - [x] Email 2FA
- - [x] Phone number 2FA
-
- Read more about it [here](https://django-trench.readthedocs.io/en/latest/).
-
-</details>
 
 ### 🧪 Testing
 

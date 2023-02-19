@@ -26,6 +26,11 @@ OpenSSL version: OpenSSL 3.0.7 1 Nov 2022
 # go to the `api` directory and set the .env appropriately
 cd api && cp .env-dist .env
 
+# if you just use the basic .env, you will need to add voron.lan to your hosts file
+#
+# Please note this step is optionnal (and only to run locally)
+sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
+
 # add your own secrets, domain name, etc ...
 vim .env
 
@@ -38,8 +43,7 @@ docker-compose up
 
 ### locally
 
-Please have a look at the various `README` located in the `web` and `api`
-directories, as they will provide more informations regarding how to run the app locally.
+Please follow [this link](./toolbox/docs/CONTRIBUTE.md).
 
 ## how to contribute ?
 
