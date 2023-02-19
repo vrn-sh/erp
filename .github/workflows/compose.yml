@@ -26,7 +26,7 @@ jobs:
 
 
       - name: show current logs
-        run: docker-compose logs -f
+        run: sleep 5 && docker-compose logs -t
 
       # FIXME(bogdan): check services health here (maybe through postman collection?)
 
