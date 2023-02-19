@@ -29,7 +29,8 @@ cd api && cp .env-dist .env
 # if you just use the basic .env, you will need to add voron.lan to your hosts file
 #
 # Please note this step is optionnal (and only to run locally)
-sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
+# /!\ Run this as root /!\
+echo "127.0.0.1   voron.lan" >> /etc/hosts
 
 # add your own secrets, domain name, etc ...
 vim .env
