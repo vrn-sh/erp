@@ -11,6 +11,11 @@ We are a team of students, building this as our graduation project. If you wish 
 
 ## installation
 
+> Don't forget to clone the repository!
+```bash
+git clone git@github.com:vrn-sh/erp.git
+```
+
 ### using docker-compose
 
 Currently supported docker-compose version:
@@ -41,6 +46,8 @@ cd ..
 # run the containers
 docker-compose up
 ```
+
+Then, you can use your favorite browser to go to the following address: `http://voron.lan:8080`.
 
 ### locally
 
