@@ -22,7 +22,7 @@ This API manages all operations performed by the CRUD platform.
 If you want to run locally the application, you should first run the `setup` scripts,
 and then run it as you would normally for a Python.
 
-Up-to-date information on how to install the app can be found [here](../toolbox/docs/INSTALL_LOCALLY.md)
+Up-to-date information on how to install the app can be found [here](../toolbox/docs/CONTRIBUTE.md)
 
 <details>
 
@@ -39,6 +39,12 @@ cd voron
 # setup your own .env file
 cp .env-dist .env
 vim .env # put your actual .env values here
+
+# add the DOMAIN_NAME value from your .env file in /etc/hosts
+# we will use voron.lan in that example
+#
+#
+sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
 
 # run the database setup script:
 # - will assume you're running Ubuntu for the postgresql installation etc
@@ -89,6 +95,12 @@ docker build . -t core
 # Optionally, create your own .env file
 cp .env-dist .env
 vim .env
+
+# add the DOMAIN_NAME value from your .env file in /etc/hosts
+# we will use voron.lan in that example
+#
+#
+sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
 
 # run on port 8080 (assuming postgresql daemon is running and migrations have been done)
 docker run -p "8080:8080" --env-file .env core

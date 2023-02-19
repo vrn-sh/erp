@@ -6,7 +6,7 @@ Built with:
 - `scss`
 - `vite`
 
-Up to date info on how to install the app can be found [here](../toolbox/docs/INSTALL_LOCALLY.md)
+Up to date info on how to install the app can be found [here](../toolbox/docs/CONTRIBUTE.md)
 
 ## Install dependencies
 
