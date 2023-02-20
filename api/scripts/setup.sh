@@ -2,19 +2,6 @@
 
 set -eou pipefail
 
-VENV_PATH=~/.local/venv_core
-
-install_requirements () {
-     [ -d "./venv" ] && { echo "Directory venv already exists. skipping requirements install" && return ; }
-
-    echo "installing requirements"
-
-    # Assumes you're using Ubuntu
-    sudo apt install -y python3-pip 2>/dev/null || true
-
-    python3 -m venv ${VENV_PATH} && \
-    . ${VENV_PATH}/bin/activate && sudo -H pip3 install -r requirements.txt
-}
 
 install_postgresql () {
     # Assumes you're on Ubuntu for simplicity
@@ -40,10 +27,6 @@ install_postgresql () {
 ############
 ## SCRIPT ##
 ############
-
-install_requirements || exit 1
-
-. ${VENV_PATH}/bin/activate
 
 install_postgresql
 python3 manage.py makemigrations

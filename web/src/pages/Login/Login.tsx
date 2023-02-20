@@ -18,11 +18,11 @@ export default function Login() {
         setEmail(e.target.value);
 
         if (!REGEX.test(email)) {
-            setErrorEmail("Please enter valid email address.")
-        } else if (REGEX.test(email)){
-            setErrorEmail("")
+            setErrorEmail('Please enter valid email address.');
+        } else if (REGEX.test(email)) {
+            setErrorEmail('');
         }
-    }
+    };
 
     const checkPwd = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPwd(e.target.value);

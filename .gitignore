@@ -3,10 +3,10 @@
 *.log
 */_build
 */dist
-web/yarn.lock
 */dist
 */node_modules
 web/package-lock.json
+coverage
 
 # Logs
 logs

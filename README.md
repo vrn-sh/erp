@@ -11,6 +11,11 @@ We are a team of students, building this as our graduation project. If you wish 
 
 ## installation
 
+> Don't forget to clone the repository!
+```bash
+git clone git@github.com:vrn-sh/erp.git
+```
+
 ### using docker-compose
 
 Currently supported docker-compose version:
@@ -26,6 +31,12 @@ OpenSSL version: OpenSSL 3.0.7 1 Nov 2022
 # go to the `api` directory and set the .env appropriately
 cd api && cp .env-dist .env
 
+# if you just use the basic .env, you will need to add voron.lan to your hosts file
+#
+# Please note this step is optionnal (and only to run locally)
+# /!\ Run this as root /!\
+echo "127.0.0.1   voron.lan" >> /etc/hosts
+
 # add your own secrets, domain name, etc ...
 vim .env
 
@@ -36,10 +47,11 @@ cd ..
 docker-compose up
 ```
 
+Then, you can use your favorite browser to go to the following address: `http://voron.lan:8080`.
+
 ### locally
 
-Please have a look at the various `README` located in the `web` and `api`
-directories, as they will provide more informations regarding how to run the app locally.
+Please follow [this link](./toolbox/docs/CONTRIBUTE.md).
 
 ## how to contribute ?
 

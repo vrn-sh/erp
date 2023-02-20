@@ -1,0 +1,90 @@
+name: run API's unit tests
+
+on:
+  push:
+    workflow_dispatch:
+  pull_request:
+    workflow_dispatch:
+
+permissions:
+  pull-requests: write
+
+jobs:
+
+  # check if the app successfully builds
+  run-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_DB: voron
+      POSTGRES_USER: user_name
+      POSTGRES_PASSWORD: very_secure_password
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+
+    services:
+      database:
+        image: postgres:15
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+           python-version: '3.10'
+      - name: Install requirements & run tests
+        env:
+          DEBUG: "0"
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          DJANGO_SETTINGS_MODULE: core.settings
+
+          DOMAIN_NAME: localhost:3000
+          PRODUCTION: 0
+          CI: 1
+
+          SENDGRID_API_KEY: something
+          SENDGIRD_SENDER: important.person@email.com
+
+        run: |
+            cd api
+            pip install -r requirements.txt
+            pip install -U coverage
+            coverage run manage.py test
+            coverage report -m --format=markdown > coverage.md
+            cd -
+
+      - name: Report test coverage as PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          hide_and_recreate: true
+          hide_classify: "OUTDATED"
+          path: api/coverage.md
+
+  build-docker:
+    runs-on: ubuntu-latest
+    needs: [run-tests]
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build docker image
+        run: |
+          cd api
+          docker build -t voron/erp:${GITHUB_SHA::7} -t voron/erp:latest .
+
