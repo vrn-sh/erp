@@ -77,7 +77,7 @@ label {
   background-color: white;
 }
 
-input {
+.form-control {
   width: 100%;
   height: 2.7rem;
   padding: .5rem 1rem;
@@ -89,7 +89,7 @@ input {
   border: 1px solid var(--gray-btn);
 }
 
-input::placeholder {
+.form-control::placeholder {
   font-size: 1.2em;
   font-weight: lighter;
 }

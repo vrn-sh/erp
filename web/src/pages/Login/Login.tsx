@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Icon } from 'react-icons-kit';
-import { eyeOff } from "react-icons-kit/feather/eyeOff";
-import { eye } from "react-icons-kit/feather/eye";
+import * as AiIcons from 'react-icons/ai';
 import "./Login.scss"
 
 const REGEX = RegExp(/^\S+@\S+\.\S+$/);
@@ -13,7 +11,7 @@ export default function Login() {
     const [errorEmail, setErrorEmail] = useState('')
     const [errorPwd, setErrorPwd] = useState('')
     const [pwdType, setPwdType] = useState('password')
-    const [pwdIcon, setPwdIcon] = useState(eyeOff)
+    const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />)
     const navigate = useNavigate();
     
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,10 +37,10 @@ export default function Login() {
     const handleShowPwd = () => {
         if (pwdType === "password") {
             setPwdType("text")
-            setPwdIcon(eye)
+            setPwdIcon(<AiIcons.AiOutlineEye />)
         } else {
             setPwdType("password")
-            setPwdIcon(eyeOff)
+            setPwdIcon(<AiIcons.AiOutlineEyeInvisible />)
         }
     }
 
@@ -80,7 +78,7 @@ export default function Login() {
                                 <label>Password</label>
                                 <div className='input-pwd'>
                                     <input type={pwdType} className="form-control" onChange={checkPwd}/>
-                                    <span onClick={handleShowPwd}><Icon icon={pwdIcon} /></span>
+                                    <span onClick={handleShowPwd}>{pwdIcon}</span>
                                 </div>
                                 <p className='error'>{errorPwd}</p>
 
