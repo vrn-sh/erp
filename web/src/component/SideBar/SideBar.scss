@@ -19,12 +19,12 @@
     letter-spacing: 1px;
 }
 
-.wrapper {
+.topBar-wrapper {
     position: relative;
     width: 20%;
 }
 
-.icon {
+.topBar-searchIcon {
     position: absolute;
     box-sizing: border-box;
     top: 16px;
@@ -32,7 +32,7 @@
     transform: translateY(-50%);
 }
 
-.input {
+.topBar-input {
     height: 30px;
     box-sizing:border-box;
     padding-left: 1.5rem;

@@ -7,9 +7,9 @@ export default function TopBar() {
     return (
         <div className='top-bar'>
             {/* <input type="text" className="search-input" placeholder="Search..."></input> */}
-            <div className="wrapper">
-                <div className="icon"><BiIcons.BiSearch color="#8A8A8A"/></div>
-                <input className="input" type="text" placeholder="Search"></input>
+            <div className="topBar-wrapper">
+                <div className="topBar-searchIcon"><BiIcons.BiSearch color="#8A8A8A"/></div>
+                <input className="topBar-input" type="text" placeholder="Search"></input>
             </div>  
             <div className="btn-left">
                 <span className="btn"><FaIcons.FaBell  size="22px" color="#8A8A8A"/></span>
