@@ -1,27 +1,85 @@
+//Top bar
 .top-bar {
-    background: #FCFBFD;
-    height: 10vh;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding: 5px 20px;
+    margin: 0;
+    height: 10vh;
 }
 
+.search-input {
+    width: 20%;
+    height: 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--hover-effect);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.wrapper {
+    position: relative;
+    width: 20%;
+}
+
+.icon {
+    position: absolute;
+    box-sizing: border-box;
+    top: 16px;
+    left: 5px;
+    transform: translateY(-50%);
+}
+
+.input {
+    height: 30px;
+    box-sizing:border-box;
+    padding-left: 1.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--hover-effect);
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.input::placeholder {
+    font-size: 12px;
+}
+
+.btn, .btn-profile {
+    color: var(--gray-btn);
+    padding: 5px;
+    margin: 0px 5px;
+    cursor: pointer;
+}
+
+
+//SideBar
 .site-title {
     font-size: 2rem;
     font-family: "Poppins-Bold";
-    text-decoration: none;
+    text-align: left;
     color: var(--black);
-    margin: 0;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    margin-left: 20px;
 }
 
 .sidebar {
-    background-color: var(--basic-bg);
+    background-color: var(--secondary-bg);
     width: 250px;
-    height: 90vh;
+    height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
-.sidebar-container {
-    width: 100%;
+.sidebar a {
+    text-decoration: none;
+}
+
+.sidebar-tool {
+    margin-top: 2rem;
 }
 
 // SubMenu

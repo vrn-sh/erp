@@ -1,6 +1,5 @@
 import * as AiIcons from 'react-icons/ai';
 import * as BsIcons from 'react-icons/bs';
-import * as GrIcons from 'react-icons/gr';
 import * as TbIcons from 'react-icons/tb';
 import * as RiIcons from 'react-icons/ri';
 import * as IoIcons from 'react-icons/io';
@@ -9,7 +8,7 @@ export const SideBarData = [
     {
         title: "Dashboard",
         path: "/dashboard",
-        icon: <AiIcons.AiFillHome />,
+        icon: <AiIcons.AiOutlineHome />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
         subNav: [
@@ -22,7 +21,7 @@ export const SideBarData = [
     {
         title: "Client",
         path: "/dashboard", //change when build client page
-        icon: <BsIcons.BsPeopleFill />,
+        icon: <BsIcons.BsPeople />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
         subNav: [
@@ -35,7 +34,7 @@ export const SideBarData = [
     {
         title: "Hosts",
         path: "/dashboard", //change when build client page
-        icon: <GrIcons.GrHostMaintenance />,
+        icon: <RiIcons.RiFileList2Line />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
         subNav: [
@@ -48,21 +47,21 @@ export const SideBarData = [
     {
         title: "Impacts",
         path: "/dashboard", //change when build client page
-        icon: <GrIcons.GrThreeDEffects />,
+        icon: <AiIcons.AiOutlineInbox />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
     },
     {
         title: "Missions",
         path: "/dashboard", //change when build client page
-        icon: <AiIcons.AiFillStar />,
+        icon: <AiIcons.AiOutlineStar />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
     },
     {
         title: "Users",
         path: "/dashboard", //change when build client page
-        icon: <RiIcons.RiShieldUserFill />,
+        icon: <RiIcons.RiShieldUserLine />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
     },
