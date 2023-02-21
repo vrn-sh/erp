@@ -4,7 +4,7 @@ services:
   nginx:
     image: nginx:1.23.3
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     env_file:
       - api/.env
     volumes:
@@ -37,9 +37,7 @@ services:
     build:
       context: ./api
     ports:
-      - "8080"
-    expose:
-      - "8080"
+      - "127.0.0.1:8080:8080"
     depends_on:
       - db
     networks:
@@ -50,7 +48,7 @@ services:
       context: ./web
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - NODE_ENV=production
       - CHOKIDAR_USEPOLLING=true
