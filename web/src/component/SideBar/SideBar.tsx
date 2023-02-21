@@ -1,16 +1,15 @@
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import './SideBar.scss';
+import * as FiIcons from 'react-icons/fi';
 import { SideBarData } from './SideBarData';
 import SubMenu from './SubMenu';
-import * as FiIcons from 'react-icons/fi';
 
 type itemProps = {
     path: string;
     title: string;
     icon: ReactNode;
-    subNav:
-    {
+    subNav: {
         path: string;
         title: string;
     }[];
@@ -26,8 +25,9 @@ export default function SideBar() {
             </Link>
             <div className="sidebar-container">
                 {SideBarData.map((item: itemProps) => {
-                    return <SubMenu {...item} />
-                })};
+                    return <SubMenu {...item} />;
+                })}
+                ;
             </div>
 
             <div className="sidebar-tool">
@@ -45,5 +45,5 @@ export default function SideBar() {
                 </Link>
             </div>
         </div>
-    )
-};
+    );
+}

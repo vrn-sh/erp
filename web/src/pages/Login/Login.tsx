@@ -12,8 +12,8 @@ export default function Login() {
     const [errorPwd, setErrorPwd] = useState('');
     const [pwdType, setPwdType] = useState('password');
     const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
-    const navigate = useNavigate();;
-    
+    const navigate = useNavigate();
+
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
 
@@ -28,28 +28,28 @@ export default function Login() {
         setPwd(e.target.value);
 
         if (pwd.length < 7) {
-            setErrorPwd('Password should have at least 8 characters.')
+            setErrorPwd('Password should have at least 8 characters.');
         } else {
-            setErrorPwd('')
+            setErrorPwd('');
         }
     };
 
     const handleShowPwd = () => {
         if (pwdType === 'password') {
-            setPwdType('text')
-            setPwdIcon(<AiIcons.AiOutlineEye />)
+            setPwdType('text');
+            setPwdIcon(<AiIcons.AiOutlineEye />);
         } else {
-            setPwdType('password')
-            setPwdIcon(<AiIcons.AiOutlineEyeInvisible />)
+            setPwdType('password');
+            setPwdIcon(<AiIcons.AiOutlineEyeInvisible />);
         }
     };
 
     const submit = () => {
         if (email != '' && pwd.length > 7) {
             // console.log('Log in successfully!')
-            navigate('/dashboard')
+            navigate('/dashboard');
         } else {
-        //    console.log('Something is wrong')
+            //    console.log('Something is wrong')
         }
     };
 
@@ -87,9 +87,7 @@ export default function Login() {
                                     className="form-control"
                                     onChange={checkPwd}
                                 />
-                                <span onClick={handleShowPwd}>
-                                    {pwdIcon}
-                                </span>
+                                <span onClick={handleShowPwd}>{pwdIcon}</span>
                             </div>
                             <p className="error">{errorPwd}</p>
                             <div className="submit">
@@ -100,5 +98,5 @@ export default function Login() {
                 </div>
             </div>
         </section>
-    )
-};
+    );
+}

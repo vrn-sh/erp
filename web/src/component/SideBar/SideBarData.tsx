@@ -15,66 +15,66 @@ export const SideBarData = [
         subNav: [
             {
                 title: 'List item',
-                path: '/dashboard', //can be changed later
+                path: '/dashboard', // can be changed later
             },
-        ]
+        ],
     },
     {
         title: 'Client',
-        path: '/dashboard', //change when build client page
+        path: '/dashboard', // change when build client page
         icon: <BsIcons.BsPeople />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
         subNav: [
             {
                 title: 'List item',
-                path: '/dashboard', //can be changed later
+                path: '/dashboard', // can be changed later
             },
-        ]
+        ],
     },
     {
         title: 'Hosts',
-        path: '/dashboard', //change when build client page
+        path: '/dashboard', // change when build client page
         icon: <RiIcons.RiFileList2Line />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
         subNav: [
             {
                 title: 'List item',
-                path: '/dashboard', //can be changed later
+                path: '/dashboard', // can be changed later
             },
-        ]
+        ],
     },
     {
         title: 'Impacts',
-        path: '/dashboard', //change when build client page
+        path: '/dashboard', // change when build client page
         icon: <AiIcons.AiOutlineInbox />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
-        subNav:[]
+        subNav: [],
     },
     {
         title: 'Missions',
-        path: '/dashboard', //change when build client page
+        path: '/dashboard', // change when build client page
         icon: <AiIcons.AiOutlineStar />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
-        subNav:[]
+        subNav: [],
     },
     {
         title: 'Users',
-        path: '/dashboard', //change when build client page
+        path: '/dashboard', // change when build client page
         icon: <RiIcons.RiShieldUserLine />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
-        subNav:[]
+        subNav: [],
     },
     {
         title: 'Vulnerabilities',
-        path: '/dashboard', //change when build client page
+        path: '/dashboard', // change when build client page
         icon: <TbIcons.TbTarget />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
-        subNav:[]
+        subNav: [],
     },
 ];

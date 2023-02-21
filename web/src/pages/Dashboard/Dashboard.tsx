@@ -1,6 +1,6 @@
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
-import './Dashboard.scss'
+import './Dashboard.scss';
 
 export default function Dashboard() {
     return (
@@ -14,5 +14,5 @@ export default function Dashboard() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

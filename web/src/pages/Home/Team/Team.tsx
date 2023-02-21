@@ -86,7 +86,7 @@ export default function Team() {
                     className="left_btn"
                     onClick={() => previousMember()}
                 >
-                    <MdNavigateBefore size="45"/>
+                    <MdNavigateBefore size="45" />
                     <p className="caroussel-nav-sub">Previous</p>
                 </button>
                 <CSSTransition timeout={600} in={animate} classNames="fade">
@@ -101,7 +101,7 @@ export default function Team() {
                     className="right_btn"
                     onClick={() => nextMember()}
                 >
-                    <MdOutlineNavigateNext size="45"/>
+                    <MdOutlineNavigateNext size="45" />
                     <p className="caroussel-nav-sub">Next</p>
                 </button>
             </div>
