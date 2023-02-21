@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import "./SideBar.scss"
+import './SideBar.scss'
 import { SideBarData } from './SideBarData';
 import SubMenu from './SubMenu';
-import * as FiIcons from "react-icons/fi";
+import * as FiIcons from 'react-icons/fi';
 
 export default function SideBar() {
     return (

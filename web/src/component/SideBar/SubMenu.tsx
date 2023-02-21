@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import "./SideBar.scss"
+import './SideBar.scss'
 
 const SubMenu = ({ item }) => {
     const [ subnav, setSubnav ] = useState(false)

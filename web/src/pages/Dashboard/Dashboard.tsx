@@ -1,6 +1,6 @@
-import SideBar from "../../component/SideBar/SideBar";
-import TopBar from "../../component/SideBar/TopBar";
-import "./Dashboard.scss"
+import SideBar from '../../component/SideBar/SideBar';
+import TopBar from '../../component/SideBar/TopBar';
+import './Dashboard.scss'
 
 export default function Dashboard() {
     return (

@@ -1,10 +1,10 @@
-import { Route, Routes } from "react-router-dom"
-import Home from "./pages/Home/Home"
-import About from "./pages/Home/About/About"
-import "./global-variable.scss"
-import Login from "./pages/Login/Login"
-import SignUp from "./pages/SignUp"
-import Dashboard from "./pages/Dashboard/Dashboard"
+import { Route, Routes } from 'react-router-dom'
+import Home from './pages/Home/Home'
+import About from './pages/Home/About/About'
+import './global-variable.scss'
+import Login from './pages/Login/Login'
+import SignUp from './pages/SignUp'
+import Dashboard from './pages/Dashboard/Dashboard'
 
 function App() {  
   return (

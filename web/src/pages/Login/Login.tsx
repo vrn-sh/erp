@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import * as AiIcons from 'react-icons/ai';
-import "./Login.scss"
+import './Login.scss'
 
 const REGEX = RegExp(/^\S+@\S+\.\S+$/);
 

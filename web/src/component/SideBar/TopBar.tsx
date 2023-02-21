@@ -1,4 +1,4 @@
-import "./SideBar.scss"
+import './SideBar.scss'
 import { Link } from "react-router-dom"
 import * as BiIcons from 'react-icons/bi'
 import * as FaIcons from 'react-icons/fa'

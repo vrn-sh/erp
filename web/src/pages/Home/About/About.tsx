@@ -1,3 +1,4 @@
+import React from 'react'
 import './About.scss';
 import strings from '../../../assets/strings/en/about.json';
 
