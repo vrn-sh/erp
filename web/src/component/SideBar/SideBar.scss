@@ -7,6 +7,7 @@
     padding: 5px 20px;
     margin: 0;
     height: 10vh;
+    border-bottom: 1px solid var(--hover-effect);
 }
 
 .search-input {
@@ -61,9 +62,8 @@
     font-family: "Poppins-Bold";
     text-align: left;
     color: var(--black);
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-    margin-left: 20px;
+    margin-left: 20px !important;
+    padding: 1rem;
 }
 
 .sidebar {
@@ -88,7 +88,7 @@
     text-decoration: none;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 1rem;
     list-style: none;
     height: 100%;
     font-size: 17px;
@@ -96,7 +96,7 @@
 }
 
 .sidebar-link:hover, .dropdown-menu:hover {
-    background-color: var(--gray-btn);
+    background-color: var(--hover-effect);
     transition: .5s ease-in-out;
     cursor: pointer;
 }
@@ -110,6 +110,7 @@
 .menu-txt {
     margin-left: 1rem;
     color: var(--black);
+    font-size: 15px;
 }
 
 .dropdown-menu {
@@ -118,7 +119,7 @@
     align-items: center;
     text-decoration: none;
     color: var(--black);
-    font-size: 17px;
+    font-size: 14px;
     font-family: "Poppins-Regular";
     padding: 10px;
     padding-left: 3rem;

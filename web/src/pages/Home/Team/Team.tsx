@@ -81,8 +81,8 @@ export default function Team() {
                 <p>{strings.sectionSubtitle}</p>
             </div>
             <div className="carrousel">
-                <button type="button" onClick={() => previousMember()}>
-                    <MdNavigateBefore />
+                <button type="button" className="left_btn" onClick={() => previousMember()}>
+                    <MdNavigateBefore size="45"/>
                     <p className="caroussel-nav-sub">Previous</p>
                 </button>
                 <CSSTransition timeout={600} in={animate} classNames="fade">
@@ -92,8 +92,8 @@ export default function Team() {
                         <p>Loading our awesome members...</p>
                     )}
                 </CSSTransition>
-                <button type="button" onClick={() => nextMember()}>
-                    <MdOutlineNavigateNext />
+                <button type="button" className="right_btn" onClick={() => nextMember()}>
+                    <MdOutlineNavigateNext size="45"/>
                     <p className="caroussel-nav-sub">Next</p>
                 </button>
             </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import './About.scss';
 import strings from '../../../assets/strings/en/about.json';
 
@@ -19,6 +18,7 @@ export default function About() {
                     </ul>
                 </div>
             </div>
+
             <div className="about-more">
                 {strings.more.map((item) => (
                     <div>
