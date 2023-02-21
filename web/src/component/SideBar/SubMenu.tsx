@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SideBar.scss';
 
-type itemProps = {
+interface ItemProps {
     path: string;
     title: string;
     icon: ReactNode;
@@ -12,9 +12,9 @@ type itemProps = {
     }[];
     iconOpened: ReactNode;
     iconClosed: ReactNode;
-};
+}
 
-const SubMenu: React.FunctionComponent<itemProps> = (item) => {
+const SubMenu: React.FC<ItemProps> = (item) => {
     const [subnav, setSubnav] = useState(false);
     const showSubnav = () => setSubnav(!subnav);
 
@@ -38,18 +38,13 @@ const SubMenu: React.FunctionComponent<itemProps> = (item) => {
                 </div>
             </Link>
             {subnav &&
-                item.subNav.map((subItem, subIndex) => {
+                item.subNav.map((subItem) => {
                     return (
-                        <Link
-                            to={subItem.path}
-                            key={subIndex}
-                            className="dropdown-menu"
-                        >
+                        <Link to={subItem.path} className="dropdown-menu">
                             <p>{subItem.title}</p>
                         </Link>
                     );
                 })}
-            ;
         </>
     );
 };

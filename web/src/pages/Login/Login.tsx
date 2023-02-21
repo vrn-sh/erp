@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import './Login.scss';
 
-const REGEX = RegExp(/^\S+@\S+\.\S+$/);
-
 export default function Login() {
     const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
@@ -17,9 +15,9 @@ export default function Login() {
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
 
-        if (!REGEX.test(email)) {
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
             setErrorEmail('Please enter valid email address.');
-        } else if (REGEX.test(email)) {
+        } else if (/^\S+@\S+\.\S+$/.test(email)) {
             setErrorEmail('');
         }
     };
@@ -45,7 +43,7 @@ export default function Login() {
     };
 
     const submit = () => {
-        if (email != '' && pwd.length > 7) {
+        if (email !== '' && pwd.length > 7) {
             // console.log('Log in successfully!')
             navigate('/dashboard');
         } else {
@@ -87,11 +85,19 @@ export default function Login() {
                                     className="form-control"
                                     onChange={checkPwd}
                                 />
-                                <span onClick={handleShowPwd}>{pwdIcon}</span>
+                                <button
+                                    onClick={handleShowPwd}
+                                    className="eyeIconBtn"
+                                    type="button"
+                                >
+                                    {pwdIcon}
+                                </button>
                             </div>
                             <p className="error">{errorPwd}</p>
                             <div className="submit">
-                                <button onClick={submit}>LOG IN</button>
+                                <button type="button" onClick={submit}>
+                                    LOG IN
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -90,20 +90,30 @@ label {
   font-weight: lighter;
 }
 
+.eyeIconBtn {
+  background: transparent;
+  min-width: 1.2em;
+  padding: 0;
+  margin: 0;
+  color: var(--gray-btn);
+  font-size: 1.2rem;
+  outline: none;
+  margin-left: -2rem;
+  cursor: pointer;
+  color: var(--gray-btn);
+}
+
+.eyeIconBtn:hover {
+  background: transparent;
+  color: var(--primary-hover-btn);
+}
+
 .input-pwd {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
   font-size: 1.2rem;
-}
-
-.input-pwd span {
-  font-size: 1.2rem;
-  outline: none;
-  margin-left: -2rem;
-  cursor: pointer;
-  color: var(--gray-btn);
 }
 
 button {

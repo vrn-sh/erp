@@ -1,3 +1,4 @@
+import React from 'react';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import './Dashboard.scss';
@@ -10,7 +11,7 @@ export default function Dashboard() {
                 <TopBar />
                 <div className="dashboard-pages">
                     <p>AHAHA</p>
-                    <button>.</button>
+                    <button type="button">.</button>
                 </div>
             </div>
         </div>

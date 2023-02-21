@@ -5,7 +5,7 @@ import * as TbIcons from 'react-icons/tb';
 import * as RiIcons from 'react-icons/ri';
 import * as IoIcons from 'react-icons/io';
 
-export const SideBarData = [
+const SideBarData = [
     {
         title: 'Dashboard',
         path: '/dashboard',
@@ -78,3 +78,5 @@ export const SideBarData = [
         subNav: [],
     },
 ];
+
+export default SideBarData;
