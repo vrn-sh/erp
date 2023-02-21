@@ -16,6 +16,9 @@ depending on your OS.
 - [Postgresql 15](https://www.postgresql.org/download/)
 - [Python 3.10](https://www.python.org/downloads/release/python-3100/)
 
+> If you're using `asdf` to manage your programs, you can go to the root repository folder
+> and type `asdf install` to install the correct language version automatically
+
 
 ### First install
 On your first install, you can run (assuming you have `bash` installed):
