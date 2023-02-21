@@ -81,7 +81,11 @@ export default function Team() {
                 <p>{strings.sectionSubtitle}</p>
             </div>
             <div className="carrousel">
-                <button type="button" className="left_btn" onClick={() => previousMember()}>
+                <button
+                    type="button"
+                    className="left_btn"
+                    onClick={() => previousMember()}
+                >
                     <MdNavigateBefore size="45"/>
                     <p className="caroussel-nav-sub">Previous</p>
                 </button>
@@ -92,7 +96,11 @@ export default function Team() {
                         <p>Loading our awesome members...</p>
                     )}
                 </CSSTransition>
-                <button type="button" className="right_btn" onClick={() => nextMember()}>
+                <button
+                    type="button"
+                    className="right_btn"
+                    onClick={() => nextMember()}
+                >
                     <MdOutlineNavigateNext size="45"/>
                     <p className="caroussel-nav-sub">Next</p>
                 </button>
