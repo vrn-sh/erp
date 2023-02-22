@@ -58,7 +58,7 @@ jobs:
           CI: 1
 
           SENDGRID_API_KEY: something
-          SENDGIRD_SENDER: important.person@email.com
+          SENDGRID_SENDER: important.person@email.com
 
         run: |
             cd api
