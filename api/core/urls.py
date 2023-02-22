@@ -19,8 +19,8 @@ SchemaView = get_schema_view(
       title="voron API",
       default_version='1.0',
       description="API storing and managing notes, users, and stuff",
-      terms_of_service="https://voron.sh/terms",
-      contact=openapi.Contact(email="contact@voron.sh"),
+      terms_of_service="https://voron.djnn.sh/terms", # FIXME(clara): add this page in front-end
+      contact=openapi.Contact(email="voron@djnn.sh"),
       license=openapi.License(name="MIT License"),
    ),
    public=True,
@@ -38,7 +38,7 @@ urlpatterns = [
     path('confirm', ConfirmAccountView.as_view()),
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
-    re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    re_path(r'docs', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     re_path(r'^auth/', include('trench.urls')),
     re_path(r'^auth/', include('trench.urls.authtoken')),
 ] + router.urls

@@ -36,7 +36,7 @@ services:
     build:
       context: ./api
     ports:
-      - "8080"
+      - "8000"
     depends_on:
       - db
     networks:

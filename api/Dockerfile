@@ -9,11 +9,10 @@ RUN apt-get update \
 
 WORKDIR /api
 
-EXPOSE 8080
+EXPOSE 8000
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt --use-pep517
 COPY . .
 
 ENTRYPOINT [ "/api/scripts/entrypoint.sh" ]
-CMD [ "/api/manage.py", "runserver", "0.0.0.0:8080" ]

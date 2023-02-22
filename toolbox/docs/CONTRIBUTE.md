@@ -63,8 +63,8 @@ export $(grep -v '^#' .env | xargs)
 pip install -r requirements.txt
 python manage.py migrate
 
-# run the back-end on port 8080
-python manage.py runserver 8080
+# run the back-end on port 8000
+python manage.py runserver 8000
 ```
 
 ### Footnotes

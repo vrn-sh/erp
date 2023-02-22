@@ -322,7 +322,7 @@ class LogoutView(APIView):
     )
 
     @staticmethod
-    def get(request):
+    def get(request) -> Response:
         """Just destroys token if it finds one. As simple as it gets."""
         if hasattr(request.user, 'email'):
             request.user.auth_token.delete()
@@ -339,7 +339,7 @@ class PingView(APIView):
     """PingView: Simple test route to check if service is healthy"""
 
     @staticmethod
-    def get(request):
+    def get(_) -> Response:
         """Returns Pong!"""
         content = {'message': 'pong !'}
         return Response(content, status=HTTP_200_OK)
