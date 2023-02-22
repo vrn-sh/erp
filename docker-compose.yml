@@ -11,23 +11,22 @@ services:
       - ./services/nginx/nginx.conf:/etc/nginx/templates/nginx.conf.template
       - ./volumes/nginx/logs:/var/log/nginx:delegated
     networks:
-      - internal
+      - api-layer
+      - web-layer
     depends_on:
       - api
-      - client
+      - web
 
   db:
     image: postgres:15.2-alpine3.17
     ports:
-      - "5432"
-    expose:
       - "5432"
     env_file:
       - ./api/.env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
     networks:
-      - internal
+      - db-layer
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -37,28 +36,30 @@ services:
     build:
       context: ./api
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080"
     depends_on:
       - db
     networks:
-      - internal
+      - api-layer
+      - db-layer
 
-  client:
+  web:
     build:
       context: ./web
-      dockerfile: Dockerfile
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000"
     environment:
       - NODE_ENV=production
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - api
     networks:
-      - internal
+      - web-layer
 
 networks:
-  internal:
+  db-layer:
+  api-layer:
+  web-layer:
 
 volumes:
   pgdata:
