@@ -63,7 +63,7 @@ python -m venv ~/.local/venv_core
 pip install -r requirements.txt
 
 # migrations should already be done, so you can just run the server
-python manage.py runserver 8080
+python manage.py runserver 8000
 
 # if you need to create new migrations (make sure postgresql is running and you have your env values set up)
 python manage.py makemigrations # OPTIONAL
@@ -102,8 +102,8 @@ vim .env
 #
 sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
 
-# run on port 8080 (assuming postgresql daemon is running and migrations have been done)
-docker run -p "8080:8080" --env-file .env core
+# run on port 8000 (assuming postgresql daemon is running and migrations have been done)
+docker run -p "8000" --env-file .env core
 
 ```
 

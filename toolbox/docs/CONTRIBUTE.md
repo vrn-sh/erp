@@ -16,6 +16,9 @@ depending on your OS.
 - [Postgresql 15](https://www.postgresql.org/download/)
 - [Python 3.10](https://www.python.org/downloads/release/python-3100/)
 
+> If you're using `asdf` to manage your programs, you can go to the root repository folder
+> and type `asdf install` to install the correct language version automatically
+
 
 ### First install
 On your first install, you can run (assuming you have `bash` installed):
@@ -60,8 +63,8 @@ export $(grep -v '^#' .env | xargs)
 pip install -r requirements.txt
 python manage.py migrate
 
-# run the back-end on port 8080
-python manage.py runserver 8080
+# run the back-end on port 8000
+python manage.py runserver 8000
 ```
 
 ### Footnotes
