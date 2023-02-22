@@ -54,6 +54,9 @@ server {
 
 ---
 
+> These setups are very basic, and it is recommended for you to do your own research regarding how
+> to deploy your reverse-proxy. This is just here to get you started
+
 Once you have your reverse-proxy setup, you can just start by cloning the `voron` repository in the directory
 of your choice, like so:
 
