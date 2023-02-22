@@ -18,8 +18,15 @@ jobs:
       - name: copy .env file
         run: cp api/.env-dist api/.env
 
+      - name: add voron.lan to /etc/hosts
+        run: echo "127.0.0.1    voron.lan"
+
       - name: Start containers to check if it builds
         run: docker-compose -f "docker-compose.yml" up -d --build
+
+
+      - name: show current logs
+        run: sleep 5 && docker-compose logs -t
 
       # FIXME(bogdan): check services health here (maybe through postman collection?)
 
