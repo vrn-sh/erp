@@ -34,7 +34,7 @@ EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = os.environ['SENDGIRD_SENDER']
+DEFAULT_FROM_EMAIL = os.environ['SENDGRID_SENDER']
 
 TRENCH_AUTH = {
     "USER_MFA_MODEL": "trench.MFAMethod",

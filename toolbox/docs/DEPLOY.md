@@ -84,7 +84,7 @@ POSTGRES_PASSWORD=something                         # put a very secure password
 DOMAIN_NAME=test.example.com                        # put the url of your voron instance
 
 SENDGRID_API_KEY=SG_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  # put your very own sendgrid API key
-SENDGIRD_SENDER=something@email.com                 # put a sendgrid-verified email
+SENDGRID_SENDER=something@email.com                 # put a sendgrid-verified email
 ```
 
 If you want to generate a secure password, you can use the following command:
