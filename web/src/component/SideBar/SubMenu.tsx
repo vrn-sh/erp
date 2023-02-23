@@ -2,6 +2,10 @@ import React, { ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SideBar.scss';
 
+interface CardItem {
+    item: ItemProps;
+}
+
 interface ItemProps {
     path: string;
     title: string;
@@ -14,7 +18,7 @@ interface ItemProps {
     iconClosed: ReactNode;
 }
 
-const SubMenu: React.FC<ItemProps> = (item) => {
+function SubMenu({ item }: CardItem) {
     const [subnav, setSubnav] = useState(false);
     const showSubnav = () => setSubnav(!subnav);
 
@@ -30,11 +34,13 @@ const SubMenu: React.FC<ItemProps> = (item) => {
                     <span className="menu-txt">{item.title}</span>
                 </div>
                 <div>
-                    {item.subNav.length > 0
-                        ? subnav
-                            ? item.iconOpened
-                            : item.iconClosed
-                        : null}
+                    {(() => {
+                        if (item.subNav.length > 0) {
+                            if (subnav) return item.iconOpened;
+                            return item.iconClosed;
+                        }
+                        return null;
+                    })()}
                 </div>
             </Link>
             {subnav &&
@@ -47,6 +53,6 @@ const SubMenu: React.FC<ItemProps> = (item) => {
                 })}
         </>
     );
-};
+}
 
 export default SubMenu;
