@@ -2,7 +2,7 @@ from datetime import datetime
 
 from rest_framework import serializers
 
-from api.models.NotesModel import Notes
+from api.models.vulns import Notes
 
 
 class NotesSerializer(serializers.ModelSerializer):

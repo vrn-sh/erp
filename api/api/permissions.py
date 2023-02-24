@@ -8,6 +8,7 @@ from typing import List
 
 from rest_framework import permissions
 from api.models import Auth, Customer, Admin
+from api.models.vulns import Notes
 
 
 class MethodOnly(permissions.BasePermission):
@@ -58,14 +59,11 @@ class IsOwner(permissions.BasePermission):
         if isinstance(obj, (Customer, Admin)):
             return obj.auth.id == request.user.id # type: ignore
 
-        if isinstance(obj, Address):
-            return obj.owner.auth.id == request.user.id # type: ignore
-
-        if isinstance(obj, Node):
-            return obj.address.owner.auth.id == request.user.id # type: ignore
+        if isinstance(obj, Notes):
+            return True # FIXME(adina): once mission CRUD is available, check against it
 
         logging.warning('IsOwner permissions: Object <%s> has not reached anything',
-                        str({type(obj)}))
+                str({type(obj)}))
         return False
 
 

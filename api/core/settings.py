@@ -143,7 +143,12 @@ if os.environ.get('PRODUCTION', '0') == '1':
     }
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
     DEBUG = False
-    ALLOWED_HOSTS = ['server', 'localhost']
+    ALLOWED_HOSTS = [
+            'server',
+            'localhost',
+            f'https://{os.environ["DOMAIN_NAME"]}',
+            f'http://{os.environ["DOMAIN_NAME"]}'
+            ]
 elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     DATABASES = {
         'default': {
@@ -176,7 +181,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'core',
+            'NAME': 'voron',
             'USER': os.environ.get('USER'),
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
@@ -244,7 +249,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
