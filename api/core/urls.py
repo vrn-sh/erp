@@ -12,6 +12,7 @@ from drf_yasg import openapi
 
 from api.views import LoginView, LogoutView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.viewsets import RegisterViewset, CustomerViewset, AdminViewset
+from api.views.viewsets.VulnView import NotesViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -41,4 +42,5 @@ urlpatterns = [
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     re_path(r'^auth/', include('trench.urls')),
     re_path(r'^auth/', include('trench.urls.authtoken')),
+    re_path(r'^notes/', NotesViewset.as_view({'post': 'create', 'get': 'list'})),
 ] + router.urls
