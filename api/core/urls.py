@@ -4,8 +4,8 @@ from rest_framework import routers
 from rest_framework import permissions
 from rest_framework.urls import path
 
+from django.conf.urls.static import static
 from django.urls import re_path
-from django.conf.urls import include
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -20,8 +20,8 @@ SchemaView = get_schema_view(
       title="voron API",
       default_version='1.0',
       description="API storing and managing notes, users, and stuff",
-      terms_of_service="https://voron.sh/terms",
-      contact=openapi.Contact(email="contact@voron.sh"),
+      terms_of_service="https://github.com/vrn-sh/erp/blob/current/LICENSE",
+      contact=openapi.Contact(email="voron@djnn.sh"),
       license=openapi.License(name="MIT License"),
    ),
    public=True,
@@ -40,7 +40,5 @@ urlpatterns = [
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    re_path(r'^auth/', include('trench.urls')),
-    re_path(r'^auth/', include('trench.urls.authtoken')),
     re_path(r'^notes/', NotesViewset.as_view({'post': 'create', 'get': 'list'})),
 ] + router.urls

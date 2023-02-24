@@ -1,4 +1,4 @@
-FROM node:16.19.1-alpine3.16
+FROM node:16.19.1
 
 RUN mkdir -p /moron
 WORKDIR /moron

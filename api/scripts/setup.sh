@@ -13,7 +13,7 @@ install_postgresql () {
 
     export POSTGRES_USER="${USER}"
     export POSTGRES_PASSWORD="postgres"
-    export POSTGRES_DB="core"
+    export POSTGRES_DB="voron"
 
     # Create the database
     echo "Creating database $POSTGRES_DB"

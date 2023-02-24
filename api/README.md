@@ -63,7 +63,7 @@ python -m venv ~/.local/venv_core
 pip install -r requirements.txt
 
 # migrations should already be done, so you can just run the server
-python manage.py runserver 8080
+python manage.py runserver 8000
 
 # if you need to create new migrations (make sure postgresql is running and you have your env values set up)
 python manage.py makemigrations # OPTIONAL
@@ -102,8 +102,8 @@ vim .env
 #
 sudo echo "127.0.0.1   voron.lan" >> /etc/hosts
 
-# run on port 8080 (assuming postgresql daemon is running and migrations have been done)
-docker run -p "8080:8080" --env-file .env core
+# run on port 8000 (assuming postgresql daemon is running and migrations have been done)
+docker run -p "8000" --env-file .env core
 
 ```
 
@@ -132,8 +132,15 @@ python manage.py test api.tests.AuthTestCase.test_can_login_customer_account
 
 ## 🔍 Usage
 
-You may find an [OpenAPI](https://www.openapis.org/) specification at the `/docs` endpoint.
-This can then be important in the REST client of your choice, we recommend:
+### Access docs
+
+To access the `/docs` endpoint of the API in your browser, you must run the API like so:
+```bash
+python manage.py runserver --insecure
+```
+
+You may then find an [OpenAPI](https://www.openapis.org/) specification at the `http://localhost:8000/docs` endpoint.
+This can then be imported in the REST client of your choice, we recommend:
 - [Postman](https://www.postman.com/) -- industry leader, full of features, and great for development within a team.
 - [Insomnia](https://insomnia.rest/) -- works offline, comfy UI, super easy to work with.
 - [HTTPie](https://httpie.io/docs/cli) -- works in the Terminal, but currently cannot import OpenAPI specs.
