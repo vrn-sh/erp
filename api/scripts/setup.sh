@@ -21,6 +21,9 @@ install_postgresql () {
     sudo -u postgres psql -c "GRANT postgres TO $POSTGRES_USER;" || true
     sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB;"
     sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $POSTGRES_USER;"
+
+    # https://stackoverflow.com/a/14186439
+    sudo -u postgres psql -c "ALTER USER $USER CREATEDB;"
 }
 
 
