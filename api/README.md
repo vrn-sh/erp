@@ -125,15 +125,22 @@ python manage.py test
 python manage.py test api.tests.AuthTestCase
 
 # or, just one method
-python manage.py test api.tests.AuthTestCase.test_can_login_customer_account
+python manage.py test api.tests.AuthTestCase.test_can_login_pentester_account
 ```
 
 ---
 
 ## 🔍 Usage
 
-You may find an [OpenAPI](https://www.openapis.org/) specification at the `/docs` endpoint.
-This can then be important in the REST client of your choice, we recommend:
+### Access docs
+
+To access the `/docs` endpoint of the API in your browser, you must run the API like so:
+```bash
+python manage.py runserver --insecure
+```
+
+You may then find an [OpenAPI](https://www.openapis.org/) specification at the `http://localhost:8000/docs` endpoint.
+This can then be imported in the REST client of your choice, we recommend:
 - [Postman](https://www.postman.com/) -- industry leader, full of features, and great for development within a team.
 - [Insomnia](https://insomnia.rest/) -- works offline, comfy UI, super easy to work with.
 - [HTTPie](https://httpie.io/docs/cli) -- works in the Terminal, but currently cannot import OpenAPI specs.

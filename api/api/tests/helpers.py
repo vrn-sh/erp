@@ -77,8 +77,8 @@ def create_random_admin() -> Admin:
     )
 
 
-def create_random_customer() -> Customer:
-    """create customer with random mail & email"""
+def create_random_pentester() -> Pentester:
+    """create pentester with random mail & email"""
     fake = Faker()
     name = fake.name()
 
@@ -88,6 +88,6 @@ def create_random_customer() -> Customer:
         fake.email(),
         random_user_password(),
         name,
-        Customer,
+        Pentester,
         False
     )
