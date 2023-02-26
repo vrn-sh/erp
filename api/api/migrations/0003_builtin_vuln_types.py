@@ -26,7 +26,7 @@ def add_vulnerability_types(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0003_alter_pentester_options'),
+        ('api', '0002_imagemodel_vulntype_alter_pentester_options_and_more'),
     ]
 
     operations = [

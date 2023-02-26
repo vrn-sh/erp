@@ -12,7 +12,7 @@ from typing import List
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
 
-from api.serializers import AdminSerializer, pentesterSerializer, AuthSerializer
+from api.serializers import AdminSerializer, PentesterSerializer, AuthSerializer
 
 from api.models import Admin, Auth, Pentester
 
@@ -29,7 +29,7 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
     queryset = Pentester.objects.all()
     permission_classes = [PostOnly]
     authentication_classes: List[type[TokenAuthentication]] = []
-    serializer_class = pentesterSerializer
+    serializer_class = PentesterSerializer
 
 class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
