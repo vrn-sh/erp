@@ -1,3 +1,5 @@
+import warnings
+
 from django.test import TransactionTestCase
 from faker import Faker
 
@@ -5,6 +7,10 @@ from rest_framework.test import APIClient
 
 from api.tests.helpers import create_random_customer, create_random_admin, random_user_password, \
         login_as
+
+
+# import unit tests from other files here
+from .notes_tests import *
 
 
 class AuthTestCase(TransactionTestCase):

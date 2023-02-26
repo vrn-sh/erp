@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from argon2 import PasswordHasher
 
-from api.models import Admin, Customer, Auth
+from api.models import Admin, Pentester, Auth
 from api.serializers.utils import create_instance
 
 class AuthSerializer(serializers.ModelSerializer):
@@ -34,11 +34,11 @@ class AuthSerializer(serializers.ModelSerializer):
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-    """serializer used for Customer CRUD operations"""
+    """serializer used for Pentester CRUD operations"""
     auth = AuthSerializer(many=False, read_only=False)
 
     class Meta:
-        model = Customer
+        model = Pentester
         fields = '__all__'
 
     def update(self, instance, validated_data):
@@ -54,7 +54,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         validated_data['auth']['is_superuser'] = False
         validated_data['auth']['is_staff'] = False
         auth = create_instance(AuthSerializer, validated_data, 'auth')
-        return Customer.objects.create(auth=auth, **validated_data)
+        return Pentester.objects.create(auth=auth, **validated_data)
 
 
 class AdminSerializer(serializers.ModelSerializer):

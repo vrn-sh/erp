@@ -18,6 +18,7 @@ class Command(BaseCommand):
                     is_active=True,
                     password='!ChangeMe!',
                 )
+            auth.set_password(auth.password)
             auth.save()
 
             admin = Admin(auth=auth)

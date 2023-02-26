@@ -3,7 +3,7 @@
 The following models are present here:
 
     - Auth: Base user login table (stores first_name, last_name, username, email, password, etc...)
-    - Customer: Model storing basic user information
+    - Pentester: Model storing basic user information
     - Admin: Model used for admins. Can do account creation, overall administration, etc.
 """
 
@@ -109,9 +109,9 @@ class Admin(models.Model):
     creation_date = models.DateTimeField(auto_now=True, editable=False)
 
 
-class Customer(models.Model):
+class Pentester(models.Model):
     """
-        Customer model
+        Pentester model
 
         (Main difference with Admin model is that Customers can own domains)
 
@@ -119,7 +119,7 @@ class Customer(models.Model):
         creation_date -> read-only field expressing creation date
     """
     class Meta:
-        verbose_name = 'Customer'
+        verbose_name = 'Pentester'
         verbose_name_plural = 'Customers'
         ordering = ['creation_date']
 

@@ -12,6 +12,7 @@ from drf_yasg import openapi
 
 from api.views import LoginView, LogoutView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.viewsets import RegisterViewset, CustomerViewset, AdminViewset
+from api.views.viewsets.vulns import NotesViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -30,6 +31,7 @@ SchemaView = get_schema_view(
 router = routers.SimpleRouter(trailing_slash=False,)
 router.register(r'admin', AdminViewset)
 router.register(r'customer', CustomerViewset)
+router.register(r'notes', NotesViewset)
 
 urlpatterns = [
     path('login', LoginView.as_view()),
