@@ -3,14 +3,14 @@ from django.test import TransactionTestCase
 from rest_framework.test import APIClient
 from api.models import Admin, Pentester
 
-from api.tests.helpers import create_random_customer, create_random_admin, random_user_password, \
+from api.tests.helpers import create_random_pentester, create_random_admin, random_user_password, \
     login_as
 
 class VulnTestCase(TransactionTestCase):
 
     def setUp(self) -> None:
-        self.user: Pentester = create_random_customer()
-        self.other_user: Pentester = create_random_customer()
+        self.user: Pentester = create_random_pentester()
+        self.other_user: Pentester = create_random_pentester()
         self.admin: Admin = create_random_admin()
 
     def tearDown(self) -> None:

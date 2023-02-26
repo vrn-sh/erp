@@ -38,7 +38,7 @@ class Auth(AbstractUser):
     REQUIRED_FIELDS = ['email', 'password']
 
     USER_TYPE_CHOICES = (
-        (1, 'customer'),
+        (1, 'pentester'),
         (2, 'admin'),
     )
 
@@ -113,14 +113,14 @@ class Pentester(models.Model):
     """
         Pentester model
 
-        (Main difference with Admin model is that Customers can own domains)
+        (Main difference with Admin model is that pentesters can own domains)
 
         auth -> one-to-one to Auth model
         creation_date -> read-only field expressing creation date
     """
     class Meta:
         verbose_name = 'Pentester'
-        verbose_name_plural = 'Customers'
+        verbose_name_plural = 'Pentesters'
         ordering = ['creation_date']
 
     id = models.AutoField(primary_key=True)
