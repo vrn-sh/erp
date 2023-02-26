@@ -1,5 +1,6 @@
 from django.db import models
 
+from api.models import Pentester
 
 MAX_NOTE_LENGTH = 8186
 
@@ -15,3 +16,4 @@ class Notes(models.Model):
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
+    author: models.ForeignKey = models.ForeignKey(Pentester, on_delete=models.CASCADE)

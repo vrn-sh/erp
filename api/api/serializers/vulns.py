@@ -8,7 +8,7 @@ from api.models.vulns import Notes
 class NotesSerializer(serializers.ModelSerializer):
     class Meta:
         fields = [
-            'id', 'content', 'creation_date', 'last_updated_date'
+            'id', 'content', 'creation_date', 'last_updated_date', 'author'
         ]
         model = Notes
 
