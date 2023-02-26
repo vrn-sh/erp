@@ -11,6 +11,8 @@ class Notes(models.Model):
         current infrastructure.
     """
 
+    REQUIRED_FIELDS = ["content", "author"]
+
     # FIXME(adina): add Mission-id (ForeignKey)
 
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
