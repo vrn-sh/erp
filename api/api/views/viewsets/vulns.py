@@ -31,6 +31,6 @@ class VulnTypeViewset(viewsets.ModelViewSet):
 
 class VulnerabilityViewset(viewsets.ModelViewSet):
     queryset = Vulnerability.objects.all()
-    permissions = [permissions.IsAuthenticated & IsAdmin | IsOwner] # FIXME(adina): add is PartOfTheTeam
+    permissions = [permissions.IsAuthenticated & IsOwner] # FIXME(adina): add is PartOfTheTeam
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
