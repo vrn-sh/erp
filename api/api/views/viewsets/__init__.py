@@ -2,7 +2,7 @@
 
 - AuthViewset: Auth class CRUD
 - RegisterViewset: Pentester creation route
-- pentesterViewset: Pentester CRUD
+- PentesterViewset: Pentester CRUD
 - AdminViewset: Admin CRUD
 - NodeViewset: Node class CRUD
 - AddressViewset: Address class CRUD (no preloaded data)
@@ -31,17 +31,17 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
     authentication_classes: List[type[TokenAuthentication]] = []
     serializer_class = pentesterSerializer
 
-class pentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
     """
-        pentesterViewset
+        PentesterViewset
             CRUD operations for Pentester model (encompasses Auth model as well)
     """
 
     queryset = Pentester.objects.all()
     permission_classes = [permissions.IsAuthenticated & IsAdmin | IsOwner]
     authentication_classes = [TokenAuthentication]
-    serializer_class = pentesterSerializer
+    serializer_class = PentesterSerializer
 
 
 class AdminViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors

@@ -2,7 +2,6 @@ from datetime import datetime
 
 from rest_framework import serializers
 
-
 from api.models.vulns import Notes, VulnType
 
 
