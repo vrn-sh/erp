@@ -2,6 +2,7 @@ from datetime import datetime
 
 from rest_framework import serializers
 
+
 from api.models.vulns import Notes, VulnType
 
 
@@ -22,7 +23,6 @@ class NotesSerializer(serializers.ModelSerializer):
         if "last_updated_date" not in validated_data:
             validated_data["last_updated_date"] = datetime.now()
         return super().update(instance, validated_data)
-
 
 class VulnTypeSerializer(serializers.ModelSerializer):
     class Meta:

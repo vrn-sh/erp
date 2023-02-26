@@ -12,6 +12,7 @@ from drf_yasg import openapi
 
 from api.views import LoginView, LogoutView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.viewsets import RegisterViewset, CustomerViewset, AdminViewset
+
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)

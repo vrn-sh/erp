@@ -3,6 +3,8 @@ from rest_framework.authentication import TokenAuthentication
 
 from api.models.vulns import Notes, VulnType, Vulnerability
 from api.permissions import IsAdmin, IsOwner
+
+
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
 
 
@@ -16,7 +18,6 @@ class NotesViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     permission_classes = [permissions.IsAuthenticated & IsAdmin | IsOwner] # FIXME(adina): add isPartOfTheTeam
     authentication_classes = [TokenAuthentication]
     serializer_class = NotesSerializer
-
 
 class VulnTypeViewset(viewsets.ModelViewSet):
     """
