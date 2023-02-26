@@ -8,6 +8,7 @@ psycopg2==2.9.5
 django-trench==0.3.1
 django-phonenumber-field[phonenumbers]
 secure==0.3.0
+Pillow==9.4.0
 
 pylint
 prospector

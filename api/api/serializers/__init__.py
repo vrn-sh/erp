@@ -33,7 +33,7 @@ class AuthSerializer(serializers.ModelSerializer):
         return Auth.objects.create(**validated_data)
 
 
-class CustomerSerializer(serializers.ModelSerializer):
+class PentesterSerializer(serializers.ModelSerializer):
     """serializer used for Pentester CRUD operations"""
     auth = AuthSerializer(many=False, read_only=False)
 

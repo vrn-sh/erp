@@ -125,7 +125,7 @@ python manage.py test
 python manage.py test api.tests.AuthTestCase
 
 # or, just one method
-python manage.py test api.tests.AuthTestCase.test_can_login_customer_account
+python manage.py test api.tests.AuthTestCase.test_can_login_pentester_account
 ```
 
 ---

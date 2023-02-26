@@ -69,7 +69,7 @@ class IsOwner(permissions.BasePermission):
 
 def user_has_role(request, role: str) -> bool:
     """checks if a user has the appropriate role (being 1 or 2)"""
-    user_roles = ['placeholder', 'customer', 'admin']
+    user_roles = ['placeholder', 'pentester', 'admin']
     return user_roles[request.user.role] == role
 
 
@@ -91,19 +91,19 @@ class IsNotAdmin(permissions.BasePermission):
         return not user_has_role(request, 'admin')
 
 
-class IsCustomer(permissions.BasePermission):
-    """checks if user IS a customer"""
+class Ispentester(permissions.BasePermission):
+    """checks if user IS a pentester"""
     def has_permission(self, request, _):
-        return user_has_role(request, 'customer')
+        return user_has_role(request, 'pentester')
 
     def has_object_permission(self, request, _, __):
-        return user_has_role(request, 'customer')
+        return user_has_role(request, 'pentester')
 
 
-class IsNotCustomer(permissions.BasePermission):
-    """checks if user is NOT a customer"""
+class IsNotpentester(permissions.BasePermission):
+    """checks if user is NOT a pentester"""
     def has_permission(self, request, _):
-        return not user_has_role(request, 'customer')
+        return not user_has_role(request, 'pentester')
 
     def has_object_permission(self, request, _, __):
-        return not user_has_role(request, 'customer')
+        return not user_has_role(request, 'pentester')
