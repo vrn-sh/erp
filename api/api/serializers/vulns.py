@@ -36,14 +36,14 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = [
             'image'
         ]
-    model = ImageModel
+        model = ImageModel
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
 
     images = ImageSerializer(many=True, read_only=False)
-    model = Vulnerability
 
     class Meta:
+        model = Vulnerability
         fields = [
             'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type'
         ]
@@ -64,7 +64,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         if "last_updated_date" not in validated_data:
             validated_data["last_updated_date"] = datetime.now()
         validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
-        
+
         if "images" in validated_data:
             nested_serializer = self.fields['images']
             nested_instance = instance.images
