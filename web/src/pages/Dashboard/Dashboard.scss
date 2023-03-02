@@ -2,6 +2,7 @@
     padding: 0;
     margin: 0;
 }
+
 .dashboard {
     display: flex;
     flex-direction: row;
@@ -60,15 +61,32 @@
     margin-top: .5rem;
 }
 
+.assigned-missions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 //DashboardMission
 .dashboard-table {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    text-align: start;
+    width: 95%;
+    border: 1px var(--gray-btn) solid;
+    border-radius: 10px;
+    padding: 1rem;
 }
+
+.dashboard-table h1 {
+    font-family: "Poppins-Light";
+}
+
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 .subHeader {
     display: flex;
     flex-direction: row;
@@ -79,6 +97,7 @@
 .subHeader button {
     min-width: 1rem;
     background-color: transparent;
+    text-transform: uppercase;
     color: var(--gray-btn);
     font-family: "Poppins-Medium";
     border-radius: 0;
@@ -91,11 +110,11 @@
 }
 
 table {
-    width: 90%;
+    width: 100%;
 }
 
 td {
-    border-bottom:1px solid black;
+    border-bottom:1px solid var(--gray-btn);
     padding: 1rem;
 }
 
@@ -111,9 +130,42 @@ table input {
     color: white;
     border: none;
     background-color: var(--primary-btn);
+    cursor: pointer;
 }
 
-.editBtn {
-    border: var(--primary-btn);
-    color: var(--black);
+.borderBtn {
+    border: 1px var(--primary-btn) solid;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.process-td {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.process-bar {
+    position: relative;
+    width: 10rem;
+    height: 5px;
+    border-radius: 10px;
+    margin-right: 1rem;
+    background-color: var(--gradient-primary-btn);
+}
+
+.process-container {
+    width: 90%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: var(--primary-btn);
+}
+
+.process-percent {
+    font-family: "Poppins-Regular";
+    font-weight: 400;
+    font-size: 14px;
+    color: black;
 }
