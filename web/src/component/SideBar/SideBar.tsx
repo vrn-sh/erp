@@ -1,27 +1,11 @@
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
-// import SubMenu from './SubMenu';
 import SideBarData from './SideBarData';
+import { ICardItem } from './SideBarMenu.type';
 
-interface CardItem {
-    item: ItemProps;
-}
-
-interface ItemProps {
-    path: string;
-    title: string;
-    icon: ReactNode;
-    subNav: {
-        path: string;
-        title: string;
-    }[];
-    iconOpened: ReactNode;
-    iconClosed: ReactNode;
-}
-
-const SubMenuItem: React.FC<CardItem> = function SubMenu({ item }) {
+const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
     const [subnav, setSubnav] = useState(false);
     const showSubnav = () => setSubnav(!subnav);
 
