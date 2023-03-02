@@ -1,3 +1,7 @@
+.non-margin-padding {
+    padding: 0;
+    margin: 0;
+}
 .dashboard {
     display: flex;
     flex-direction: row;
@@ -5,17 +9,111 @@
 }
 
 .dashboard_container {
+    @extend .non-margin-padding;
     display: flex;
     flex-direction: column;
     height: 100vh;
     width: 100%;
-    padding: 0;
-    margin: 0;
 }
 
 .dashboard-pages {
-    background-color: beige;
+    @extend .non-margin-padding;
+    background-color: var(--basic-bg);
     width: 100%;
-    padding: 0;
-    margin: 0;
+}
+
+.page-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+}
+
+.page-loca {
+    text-align: start;
+    font-family: "Poppins-Light";
+}
+
+.page-loca p, .page-loca h1 {
+    @extend .non-margin-padding;
+}
+
+.page-searcher {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:flex-start;
+}
+
+.page-searcher label {
+    @extend .non-margin-padding;
+    background: transparent;
+    letter-spacing: 1px;
+    font-family: 12px;
+}
+
+.page-searcher input {
+    border: none;
+    border-bottom: 1px var(--black) solid;
+    font-size: 16px;
+    margin-top: .5rem;
+}
+
+//DashboardMission
+.dashboard-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: start;
+}
+.subHeader {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    align-items: flex-start;
+}
+
+.subHeader button {
+    min-width: 1rem;
+    background-color: transparent;
+    color: var(--gray-btn);
+    font-family: "Poppins-Medium";
+    border-radius: 0;
+}
+
+.subHeader button:hover, button.active {
+    color: var(--primary-hover-btn);
+    border-bottom: 1px var(--primary-hover-btn) solid;
+    transition: .5s ease-in-out;
+}
+
+table {
+    width: 90%;
+}
+
+td {
+    border-bottom:1px solid black;
+    padding: 1rem;
+}
+
+table input {
+    padding: .5rem 1rem;
+    border-radius: 5px;
+    margin: 0 .5rem;
+    text-transform: uppercase;
+    font-family: "Poppins-Regular";
+}
+
+.openBtn {
+    color: white;
+    border: none;
+    background-color: var(--primary-btn);
+}
+
+.editBtn {
+    border: var(--primary-btn);
+    color: var(--black);
 }

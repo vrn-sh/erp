@@ -2,6 +2,7 @@ import React from 'react';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import './Dashboard.scss';
+import SubDashboard from './SubDashboard';
 
 export default function Dashboard() {
     return (
@@ -9,10 +10,7 @@ export default function Dashboard() {
             <SideBar />
             <div className="dashboard_container">
                 <TopBar />
-                <div className="dashboard-pages">
-                    <p>AHAHA</p>
-                    <button type="button">.</button>
-                </div>
+                <SubDashboard />
             </div>
         </div>
     );
