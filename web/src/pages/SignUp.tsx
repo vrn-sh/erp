@@ -1,35 +1,51 @@
 import '../style/register.scss';
-import React from 'react';
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
+const eye = <FontAwesomeIcon icon={faEye} />;
+const eyeSlash = <FontAwesomeIcon icon={faEyeSlash} />;
 
 const Regex = RegExp(
-    /^\s?[A-Z0–9]+[A-Z0–9._+-]{0,}@[A-Z0–9._+-]+\.[A-Z0–9]{2,4}\s?$/i
+    /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i
 );
+
 interface SignUpProps {
     name?: any;
     value?: any;
 }
+
 interface SignUpState {
-    username: string;
     email: string;
     password: string;
+    Confirmpassword: string;
     errors: {
-        username: string;
         email: string;
         password: string;
+        confirmpassword: string;
     };
 }
-export class SignUp extends React.Component<SignUpProps, SignUpState> {
-    handleChange = (event: any) => {
+
+export const SignUp: React.FC<SignUpProps> = () => {
+    const [passwordShown, setPasswordShown] = useState(false);
+    const [confirmpasswordShown, setConfirmPasswordShown] = useState(false);
+
+    const [state, setState] = useState<SignUpState>({
+        email: '',
+        password: '',
+        Confirmpassword: '',
+        errors: {
+            email: '',
+            password: '',
+            confirmpassword: '',
+        },
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const { name, value } = event.target;
-        const { errors } = this.state;
+        const { errors } = state;
         switch (name) {
-            case 'username':
-                errors.username =
-                    value.length < 5
-                        ? 'Username must be 5 characters long!'
-                        : '';
-                break;
             case 'email':
                 errors.email = Regex.test(value) ? '' : 'Email is not valid!';
                 break;
@@ -39,114 +55,135 @@ export class SignUp extends React.Component<SignUpProps, SignUpState> {
                         ? 'Password must be eight characters long!'
                         : '';
                 break;
+            case 'confirmpassword':
+                errors.confirmpassword =
+                    value !== state.password
+                        ? 'Password and Confirm Password does not match'
+                        : '';
+                break;
             default:
                 break;
         }
-        this.setState(Object.assign(this.state, { errors, [name]: value }));
-        console.log(this.state.errors);
+        setState({ ...state, errors, [name]: value });
+        console.log(state.errors);
     };
-
-    handleSubmit = (event: any) => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         let validity = true;
-        Object.values(this.state.errors).forEach(
+        Object.values(state.errors).forEach(
             (val) => val.length > 0 && (validity = false)
         );
-        if (validity == true) {
+        if (validity === true) {
             console.log('Registering can be done');
         } else {
             console.log('You cannot be registered!!!');
         }
     };
 
-    constructor(props: SignUpProps) {
-        super(props);
-        const initialState = {
-            username: '',
-            email: '',
-            password: '',
-            errors: {
-                username: '',
-                email: '',
-                password: '',
-            },
-        };
-        this.state = initialState;
-        this.handleChange = this.handleChange.bind(this);
-    }
+    const togglePasswordVisiblity = () => {
+        setPasswordShown(!passwordShown);
+    };
 
-    render() {
-        const { errors } = this.state;
-        return (
-            <section className="signup-container">
-                <div className="signup-text" id="signup-text">
-                    <p>
-                        <span>
-                            <h1>voron</h1>
-                        </span>
-                        <span>
-                            <h2>
-                                Lorem ipsum dolor sit amet consectet. Neque.
-                            </h2>
-                        </span>
-                        <span className="no-bold">
-                            Lorem ipsum dolor sit amet consectetur. Quis platea
-                            lectus.
-                        </span>
-                    </p>
-                </div>
-                <div className="signup-form" id="signup-form">
-                    <div className="wrapper">
-                        <div className="form-wrapper">
+    const toggleConfirmPasswordVisiblity = () => {
+        setConfirmPasswordShown(!confirmpasswordShown);
+    };
+
+    const { errors } = state;
+    return (
+        <section className="signup-container">
+            <div className="signup-text" id="signup-text">
+                <p className="text-box">
+                    <span className="alpha">
+                        <h1>voron</h1>
+                    </span>
+                    <span className="betta">
+                        <h2>Lorem ipsum dolor sit amet consectet. Neque.</h2>
+                    </span>
+                    <span className="charlie">
+                        Lorem ipsum dolor sit amet consectetur. Quis platea
+                        lectus.
+                    </span>
+                </p>
+            </div>
+            <div className="signup-form" id="signup-form">
+                <div className="wrapper">
+                    <div className="form-wrapper">
+                        <span className="welcom">
                             <h2>Welcome to voron</h2>
-                            <form onSubmit={this.handleSubmit} noValidate>
-                                <div className="username">
-                                    <label htmlFor="username">Full Name</label>
-                                    <input
-                                        type="text"
-                                        name="username"
-                                        onChange={this.handleChange}
-                                    />
-                                    {errors.username.length > 0 && (
-                                        <span style={{ color: 'red' }}>
-                                            {errors.username}
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="email">
-                                    <label htmlFor="email">Email</label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        onChange={this.handleChange}
-                                    />
-                                    {errors.email.length > 0 && (
-                                        <span style={{ color: 'red' }}>
-                                            {errors.email}
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="password">
-                                    <label htmlFor="password">Password</label>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        onChange={this.handleChange}
-                                    />
-                                    {errors.password.length > 0 && (
-                                        <span style={{ color: 'red' }}>
-                                            {errors.password}
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="submit">
-                                    <button>Register</button>
-                                </div>
-                            </form>
-                        </div>
+                        </span>
+                        <form onSubmit={handleSubmit} noValidate>
+                            <div className="input-block">
+                                <label className="placeholder" htmlFor="email">
+                                    Email Address
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    onChange={handleChange}
+                                />
+                                {errors.email.length > 0 && (
+                                    <span style={{ color: 'red' }}>
+                                        {errors.email}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="input-block">
+                                <label
+                                    className="placeholder"
+                                    htmlFor="password"
+                                >
+                                    Password
+                                </label>
+                                <input
+                                    type={passwordShown ? 'text' : 'password'}
+                                    name="password"
+                                    onChange={handleChange}
+                                />
+                                {errors.password.length > 0 && (
+                                    <span style={{ color: 'red' }}>
+                                        {errors.password}
+                                    </span>
+                                )}
+                                <i onClick={togglePasswordVisiblity}>
+                                    {passwordShown ? eye : eyeSlash}
+                                </i>
+                            </div>
+                            <div className="input-block">
+                                <label
+                                    className="placeholder"
+                                    htmlFor="Confirmpassword"
+                                >
+                                    Confirm Password
+                                </label>
+                                <input
+                                    type={
+                                        confirmpasswordShown
+                                            ? 'text'
+                                            : 'password'
+                                    }
+                                    name="Confirmpassword"
+                                    onChange={handleChange}
+                                />
+                                {errors.password.length > 0 && (
+                                    <span style={{ color: 'red' }}>
+                                        {errors.password}
+                                    </span>
+                                )}
+                                <i onClick={toggleConfirmPasswordVisiblity}>
+                                    {confirmpasswordShown ? eye : eyeSlash}
+                                </i>
+                            </div>
+                            <div className="submit">
+                                <button>SIGN UP</button>
+                            </div>
+                            <div className="log-box">
+                                <span>Already have an account? </span>
+                                <span className="txt-color">Log in here!</span>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </section>
-        );
-    }
-}
+            </div>
+        </section>
+    );
+};
