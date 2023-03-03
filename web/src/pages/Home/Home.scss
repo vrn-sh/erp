@@ -63,6 +63,10 @@ section {
     z-index: 3;
 }
 
+.home-container span {
+    color: var(--primary-btn);
+}
+
 .home-container h1{
     font-family: "Poppins-Bold";
     font-weight: bold;

@@ -1,0 +1,69 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug"]
+assignees:
+  - bogdzn
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe your bug with as much details as possible.
+      placeholder: Tell us what you see!
+      value: "A bug happened and i am very scared of bugs!"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected behaviour
+      description: Describe what happened with as much details as possible.
+      placeholder: Tell us what happened !
+      value: "I was pwning NASA and then it exploded!"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Describe your environment with as much details as possible.
+      placeholder: Tell us what is your environment!
+      value: "Commit hash, Software release versions, etc..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: List the steps to reproduce with as much details as possible.
+      placeholder: Tell us how to reproduce this bug!
+      value: "- You have to do this!\n- Then this!"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: python
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      description: If you have an idea of how to fix this issue, please write it down here.
+    validations:
+      required: false
