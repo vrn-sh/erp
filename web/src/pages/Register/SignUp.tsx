@@ -124,13 +124,13 @@ export const SignUp: React.FC<SignUpProps> = () => {
                                     <label className="placeholder" htmlFor="password">Password</label>
                                     <input type={showPassword ? 'text' : 'password'} name="password" id="password" onChange={handleChange}/>
                                     {errors.password.length > 0 &&  <span style={{color: "red"}}>{errors.password}</span>}
-                                    <Icon icon={showPassword ? eyeOff : eye} onClick={handleShowPassword} />
+                                    <Icon className="i" icon={showPassword ? eye : eyeOff} onClick={handleShowPassword} />
                                 </div>   
                                 <div className='input-block'>
                                     <label className="placeholder" htmlFor="Confirmpassword">Confirm Password</label>
                                     <input type={showconfirmpassword ? "text" : "password"} name='confirmpassword' onChange={handleChange}/>
                                     {errors.confirmpassword.length > 0 &&  <span style={{color: "red"}}>{errors.confirmpassword}</span>}
-                                    <Icon icon={showconfirmpassword ? eyeOff : eye} onClick={handleShowconfirmPassword} />
+                                    <Icon className="i" icon={showconfirmpassword ? eye : eyeOff} onClick={handleShowconfirmPassword} />
                                 </div>              
                                 <div className='submit'>
                                     <button className="button">SIGN UP</button>
