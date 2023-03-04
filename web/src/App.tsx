@@ -4,7 +4,7 @@ import Home from './pages/Home/Home';
 import About from './pages/Home/About/About';
 import './global-variable.scss';
 import Login from './pages/Login/Login';
-import SignUp from './pages/SignUp';
+import {SignUp} from './pages/Register/SignUp';
 
 function App() {
     return (
@@ -13,7 +13,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
+                <Route path="/signup" element={<SignUp value={''} />} />
             </Routes>
         </div>
     );
