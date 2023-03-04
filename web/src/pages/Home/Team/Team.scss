@@ -5,12 +5,12 @@
     height: 100vh;
     justify-content: center;
     align-items: center;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
 }
 
 .heading {
     margin: 2rem 0;
-    font-size: 1.5rem
+    font-size: 1.5rem;
 }
 
 .team h1 {
@@ -28,13 +28,10 @@
     width: 50%;
 }
 
-
-
 .socials a {
     text-decoration: none;
     color: black;
     transition: all 0.2s ease-in-out;
-
 }
 
 .timezone {
@@ -82,9 +79,9 @@
 .fade-enter {
     opacity: 0;
     transform: scale(0.9);
-  }
-  .fade-enter-active {
+}
+.fade-enter-active {
     opacity: 1;
     transform: translateX(0);
     transition: opacity 300ms, transform 300ms;
-  }
+}

@@ -4,7 +4,7 @@ import Home from './pages/Home/Home';
 import About from './pages/Home/About/About';
 import './global-variable.scss';
 import Login from './pages/Login/Login';
-import {SignUp} from './pages/Register/SignUp';
+import SignUp from './pages/Register/SignUp';
 
 function App() {
     return (
