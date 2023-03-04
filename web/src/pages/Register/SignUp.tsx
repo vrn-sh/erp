@@ -54,7 +54,6 @@ export const SignUp: React.FC<SignUpProps> = () => {
             break;
         }
         setState({ ...state, errors, [name]: value });
-        console.log(state.errors);
     }
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -77,12 +76,12 @@ export const SignUp: React.FC<SignUpProps> = () => {
           });
       
           if (response.ok) {
-            console.log('Formulaire envoyé avec succès à l\'API');
+            //console.log('Formulaire envoyé avec succès à l\'API');
           } else {
-            console.error('Une erreur est survenue lors de l\'envoi du formulaire à l\'API');
+            //console.error('Une erreur est survenue lors de l\'envoi du formulaire à l\'API');
           }
         } catch (error) {
-          console.error('Une erreur est survenue lors de l\'envoi du formulaire à l\'API:', error);
+          //console.error('Une erreur est survenue lors de l\'envoi du formulaire à l\'API:', error);
         }
       };
       
