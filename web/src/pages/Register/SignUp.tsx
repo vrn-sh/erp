@@ -76,12 +76,12 @@ export const SignUp: React.FC<SignUpProps> = () => {
           });
       
           if (response.ok) {
-            //console.log('Formulaire envoyé avec succès à l\'API');
+            // TODO: Integrate login
           } else {
-            //console.error('Une erreur est survenue lors de l\'envoi du formulaire à l\'API');
+            // TODO: Integrate error handling
           }
         } catch (error) {
-          //console.error('Une erreur est survenue lors de l\'envoi du formulaire à l\'API:', error);
+          // TODO: Integrate error handling
         }
       };
       
