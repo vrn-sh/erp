@@ -66,7 +66,7 @@ export const SignUp: React.FC<SignUpProps> = () => {
         };
       
         // Envoyer une requête POST pour envoyer les données du formulaire à l'API
-        try {
+       /*  try {
           const response = await fetch('', {
             method: 'POST',
             headers: {
@@ -82,7 +82,7 @@ export const SignUp: React.FC<SignUpProps> = () => {
           }
         } catch (error) {
           // TODO: Integrate error handling
-        }
+        } */
       };
       
       const [showPassword, setShowPassword] = useState(false);
