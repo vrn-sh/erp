@@ -34,7 +34,7 @@ EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = os.environ['SENDGIRD_SENDER']
+DEFAULT_FROM_EMAIL = os.environ['SENDGRID_SENDER']
 
 TRENCH_AUTH = {
     "USER_MFA_MODEL": "trench.MFAMethod",
@@ -103,6 +103,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'api.management.middlewares.set_secure_headers',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -136,19 +137,24 @@ if os.environ.get('PRODUCTION', '0') == '1':
             'NAME': os.environ.get('POSTGRES_DB'),
             'USER': os.environ.get('POSTGRES_USER'),
             'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-            'HOST': 'db',
+            'HOST': os.environ.get('POSTGRES_HOST'),
             'PORT': os.environ.get('POSTGRES_PORT'),
         }
     }
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
     DEBUG = False
-    ALLOWED_HOSTS = ['server', 'localhost']
+    ALLOWED_HOSTS = [
+            'server',
+            'localhost',
+            f'https://{os.environ["DOMAIN_NAME"]}',
+            f'http://{os.environ["DOMAIN_NAME"]}'
+            ]
 elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'core',
-            'USER': os.environ.get('USER'),
+            'NAME': 'voron',
+            'USER': os.environ.get("USER"),
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
             'PORT': '',
@@ -175,7 +181,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'core',
+            'NAME': 'voron',
             'USER': os.environ.get('USER'),
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
@@ -243,7 +249,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

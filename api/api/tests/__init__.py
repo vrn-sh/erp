@@ -1,29 +1,35 @@
+import warnings
+
 from django.test import TransactionTestCase
 from faker import Faker
 
 from rest_framework.test import APIClient
 
-from api.tests.helpers import create_random_customer, create_random_admin, random_user_password, \
+from api.tests.helpers import create_random_pentester, create_random_admin, random_user_password, \
         login_as
+
+
+# import unit tests from other files here
+from .notes_tests import *
 
 
 class AuthTestCase(TransactionTestCase):
 
     """
-        Tests if accounts can be logged in (admin or customer) and logged out
+        Tests if accounts can be logged in (admin or pentester) and logged out
         also tests for wrong password
     """
 
     def setUp(self) -> None:
-        self.user = create_random_customer()
+        self.user = create_random_pentester()
         self.admin = create_random_admin()
 
     def tearDown(self) -> None:
         self.user.delete()
         self.admin.delete()
 
-    def test_can_login_customer_account(self) -> None:
-        """any valid customer account should be able to log in"""
+    def test_can_login_pentester_account(self) -> None:
+        """any valid pentester account should be able to log in"""
 
         client = APIClient()
         auth_token = login_as(self.user.auth.email, random_user_password())
@@ -75,8 +81,8 @@ class RegisterTestCase(TransactionTestCase):
         Tests account registration feature
     """
 
-    def test_can_register_new_customer(self) -> None:
-        """a new customer should be able to be registered!"""
+    def test_can_register_new_pentester(self) -> None:
+        """a new pentester should be able to be registered!"""
 
         client = APIClient()
         fake = Faker()
@@ -107,8 +113,8 @@ class RegisterTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 400) # type: ignore
 
 
-class CrudCustomerTestCase(TransactionTestCase):
-    """tests CRUD for customer accounts"""
+class CrudpentesterTestCase(TransactionTestCase):
+    """tests CRUD for pentester accounts"""
 
     def setUp(self) -> None:
         self.admin = create_random_admin()
@@ -121,8 +127,8 @@ class CrudCustomerTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.admin.delete()
 
-    def test_create_a_customer(self):
-        """a customer should be created no problem"""
+    def test_create_a_pentester(self):
+        """a pentester should be created no problem"""
 
         fake = Faker()
         name = fake.name()
@@ -136,12 +142,12 @@ class CrudCustomerTestCase(TransactionTestCase):
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
-        resp = self.client.post('/customer', format='json', data=creation_data)
+        resp = self.client.post('/pentester', format='json', data=creation_data)
         self.assertEqual(resp.status_code, 201)
 
 
-    def test_update_a_customer(self):
-        """we should be able to update a customer"""
+    def test_update_a_pentester(self):
+        """we should be able to update a pentester"""
 
         fake = Faker()
         name = fake.name()
@@ -155,7 +161,7 @@ class CrudCustomerTestCase(TransactionTestCase):
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
-        resp = self.client.post('/customer', format='json', data=creation_data)
+        resp = self.client.post('/pentester', format='json', data=creation_data)
         self.assertEqual(resp.status_code, 201)
         name = fake.name()
         update_data = {
@@ -170,15 +176,15 @@ class CrudCustomerTestCase(TransactionTestCase):
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
 
-        customer_id: str = resp.data["id"] # type: ignore
-        resp = self.client.get(f'/customer/{customer_id}', format='json')
+        pentester_id: str = resp.data["id"] # type: ignore
+        resp = self.client.get(f'/pentester/{pentester_id}', format='json')
         self.assertEqual(resp.status_code, 200)
 
-        resp = self.client.patch(f'/customer/{customer_id}', format='json', data=update_data)
+        resp = self.client.patch(f'/pentester/{pentester_id}', format='json', data=update_data)
         self.assertEqual(resp.status_code, 200)
 
-    def test_delete_a_customer(self):
-        """we should be able to delete a customer"""
+    def test_delete_a_pentester(self):
+        """we should be able to delete a pentester"""
 
         fake = Faker()
         name = fake.name()
@@ -192,9 +198,9 @@ class CrudCustomerTestCase(TransactionTestCase):
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
-        resp = self.client.post('/customer', format='json', data=creation_data)
+        resp = self.client.post('/pentester', format='json', data=creation_data)
         self.assertEqual(resp.status_code, 201)
 
-        customer_id: str = resp.data["id"] # type: ignore
-        resp = self.client.delete(f'/customer/{customer_id}', format='json')
+        pentester_id: str = resp.data["id"] # type: ignore
+        resp = self.client.delete(f'/pentester/{pentester_id}', format='json')
         self.assertEqual(resp.status_code, 204)
