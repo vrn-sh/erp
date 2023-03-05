@@ -78,6 +78,7 @@
 }
 
 .dashboard-table h1 {
+    @extend .non-margin-padding;
     font-family: "Poppins-Light";
 }
 
@@ -111,10 +112,12 @@
 
 table {
     width: 100%;
+    max-height: 100px;
+    overflow: auto;
 }
 
 td {
-    border-bottom:1px solid var(--gray-btn);
+    border-bottom: 1px solid var(--gray-btn);
     padding: 1rem;
 }
 

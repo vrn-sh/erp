@@ -5,9 +5,28 @@ import * as FaIcons from 'react-icons/fa';
 
 export default function TopBar() {
     const [popup, setPopup] = useState(false);
+    const [email, setEmail] = useState('');
+    const [errorEmail, setErrorEmail] = useState('');
+
+    const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
+
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            setErrorEmail('Please enter valid email address.');
+        } else if (/^\S+@\S+\.\S+$/.test(email)) {
+            setErrorEmail('');
+        }
+    };
 
     const popupClick = () => {
         setPopup(!popup);
+    };
+
+    const sendInvitation = () => {
+        if (email !== '' && errorEmail === '') {
+            // send API here
+            popupClick();
+        }
     };
 
     return (
@@ -44,16 +63,22 @@ export default function TopBar() {
                     <div className="popup-overlay">
                         <h1>Invite a pentester</h1>
                         <input
-                            type="text"
+                            type="email"
                             placeholder="Email"
                             className="popup-input"
+                            onChange={checkEmail}
                         />
-                        <button type="button" className="sendBtn">
+                        <p className="error">{errorEmail}</p>
+                        <button
+                            type="button"
+                            className="sendBtn"
+                            onClick={sendInvitation}
+                        >
                             Send invitation
                         </button>
                         <button
                             type="button"
-                            className="sendBtn"
+                            className="cancelBtn"
                             onClick={popupClick}
                         >
                             Cancel

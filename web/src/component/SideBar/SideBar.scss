@@ -54,6 +54,11 @@
     margin: 0 0.5rem;
 }
 
+.borderBtn:hover {
+    background-color: var(--hover-effect);
+    transition: .5s ease-in-out;
+}
+
 .input::placeholder {
     font-size: 12px;
 }
@@ -177,6 +182,22 @@
     margin: 1rem;
 }
 
-.sendBtn {
+.error {
+    width: 80%;
+    font-family: "Poppins-Regular";
+    text-align: left;
+    font-size: 13px;
+    color: red;
+}
+
+.sendBtn, .cancelBtn {
     min-width: 10px;
+    width: 80%;
+    border-radius: 20px;
+    transition: .3s ease-in-out;
+}
+
+.cancelBtn {
+    color: var(--black);
+    background-color: var(--gradient-primary-btn);
 }
