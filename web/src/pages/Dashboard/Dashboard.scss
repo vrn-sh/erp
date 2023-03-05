@@ -31,13 +31,10 @@
     padding: 2rem;
 }
 
-.page-loca {
+.page-info h1 {
+    @extend .non-margin-padding;
     text-align: start;
     font-family: "Poppins-Light";
-}
-
-.page-loca p, .page-loca h1 {
-    @extend .non-margin-padding;
 }
 
 .page-searcher {

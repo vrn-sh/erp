@@ -101,7 +101,9 @@
 }
 
 .sidebar-tool {
-    margin-top: 2rem;
+    position: fixed;
+    left: 0;
+    bottom: 0;
 }
 
 // SubMenu
@@ -123,6 +125,14 @@
     cursor: pointer;
 }
 
+.sidebar-link-bottom {
+    @extend .sidebar-link
+}
+
+.sidebar-link-bottom:hover {
+    background-color: transparent;
+    cursor: pointer;
+}
 .sidebar-item {
     display: flex;
     color: car(--black);

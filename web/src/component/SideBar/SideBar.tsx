@@ -48,20 +48,20 @@ export default function SideBar() {
             <Link to="/dashboard">
                 <h1 className="site-title">voron</h1>
             </Link>
-            <div className="sidebar-container">
+            <div>
                 {SideBarData.map((item) => {
                     return <SubMenuItem item={item} />;
                 })}
             </div>
 
             <div className="sidebar-tool">
-                <Link to="/dashboard" className="sidebar-link">
+                <Link to="/dashboard" className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiSettings />
                         <span className="menu-txt">Settings</span>
                     </div>
                 </Link>
-                <Link to="/dashboard" className="sidebar-link">
+                <Link to="/dashboard" className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiLogOut />
                         <span className="menu-txt">Disconnect</span>

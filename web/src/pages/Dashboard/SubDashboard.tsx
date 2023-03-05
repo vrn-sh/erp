@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import * as MdIcons from 'react-icons/md';
 import {
     IDashboardMission,
     DashboardMissionList,
@@ -13,15 +12,7 @@ export default function SubDashboard() {
     return (
         <div className="dashboard-pages">
             <div className="page-info">
-                <div className="page-loca">
-                    <p>
-                        Voron
-                        <span>
-                            <MdIcons.MdKeyboardArrowRight />
-                        </span>
-                    </p>
-                    <h1>Welcome to your dashboard</h1>
-                </div>
+                <h1>Welcome to your dashboard</h1>
                 <div className="page-searcher">
                     <label>Search on page</label>
                     <input type="text" placeholder="Search..." />
