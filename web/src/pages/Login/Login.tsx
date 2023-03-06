@@ -76,8 +76,6 @@ export default function Login() {
                                 className="form-control"
                                 onChange={checkEmail}
                             />
-                            <p className="error">{errorEmail}</p>
-
                             <label>Password</label>
                             <div className="input-pwd">
                                 <input
@@ -93,7 +91,7 @@ export default function Login() {
                                     {pwdIcon}
                                 </button>
                             </div>
-                            <p className="error">{errorPwd}</p>
+                            <p className="error">{errorPwd} {errorEmail}</p>
                             <div className="submit">
                                 <button type="button" onClick={submit}>
                                     LOG IN

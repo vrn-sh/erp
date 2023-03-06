@@ -73,6 +73,11 @@ label {
   background-color: white;
 }
 
+.pwdLable {
+  @extend label;
+  
+}
+
 .form-control {
   width: 100%;
   height: 2.7rem;
@@ -154,7 +159,7 @@ button:hover {
   text-align: left;
   font-size: 13px;
   color: red;
-  margin-bottom: 1rem;
+  margin: 1rem;
 }
 
 @media screen and (max-width: 1270px) {
