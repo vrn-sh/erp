@@ -1,0 +1,213 @@
+@mixin non-margin-padding {
+    padding: 0;
+    margin: 0;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+.dashboard_container {
+    @include non-margin-padding;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+}
+
+.dashboard-pages {
+    @include non-margin-padding;
+    background-color: var(--basic-bg);
+    width: 100%;
+}
+
+.page-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+}
+
+.page-info h1 {
+    @include non-margin-padding;
+    text-align: start;
+    font-family: "Poppins-Light";
+}
+
+.page-searcher {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:flex-start;
+}
+
+.page-searcher label {
+    @include non-margin-padding;
+    background: transparent;
+    letter-spacing: 1px;
+    font-family: 12px;
+}
+
+.page-searcher input {
+    border: none;
+    border-bottom: 1px var(--black) solid;
+    font-size: 16px;
+    margin-top: .5rem;
+}
+
+.assigned-missions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+//DashboardMission
+.dashboard-table {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    border: 1px var(--gray-btn) solid;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.dashboard-table h1 {
+    @include non-margin-padding;
+    font-family: "Poppins-Light";
+}
+
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.subHeader {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    align-items: flex-start;
+}
+
+.subHeader button {
+    min-width: 1rem;
+    background-color: transparent;
+    text-transform: uppercase;
+    color: var(--gray-btn);
+    font-family: "Poppins-Medium";
+    border-radius: 0;
+}
+
+.subHeader button:hover, button.active {
+    color: var(--primary-hover-btn);
+    border-bottom: 1px var(--primary-hover-btn) solid;
+    transition: .5s ease-in-out;
+}
+
+table {
+    width: 100%;
+    max-height: 100px;
+    overflow: auto;
+}
+
+td {
+    border-bottom: 1px solid var(--gray-btn);
+    padding: 1rem;
+    font-family: "Poppins-Light";
+    font-size: 16px;
+}
+
+table input {
+    padding: .5rem 1rem;
+    border-radius: 5px;
+    margin: 0 .5rem;
+    text-transform: uppercase;
+    font-family: "Poppins-Regular";
+}
+
+.openBtn {
+    color: white;
+    border: none;
+    background-color: var(--primary-btn);
+    cursor: pointer;
+}
+
+.borderBtn {
+    border: 1px var(--primary-btn) solid;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.process-td {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.process-bar {
+    position: relative;
+    width: 10rem;
+    height: 5px;
+    border-radius: 10px;
+    margin-right: 1rem;
+    background-color: var(--gradient-primary-btn);
+}
+
+.process-container {
+    width: 90%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: var(--primary-btn);
+}
+
+.process-percent {
+    font-family: "Poppins-Regular";
+    font-weight: 400;
+    font-size: 14px;
+    color: black;
+}
+
+//Pagination
+.pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    list-style: none;
+}
+
+.page-item {
+    margin: 1rem;
+}
+
+.page-item.active {
+    font-weight: bold;
+}
+.page-link {
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-family: "Poppins-Regular";
+}
+
+@media only screen and (max-width: 960px) {
+    .page-info h1, .dashboard-table h1 {
+        font-size: 1.5rem;
+    }
+    .process-bar {
+        display: none;
+    }
+    .subHeader button {
+        min-width: .5rem;
+        font-size: 12px;
+        font-family: "Poppins-Light";
+    }
+    td {
+        font-size: 13px;
+    }
+}

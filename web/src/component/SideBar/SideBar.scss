@@ -1,0 +1,218 @@
+//Top bar
+.top-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 20px;
+    margin: 0;
+    height: 10vh;
+    border-bottom: 1px solid var(--hover-effect);
+}
+
+.search-input {
+    width: 20%;
+    height: 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--hover-effect);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.topBar-wrapper {
+    position: relative;
+    width: 20%;
+}
+
+.topBar-searchIcon {
+    position: absolute;
+    box-sizing: border-box;
+    top: 16px;
+    left: 5px;
+    transform: translateY(-50%);
+}
+
+.topBar-input {
+    height: 30px;
+    box-sizing:border-box;
+    padding-left: 1.5rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--hover-effect);
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.borderBtn {
+    border: 1px var(--primary-btn) solid;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin: 0 0.5rem;
+}
+
+.borderBtn:hover {
+    background-color: var(--hover-effect);
+    transition: .5s ease-in-out;
+}
+
+.input::placeholder {
+    font-size: 12px;
+}
+
+.btn, .btn-profile {
+    color: var(--gray-btn);
+    padding: 5px;
+    margin: 0px 5px;
+    cursor: pointer;
+}
+
+.btn-left {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+
+//SideBar
+.site-title {
+    font-size: 2rem;
+    font-family: "Poppins-Bold";
+    text-align: left;
+    color: var(--black);
+    margin-left: 20px !important;
+    padding: 1rem;
+}
+
+.sidebar {
+    background-color: var(--secondary-bg);
+    width: 250px;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar Link {
+    display: flex;
+    flex-direction: row;
+}
+
+.sidebar a {
+    text-decoration: none;
+}
+
+.sidebar-tool {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+
+// SubMenu
+.sidebar-link {
+    display: flex;
+    text-decoration: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    list-style: none;
+    height: 100%;
+    font-size: 17px;
+    font-family: "Poppins-Regular";
+}
+
+.sidebar-link:hover, .dropdown-menu:hover {
+    background-color: var(--hover-effect);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+}
+
+.sidebar-link-bottom {
+    @extend .sidebar-link
+}
+
+.sidebar-link-bottom:hover {
+    background-color: transparent;
+    cursor: pointer;
+}
+.sidebar-item {
+    display: flex;
+    color: car(--black);
+    justify-content: space-between;
+}
+
+.menu-txt {
+    margin-left: 1rem;
+    color: var(--black);
+    font-size: 15px;
+}
+
+.dropdown-menu {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--black);
+    font-size: 14px;
+    font-family: "Poppins-Regular";
+    padding: 10px;
+    padding-left: 3rem;
+    list-style: none;
+}
+
+//POPUP
+.popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+.popup-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--hover-effect);
+    width: 30%;
+    height: 50%;
+    opacity: 1;
+    border-radius: 10px;
+}
+
+.popup-input {
+    width: 80%;
+    height: 2rem;
+    border-radius: 10px;
+    border: none;
+    margin: 1rem;
+}
+
+.error {
+    width: 80%;
+    font-family: "Poppins-Regular";
+    text-align: left;
+    font-size: 13px;
+    color: red;
+}
+
+.sendBtn, .cancelBtn {
+    min-width: 10px;
+    width: 80%;
+    border-radius: 20px;
+    transition: .3s ease-in-out;
+}
+
+.cancelBtn {
+    color: var(--black);
+    background-color: var(--gradient-primary-btn);
+}
