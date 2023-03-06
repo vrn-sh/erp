@@ -1,4 +1,4 @@
-.non-margin-padding {
+@mixin non-margin-padding {
     padding: 0;
     margin: 0;
 }
@@ -10,7 +10,7 @@
 }
 
 .dashboard_container {
-    @extend .non-margin-padding;
+    @include non-margin-padding;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -18,7 +18,7 @@
 }
 
 .dashboard-pages {
-    @extend .non-margin-padding;
+    @include non-margin-padding;
     background-color: var(--basic-bg);
     width: 100%;
 }
@@ -32,7 +32,7 @@
 }
 
 .page-info h1 {
-    @extend .non-margin-padding;
+    @include non-margin-padding;
     text-align: start;
     font-family: "Poppins-Light";
 }
@@ -45,7 +45,7 @@
 }
 
 .page-searcher label {
-    @extend .non-margin-padding;
+    @include non-margin-padding;
     background: transparent;
     letter-spacing: 1px;
     font-family: 12px;
@@ -75,7 +75,7 @@
 }
 
 .dashboard-table h1 {
-    @extend .non-margin-padding;
+    @include non-margin-padding;
     font-family: "Poppins-Light";
 }
 
@@ -116,6 +116,8 @@ table {
 td {
     border-bottom: 1px solid var(--gray-btn);
     padding: 1rem;
+    font-family: "Poppins-Light";
+    font-size: 16px;
 }
 
 table input {
@@ -191,4 +193,21 @@ table input {
     text-decoration: none;
     font-size: 14px;
     font-family: "Poppins-Regular";
+}
+
+@media only screen and (max-width: 960px) {
+    .page-info h1, .dashboard-table h1 {
+        font-size: 1.5rem;
+    }
+    .process-bar {
+        display: none;
+    }
+    .subHeader button {
+        min-width: .5rem;
+        font-size: 12px;
+        font-family: "Poppins-Light";
+    }
+    td {
+        font-size: 13px;
+    }
 }

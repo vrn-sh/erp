@@ -96,6 +96,11 @@
     margin: 0;
 }
 
+.sidebar Link {
+    display: flex;
+    flex-direction: row;
+}
+
 .sidebar a {
     text-decoration: none;
 }

@@ -9,7 +9,7 @@ type Props = {
 
 function DashboardMission(props: Props) {
     const { list } = props;
-    const [active, setActive] = useState('1');
+    const [active, setActive] = useState('mission');
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,102 +55,106 @@ function DashboardMission(props: Props) {
                 <div className="subHeader">
                     <button
                         key={1}
-                        id="1"
+                        id="mission"
                         type="button"
-                        className={active === '1' ? 'active' : undefined}
+                        className={active === 'mission' ? 'active' : undefined}
                         onClick={handleClick}
                     >
                         My Mission
                     </button>
                     <button
                         key={2}
-                        id="2"
+                        id="roles"
                         type="button"
-                        className={active === '2' ? 'active' : undefined}
+                        className={active === 'roles' ? 'active' : undefined}
                         onClick={handleClick}
                     >
                         My Roles
                     </button>
                 </div>
-                <table>
-                    {records.map((mission) => {
-                        return (
-                            <tbody>
-                                <tr key={mission.id}>
-                                    <td>{mission.name}</td>
-                                    <td>{mission.type}</td>
-                                    <td>
-                                        <input
-                                            type="button"
-                                            value="Open"
-                                            className="openBtn"
-                                        />
-                                        <input
-                                            type="button"
-                                            value="Edit"
-                                            className="borderBtn"
-                                        />
-                                    </td>
-                                    {/* Process bar */}
-                                    <td>
-                                        <div className="process-td">
-                                            <div className="process-bar">
-                                                <div
-                                                    className="process-container"
-                                                    style={{
-                                                        width: getwidth(
-                                                            mission.percent
-                                                        ),
-                                                        transition:
-                                                            'width 0.5s',
-                                                    }}
-                                                />
-                                            </div>
-                                            <span className="process-percent">
-                                                {mission.percent}%
-                                            </span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        );
-                    })}
-                </table>
-                <nav>
-                    <ul className="pagination">
-                        <li className="page-item">
-                            <a href="#" className="page-link" onClick={prePage}>
-                                <IoIcons.IoIosArrowBack />
-                            </a>
-                        </li>
-                        {nums.map((n) => {
+                {active === "mission" ?
+                <>
+                    <table>
+                        {records.map((mission) => {
                             return (
-                                <li
-                                    className={`page-item ${
-                                        currentPage === n ? 'active' : ''
-                                    }`}
-                                >
-                                    <a
-                                        href="#"
-                                        className="page-link"
-                                        onClick={() => changePage(n)}
-                                    >
-                                        {n}
-                                    </a>
-                                </li>
+                                <tbody>
+                                    <tr key={mission.id}>
+                                        <td>{mission.name}</td>
+                                        <td>{mission.type}</td>
+                                        <td>
+                                            <input
+                                                type="button"
+                                                value="Open"
+                                                className="openBtn"
+                                            />
+                                            <input
+                                                type="button"
+                                                value="Edit"
+                                                className="borderBtn"
+                                            />
+                                        </td>
+                                        {/* Process bar */}
+                                        <td>
+                                            <div className="process-td">
+                                                <div className="process-bar">
+                                                    <div
+                                                        className="process-container"
+                                                        style={{
+                                                            width: getwidth(
+                                                                mission.percent
+                                                            ),
+                                                            transition:
+                                                                'width 0.5s',
+                                                        }}
+                                                    />
+                                                </div>
+                                                <span className="process-percent">
+                                                    {mission.percent}%
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             );
                         })}
-                        <li className="page-item">
-                            <a
-                                href="#"
-                                className="page-link"
-                                onClick={nextPage}
-                            >
-                                <IoIcons.IoIosArrowForward />
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                    </table>
+                    <nav>
+                        <ul className="pagination">
+                            <li className="page-item">
+                                <a href="#" className="page-link" onClick={prePage}>
+                                    <IoIcons.IoIosArrowBack />
+                                </a>
+                            </li>
+                            {nums.map((n) => {
+                                return (
+                                    <li
+                                        className={`page-item ${
+                                            currentPage === n ? 'active' : ''
+                                        }`}
+                                    >
+                                        <a
+                                            href="#"
+                                            className="page-link"
+                                            onClick={() => changePage(n)}
+                                        >
+                                            {n}
+                                        </a>
+                                    </li>
+                                );
+                            })}
+                            <li className="page-item">
+                                <a
+                                    href="#"
+                                    className="page-link"
+                                    onClick={nextPage}
+                                >
+                                    <IoIcons.IoIosArrowForward />
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </>
+                 : null}
             </div>
         </div>
     );
