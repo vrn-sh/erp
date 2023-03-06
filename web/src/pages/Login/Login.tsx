@@ -91,7 +91,9 @@ export default function Login() {
                                     {pwdIcon}
                                 </button>
                             </div>
-                            <p className="error">{errorPwd} {errorEmail}</p>
+                            <p className="error">
+                                {errorPwd} {errorEmail}
+                            </p>
                             <div className="submit">
                                 <button type="button" onClick={submit}>
                                     LOG IN
