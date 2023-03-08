@@ -12,26 +12,31 @@
 
 //FONT
 @font-face {
-    font-family: "Poppins-Bold";
-    src: local("Poppins-Bold"), url("./fonts/poppins/Poppins-Bold.ttf") format("truetype");
+    font-family: 'Poppins-Bold';
+    src: local('Poppins-Bold'),
+        url('./fonts/poppins/Poppins-Bold.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: "Poppins-Black";
-    src: local("Poppins-Black"), url("./fonts/poppins/Poppins-Black.ttf") format("truetype");
+    font-family: 'Poppins-Black';
+    src: local('Poppins-Black'),
+        url('./fonts/poppins/Poppins-Black.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: "Poppins-Regular";
-    src: local("Poppins-Regular"), url("./fonts/poppins/Poppins-Regular.ttf") format("truetype");
+    font-family: 'Poppins-Regular';
+    src: local('Poppins-Regular'),
+        url('./fonts/poppins/Poppins-Regular.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: "Poppins-Medium";
-    src: local("Poppins-Medium"), url("./fonts/poppins/Poppins-Medium.ttf") format("truetype");
+    font-family: 'Poppins-Medium';
+    src: local('Poppins-Medium'),
+        url('./fonts/poppins/Poppins-Medium.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: "Poppins-Light";
-    src: local("Poppins-Light"), url("./fonts/poppins/Poppins-Light.ttf") format("truetype");
+    font-family: 'Poppins-Light';
+    src: local('Poppins-Light'),
+        url('./fonts/poppins/Poppins-Light.ttf') format('truetype');
 }
