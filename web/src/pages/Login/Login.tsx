@@ -94,7 +94,8 @@ export default function Login() {
                             <p className="error">
                                 {errorPwd} {errorEmail}
                             </p>
-                            <div className="submit">
+                            <div className="login-submit">
+                                <p>Forgot password ? </p>
                                 <button type="button" onClick={submit}>
                                     LOG IN
                                 </button>

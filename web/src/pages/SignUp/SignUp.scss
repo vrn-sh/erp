@@ -190,10 +190,26 @@ label {
 
 .i {
     position: absolute;
-    top: 32%;
-    right: 2%;
-}
-.i:hover {
-    color: #7c44f3;
+    background: transparent;
+    min-width: 1.2em;
+    margin: 0;
+    margin-left: -3rem;
+    color: var(--gray-btn);
+    font-size: 1.2rem;
+    outline: none;
     cursor: pointer;
+}
+
+.i:hover {
+    background: transparent;
+    color: var(--primary-hover-btn);
+}
+
+@media screen and (max-width: 1270px) {
+    .signup-text {
+        display: none;
+    }
+    .signup-form {
+        width: 100%;
+    }
 }

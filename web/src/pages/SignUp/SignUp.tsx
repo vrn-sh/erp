@@ -1,6 +1,7 @@
-import './signup.scss';
 import React, { useState } from 'react';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import * as AiIcons from 'react-icons/ai';
+import './SignUp.scss';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
@@ -81,17 +82,37 @@ export default function SignUp() {
         } */
     };
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [showconfirmpassword, setShowConfirmpassword] = useState(false);
+    const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
+    const [conPwdIcon, setConPwdIcon] = useState(
+        <AiIcons.AiOutlineEyeInvisible />
+    );
+    const [pwdType, setPwdType] = useState('password');
+    const [conPwdType, setConPwdType] = useState('password');
+    const navigate = useNavigate();
 
     const handleShowPassword = () => {
-        setShowPassword(!showPassword);
+        if (pwdType === 'password') {
+            setPwdType('text');
+            setPwdIcon(<AiIcons.AiOutlineEye />);
+        } else {
+            setPwdType('password');
+            setPwdIcon(<AiIcons.AiOutlineEyeInvisible />);
+        }
     };
 
     const handleShowconfirmPassword = () => {
-        setShowConfirmpassword(!showconfirmpassword);
+        if (conPwdType === 'password') {
+            setConPwdType('text');
+            setConPwdIcon(<AiIcons.AiOutlineEye />);
+        } else {
+            setConPwdType('password');
+            setConPwdIcon(<AiIcons.AiOutlineEyeInvisible />);
+        }
     };
     const { errors } = state;
+    const submit = () => {
+        navigate('/dashboard');
+    };
     return (
         <section className="signup-container">
             <div className="signup-text" id="signup-text">
@@ -100,7 +121,7 @@ export default function SignUp() {
                         <h1>voron</h1>
                     </span>
                     <span className="betta">
-                        <h2>Lorem ipsum dolor sit amet consectet. Neque.</h2>
+                        <h2>{import.meta.env.VITE_REACT_APP_SLOGAN}</h2>
                     </span>
                     <span className="charlie">
                         Lorem ipsum dolor sit amet consectetur. Quis platea
@@ -124,11 +145,6 @@ export default function SignUp() {
                                     name="email"
                                     onChange={handleChange}
                                 />
-                                {errors.email.length > 0 && (
-                                    <span style={{ color: 'red' }}>
-                                        {errors.email}
-                                    </span>
-                                )}
                             </div>
                             <div className="input-block">
                                 <label
@@ -138,21 +154,18 @@ export default function SignUp() {
                                     Password
                                 </label>
                                 <input
-                                    type={showPassword ? 'text' : 'password'}
+                                    type={pwdType}
                                     name="password"
                                     id="password"
                                     onChange={handleChange}
                                 />
-                                {errors.password.length > 0 && (
-                                    <span style={{ color: 'red' }}>
-                                        {errors.password}
-                                    </span>
-                                )}
-                                <Icon
-                                    className="i"
-                                    icon={showPassword ? FiEye : FiEyeOff}
+                                <button
                                     onClick={handleShowPassword}
-                                />
+                                    className="i"
+                                    type="button"
+                                >
+                                    {pwdIcon}
+                                </button>
                             </div>
                             <div className="input-block">
                                 <label
@@ -162,29 +175,38 @@ export default function SignUp() {
                                     Confirm Password
                                 </label>
                                 <input
-                                    type={
-                                        showconfirmpassword
-                                            ? 'text'
-                                            : 'password'
-                                    }
+                                    type={conPwdType}
                                     name="confirmpassword"
                                     onChange={handleChange}
                                 />
-                                {errors.confirmpassword.length > 0 && (
-                                    <span style={{ color: 'red' }}>
-                                        {errors.confirmpassword}
-                                    </span>
-                                )}
-                                <Icon
-                                    className="i"
-                                    icon={
-                                        showconfirmpassword ? FiEye : FiEyeOff
-                                    }
+
+                                <button
                                     onClick={handleShowconfirmPassword}
-                                />
+                                    className="i"
+                                    type="button"
+                                >
+                                    {conPwdIcon}
+                                </button>
                             </div>
+                            {errors.email.length > 0 && (
+                                <span style={{ color: 'red' }}>
+                                    {errors.email}
+                                </span>
+                            )}
+                            {errors.password.length > 0 && (
+                                <span style={{ color: 'red' }}>
+                                    {errors.password}
+                                </span>
+                            )}
+                            {errors.confirmpassword.length > 0 && (
+                                <span style={{ color: 'red' }}>
+                                    {errors.confirmpassword}
+                                </span>
+                            )}
                             <div className="submit">
-                                <button type="button">SIGN UP</button>
+                                <button type="button" onClick={submit}>
+                                    SIGN UP
+                                </button>
                             </div>
                             <div className="log-box">
                                 <span>Already have an account? </span>
