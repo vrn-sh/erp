@@ -4,7 +4,8 @@ import Home from './pages/Home/Home';
 import About from './pages/Home/About/About';
 import './global-variable.scss';
 import Login from './pages/Login/Login';
-import SignUp from './pages/SignUp';
+import SignUp from './pages/SignUp/SignUp';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
         </div>
     );

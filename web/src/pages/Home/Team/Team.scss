@@ -1,20 +1,25 @@
 //team
+@mixin non_margin_padding {
+    margin: 0;
+    padding: 0;
+}
 .team {
     display: flex;
     flex-direction: column;
     height: 100vh;
     justify-content: center;
     align-items: center;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
 }
 
 .heading {
     margin: 2rem 0;
-    font-size: 1.5rem
+    font-size: 1.5rem;
 }
 
 .team h1 {
     font-size: 2rem;
+    font-family: "Poppins-Bold";
     color: var(--primary-btn);
 }
 
@@ -24,20 +29,28 @@
     flex-direction: row;
     justify-content: space-evenly;
 }
+
 .carroussel-item {
-    width: 50%;
+    width: 80%;
 }
 
-
+.carroussel-item p {
+    @include non_margin_padding();
+    display: block;
+    word-wrap: break-word;
+    overflow: hidden;
+    max-height: 3.6em;
+    line-height: 1.8em;
+}
 
 .socials a {
     text-decoration: none;
-    color: black;
+    color: var(--gray-btn);
     transition: all 0.2s ease-in-out;
-
 }
 
 .timezone {
+    @include non_margin_padding();
     font-style: italic;
 }
 
@@ -45,46 +58,74 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    font-size: 4rem;
-    color: black;
+    font-size: 3rem;
 }
 .socials a:hover {
     color: var(--primary-btn);
 }
 
 .avatar-wrapper img {
-    width: 20rem;
-    height: 20rem;
+    width: 15rem;
+    height: 15rem;
     border-radius: 100%;
 }
 
 .carrousel button {
+    @include non_margin_padding();
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 5rem;
     background: none;
-    width: 25%;
+    min-width: 50%;
+    width: 15%;
+    height: 50%;
     border: none;
     transition: all 0.2s ease-in-out;
 }
+
 .caroussel-nav-sub {
+    @include non_margin_padding();
     font-size: 1.2rem;
 }
 
 .carrousel button:hover {
-    color: var(--primary-btn);
     cursor: pointer;
+}
+
+.left_btn:hover {
+    background: linear-gradient(90deg, var(--primary-btn), transparent);
+}
+
+.right_btn:hover {
+    background: linear-gradient(90deg, transparent, var(--primary-btn));
 }
 
 /** Fade transitions **/
 .fade-enter {
     opacity: 0;
     transform: scale(0.9);
-  }
-  .fade-enter-active {
+}
+
+.fade-enter-active {
     opacity: 1;
     transform: translateX(0);
     transition: opacity 300ms, transform 300ms;
-  }
+}
+
+@media only screen and (max-width: 800px) {
+    .carrousel {
+        width: 60%;
+        justify-content: center;
+    }
+
+    .carroussel-item h2{
+        @include non_margin_padding();
+    }
+
+    .avatar-wrapper img {
+        width: 10rem;
+        height: 10rem;
+    }
+}

@@ -1,4 +1,3 @@
-
 // About
 .about {
     display: flex;
@@ -8,14 +7,16 @@
     text-align: start;
     margin: 10%;
     height: 100vh;
+    z-index: 10;
 }
 
 .about-main-row {
     display:flex;
-    width: 80%;
+    width: 90%;
     flex-direction: row;
     justify-content: center;
     align-items:center;
+    z-index: 10;
 }
 
 .about-catch {
@@ -29,20 +30,20 @@
 
 .about-catch h1 {
     color: var(--primary-btn);
-    font-family: "Poppins";
+    font-family: 'Poppins';
     font-size: 3rem;
     width: fit-content;
+    margin: 0;
 }
 
-
 .about-catch button {
-    width: 50%;
+    width: 30%;
     font-size: 1.5rem;
     border: none;
     background-color: var(--primary-btn);
     color: white;
     font-family: "Poppins";
-    padding: 0.9rem;
+    padding: 0.5rem;
     border-radius: 5px;
 }
 
@@ -56,26 +57,67 @@
 
 .about li {
     font-family: "Poppins-Medium";
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-align: justify;
 }
+
 .about p {
     font-family: "Poppins-Medium";
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-align: justify;
 }
 
 .about-more {
     width: 90%;
+    margin-top: 1rem;
 }
 
 .about-more h2 {
-    font-family: "Poppins";
-    font-size: 1.5rem;
+    font-family: "Poppins-Medium";
+    font-size: 1.2rem;
     margin: 0;
     padding: 0;
-    color: var(--primary-btn)
+    color: var(--primary-btn);
 }
+
+.about-more p {
+    font-family: "Poppins-Medium";
+    font-size: 1.2rem;
+}
+
 .about span {
     color: var(--primary-btn);
+}
+
+@media only screen and (max-width: 700px) {
+    .about-more {
+        display: none;
+    }
+    .about-main-row {
+        flex-direction: column;
+    }
+    .about-catch, .about-bullets {
+        width: 90%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .about-bullets ul{
+        list-style: none;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .about-catch h1 {
+        font-size: 1.5rem;
+    }
+    .about-catch {
+        width: 95%;
+        justify-content: center;
+        align-items: center;
+    }
+    .about-bullets {
+        // display: none;
+    }
 }
