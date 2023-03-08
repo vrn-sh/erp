@@ -4,6 +4,7 @@ html {
 
 section {
     background-color: var(--basic-bg);
+    justify-content: center;
 }
 
 // Home
@@ -13,6 +14,7 @@ section {
     height: 100vh;
     justify-content: center;
     align-items: center;
+    background-color: var(--basic-bg);
 }
 
 .loader {
@@ -80,4 +82,21 @@ h4 {
     font-family: 'Poppins-Regular';
     font-weight: 600;
     font-size: 25px;
+}
+
+@media only screen and (max-width: 480px) {
+    .loader:after, .loader:before, .loader {
+        background:none;
+        filter: none;
+    }
+
+    .home-container h1{
+        font-size: 3rem;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .home-container h1{
+        font-size: 4rem;
+    }
 }

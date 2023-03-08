@@ -1,8 +1,6 @@
 import './signup.scss';
 import React, { useState } from 'react';
-import { Icon } from 'react-icons-kit';
-import { eyeOff } from 'react-icons-kit/feather/eyeOff';
-import { eye } from 'react-icons-kit/feather/eye';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
@@ -152,7 +150,7 @@ export default function SignUp() {
                                 )}
                                 <Icon
                                     className="i"
-                                    icon={showPassword ? eye : eyeOff}
+                                    icon={showPassword ? FiEye : FiEyeOff}
                                     onClick={handleShowPassword}
                                 />
                             </div>
@@ -179,7 +177,9 @@ export default function SignUp() {
                                 )}
                                 <Icon
                                     className="i"
-                                    icon={showconfirmpassword ? eye : eyeOff}
+                                    icon={
+                                        showconfirmpassword ? FiEye : FiEyeOff
+                                    }
                                     onClick={handleShowconfirmPassword}
                                 />
                             </div>
