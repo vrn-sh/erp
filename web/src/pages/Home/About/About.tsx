@@ -19,6 +19,7 @@ export default function About() {
                     </ul>
                 </div>
             </div>
+
             <div className="about-more">
                 {strings.more.map((item) => (
                     <div>

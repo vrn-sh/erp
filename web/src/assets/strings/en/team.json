@@ -6,22 +6,43 @@
             "name": "Matteo",
             "avatar": "https://avatars.githubusercontent.com/u/60545269?v=4",
             "description": "back-end engineer",
-            "timezone": "gmt",
+            "timezone": "GMT",
             "github": "https://github.com/TheOrionsB"
         },
         {
             "name": "djnn",
             "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
             "description": "tech lead  & offensive security enthusiast - PGP: 0xA43B3C34B2FF11CF",
-            "timezone": "utc+9",
+            "timezone": "UTC+9",
             "github": "https://github.com/bogdzn"
         },
         {
             "name": "naadi",
             "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
             "description": "irregular back-end engineer",
-            "timezone": "utc+9",
+            "timezone": "UTC+9",
             "github": "https://github.com/lambdina"
+        },
+        {
+            "name": "Blacky",
+            "avatar": "https://avatars.githubusercontent.com/u/49866160?v=4",
+            "description": "back-end engineer",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "nathan",
+            "avatar": "https://avatars.githubusercontent.com/u/44578736?v=4",
+            "description": "occasional contributor",
+            "timezone": "GMT+1",
+            "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "Clara",
+            "avatar": "https://avatars.githubusercontent.com/u/56248408?v=4",
+            "description": "front-end engineer ",
+            "timezone": "UTC+9",
+            "github": "https://github.com/claraxuxu"
         },
         {
             "name": "Camelia",
@@ -29,27 +50,6 @@
             "description": "front-end engineer",
             "timezone": "GMT+1",
             "github": "https://github.com/samacamelia"
-        },
-        {
-            "name": "Blacky",
-            "avatar": "https://avatars.githubusercontent.com/u/49866160?v=4",
-            "description": "back-end engineer",
-            "timezone": "gmt+1",
-            "github": "https://github.com/TheOrionsB"
-        },
-        {
-            "name": "Clara",
-            "avatar": "https://avatars.githubusercontent.com/u/56248408?v=4",
-            "description": "undergraduate student in computer science",
-            "timezone": "utc+9",
-            "github": "https://github.com/claraxuxu"
-        },
-        {
-            "name": "nathan",
-            "avatar": "https://avatars.githubusercontent.com/u/44578736?v=4",
-            "description": "occasional contributor",
-            "timezone": "gmt+1",
-            "github": "https://github.com/TheOrionsB"
         }
     ]
 }
