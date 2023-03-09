@@ -77,7 +77,7 @@ function DashboardMission(props: Props) {
                         <table>
                             {records.map((mission) => {
                                 return (
-                                    <tbody>
+                                    <tbody key={mission.id}>
                                         <tr key={mission.id}>
                                             <td>{mission.name}</td>
                                             <td>{mission.type}</td>
@@ -132,6 +132,7 @@ function DashboardMission(props: Props) {
                                 {nums.map((n) => {
                                     return (
                                         <li
+                                            key={n}
                                             className={`page-item ${
                                                 currentPage === n
                                                     ? 'active'

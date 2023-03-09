@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
+import axios from 'axios';
+import { fontSize } from '@mui/system';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
 interface SignUpState {
+    username: string;
     email: string;
     password: string;
     confirmpassword: string;
     errors: {
+        username: string;
         email: string;
         password: string;
         confirmpassword: string;
@@ -17,16 +21,26 @@ interface SignUpState {
 }
 
 export default function SignUp() {
+    const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
+    const [conPwdIcon, setConPwdIcon] = useState(
+        <AiIcons.AiOutlineEyeInvisible />
+    );
+    const [pwdType, setPwdType] = useState('password');
+    const [conPwdType, setConPwdType] = useState('password');
     const [state, setState] = useState<SignUpState>({
+        username: '',
         email: '',
         password: '',
         confirmpassword: '',
         errors: {
+            username: '',
             email: '',
             password: '',
             confirmpassword: '',
         },
     });
+    const navigate = useNavigate();
+    const { errors } = state;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -36,6 +50,11 @@ export default function SignUp() {
             case 'email':
                 errors.email = Regex.test(value) ? '' : 'Email is not valid!';
                 break;
+            case 'username':
+                errors.username =
+                    value.length < 5
+                        ? 'Username must be 5 characters long!'
+                        : '';
             case 'password':
                 errors.password =
                     value.length < 8
@@ -53,42 +72,37 @@ export default function SignUp() {
         }
         setState({ ...state, errors, [name]: value });
     };
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
 
-        // Créez un objet pour stocker les données du formulaire
-        // const formData = {
-        //     email: state.email,
-        //     password: state.password,
-        //     confirmPassword: state.confirmpassword,
-        // };
-
-        // Envoyer une requête POST pour envoyer les données du formulaire à l'API
-        /*  try {
-          const response = await fetch('', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-          });
-          if (response.ok) {
-            // TODO: Integrate login
-          } else {
-            // TODO: Integrate error handling
-          }
-        } catch (error) {
-          // TODO: Integrate error handling
-        } */
+    const submit = async () => {
+        const { username, email, password } = state;
+        if (email !== '' && password.length > 7 && username.length > 4) {
+            try {
+                console.log('username', username);
+                await axios
+                    .post('http://localhost:8000/register', {
+                        auth: {
+                            username: username,
+                            email: email,
+                            password: password,
+                        },
+                    })
+                    .then((response) => {
+                        navigate('/dashboard');
+                    })
+                    .catch((error) => {
+                        setState({
+                            ...state,
+                            errors: {
+                                ...state.errors,
+                                email: 'Email or username already exists!',
+                            },
+                        });
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        }
     };
-
-    const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
-    const [conPwdIcon, setConPwdIcon] = useState(
-        <AiIcons.AiOutlineEyeInvisible />
-    );
-    const [pwdType, setPwdType] = useState('password');
-    const [conPwdType, setConPwdType] = useState('password');
-    const navigate = useNavigate();
 
     const handleShowPassword = () => {
         if (pwdType === 'password') {
@@ -109,33 +123,40 @@ export default function SignUp() {
             setConPwdIcon(<AiIcons.AiOutlineEyeInvisible />);
         }
     };
-    const { errors } = state;
-    const submit = () => {
-        navigate('/dashboard');
-    };
+
     return (
         <section className="signup-container">
             <div className="signup-text" id="signup-text">
-                <p className="text-box">
-                    <span className="alpha">
-                        <h1>voron</h1>
-                    </span>
-                    <span className="betta">
-                        <h2>{import.meta.env.VITE_REACT_APP_SLOGAN}</h2>
-                    </span>
-                    <span className="charlie">
+                <div>
+                    <h2 className="alpha">voron</h2>
+                    <h1>{import.meta.env.VITE_REACT_APP_SLOGAN}</h1>
+                    <span className="no-bold">
                         Lorem ipsum dolor sit amet consectetur. Quis platea
                         lectus.
                     </span>
-                </p>
+                </div>
             </div>
+
             <div className="signup-form" id="signup-form">
                 <div className="wrapper-log">
                     <div className="form-wrapper-log">
                         <span className="welcom">
                             <h2>Welcome to voron</h2>
                         </span>
-                        <form onSubmit={handleSubmit} noValidate>
+                        <form onSubmit={submit} noValidate>
+                            <div className="input-block">
+                                <label
+                                    className="placeholder"
+                                    htmlFor="username"
+                                >
+                                    Username
+                                </label>
+                                <input
+                                    type="text"
+                                    name="username"
+                                    onChange={handleChange}
+                                />
+                            </div>
                             <div className="input-block">
                                 <label className="placeholder" htmlFor="email">
                                     Email Address
@@ -179,7 +200,6 @@ export default function SignUp() {
                                     name="confirmpassword"
                                     onChange={handleChange}
                                 />
-
                                 <button
                                     onClick={handleShowconfirmPassword}
                                     className="i"
@@ -188,21 +208,41 @@ export default function SignUp() {
                                     {conPwdIcon}
                                 </button>
                             </div>
-                            {errors.email.length > 0 && (
-                                <span style={{ color: 'red' }}>
-                                    {errors.email}
-                                </span>
-                            )}
-                            {errors.password.length > 0 && (
-                                <span style={{ color: 'red' }}>
-                                    {errors.password}
-                                </span>
-                            )}
-                            {errors.confirmpassword.length > 0 && (
-                                <span style={{ color: 'red' }}>
-                                    {errors.confirmpassword}
-                                </span>
-                            )}
+
+                            <div className="error">
+                                {errors.username.length > 0 && (
+                                    <>
+                                        <span style={{ color: 'red' }}>
+                                            {errors.username}
+                                        </span>
+                                        <br />
+                                    </>
+                                )}
+                                {errors.email.length > 0 && (
+                                    <>
+                                        <span style={{ color: 'red' }}>
+                                            {errors.email}
+                                        </span>
+                                        <br />
+                                    </>
+                                )}
+                                {errors.password.length > 0 && (
+                                    <>
+                                        <span style={{ color: 'red' }}>
+                                            {errors.password}
+                                        </span>
+                                        <br />
+                                    </>
+                                )}
+                                {errors.confirmpassword.length > 0 && (
+                                    <>
+                                        <span style={{ color: 'red' }}>
+                                            {errors.confirmpassword}
+                                        </span>
+                                        <br />
+                                    </>
+                                )}
+                            </div>
                             <div className="submit">
                                 <button type="button" onClick={submit}>
                                     SIGN UP
