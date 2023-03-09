@@ -48,17 +48,17 @@ export default function Login() {
             try {
                 await axios
                     .post('http://localhost:8000/login', {
-                        email: email,
+                        email,
                         password: pwd,
                     })
-                    .then((response) => {
+                    .then(() => {
                         navigate('/dashboard');
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         setErrorEmail('Invalid email or password!');
                     });
             } catch (error) {
-                console.log(error);
+                setErrorEmail('Invalid email or password!');
             }
         }
     };

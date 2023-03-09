@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
 import axios from 'axios';
-import { fontSize } from '@mui/system';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
@@ -45,7 +44,6 @@ export default function SignUp() {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const { name, value } = event.target;
-        const { errors } = state;
         switch (name) {
             case 'email':
                 errors.email = Regex.test(value) ? '' : 'Email is not valid!';
@@ -55,6 +53,7 @@ export default function SignUp() {
                     value.length < 5
                         ? 'Username must be 5 characters long!'
                         : '';
+                break;
             case 'password':
                 errors.password =
                     value.length < 8
@@ -77,19 +76,18 @@ export default function SignUp() {
         const { username, email, password } = state;
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
-                console.log('username', username);
                 await axios
                     .post('http://localhost:8000/register', {
                         auth: {
-                            username: username,
-                            email: email,
-                            password: password,
+                            username,
+                            email,
+                            password,
                         },
                     })
-                    .then((response) => {
+                    .then(() => {
                         navigate('/dashboard');
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         setState({
                             ...state,
                             errors: {
@@ -99,7 +97,13 @@ export default function SignUp() {
                         });
                     });
             } catch (error) {
-                console.log(error);
+                setState({
+                    ...state,
+                    errors: {
+                        ...state.errors,
+                        email: 'Email or username already exists!',
+                    },
+                });
             }
         }
     };
