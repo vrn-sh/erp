@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'trench',
     "phonenumber_field",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -104,7 +105,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'api.management.middlewares.set_secure_headers',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+ALLOWED_HOSTS=['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'core.urls'
 
