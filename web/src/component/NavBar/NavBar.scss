@@ -15,10 +15,10 @@
 
 .site-title {
     font-size: 2rem;
-    font-family: "Poppins-Bold";
+    font-family: 'Poppins-Bold';
     text-decoration: none;
     color: var(--black);
-    margin: 0;
+    margin: 0 !important;
 }
 
 .nav ul {
@@ -43,11 +43,10 @@
 .nav ul a {
     color: inherit;
     text-decoration: none;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
     height: 100%;
     display: flex;
     align-items: center;
-    padding: .25rem;
 }
 
 .nav li {
@@ -56,17 +55,16 @@
 
 .nav li:hover:not(.login) {
     background-color: #eae6ee;
-    transition: .5s ease-in-out;
+    transition: 0.5s ease-in-out;
 }
 
 .login {
     color: var(--white);
     background-color: var(--primary-btn);
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 0 1rem;
 }
 
-.login:hover{
+.login:hover {
     background-color: var(--primary-hover-btn);
-    transition: .5s ease-in-out;
+    transition: 0.5s ease-in-out;
 }

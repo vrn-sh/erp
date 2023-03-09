@@ -4,6 +4,7 @@ html {
 
 section {
     background-color: var(--basic-bg);
+    justify-content: center;
 }
 
 // Home
@@ -13,10 +14,11 @@ section {
     height: 100vh;
     justify-content: center;
     align-items: center;
+    background-color: var(--basic-bg);
 }
 
 .loader {
-    position:absolute;
+    position: absolute;
     width: 70%;
     height: 80%;
     top: 40%;
@@ -24,7 +26,7 @@ section {
     justify-content: center;
     border-radius: 50%;
     filter: blur(50);
-    background: linear-gradient(15deg, transparent, transparent 90%, #7C44F3);
+    background: linear-gradient(15deg, transparent, transparent 90%, #7c44f3);
 }
 
 .loader:before {
@@ -47,7 +49,7 @@ section {
     left: 0px;
     right: 0px;
     bottom: 0px;
-    background: linear-gradient(5deg, transparent, transparent 40%, #7C44F3);
+    background: linear-gradient(5deg, transparent, transparent 40%, #7c44f3);
     border-radius: 50%;
     z-index: 1;
     filter: blur(50px);
@@ -58,7 +60,8 @@ section {
     flex-direction: column;
 }
 
-.home-container h1, h4 {
+.home-container h1,
+h4 {
     color: var(--black);
     z-index: 3;
 }
@@ -67,8 +70,8 @@ section {
     color: var(--primary-btn);
 }
 
-.home-container h1{
-    font-family: "Poppins-Bold";
+.home-container h1 {
+    font-family: 'Poppins-Bold';
     font-weight: bold;
     font-size: 8rem;
     padding: 0;
@@ -76,7 +79,24 @@ section {
 }
 
 .home-container h4 {
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
     font-weight: 600;
     font-size: 25px;
+}
+
+@media only screen and (max-width: 480px) {
+    .loader:after, .loader:before, .loader {
+        background:none;
+        filter: none;
+    }
+
+    .home-container h1{
+        font-size: 3rem;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .home-container h1{
+        font-size: 4rem;
+    }
 }

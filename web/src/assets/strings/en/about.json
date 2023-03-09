@@ -2,12 +2,7 @@
     "catch": "You a pentester yet ?",
     "catchHighlight": "A pentester's team workflow enhancer that's:",
     "catchCTA": "Join voron",
-    "bullets": [
-        "Efficient",
-        "Fast",
-        "Easy to use",
-        "Built for your workflow"
-    ],
+    "bullets": ["Efficient", "Fast", "Easy to use", "Built for your workflow"],
     "more": [
         {
             "title": "Voron ?",
