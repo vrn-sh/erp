@@ -60,7 +60,7 @@ class IsOwner(permissions.BasePermission):
             return obj.auth.id == request.user.id # type: ignore
 
         if isinstance(obj, Notes):
-            return obj.author.auth.id == request.user.id
+            return obj.pentester.id == request.user.id
 
         logging.warning('IsOwner permissions: Object <%s> has not reached anything',
                 str({type(obj)}))

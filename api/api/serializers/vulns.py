@@ -1,40 +1,29 @@
-from datetime import datetime
-
 from rest_framework import serializers
 
 from api.models.vulns import Notes, VulnType, ImageModel, Vulnerability
-from api.models import Pentester, Admin, Auth
 from api.serializers import create_instance, AuthSerializer
-from api.serializers.utils import get_instance
 
 
 class NotesSerializer(serializers.ModelSerializer):
-    auth = AuthSerializer(many=False, read_only=True)
+    author = AuthSerializer(many=False, read_only=True)
     """
         Should looks like:
         {
             "content": "blabla",
-            "auth": [
-                "id": [id of the author]
-            ]
+            "author": {
+                "id": [id of the author],
+                "first_name": ...,
+                "last_name": ...,
+                "username": ...
+            }
         }
     """
 
     class Meta:
         fields = [
-            'id', 'content', 'creation_date', 'last_updated_date', 'auth'
+            'id', 'content', 'creation_date', 'last_updated_date', 'author'
         ]
         model = Notes
-
-    def update(self, instance, validated_data):
-        if 'auth' in validated_data:
-            nested_serializer = self.fields['auth']
-            nested_instance = get_instance(AuthSerializer, validated_data['auth'].get('id'), Auth)
-            nested_data = validated_data.pop('auth')
-            nested_serializer.update(nested_instance, nested_data)
-        if "last_updated_date" not in validated_data:
-            validated_data["last_updated_date"] = datetime.now()
-        return super().update(instance, validated_data)
 
 
 class VulnTypeSerializer(serializers.ModelSerializer):
@@ -64,11 +53,10 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         model = Vulnerability
 
     def create(self, validated_data):
-        if "creation_date" not in validated_data:
-            validated_data["creation_date"] = datetime.now()
-            validated_data["last_updated_date"] = datetime.now()
-        if "last_editor" not in validated_data:
-            validated_data["last_editor"] = validated_data["pentester"]
+        '''
+            We are not using "nested serializer" for vuln_type because there is no use.
+            In fact, a new vuln type won't happen often so here it's read only
+        '''
         validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
         if "images" in validated_data:
             images = create_instance(ImageSerializer, validated_data, "images")
@@ -76,58 +64,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if "last_updated_date" not in validated_data:
-            validated_data["last_updated_date"] = datetime.now()
         validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
-
-        if "images" in validated_data:
-            nested_serializer = self.fields['images']
-            nested_instance = instance.images
-            nested_data = validated_data.pop('images')
-            nested_serializer.update(nested_instance, nested_data)
-        return super().update(instance, validated_data)
-
-class VulnTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = [
-            'id', 'name', 'description'
-        ]
-        model = VulnType
-
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = [
-            'image'
-        ]
-        model = ImageModel
-
-class VulnerabilitySerializer(serializers.ModelSerializer):
-
-    images = ImageSerializer(many=True, read_only=False)
-
-    class Meta:
-        model = Vulnerability
-        fields = [
-            'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type'
-        ]
-
-    def create(self, validated_data):
-        if "creation_date" not in validated_data:
-            validated_data["creation_date"] = datetime.now()
-            validated_data["last_updated_date"] = datetime.now()
-        if "last_editor" not in validated_data:
-            validated_data["last_editor"] = validated_data["author"]
-        validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
-        if "images" in validated_data:
-            images = create_instance(ImageSerializer, validated_data, "images")
-            return Vulnerability.objects.create(images=images, **validated_data)
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        if "last_updated_date" not in validated_data:
-            validated_data["last_updated_date"] = datetime.now()
-        validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
-
         if "images" in validated_data:
             nested_serializer = self.fields['images']
             nested_instance = instance.images

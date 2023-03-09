@@ -32,6 +32,7 @@ class NotesTestCase(TransactionTestCase):
             format='json',
             data={'content': '#Exploit 1\n\nThis is an exploit.', 'author': self.user.id}
         )
+        warn(f"create note, response.data:{response.data}\n\n")
         self.assertEqual(response.status_code, 201)
 
         id: str = response.data['id']
@@ -40,6 +41,7 @@ class NotesTestCase(TransactionTestCase):
             format='json',
             data={'content': "It wasn't an exploit after all...", "author": self.user.id}
         )
+        warn(f"update note, response data:{response.data}\n\n")
 
         self.assertEqual(response.status_code, 200)
 

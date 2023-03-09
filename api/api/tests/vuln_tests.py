@@ -6,6 +6,8 @@ from api.models import Admin, Pentester
 from api.tests.helpers import create_random_pentester, create_random_admin, random_user_password, \
     login_as
 
+from warnings import warn
+
 class VulnTestCase(TransactionTestCase):
 
     def setUp(self) -> None:
@@ -24,7 +26,7 @@ class VulnTestCase(TransactionTestCase):
         auth_token: str = login_as(self.user.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
         response = client.post(
-            'vulnerability',
+            '/vulnerability',
             format='json',
             data={
                 'author': self.user.id,
@@ -32,6 +34,7 @@ class VulnTestCase(TransactionTestCase):
                 'vuln_type': 'XSS'
             }
         )
+        warn(f"test create vuln:{response.content}")
         self.assertEqual(response.status_code, 201)
         vuln_id = response.data['id']
         response = client.patch(
@@ -42,4 +45,5 @@ class VulnTestCase(TransactionTestCase):
                 'last_editor': self.user.id
             }
         )
+        #  warn(f"test update vuln: {response.data}")
         self.assertEqual(response.status_code, 200)
