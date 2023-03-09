@@ -6,6 +6,7 @@ import './global-variable.scss';
 import Login from './pages/Login/Login';
 import {SignUp} from './pages/Register/SignUp';
 import Dashboard from './pages/Dashboard/Dashboard';
+import Setting from './pages/Setting/setting';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/setting" element={<Setting />} />
             </Routes>
         </div>
     );
