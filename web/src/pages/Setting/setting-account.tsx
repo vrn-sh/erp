@@ -44,7 +44,7 @@ export default function SettingAccount() {
     return (
           <div className='container'>
             <div>
-              <p>Avatar</p>
+              <p>Avatar </p>
               {photoUrl ? (
                 <img
                   src={photoUrl}
