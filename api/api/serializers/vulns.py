@@ -45,19 +45,23 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Vulnerability
         fields = [
-            'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type'
+            'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type', 'cvss'
         ]
 
     def create(self, validated_data):
+
         if "creation_date" not in validated_data:
             validated_data["creation_date"] = datetime.now()
             validated_data["last_updated_date"] = datetime.now()
+
         if "last_editor" not in validated_data:
             validated_data["last_editor"] = validated_data["author"]
+
         validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
         if "images" in validated_data:
             images = create_instance(ImageSerializer, validated_data, "images")
             return Vulnerability.objects.create(images=images, **validated_data)
+
         return super().create(validated_data)
 
     def update(self, instance, validated_data):

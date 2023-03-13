@@ -9,9 +9,18 @@ def add_vulnerability_types(apps, schema_editor):
     VulnType = apps.get_model('api', 'VulnType')
     db_alias = schema_editor.connection.alias
     VulnType.objects.using(db_alias).bulk_create([
-        VulnType(name="DoS"),
-        VulnType(name="Code execution"),
-        VulnType(name="Overflow"),
+        VulnType(
+            name="Denial of Service",
+            description='Vulnerability allowing the attacker to make a resource unavailable.',
+            ),
+        VulnType(
+            name="Remote Code execution",
+
+            ),
+        VulnType(
+            name="Overflow",
+            description=
+            ),
         VulnType(name="Memory Corruption"),
         VulnType(name="SQL Injection"),
         VulnType(name="XSS"),
