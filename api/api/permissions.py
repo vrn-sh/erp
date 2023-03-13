@@ -8,7 +8,7 @@ from typing import List
 
 from rest_framework import permissions
 from api.models import Auth, Pentester, Admin
-from api.models.vulns import Notes
+from api.models.vulns import Notes, Vulnerability
 
 
 class MethodOnly(permissions.BasePermission):
@@ -59,8 +59,8 @@ class IsOwner(permissions.BasePermission):
         if isinstance(obj, (Pentester, Admin)):
             return obj.auth.id == request.user.id # type: ignore
 
-        if isinstance(obj, Notes):
-            return obj.pentester.id == request.user.id
+        if isinstance(obj, Notes, Vulnerability):
+            return obj.author.id == request.user.id
 
         logging.warning('IsOwner permissions: Object <%s> has not reached anything',
                 str({type(obj)}))
@@ -91,7 +91,7 @@ class IsNotAdmin(permissions.BasePermission):
         return not user_has_role(request, 'admin')
 
 
-class Ispentester(permissions.BasePermission):
+class IsPentester(permissions.BasePermission):
     """checks if user IS a pentester"""
     def has_permission(self, request, _):
         return user_has_role(request, 'pentester')
@@ -100,7 +100,7 @@ class Ispentester(permissions.BasePermission):
         return user_has_role(request, 'pentester')
 
 
-class IsNotpentester(permissions.BasePermission):
+class IsNotPentester(permissions.BasePermission):
     """checks if user is NOT a pentester"""
     def has_permission(self, request, _):
         return not user_has_role(request, 'pentester')

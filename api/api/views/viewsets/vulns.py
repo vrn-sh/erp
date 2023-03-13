@@ -1,9 +1,11 @@
+from typing import List
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
 
 from api.backends import EmailBackend
-from api.models.vulns import Notes, VulnType, Vulnerability
-from api.permissions import IsAdmin, IsOwner
+from api.models import get_user_model
+from api.models.vulns import ImageModel, Notes, VulnType, Vulnerability
+from api.permissions import IsAdmin, IsOwner, IsPentester
 from api.serializers import AuthSerializer
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
@@ -22,18 +24,17 @@ class NotesViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
     def create(self, request, *args, **kwargs):
         author = EmailBackend().get_user_by_email(request.user.email)
-        serialized_author = AuthSerializer(data=author, read_only=True, many=False)
-        if serialized_author.is_valid():
-            print(serialized_author.errors)
-            request.data["author"] = serialized_author.validated_data
-            request.data["last_editor"] = serialized_author.validated_data
+        user_model = get_user_model(author)
+
+        request.data['author_id'] = user_model.id
+        request.data['last_editor'] = user_model.id
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         last_editor = EmailBackend().get_user_by_email(request.user.email)
-        serialized_last_editor = AuthSerializer(data=last_editor, read_only=True, many=False)
-        if serialized_last_editor.is_valid():
-            request.data["last_editor"] = serialized_last_editor.data
+        user_model = get_user_model(last_editor)
+
+        request.data["last_editor"] = last_editor.id
         return super().update(request, *args, **kwargs)
 
 class VulnTypeViewset(viewsets.ModelViewSet):
@@ -51,6 +52,37 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         CRUD to manage vulnerabilities.
     """
     queryset = Vulnerability.objects.all()
-    permissions = [permissions.IsAuthenticated & IsOwner] # FIXME(adina): add is PartOfTheTeam
+    permissions = [permissions.IsAuthenticated & IsOwner & IsPentester] # FIXME(adina): add is PartOfTheTeam
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
+
+    @staticmethod
+    def set_images(data: dict[str, str]) -> List[ImageModel]:
+        """gets or creates image from request data"""
+        images: List[ImageModel] = []
+
+        for img_data in data['images']:
+            images.append(Image.objects.get_or_create(**image_data)) # FIXME(adina): make this suck less
+
+        return images
+
+    def create(self, request, *args, **kwargs):
+        author = EmailBackend().get_user_by_email(request.user.email)
+        user_model = get_user_model(author)
+
+        request.data['author_id'] = user_model.id
+        request.data['last_editor'] = user_model.id
+        if 'images' in request.data:
+            request.data['images'] = [i.id for i in self.set_images(request.data)]
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        author = EmailBackend().get_user_by_email(request.user.email)
+        user_model = get_user_model(author)
+
+        request.data['last_editor'] = user_model.id
+        if 'images' in request.data:
+            request.data['images'] = [i.id for i in self.set_images(request.data)]
+        return super().update(request, *args, **kwargs)
+
+

@@ -29,7 +29,6 @@ class VulnTestCase(TransactionTestCase):
             '/vulnerability',
             format='json',
             data={
-                'author': self.user.id,
                 'title': 'String Error Terminatoin', # Typo made on purpose
                 'vuln_type': 'XSS'
             }
