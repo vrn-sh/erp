@@ -126,3 +126,14 @@ class Pentester(models.Model):
     id = models.AutoField(primary_key=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now=True, editable=False)
+
+
+AuthenticatedUser = Pentester | Admin
+
+
+def get_user_model(auth: Auth) -> AuthenticatedUser:
+    """fetches User model from base authentication model"""
+
+    if auth.role == 1: # is pentester
+        return Pentester.objects.get(auth_id=auth.id)
+    return Admin.objects.get(auth_id=auth.id)
