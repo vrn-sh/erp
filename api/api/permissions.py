@@ -91,7 +91,7 @@ class IsNotAdmin(permissions.BasePermission):
         return not user_has_role(request, 'admin')
 
 
-class Ispentester(permissions.BasePermission):
+class IsPentester(permissions.BasePermission):
     """checks if user IS a pentester"""
     def has_permission(self, request, _):
         return user_has_role(request, 'pentester')
@@ -100,7 +100,7 @@ class Ispentester(permissions.BasePermission):
         return user_has_role(request, 'pentester')
 
 
-class IsNotpentester(permissions.BasePermission):
+class IsNotPentester(permissions.BasePermission):
     """checks if user is NOT a pentester"""
     def has_permission(self, request, _):
         return not user_has_role(request, 'pentester')

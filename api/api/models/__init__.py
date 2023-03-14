@@ -8,9 +8,11 @@ The following models are present here:
 """
 
 import os
+from typing import List
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from argon2 import PasswordHasher
+from django.db.models.deletion import CASCADE
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.mail import send_mail
 
@@ -126,3 +128,25 @@ class Pentester(models.Model):
     id = models.AutoField(primary_key=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now=True, editable=False)
+
+
+class Team(models.Model):
+    """Model for representing a team of pentester, with one manager"""
+    class Meta:
+        verbose_name = 'Team'
+        verbose_name_plural = 'Teams'
+        ordering = ['name']
+
+    REQUIRED_FIELDS = ['name', 'owner', 'members']
+
+    name: models.CharField = models.CharField(max_length=32)
+    owner: Admin = models.OneToOneField(Admin, on_delete=CASCADE)
+    members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
+
+
+AuthenticatedUser = Admin | Pentester
+
+def get_user_model(user: Auth) -> AuthenticatedUser:
+    if user.role == 1:
+        return Pentester.objects.get(auth_id=user.id)
+    return Admin.objects.get(auth_id=user.id)

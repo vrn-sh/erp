@@ -3,8 +3,8 @@
 from rest_framework import serializers
 from argon2 import PasswordHasher
 
-from api.models import Admin, Pentester, Auth
-from api.serializers.utils import create_instance
+from api.models import Admin, Pentester, Auth, Team
+from api.serializers.utils import create_instance, create_multiple_instances
 
 class AuthSerializer(serializers.ModelSerializer):
     """Serializer for Base Auth model (should only be used nested in other serializers)"""
@@ -79,3 +79,26 @@ class AdminSerializer(serializers.ModelSerializer):
             nested_data = validated_data.pop('auth')
             nested_serializer.update(nested_instance, nested_data)
         return super().update(instance, validated_data)
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    """nested serializer for a Team (which allows Pentester creation)"""
+    class Meta:
+        model = Team
+        fields = '__all__'
+
+    def create(self, validated_data: dict[str, str]):
+        pentesters = create_multiple_instances(PentesterSerializer, validated_data, 'pentesters')
+        return Team.objects.create(pentesters=pentesters, **validated_data)
+
+    def to_representation(self, instance):
+        owner = instance.pop('owner')
+        serializer = AdminSerializer(owner)
+        instance["owner"] = serializer.data
+
+        if 'pentesters' in instance:
+            pentesters = instance.pop('pentesters')
+            serializer = PentesterSerializer(pentesters, many=True, read_only=True)
+            instance['pentesters'] = serializer.data
+
+        return super().to_representation(instance)

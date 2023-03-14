@@ -11,12 +11,42 @@
 from typing import List
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.views import Response
+from api.backends import EmailBackend
 
-from api.serializers import AdminSerializer, PentesterSerializer, AuthSerializer
+from api.serializers import AdminSerializer, PentesterSerializer, AuthSerializer, TeamSerializer
 
-from api.models import Admin, Auth, Pentester
+from api.models import Admin, Auth, Pentester, Team, get_user_model
 
-from api.permissions import IsAdmin, IsOwner, PostOnly
+from api.permissions import IsAdmin, IsOwner, PostOnly, ReadOnly
+
+
+class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+    """
+        Create and manage teams
+    """
+
+    queryset = Team.objects.all()
+    permission_classes = [permissions.IsAuthenticated & IsAdmin | \
+            permissions.IsAuthenticated & ReadOnly]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = TeamSerializer
+
+
+    def create(self, request, *args, **kwargs):
+        owner = EmailBackend().get_user_by_email(request.user.email)
+        assert owner is not None
+
+        owner_model = get_user_model(owner)
+        request.data['owner'] = owner_model.id
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if 'owner' in request.data:
+            return Response({'error': 'cannot change owner once it is set!'}, status=HTTP_400_BAD_REQUEST)
+
+        return super().update(request, *args, **kwargs)
 
 
 class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
