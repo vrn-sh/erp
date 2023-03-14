@@ -6,19 +6,18 @@ from api.backends import EmailBackend
 from api.models import get_user_model
 from api.models.vulns import ImageModel, Notes, VulnType, Vulnerability
 from api.permissions import IsAdmin, IsOwner, IsPentester
-from api.serializers import AuthSerializer
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
 
 
-class NotesViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
 
     """
         CRUD for notes object
     """
 
     queryset = Notes.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsAdmin | IsOwner] # FIXME(adina): add isPartOfTheTeam
+    permission_classes = [permissions.IsAuthenticated & IsAdmin | IsOwner]  # FIXME(adina): add isPartOfTheTeam
     authentication_classes = [TokenAuthentication]
     serializer_class = NotesSerializer
 
@@ -34,8 +33,9 @@ class NotesViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         last_editor = EmailBackend().get_user_by_email(request.user.email)
         user_model = get_user_model(last_editor)
 
-        request.data["last_editor"] = last_editor.id
+        request.data["last_editor"] = user_model.id
         return super().update(request, *args, **kwargs)
+
 
 class VulnTypeViewset(viewsets.ModelViewSet):
     """
@@ -52,7 +52,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         CRUD to manage vulnerabilities.
     """
     queryset = Vulnerability.objects.all()
-    permissions = [permissions.IsAuthenticated & IsOwner & IsPentester] # FIXME(adina): add is PartOfTheTeam
+    permissions = [permissions.IsAuthenticated & IsOwner & IsPentester]  # FIXME(adina): add is PartOfTheTeam
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
 
@@ -62,7 +62,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         images: List[ImageModel] = []
 
         for img_data in data['images']:
-            images.append(Image.objects.get_or_create(**image_data)) # FIXME(adina): make this suck less
+            images.append(ImageModel.objects.get_or_create(img_data))  # FIXME(adina): make this suck less
 
         return images
 
@@ -84,5 +84,3 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'images' in request.data:
             request.data['images'] = [i.id for i in self.set_images(request.data)]
         return super().update(request, *args, **kwargs)
-
-

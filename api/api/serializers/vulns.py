@@ -11,6 +11,13 @@ class NotesSerializer(serializers.ModelSerializer):
         ]
         model = Notes
 
+        def to_representation(self, instance):
+
+            author = instance.pop('author')
+            serializer = AuthSerializer(author)
+            instance["author"] = serializer.data
+            super().to_representation(instance)
+
 
 class VulnTypeSerializer(serializers.ModelSerializer):
     class Meta:

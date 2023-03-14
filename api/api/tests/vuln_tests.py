@@ -33,7 +33,6 @@ class VulnTestCase(TransactionTestCase):
                 'vuln_type': 'XSS'
             }
         )
-        warn(f"test create vuln:{response.content}")
         self.assertEqual(response.status_code, 201)
         vuln_id = response.data['id']
         response = client.patch(
