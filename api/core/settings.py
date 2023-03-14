@@ -153,11 +153,11 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('POSTGRES_DB'),
-            'USER': os.environ.get('POSTGRES_USER'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-            'HOST': os.environ.get('POSTGRES_HOST'),
-            'PORT': os.environ.get('POSTGRES_PORT'),
+            'NAME': 'voron',
+            'USER': os.environ.get("USER"),
+            'PASSWORD': 'postgres',
+            'HOST': 'localhost',
+            'PORT': '',
         }
     }
     SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
