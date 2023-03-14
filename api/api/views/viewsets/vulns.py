@@ -1,9 +1,9 @@
 from typing import List
+from warnings import warn
+
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
 
-from api.backends import EmailBackend
-from api.models import get_user_model
 from api.models.vulns import ImageModel, Notes, VulnType, Vulnerability
 from api.permissions import IsAdmin, IsOwner, IsPentester
 
@@ -22,18 +22,16 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = NotesSerializer
 
     def create(self, request, *args, **kwargs):
-        author = EmailBackend().get_user_by_email(request.user.email)
-        user_model = get_user_model(author)
-
-        request.data['author_id'] = user_model.id
-        request.data['last_editor'] = user_model.id
+        request.data['author'] = request.user.id
+        request.data['last_editor'] = request.user.id
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        last_editor = EmailBackend().get_user_by_email(request.user.email)
-        user_model = get_user_model(last_editor)
 
-        request.data["last_editor"] = user_model.id
+        if "author" in request.data:
+            request.data.pop("author")
+
+        request.data["last_editor"] = request.user.id
         return super().update(request, *args, **kwargs)
 
 
@@ -67,20 +65,21 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         return images
 
     def create(self, request, *args, **kwargs):
-        author = EmailBackend().get_user_by_email(request.user.email)
-        user_model = get_user_model(author)
-
-        request.data['author_id'] = user_model.id
-        request.data['last_editor'] = user_model.id
+        request.data['author'] = request.user.id
+        request.data['last_editor'] = request.user.id
         if 'images' in request.data:
             request.data['images'] = [i.id for i in self.set_images(request.data)]
+        if "vuln_type" in request.data:
+            request.data["vuln_type"] = VulnType.objects.get(name=request.data["vuln_type"]).id
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        author = EmailBackend().get_user_by_email(request.user.email)
-        user_model = get_user_model(author)
+        if 'author' in request.data:
+            request.data.pop("author")
 
-        request.data['last_editor'] = user_model.id
+        request.data['last_editor'] = request.user.id
         if 'images' in request.data:
             request.data['images'] = [i.id for i in self.set_images(request.data)]
+        if "vuln_type" in request.data:
+            request.data["vuln_type"] = VulnType.objects.get(name=request.data["vuln_type"]).id
         return super().update(request, *args, **kwargs)

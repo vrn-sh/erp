@@ -1,6 +1,8 @@
 from django.test import TransactionTestCase
 
 from rest_framework.test import APIClient
+
+from api.management.commands.init_builtin_vuln_types import Command
 from api.models import Admin, Pentester
 
 from api.tests.helpers import create_random_pentester, create_random_admin, random_user_password, \
@@ -14,6 +16,9 @@ class VulnTestCase(TransactionTestCase):
         self.user: Pentester = create_random_pentester()
         self.other_user: Pentester = create_random_pentester()
         self.admin: Admin = create_random_admin()
+
+        # Create builtin vuln types in test DB
+        Command().handle()
 
     def tearDown(self) -> None:
         self.user.delete()
@@ -33,15 +38,17 @@ class VulnTestCase(TransactionTestCase):
                 'vuln_type': 'XSS'
             }
         )
+
         self.assertEqual(response.status_code, 201)
         vuln_id = response.data['id']
-        response = client.patch(
-            f'vulnerability/{vuln_id}',
+
+        response = client.put(
+            f'/vulnerability/{vuln_id}',
             format='json',
             data={
                 'title': "String Error Termination",
                 'last_editor': self.user.id
             }
         )
-        #  warn(f"test update vuln: {response.data}")
+
         self.assertEqual(response.status_code, 200)

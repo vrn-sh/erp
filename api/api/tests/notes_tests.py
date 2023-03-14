@@ -32,10 +32,7 @@ class NotesTestCase(TransactionTestCase):
             format='json',
             data={'content': '#Exploit 1\n\nThis is an exploit.',}
         )
-
-        warn(str(response.content))
         self.assertEqual(response.status_code, 201)
-
         id: str = response.data['id']
         response = client.patch(
             f"/notes/{id}",

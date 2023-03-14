@@ -1,3 +1,5 @@
+from warnings import warn
+
 from rest_framework import serializers
 
 from api.models.vulns import Notes, VulnType, ImageModel, Vulnerability
@@ -36,7 +38,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, read_only=False)
+    images = ImageSerializer(many=True, read_only=False, required=False)
 
     class Meta:
         fields = [

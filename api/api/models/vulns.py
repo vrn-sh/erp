@@ -42,6 +42,11 @@ class VulnType(models.Model):
     name = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(blank=True)
 
+    def __str__(self):
+        return self.name
+    def __repr__(self):
+        return f'<VulnType: \'{self.name}\'>'
+
 
 class Vulnerability(models.Model):
     class Meta:
@@ -57,7 +62,7 @@ class Vulnerability(models.Model):
 
     author: models.ForeignKey = models.ForeignKey(
         Auth, on_delete=models.CASCADE, related_name='author', blank=True, null=True)
-    last_editor = models.ForeignKey(Pentester, on_delete=models.CASCADE, related_name='last_editor')
+    last_editor = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
-    vuln_type = models.OneToOneField(VulnType, on_delete=models.CASCADE)
-    images = models.ManyToManyField(ImageModel, blank=True)
+    vuln_type = models.OneToOneField(VulnType, on_delete=models.CASCADE, blank=True)
+    images = models.ManyToManyField(ImageModel, blank=True, default=None)
