@@ -1,0 +1,20 @@
+.flex{
+    display: flex;
+    width: fit-content;
+}
+.left-side{
+    text-align: left;
+    font-style: 'Poppins-regular';
+}
+.left-side h1{
+    border-bottom: 2px solid #dadce0;
+}
+.team-container{
+    margin: 5px;
+    font-style: 'Poppins-regular';
+}
+.dlt-btn{
+    background-color: white;
+    border: 1px solid #7C44F3;
+    color: #7C44F3;
+}
