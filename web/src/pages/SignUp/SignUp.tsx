@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
 import axios from 'axios';
+import config from '../../config';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
@@ -77,7 +78,7 @@ export default function SignUp() {
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
                 await axios
-                    .post('http://localhost:8000/register', {
+                    .post(`${config.apiUrl}/register`, {
                         auth: {
                             username,
                             email,

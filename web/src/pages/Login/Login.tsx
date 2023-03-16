@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
+import config from '../../config';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -47,7 +48,7 @@ export default function Login() {
         if (email !== '' && pwd.length > 7) {
             try {
                 await axios
-                    .post('http://localhost:8000/login', {
+                    .post(`${config.apiUrl}/login`, {
                         email,
                         password: pwd,
                     })
