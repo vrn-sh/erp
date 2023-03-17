@@ -77,7 +77,7 @@ class Auth(AbstractUser):
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
-        url = f'https://voron.sh/reset?token={self.tmp_token}'
+        url = f'https://voron.djnn.sh/reset?token={self.tmp_token}'
         return send_mail(
             f'{self.first_name}, reset your password',
             f'Please click on the following link to reset your password:{url}',

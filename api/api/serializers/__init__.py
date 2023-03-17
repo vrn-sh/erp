@@ -87,18 +87,3 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = '__all__'
 
-    def create(self, validated_data: dict[str, str]):
-        pentesters = create_multiple_instances(PentesterSerializer, validated_data, 'pentesters')
-        return Team.objects.create(pentesters=pentesters, **validated_data)
-
-    def to_representation(self, instance):
-        owner = instance.pop('owner')
-        serializer = AdminSerializer(owner)
-        instance["owner"] = serializer.data
-
-        if 'pentesters' in instance:
-            pentesters = instance.pop('pentesters')
-            serializer = PentesterSerializer(pentesters, many=True, read_only=True)
-            instance['pentesters'] = serializer.data
-
-        return super().to_representation(instance)
