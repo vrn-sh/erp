@@ -95,15 +95,15 @@ class Auth(AbstractUser):
 
 class Manager(models.Model):
     """
-        Admin model
+        Manager model
 
         auth -> one-to-one to Auth model
         creation_date -> read-only field expressing creation date
 
     """
     class Meta:
-        verbose_name = 'Administrator'
-        verbose_name_plural = 'Administrators'
+        verbose_name = 'Manager'
+        verbose_name_plural = 'Managers'
         ordering = ['creation_date']
 
     id = models.AutoField(primary_key=True)
@@ -144,9 +144,12 @@ class Team(models.Model):
     members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
 
 
-AuthenticatedUser = Manager | Pentester
+AuthenticatedUser = Pentester | Manager
 
-def get_user_model(user: Auth) -> AuthenticatedUser:
-    if user.role == 1:
-        return Pentester.objects.get(auth_id=user.id)
-    return Manager.objects.get(auth_id=user.id)
+
+def get_user_model(auth: Auth) -> AuthenticatedUser:
+    """fetches User model from base authentication model"""
+
+    if auth.role == 1: # is pentester
+        return Pentester.objects.get(auth_id=auth.id)
+    return Manager.objects.get(auth_id=auth.id)

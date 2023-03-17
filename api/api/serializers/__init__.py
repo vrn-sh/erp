@@ -4,7 +4,7 @@ from rest_framework import serializers
 from argon2 import PasswordHasher
 
 from api.models import Manager, Pentester, Auth, Team
-from api.serializers.utils import create_instance, create_multiple_instances
+from api.serializers.utils import create_instance
 
 class AuthSerializer(serializers.ModelSerializer):
     """Serializer for Base Auth model (should only be used nested in other serializers)"""
@@ -86,4 +86,3 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = '__all__'
-

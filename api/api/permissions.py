@@ -7,8 +7,9 @@ import logging
 from typing import List
 
 from rest_framework import permissions
-from api.models import Auth, Pentester, Manager
-from api.models.vulns import Notes
+
+from api.models import Auth, Pentester, Manager, Team
+from api.models.vulns import Notes, Vulnerability
 
 
 class MethodOnly(permissions.BasePermission):
@@ -56,11 +57,14 @@ class IsOwner(permissions.BasePermission):
         if isinstance(obj, Auth):
             return obj.id == request.user.id # type: ignore
 
-        if isinstance(obj, (Pentester, Manager)):
+        if isinstance(obj, Pentester) or isinstance(obj, Manager):
             return obj.auth.id == request.user.id # type: ignore
 
-        if isinstance(obj, Notes):
-            return obj.author.auth.id == request.user.id
+        if isinstance(obj, Notes) or isinstance(obj, Vulnerability):
+            return obj.author.id == request.user.id
+
+        if isinstance(obj, Team):
+            return obj.owner.auth.id == request.user.id
 
         logging.warning('IsOwner permissions: Object <%s> has not reached anything',
                 str({type(obj)}))

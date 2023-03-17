@@ -3,7 +3,7 @@
 - AuthViewset: Auth class CRUD
 - RegisterViewset: Pentester creation route
 - PentesterViewset: Pentester CRUD
-- AdminViewset: Admin CRUD
+- ManagerViewset: Manager CRUD
 - NodeViewset: Node class CRUD
 - AddressViewset: Address class CRUD (no preloaded data)
 """
@@ -74,10 +74,10 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     serializer_class = PentesterSerializer
 
 
-class AdminViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
     """
-       AdminViewset
+       ManagerViewset
             CRUD operations for Admin model (encompasses Auth model as well)
     """
 
