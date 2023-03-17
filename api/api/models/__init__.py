@@ -93,7 +93,7 @@ class Auth(AbstractUser):
         return super().save(*args, **kwargs)
 
 
-class Admin(models.Model):
+class Manager(models.Model):
     """
         Admin model
 
@@ -140,13 +140,13 @@ class Team(models.Model):
     REQUIRED_FIELDS = ['name', 'owner', 'members']
 
     name: models.CharField = models.CharField(max_length=32)
-    owner: Admin = models.OneToOneField(Admin, on_delete=CASCADE)
+    owner: Manager = models.OneToOneField(Manager, on_delete=CASCADE)
     members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
 
 
-AuthenticatedUser = Admin | Pentester
+AuthenticatedUser = Manager | Pentester
 
 def get_user_model(user: Auth) -> AuthenticatedUser:
     if user.role == 1:
         return Pentester.objects.get(auth_id=user.id)
-    return Admin.objects.get(auth_id=user.id)
+    return Manager.objects.get(auth_id=user.id)

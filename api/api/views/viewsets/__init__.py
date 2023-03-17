@@ -17,9 +17,9 @@ from api.backends import EmailBackend
 
 from api.serializers import AdminSerializer, PentesterSerializer, AuthSerializer, TeamSerializer
 
-from api.models import Admin, Auth, Pentester, Team, get_user_model
+from api.models import Manager, Auth, Pentester, Team, get_user_model
 
-from api.permissions import IsAdmin, IsOwner, PostOnly, ReadOnly
+from api.permissions import IsManager, IsOwner, PostOnly, ReadOnly
 
 
 class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -28,7 +28,7 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     """
 
     queryset = Team.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsAdmin | \
+    permission_classes = [permissions.IsAuthenticated & IsManager | \
             permissions.IsAuthenticated & ReadOnly]
     authentication_classes = [TokenAuthentication]
     serializer_class = TeamSerializer
@@ -69,7 +69,7 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     """
 
     queryset = Pentester.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsAdmin | IsOwner]
+    permission_classes = [permissions.IsAuthenticated & IsManager | IsOwner]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
 
@@ -81,8 +81,8 @@ class AdminViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
             CRUD operations for Admin model (encompasses Auth model as well)
     """
 
-    queryset = Admin.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    queryset = Manager.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = AdminSerializer
 
@@ -95,6 +95,6 @@ class AuthViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     """
 
     queryset = Auth.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsAdmin | IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsManager | IsOwner]
     authentication_classes = [TokenAuthentication]
     serializer_class = AuthSerializer

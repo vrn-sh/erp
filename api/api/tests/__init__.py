@@ -5,7 +5,7 @@ from faker import Faker
 
 from rest_framework.test import APIClient
 
-from api.tests.helpers import create_random_pentester, create_random_admin, random_user_password, \
+from api.tests.helpers import create_random_pentester, create_random_manager, random_user_password, \
         login_as
 
 
@@ -22,7 +22,7 @@ class AuthTestCase(TransactionTestCase):
 
     def setUp(self) -> None:
         self.user = create_random_pentester()
-        self.admin = create_random_admin()
+        self.admin = create_random_manager()
 
     def tearDown(self) -> None:
         self.user.delete()
@@ -117,7 +117,7 @@ class CrudpentesterTestCase(TransactionTestCase):
     """tests CRUD for pentester accounts"""
 
     def setUp(self) -> None:
-        self.admin = create_random_admin()
+        self.admin = create_random_manager()
         self.client = APIClient()
         self.auth_token = login_as(self.admin.auth.email, random_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore

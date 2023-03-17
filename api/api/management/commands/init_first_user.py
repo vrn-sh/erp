@@ -1,13 +1,13 @@
 """Initiates first user on bare deployments"""
 from django.core.management.base import BaseCommand
 
-from api.models import Admin, Auth
+from api.models import Manager, Auth
 
 
 class Command(BaseCommand):
     """Command creating the first user (admin) if database does not have any."""
     def handle(self, *_, **__):
-        if Admin.objects.count() == 0:
+        if Manager.objects.count() == 0:
             auth = Auth(
                     role=2,
                     email='admin@voron.sh',
@@ -21,10 +21,10 @@ class Command(BaseCommand):
             auth.set_password(auth.password)
             auth.save()
 
-            admin = Admin(auth=auth)
-            admin.save()
+            manager = Manager(auth=auth)
+            manager.save()
 
-            print(f'[+] Admin user {admin} has been created.')
+            print(f'[+] Manager user {manager} has been created.')
 
         else:
-            print('[!] Admin user has already been created.')
+            print('[!] Manager user has already been created.')

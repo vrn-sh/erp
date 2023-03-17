@@ -31,6 +31,7 @@ class ImageModel(models.Model):
         ordering = []
     image = ImageField(name='image') # FIXME(adina): add storage, STATIC_FILES path in settings, setup nginx
 
+
 class VulnType(models.Model):
     class Meta:
         verbose_name = 'Vulnerability TYPE Model'
@@ -38,6 +39,7 @@ class VulnType(models.Model):
         ordering = ['name']
     name = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(blank=True)
+
 
 class Vulnerability(models.Model):
     class Meta:

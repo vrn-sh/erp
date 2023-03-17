@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from argon2 import PasswordHasher
 
-from api.models import Admin, Pentester, Auth, Team
+from api.models import Manager, Pentester, Auth, Team
 from api.serializers.utils import create_instance, create_multiple_instances
 
 class AuthSerializer(serializers.ModelSerializer):
@@ -62,7 +62,7 @@ class AdminSerializer(serializers.ModelSerializer):
     auth = AuthSerializer(many=False, read_only=False)
 
     class Meta:
-        model = Admin
+        model = Manager
         fields = '__all__'
 
     def create(self, validated_data):
@@ -70,7 +70,7 @@ class AdminSerializer(serializers.ModelSerializer):
         validated_data['auth']['is_superuser'] = True
         validated_data['auth']['is_staff'] = True
         auth = create_instance(AuthSerializer, validated_data, 'auth')
-        return Admin.objects.create(auth=auth, **validated_data)
+        return Manager.objects.create(auth=auth, **validated_data)
 
     def update(self, instance, validated_data):
         if 'auth' in validated_data:
