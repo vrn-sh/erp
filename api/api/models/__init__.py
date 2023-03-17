@@ -14,6 +14,10 @@ from argon2 import PasswordHasher
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.mail import send_mail
 
+MAX_TITLE_LENGTH = 256
+MAX_NOTE_LENGTH = 8186
+MAX_LINK_LENGTH = 1024
+NAME_LENGTH = 256
 
 class Auth(AbstractUser):
     """
