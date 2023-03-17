@@ -31,7 +31,7 @@ SchemaView = get_schema_view(
 )
 
 router = routers.SimpleRouter(trailing_slash=False,)
-router.register(r'admin', AdminViewset)
+router.register(r'manager', AdminViewset)
 router.register(r'pentester', PentesterViewset)
 router.register(r'note', NotesViewset)
 router.register(r'team', TeamViewset)

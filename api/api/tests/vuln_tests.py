@@ -11,11 +11,11 @@ class VulnTestCase(TransactionTestCase):
     def setUp(self) -> None:
         self.user: Pentester = create_random_pentester()
         self.other_user: Pentester = create_random_pentester()
-        self.admin: Manager = create_random_manager()
+        self.manager: Manager = create_random_manager()
 
     def tearDown(self) -> None:
         self.user.delete()
-        self.admin.delete()
+        self.manager.delete()
         self.other_user.delete()
 
     def test_create_valid_vulnerability(self):

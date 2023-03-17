@@ -1,3 +1,4 @@
+from typing import List
 from django.db import models
 from django.db.models import ImageField
 
@@ -21,7 +22,7 @@ class Notes(models.Model):
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
-    author: models.ForeignKey = models.ForeignKey(Pentester, on_delete=models.CASCADE)
+    author: Pentester = models.ForeignKey(Pentester, on_delete=models.CASCADE)
 
 
 class ImageModel(models.Model):
@@ -46,11 +47,13 @@ class Vulnerability(models.Model):
         verbose_name = 'Vulnerability Model'
         verbose_name_plural = 'Vulnerability models'
         ordering = ['creation_date']
+
     title = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(max_length=MAX_NOTE_LENGTH, blank=True)
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
-    author: models.ForeignKey = models.ForeignKey(Pentester, on_delete=models.CASCADE, related_name='author')
-    last_editor = models.ForeignKey(Pentester, on_delete=models.CASCADE, related_name='last_editor')
-    vuln_type = models.OneToOneField(VulnType, on_delete=models.CASCADE)
-    images = models.ManyToManyField(ImageModel)
+    author: Pentester = models.ForeignKey(Pentester, on_delete=models.CASCADE, related_name='author')
+
+    last_editor: Pentester = models.ForeignKey(Pentester, on_delete=models.CASCADE, related_name='last_editor')
+    vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
+    images: List[ImageModel] = models.ManyToManyField(ImageModel)

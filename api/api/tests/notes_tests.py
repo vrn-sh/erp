@@ -1,3 +1,4 @@
+from logging import warn
 from django.test import TransactionTestCase
 
 from rest_framework.test import APIClient
@@ -44,9 +45,9 @@ class NotesTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_create_and_update_as_admin(self) -> None:
+    def test_create_and_update_as_manager(self) -> None:
         """
-            trying to test the same but logged in as an admin.
+            trying to test the same but logged in as an manager.
         """
         client: APIClient = APIClient()
 
@@ -56,7 +57,7 @@ class NotesTestCase(TransactionTestCase):
         response = client.post(
             self.uri,
             format='json',
-            data={'content': '#Exploit 1\n\nThis is an exploit.', 'author': self.manager.id}
+            data={'content': '#Exploit 1\n\nThis is an exploit.', 'author': self.user.id}
         )
         self.assertEqual(response.status_code, 201)
 
@@ -64,7 +65,7 @@ class NotesTestCase(TransactionTestCase):
         response = client.patch(
             f"{self.uri}/{id}",
             format='json',
-            data={'content': "It wasn't an exploit after all...", 'author': self.manager.id}
+            data={'content': "It wasn't an exploit after all...", 'author': self.user.id}
         )
 
         self.assertEqual(response.status_code, 200)
