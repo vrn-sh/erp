@@ -14,6 +14,10 @@ from argon2 import PasswordHasher
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.mail import send_mail
 
+MAX_TITLE_LENGTH = 256
+MAX_NOTE_LENGTH = 8186
+MAX_LINK_LENGTH = 1024
+NAME_LENGTH = 256
 
 class Auth(AbstractUser):
     """
@@ -126,3 +130,14 @@ class Pentester(models.Model):
     id = models.AutoField(primary_key=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now=True, editable=False)
+
+
+AuthenticatedUser = Pentester | Admin
+
+
+def get_user_model(auth: Auth) -> AuthenticatedUser:
+    """fetches User model from base authentication model"""
+
+    if auth.role == 1: # is pentester
+        return Pentester.objects.get(auth_id=auth.id)
+    return Admin.objects.get(auth_id=auth.id)

@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 from argon2 import PasswordHasher
+from rest_framework.exceptions import ValidationError
 
 from api.models import Admin, Pentester, Auth
 from api.serializers.utils import create_instance

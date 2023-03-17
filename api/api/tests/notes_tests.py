@@ -30,17 +30,15 @@ class NotesTestCase(TransactionTestCase):
         response = client.post(
             "/notes",
             format='json',
-            data={'content': '#Exploit 1\n\nThis is an exploit.', 'author': self.user.id}
+            data={'content': '#Exploit 1\n\nThis is an exploit.',}
         )
         self.assertEqual(response.status_code, 201)
-
         id: str = response.data['id']
         response = client.patch(
             f"/notes/{id}",
             format='json',
-            data={'content': "It wasn't an exploit after all...", "author": self.user.id}
+            data={'content': "It wasn't an exploit after all..."}
         )
-
         self.assertEqual(response.status_code, 200)
 
 
