@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Modal from 'react-modal';
 import "./team.scss"
 
 interface Group {
@@ -10,25 +11,86 @@ interface Group {
 
 interface UserGroupsProps {
   userId: number;
+  role: string;
 }
-const SettingTeam: React.FC<UserGroupsProps> = ({ userId }) => {
-    const [groups, setGroups] = useState<Group[]>([]);
-  
-    useEffect(() => {
-      const fetchGroups = async () => {
-        const response = await axios.get(`/api/users/${userId}/groups`);
-        setGroups(response.data);
-      };
-      fetchGroups();
-    }, [userId]);
-  
-    const handleDeleteGroup = (groupId: number) => {
-      // appel de l'API pour supprimer le groupe
+
+
+interface InviteProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+}
+
+const InvitePopup: React.FC<InviteProps> = ({ isOpen, onRequestClose }) => {
+  const [email, setEmail] = useState('');
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // Faites quelque chose avec l'email entré ici, par exemple, l'envoyer à un serveur via une requête HTTP
+
+    // Réinitialiser l'état local de l'email et fermer le popup
+    setEmail('');
+    onRequestClose();
+  };
+
+  return (
+    <Modal className={"popup"} isOpen={isOpen} onRequestClose={onRequestClose}>
+      <h2>Inviter un nouveau membre par email</h2>
+      <form className='form-popup' onSubmit={handleFormSubmit}>
+        <label  htmlFor="email">Email Address</label>
+        <input  type='email' value={email} name='email' onChange={(e) => setEmail(e.target.value)}/>
+        <button type="submit">Inviter</button>
+      </form>
+    </Modal>
+  );
+};
+
+
+const SettingTeam: React.FC<UserGroupsProps> = ({ userId, role }) => {
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [maClasse, setMaClasse] = useState('action-ctn');
+  const [width, setWidth] = useState('');
+  role = "Pentester";
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleButtonClick = () => {
+    setIsOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const response = await axios.get(`/api/users/${userId}/groups`);
+      setGroups(response.data);
     };
-  
-    const handleResetGroup = (groupId: number) => {
-      // appel de l'API pour réinitialiser le groupe
-    };
+    fetchGroups();
+  }, [userId]);
+
+  useEffect(() => {
+    if (role === 'Manager') {
+      setMaClasse('action-ctn-plus');
+      setWidth('95px');
+    } else {
+      setMaClasse('action-ctn');
+      setWidth('');
+    }
+  }, [role]);
+
+  const handleDeleteGroup = (groupId: number) => {
+    // appel de l'API pour supprimer le groupe
+  };
+
+  const handleResetGroup = (groupId: number) => {
+    // appel de l'API pour réinitialiser le groupe
+  };
+
   
     return (
       <div className='team-container'>
@@ -48,9 +110,10 @@ const SettingTeam: React.FC<UserGroupsProps> = ({ userId }) => {
                   <td>{group.name}</td>
                   <td>{group.role}</td>
                   <td>
-                    <div className='flex'>
+                    <div className={maClasse} style={{ width }}>
                         <button onClick={() => handleResetGroup(group.id)}>Reset</button>
                         <button className='dlt-btn' onClick={() => handleDeleteGroup(group.id)}>Delete</button>
+                        {role === 'Manager' && <button >Add</button>}
                     </div>
                   </td>
                 </tr>
@@ -70,21 +133,24 @@ const SettingTeam: React.FC<UserGroupsProps> = ({ userId }) => {
               <tbody>
                 <tr>
                   <td>Group 1</td>
-                  <td>Pentester</td>
+                  <td>{role}</td>
                   <td>
-                    <div className='flex'>
+                    <div className={maClasse} style={{ width }}>
                         <button disabled>Reset</button>
                         <button className='dlt-btn' disabled>Delete</button>
+                        {role === 'Manager' && <button disabled>Add</button>}
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td>Test Group 2</td>
-                  <td>Testeur de sécurité</td>
+                  <td>{role}</td>
                   <td>
-                    <div className='flex'>
+                    <div className={maClasse} style={{ width }}>
                         <button disabled>Reset</button>
                         <button className='dlt-btn' disabled>Delete</button>
+                        {role === 'Manager' && <button onClick={handleButtonClick} >Add</button> }
+                        <InvitePopup isOpen={isOpen} onRequestClose={handleClosePopup} />
                     </div>
                   </td>
                 </tr>

@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import "./setting.scss"
-import { FaUser, FaLock, FaBell } from "react-icons/fa"
+import { FaUser} from "react-icons/fa";
+import {IoIosNotifications} from "react-icons/io";
+import {BsCreditCard} from "react-icons/bs";
+import {RiTeamLine} from "react-icons/ri"
+import {BsFillShieldLockFill} from "react-icons/bs"
 import SettingAccount from './setting-account';
 import SettingNotification from './set-notif';
 import SettingSecurity from './set-security';
@@ -21,27 +25,27 @@ interface SubPage {
     {
       title: "Account",
       content: <SettingAccount></SettingAccount>,
-      icon: <FaUser />,
+      icon: <FaUser style={{ fontSize: '20px' }}/>,
     },
     {
       title: "Notification",
       content: <SettingNotification></SettingNotification>,
-      icon: <FaUser />,
+      icon: <IoIosNotifications style={{ fontSize: '22px' }}/>,
     },
     {
       title: "Security",
       content: <SettingSecurity></SettingSecurity>,
-      icon: <FaUser />,
+      icon: <BsFillShieldLockFill style={{ fontSize: '22px' }}/>,
     },
     {
         title: "Billing",
         content: <SettingBilling></SettingBilling>,
-        icon: <FaUser />,
+        icon: <BsCreditCard style={{ fontSize: '22px' }}/>,
       },
       {
         title: "Team",
-        content: <SettingTeam></SettingTeam>,
-        icon: <FaUser />,
+        content: <SettingTeam userId={0} role={''}></SettingTeam>,
+        icon: <RiTeamLine style={{ fontSize: '22px' }} />,
       },
   ];
 
