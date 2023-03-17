@@ -45,3 +45,9 @@ class NotesTestCase(TransactionTestCase):
             data={'title': "Eurk"}
         )
         self.assertEqual(response.status_code, 200)
+
+        response = client.delete(
+            f"/mission/{id}",
+        )
+        warn(f'resposne: {response.status_code}, {response.content}')
+        self.assertEqual(response.status_code, 204)
