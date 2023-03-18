@@ -2,9 +2,8 @@
 
 from rest_framework import serializers
 from argon2 import PasswordHasher
-from rest_framework.exceptions import ValidationError
 
-from api.models import Admin, Pentester, Auth
+from api.models import Manager, Pentester, Auth, Team
 from api.serializers.utils import create_instance
 
 class AuthSerializer(serializers.ModelSerializer):
@@ -63,7 +62,7 @@ class AdminSerializer(serializers.ModelSerializer):
     auth = AuthSerializer(many=False, read_only=False)
 
     class Meta:
-        model = Admin
+        model = Manager
         fields = '__all__'
 
     def create(self, validated_data):
@@ -71,7 +70,7 @@ class AdminSerializer(serializers.ModelSerializer):
         validated_data['auth']['is_superuser'] = True
         validated_data['auth']['is_staff'] = True
         auth = create_instance(AuthSerializer, validated_data, 'auth')
-        return Admin.objects.create(auth=auth, **validated_data)
+        return Manager.objects.create(auth=auth, **validated_data)
 
     def update(self, instance, validated_data):
         if 'auth' in validated_data:
@@ -80,3 +79,10 @@ class AdminSerializer(serializers.ModelSerializer):
             nested_data = validated_data.pop('auth')
             nested_serializer.update(nested_instance, nested_data)
         return super().update(instance, validated_data)
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    """nested serializer for a Team (which allows Pentester creation)"""
+    class Meta:
+        model = Team
+        fields = '__all__'

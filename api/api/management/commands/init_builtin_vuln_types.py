@@ -22,7 +22,6 @@ class Command(BaseCommand):
             VulnType(name="Gain Privileges").save()
             VulnType(name="CSRF").save()
             VulnType(name="File Inclusion").save()
-            print(VulnType.objects.all())
 
             print(f'[+] All vulnerability type created.')
 

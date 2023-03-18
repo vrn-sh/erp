@@ -7,7 +7,8 @@ import logging
 from typing import List
 
 from rest_framework import permissions
-from api.models import Auth, Pentester, Admin
+
+from api.models import Auth, Pentester, Manager, Team
 from api.models.vulns import Notes, Vulnerability
 
 
@@ -56,11 +57,14 @@ class IsOwner(permissions.BasePermission):
         if isinstance(obj, Auth):
             return obj.id == request.user.id # type: ignore
 
-        if isinstance(obj, Pentester) or isinstance(obj, Admin):
+        if isinstance(obj, Pentester) or isinstance(obj, Manager):
             return obj.auth.id == request.user.id # type: ignore
 
         if isinstance(obj, Notes) or isinstance(obj, Vulnerability):
             return obj.author.id == request.user.id
+
+        if isinstance(obj, Team):
+            return obj.owner.auth.id == request.user.id
 
         logging.warning('IsOwner permissions: Object <%s> has not reached anything',
                 str({type(obj)}))
@@ -69,26 +73,26 @@ class IsOwner(permissions.BasePermission):
 
 def user_has_role(request, role: str) -> bool:
     """checks if a user has the appropriate role (being 1 or 2)"""
-    user_roles = ['placeholder', 'pentester', 'admin']
+    user_roles = ['placeholder', 'pentester', 'manager']
     return user_roles[request.user.role] == role
 
 
-class IsAdmin(permissions.BasePermission):
-    """checks if user IS an admin"""
+class IsManager(permissions.BasePermission):
+    """checks if user IS an """
     def has_permission(self, request, _):
-        return user_has_role(request, 'admin')
+        return user_has_role(request, 'manager')
 
     def has_object_permission(self, request, _, __):
-        return user_has_role(request, 'admin')
+        return user_has_role(request, 'manager')
 
 
-class IsNotAdmin(permissions.BasePermission):
-    """checks if current user is NOT an admin"""
+class IsNotManager(permissions.BasePermission):
+    """checks if current user is NOT an manager"""
     def has_permission(self, request, _):
-        return not user_has_role(request, 'admin')
+        return not user_has_role(request, 'manager')
 
     def has_object_permission(self, request, _, __):
-        return not user_has_role(request, 'admin')
+        return not user_has_role(request, 'manager')
 
 
 class IsPentester(permissions.BasePermission):

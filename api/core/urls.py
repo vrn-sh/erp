@@ -11,7 +11,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from api.views import LoginView, LogoutView, PingView, ConfirmAccountView, ResetPasswordView
-from api.views.viewsets import RegisterViewset, PentesterViewset, AdminViewset
+from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 
@@ -32,9 +32,10 @@ SchemaView = get_schema_view(
 )
 
 router = routers.SimpleRouter(trailing_slash=False,)
-router.register(r'admin', AdminViewset)
+router.register(r'manager', ManagerViewset)
 router.register(r'pentester', PentesterViewset)
-router.register(r'notes', NotesViewset)
+router.register(r'note', NotesViewset)
+router.register(r'team', TeamViewset)
 router.register(r'vulnerability', VulnerabilityViewset)
 router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)

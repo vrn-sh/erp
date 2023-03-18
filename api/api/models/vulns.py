@@ -1,3 +1,4 @@
+from typing import List, Optional
 from django.db import models
 from django.db.models import ImageField
 
@@ -19,7 +20,7 @@ class Notes(models.Model):
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
-    author: models.ForeignKey = models.ForeignKey(Auth, on_delete=models.CASCADE, blank=True, null=True)
+    author: Optional[Auth] = models.ForeignKey(Auth, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class ImageModel(models.Model):
@@ -29,6 +30,7 @@ class ImageModel(models.Model):
         ordering = []
 
     image = ImageField(name='image')  # FIXME(adina): add storage, STATIC_FILES path in settings, setup nginx
+
 
 
 class VulnType(models.Model):
@@ -45,7 +47,6 @@ class VulnType(models.Model):
     def __repr__(self):
         return f'<VulnType: \'{self.name}\'>'
 
-
 class Vulnerability(models.Model):
     class Meta:
         verbose_name = 'Vulnerability Model'
@@ -58,9 +59,9 @@ class Vulnerability(models.Model):
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
 
-    author: models.ForeignKey = models.ForeignKey(
+    author: Optional[Auth] = models.ForeignKey(
         Auth, on_delete=models.CASCADE, related_name='author', blank=True, null=True)
-    last_editor = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
+    last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
-    vuln_type = models.OneToOneField(VulnType, on_delete=models.CASCADE, blank=True)
-    images = models.ManyToManyField(ImageModel, blank=True, default=None)
+    vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE, blank=True)
+    images: List[ImageModel] = models.ManyToManyField(ImageModel, blank=True, default=None)

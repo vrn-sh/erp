@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
 
 from api.models.mission import Mission
-from api.permissions import IsAdmin
+from api.permissions import IsManager
 from api.serializers.mission import MissionSerializer
 
 
@@ -13,7 +13,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     """
 
     queryset = Mission.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsAdmin]
+    permission_classes = [permissions.IsAuthenticated & IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
 
