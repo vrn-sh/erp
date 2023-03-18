@@ -4,9 +4,7 @@ from django.db.models import ImageField
 
 from api.models import Pentester, Auth
 
-MAX_NOTE_LENGTH = 8186
-MAX_LINK_LENGTH = 1024
-NAME_LENGTH = 256
+from api.models import NAME_LENGTH, MAX_NOTE_LENGTH
 
 
 class Notes(models.Model):
