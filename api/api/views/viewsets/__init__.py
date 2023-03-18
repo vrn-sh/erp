@@ -39,11 +39,11 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         assert owner is not None
 
         owner_model = get_user_model(owner)
-        request.data['owner'] = owner_model.id
+        request.data['leader'] = owner_model.id
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        if 'owner' in request.data:
+        if 'leader' in request.data:
             return Response({'error': 'cannot change owner once it is set!'}, status=HTTP_400_BAD_REQUEST)
 
         return super().update(request, *args, **kwargs)

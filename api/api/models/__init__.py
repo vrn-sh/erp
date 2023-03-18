@@ -140,7 +140,7 @@ class Team(models.Model):
     REQUIRED_FIELDS = ['name', 'owner', 'members']
 
     name: models.CharField = models.CharField(max_length=32)
-    owner: Manager = models.OneToOneField(Manager, on_delete=CASCADE)
+    leader: Manager = models.OneToOneField(Manager, on_delete=CASCADE)
     members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
 
 
