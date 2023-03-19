@@ -36,6 +36,11 @@ EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = os.environ['SENDGRID_SENDER']
 
+# phonenumber_field config
+PHONENUMBER_DB_FORMAT = 'E164'
+PHONENUMBER_DEFAULT_REGION = 'FR'
+PHONENUMBER_DEFAULT_FORMAT = 'E164'
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.auth',
