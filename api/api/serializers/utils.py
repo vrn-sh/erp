@@ -2,12 +2,8 @@
     This module is made of utility function used to build serializers
 """
 
-from typing import Any, List
-
 from rest_framework.serializers import Serializer
 from typing import Any, Callable, Optional
-
-from rest_framework import serializers
 
 
 def create_instance(class_serializer: Any, data: dict[str, str], object_name: str) -> Any:

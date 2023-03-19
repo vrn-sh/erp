@@ -8,7 +8,7 @@ from api.models import Manager, Pentester, Auth
 from api.tests.helpers import create_random_pentester, create_random_manager, random_user_password, login_as
 
 
-class NotesTestCase(TransactionTestCase):
+class TeamTestCase(TransactionTestCase):
 
     def setUp(self) -> None:
         self.user: Pentester = create_random_pentester()

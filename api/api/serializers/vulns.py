@@ -1,48 +1,45 @@
 from warnings import warn
 
 from rest_framework import serializers
+from api.models import Auth
 
 from api.models.vulns import Notes, VulnType, ImageModel, Vulnerability
-from api.serializers import create_instance, AuthSerializer
+from api.serializers import AuthSerializer
 
 
 class NotesSerializer(serializers.ModelSerializer):
+    author = AuthSerializer(read_only=True, many=False)
+
     class Meta:
-        fields = [
-            'id', 'content', 'creation_date', 'last_updated_date', 'author'
-        ]
         model = Notes
-
-        def to_representation(self, instance):
-
-            author = instance.pop('author')
-            serializer = AuthSerializer(author)
-            instance["author"] = serializer.data
-            super().to_representation(instance)
-
+        fields = [
+            'id', 'content', 'creation_date', 'last_updated', 'author'
+        ]
 
 class VulnTypeSerializer(serializers.ModelSerializer):
     class Meta:
+        model = VulnType
         fields = [
             'id', 'name', 'description'
         ]
-        model = VulnType
-
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
+        model = ImageModel
         fields = [
             'image'
         ]
-        model = ImageModel
-
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, read_only=False, required=False)
+    images = ImageSerializer(many=True, read_only=False)
+    vuln_type = VulnTypeSerializer(many=False, read_only=False)
+    author = AuthSerializer(read_only=True, many=False)
 
     class Meta:
+        model = Vulnerability
         fields = [
-            'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type'
+            'id', 'title', 'description', 'images',
+            'author', 'last_editor', 'vuln_type',
+            'serverity'
         ]
 
-        model = Vulnerability

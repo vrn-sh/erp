@@ -1,9 +1,21 @@
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
 
-from api.models.mission import Mission
-from api.permissions import IsManager
-from api.serializers.mission import MissionSerializer
+from api.models.mission import Mission, Recon
+from api.permissions import IsManager, IsPentester, ReadOnly
+from api.serializers.mission import MissionSerializer, ReconSerializer
+
+
+class ReconViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+    """
+        CRUD for Recon object
+    """
+
+    # FIXME(adina): add isPartOfTheTeam
+    queryset = Recon.objects.all()
+    authentication_classes = [TokenAuthentication]
+    serializer_class = ReconSerializer
+    permission_classes = [permissions.IsAuthenticated, IsPentester | ReadOnly]
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -12,8 +24,9 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
+    # FIXME(adina): add isPartOfTheTeam
     queryset = Mission.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsManager]
+    permission_classes = [permissions.IsAuthenticated,  IsManager | ReadOnly]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
 

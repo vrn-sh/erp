@@ -8,7 +8,7 @@ The following models are present here:
 """
 
 import os
-from typing import List
+from typing import List, Optional
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from argon2 import PasswordHasher
@@ -48,16 +48,16 @@ class Auth(AbstractUser):
         (2, 'admin'),
     )
 
-    id = models.AutoField(primary_key=True)
-    role = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, editable=False)
-    password = models.CharField(max_length=128)
-    phone_number = PhoneNumberField(null=True, blank=True)
-    email = models.EmailField(unique=True, null=False, blank=False)
+    id: models.AutoField = models.AutoField(primary_key=True)
+    role: models.PositiveSmallIntegerField = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, editable=False)
+    password: models.CharField = models.CharField(max_length=128)
+    phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
+    email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
 
     # account confirmation / password reset stuff
     # TODO: have a different token for password reset & account confirmation
-    tmp_token = models.CharField(max_length=32, null=True, default=None)
-    is_disabled = models.BooleanField(default=True)
+    tmp_token: models.CharField = models.CharField(max_length=32, null=True, default=None)
+    is_disabled: models.BooleanField = models.BooleanField(default=True)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -110,16 +110,16 @@ class Manager(models.Model):
         verbose_name_plural = 'Managers'
         ordering = ['creation_date']
 
-    id = models.AutoField(primary_key=True)
-    auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
-    creation_date = models.DateTimeField(auto_now=True, editable=False)
+    id: models.AutoField = models.AutoField(primary_key=True)
+    auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
 
 
 class Pentester(models.Model):
     """
         Pentester model
 
-        (Main difference with Admin model is that pentesters can own domains)
+        (Main difference with Manager model is that pentesters cannot own teams)
 
         auth -> one-to-one to Auth model
         creation_date -> read-only field expressing creation date
@@ -129,9 +129,9 @@ class Pentester(models.Model):
         verbose_name_plural = 'Pentesters'
         ordering = ['creation_date']
 
-    id = models.AutoField(primary_key=True)
-    auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
-    creation_date = models.DateTimeField(auto_now=True, editable=False)
+    id: models.AutoField = models.AutoField(primary_key=True)
+    auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
 
 
 class Team(models.Model):
@@ -154,6 +154,8 @@ AuthenticatedUser = Pentester | Manager
 def get_user_model(auth: Auth) -> AuthenticatedUser:
     """fetches User model from base authentication model"""
 
-    if auth.role == 1: # is pentester
+    roles = ['placeholder', 'pentester', 'manager']
+
+    if roles[auth.role] == 'pentester':
         return Pentester.objects.get(auth_id=auth.id)
     return Manager.objects.get(auth_id=auth.id)
