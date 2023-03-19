@@ -34,6 +34,9 @@ logs
 */__pycache__
 */venv
 *.pyc
+coverage.json
+coverage.md
+api/.coverage
 
 # Deployment & docker stuff
 .env

@@ -8,12 +8,18 @@ The following models are present here:
 """
 
 import os
+from typing import List
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from argon2 import PasswordHasher
+from django.db.models.deletion import CASCADE
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.mail import send_mail
 
+MAX_TITLE_LENGTH = 256
+MAX_NOTE_LENGTH = 8186
+MAX_LINK_LENGTH = 1024
+NAME_LENGTH = 256
 
 class Auth(AbstractUser):
     """
@@ -75,7 +81,7 @@ class Auth(AbstractUser):
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
-        url = f'https://voron.sh/reset?token={self.tmp_token}'
+        url = f'https://voron.djnn.sh/reset?token={self.tmp_token}'
         return send_mail(
             f'{self.first_name}, reset your password',
             f'Please click on the following link to reset your password:{url}',
@@ -91,17 +97,17 @@ class Auth(AbstractUser):
         return super().save(*args, **kwargs)
 
 
-class Admin(models.Model):
+class Manager(models.Model):
     """
-        Admin model
+        Manager model
 
         auth -> one-to-one to Auth model
         creation_date -> read-only field expressing creation date
 
     """
     class Meta:
-        verbose_name = 'Administrator'
-        verbose_name_plural = 'Administrators'
+        verbose_name = 'Manager'
+        verbose_name_plural = 'Managers'
         ordering = ['creation_date']
 
     id = models.AutoField(primary_key=True)
@@ -126,3 +132,28 @@ class Pentester(models.Model):
     id = models.AutoField(primary_key=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now=True, editable=False)
+
+
+class Team(models.Model):
+    """Model for representing a team of pentester, with one manager"""
+    class Meta:
+        verbose_name = 'Team'
+        verbose_name_plural = 'Teams'
+        ordering = ['name']
+
+    REQUIRED_FIELDS = ['name', 'owner', 'members']
+
+    name: models.CharField = models.CharField(max_length=32)
+    leader: Manager = models.OneToOneField(Manager, on_delete=CASCADE)
+    members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
+
+
+AuthenticatedUser = Pentester | Manager
+
+
+def get_user_model(auth: Auth) -> AuthenticatedUser:
+    """fetches User model from base authentication model"""
+
+    if auth.role == 1: # is pentester
+        return Pentester.objects.get(auth_id=auth.id)
+    return Manager.objects.get(auth_id=auth.id)
