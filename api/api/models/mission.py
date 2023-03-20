@@ -4,6 +4,7 @@ The following models are present here:
 
     - Auth: Mission
 """
+from datetime import datetime, timedelta
 from typing import Optional
 from django.db import models
 
@@ -36,10 +37,7 @@ class Mission(models.Model):
         verbose_name_plural = "Missions"
         ordering = ['start']
 
-    REQUIRED_FIELDS = ['duration', 'start', 'end', 'team']
-
-    # Duration is in number of days.
-    duration = models.FloatField()
+    REQUIRED_FIELDS = ['start', 'end', 'team', 'created_by']
 
     start = models.DateField()
     end = models.DateField()
@@ -53,3 +51,16 @@ class Mission(models.Model):
 
     team: Team = models.OneToOneField(Team, on_delete=models.CASCADE)
     recon: Optional[Recon] = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
+
+    @staticmethod
+    def get_delta(start: datetime, end: datetime) -> timedelta:
+        return end - start
+
+    @property
+    def duration(self) -> float:
+        """get the number of days between start and end"""
+        return self.get_delta(self.start, self.end).days
+
+    def days_left(self) -> float:
+        """get number of days left in this mission"""
+        return self.get_delta(datetime.today(), self.end).days

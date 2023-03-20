@@ -5,15 +5,17 @@ from api.models import Auth
 
 from api.models.vulns import Notes, VulnType, ImageModel, Vulnerability
 from api.serializers import AuthSerializer
+from api.serializers.mission import MissionSerializer
 
 
 class NotesSerializer(serializers.ModelSerializer):
     author = AuthSerializer(read_only=True, many=False)
+    mission = MissionSerializer(read_only=False, many=False)
 
     class Meta:
         model = Notes
         fields = [
-            'id', 'content', 'creation_date', 'last_updated', 'author'
+            'id', 'content', 'creation_date', 'last_updated', 'author', 'mission'
         ]
 
 class VulnTypeSerializer(serializers.ModelSerializer):

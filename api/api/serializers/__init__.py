@@ -1,11 +1,11 @@
 """This module stores all the basic serializers for user & authentication management"""
 
-from typing import OrderedDict
+from typing import List, OrderedDict
 from rest_framework import serializers
 from argon2 import PasswordHasher
 
 from api.models import Manager, Pentester, Auth, Team
-from api.serializers.utils import create_instance
+from api.serializers.utils import create_instance, get_multiple_instances
 
 class AuthSerializer(serializers.ModelSerializer):
     """Serializer for Base Auth model (should only be used nested in other serializers)"""
@@ -68,8 +68,8 @@ class ManagerSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data) -> Manager:
         validated_data['auth']['role'] = 2
-        validated_data['auth']['is_superuser'] = True
-        validated_data['auth']['is_staff'] = True
+        validated_data['auth']['is_superuser'] = False
+        validated_data['auth']['is_staff'] = False
         auth: Auth = create_instance(AuthSerializer, validated_data, 'auth')
         return Manager.objects.create(auth=auth, **validated_data)
 
@@ -84,22 +84,12 @@ class ManagerSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
     """nested serializer for a Team (which allows Pentester creation)"""
-    members = PentesterSerializer(many=True, read_only=False)
-    leader = ManagerSerializer(many=False, read_only=True)
 
-    # FIXME(djnn): members should have mutlitple nested serializers
-
-    def create(self, validated_data) -> Team:
-        auth: ManagerSerializer = create_instance(ManagerSerializer, validated_data, 'manager')
-        return Team.objects.create(leader=auth, **validated_data)
-
-    def update(self, instance, validated_data) -> Manager:
-        if 'leader' in validated_data:
-            nested_serializer: ManagerSerializer = self.fields['leader']
-            nested_instance: Manager = instance.leader
-            nested_data: dict[str, str] = validated_data.pop('leader')
-            nested_serializer.update(nested_instance, nested_data)
-        return super().update(instance, validated_data)
+    def to_representation(self, instance):
+       ret = super().to_representation(instance)
+       ret['members'] = PentesterSerializer(instance.members, many=True).data
+       ret['leader'] = ManagerSerializer(instance.leader).data
+       return ret
 
     class Meta:
         model = Team

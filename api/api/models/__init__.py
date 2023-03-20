@@ -141,7 +141,7 @@ class Team(models.Model):
         verbose_name_plural = 'Teams'
         ordering = ['name']
 
-    REQUIRED_FIELDS = ['name', 'owner', 'members']
+    REQUIRED_FIELDS = ['name', 'leader', 'members']
 
     name: models.CharField = models.CharField(max_length=32)
     leader: Manager = models.OneToOneField(Manager, on_delete=CASCADE)

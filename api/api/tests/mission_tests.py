@@ -46,7 +46,6 @@ class TeamTestCase(TransactionTestCase):
             format='json',
             data={
                 'title': 'ERP - Eip team',
-                'duration': '400.5',
                 'start': '2022-01-01',
                 'end': '2024-01-01',
                 'team': team_id,

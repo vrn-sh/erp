@@ -275,6 +275,7 @@ class CRUDManagerTestCase(TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
 
         resp = self.client.patch(f'/manager/{manager_id}', format='json', data=update_data)
+        warn(f'{resp.json()}')
         self.assertEqual(resp.status_code, 200)
 
     def test_delete_a_manager(self):
@@ -432,6 +433,7 @@ class CRUDTeamTestCase(TransactionTestCase):
                 'lol': [self.user.id]
         }
         resp = self.client.post(self.uri, format='json', data=data)
+        warn(f'{resp.json()}')
         self.assertEqual(resp.status_code, 400)
 
     def test_pentester_can_read_team(self):
