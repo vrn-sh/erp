@@ -11,11 +11,11 @@
 }
 
 .about-main-row {
-    display:flex;
+    display: flex;
     width: 90%;
     flex-direction: row;
     justify-content: center;
-    align-items:center;
+    align-items: center;
     z-index: 10;
 }
 
@@ -42,7 +42,7 @@
     border: none;
     background-color: var(--primary-btn);
     color: white;
-    font-family: "Poppins";
+    font-family: 'Poppins';
     padding: 0.5rem;
     border-radius: 5px;
 }
@@ -56,13 +56,13 @@
 }
 
 .about li {
-    font-family: "Poppins-Medium";
+    font-family: 'Poppins-Medium';
     font-size: 1.2rem;
     text-align: justify;
 }
 
 .about p {
-    font-family: "Poppins-Medium";
+    font-family: 'Poppins-Medium';
     font-size: 1.2rem;
     text-align: justify;
 }
@@ -73,7 +73,7 @@
 }
 
 .about-more h2 {
-    font-family: "Poppins-Medium";
+    font-family: 'Poppins-Medium';
     font-size: 1.2rem;
     margin: 0;
     padding: 0;
@@ -81,7 +81,7 @@
 }
 
 .about-more p {
-    font-family: "Poppins-Medium";
+    font-family: 'Poppins-Medium';
     font-size: 1.2rem;
 }
 
@@ -96,13 +96,14 @@
     .about-main-row {
         flex-direction: column;
     }
-    .about-catch, .about-bullets {
+    .about-catch,
+    .about-bullets {
         width: 90%;
         justify-content: center;
         align-items: center;
     }
 
-    .about-bullets ul{
+    .about-bullets ul {
         list-style: none;
         text-align: center;
     }

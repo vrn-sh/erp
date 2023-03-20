@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
+import axios from 'axios';
 import './Login.scss';
+import config from '../../config';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -42,12 +44,23 @@ export default function Login() {
         }
     };
 
-    const submit = () => {
+    const submit = async () => {
         if (email !== '' && pwd.length > 7) {
-            // console.log('Log in successfully!')
-            navigate('/dashboard');
-        } else {
-            //    console.log('Something is wrong')
+            try {
+                await axios
+                    .post(`${config.apiUrl}/login`, {
+                        email,
+                        password: pwd,
+                    })
+                    .then(() => {
+                        navigate('/dashboard');
+                    })
+                    .catch(() => {
+                        setErrorEmail('Invalid email or password!');
+                    });
+            } catch (error) {
+                setErrorEmail('Invalid email or password!');
+            }
         }
     };
 
@@ -97,7 +110,7 @@ export default function Login() {
                             <div className="login-submit">
                                 <p>Forgot password ? </p>
                                 <button type="button" onClick={submit}>
-                                    LOG IN
+                                    LOGIN
                                 </button>
                             </div>
                         </div>
