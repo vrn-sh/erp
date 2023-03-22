@@ -1,32 +1,96 @@
-# voron-web, aka moron :%)
+# voron Web Front
 
-Built with:
+Our Web front-end is built with:
 
--   `yarn`
+-   `yarn` | `npm` (please choose one to use, do not mix)
 -   `Typescript` & `React`
 -   `scss`
 -   `vite`
 
-Up to date info on how to install the app can be found [here](../toolbox/docs/CONTRIBUTE.md)
+Up to date informations on how to install the app can be found [here](../toolbox/docs/CONTRIBUTE.md)
 
-## Install dependencies
+---
 
-`make dependencies`
+## 📐Install dependencies
 
-## Run locally
+First of all, you need to install all the needed packages to run our front end by using npm or yan
 
-`make run`
+```bash
+# npm
+npm install
 
-## Testing
+# or if you use yarn
+yarn
+```
 
-Clone the root repository, go into the web directory and install the need dependencies:
+---
 
-`$ cd web && yarn`
+## 💻 Run locally
+Please ensure that you stay in "web" folder to run this command
 
-### Unit tests
+```bash
+npm run dev
 
-`$ yarn test:unit`
+yarn run dev
+```
 
-### Coverage
+As soon as you run dev, you can visit our web front on local `http://127.0.0.1:port`
 
-`$ yarn test:coverage`
+---
+
+## 🏗️ Build web app
+
+Run the following command to build your app:
+```bash
+npm run build
+
+yarn run build
+```
+
+---
+
+## 🧪 Unit tests
+To run the unit test:
+```bash
+npm run test:unit
+
+yarn test:unit
+```
+
+---
+
+## ✨ Lint tests
+If you want to check the Lint errors, you can simply run:
+```bash
+npm run lint
+
+yarn lint
+```
+
+Or if you want to use lint to fix errors automatically, please run:
+```bash
+npm run lint --fix
+
+yarn run lint --fix
+```
+
+---
+
+## 🚥 Coverage
+
+```bash
+npm run test:coverage
+
+yarn test:coverage
+```
+
+---
+
+## 🔍 Usage
+
+```bash
+# This command will list all of the scripts available to run for a package.
+npm run-script
+
+yarn run
+```
