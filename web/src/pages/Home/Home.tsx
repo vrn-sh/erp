@@ -4,6 +4,7 @@ import Footer from '../../component/Footer/Footer';
 import './Home.scss';
 import About from './About/About';
 import Team from './Team/Team';
+import Timeline from './Timeline/Timeline';
 
 export default function Home() {
     return (
@@ -21,6 +22,7 @@ export default function Home() {
                     </div>
                 </div>
                 <About />
+                <Timeline />
                 <Team />
             </section>
             <Footer />
