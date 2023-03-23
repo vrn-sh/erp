@@ -14,34 +14,28 @@ class NotesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notes
-        fields = [
-            'id', 'content', 'creation_date', 'last_updated', 'author', 'mission'
-        ]
+        fields = '__all__'
+
 
 class VulnTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = VulnType
-        fields = [
-            'id', 'name', 'description'
-        ]
+        fields = '__all__'
+
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageModel
-        fields = [
-            'image'
-        ]
+        fields = '__all__'
+
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=False)
     vuln_type = VulnTypeSerializer(many=False, read_only=False)
-    author = AuthSerializer(read_only=True, many=False)
+    author = AuthSerializer(many=False, read_only=True)
 
     class Meta:
         model = Vulnerability
-        fields = [
-            'id', 'title', 'description', 'images',
-            'author', 'last_editor', 'vuln_type',
-            'serverity'
-        ]
+        fields = '__all__'
+
 

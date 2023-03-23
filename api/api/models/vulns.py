@@ -41,11 +41,12 @@ class VulnType(models.Model):
         verbose_name_plural = 'Vulnerability TYPES models'
         ordering = ['name']
 
-    name = models.CharField(max_length=NAME_LENGTH)
+    name = models.CharField(max_length=NAME_LENGTH, primary_key=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
+
     def __repr__(self):
         return f'<VulnType: \'{self.name}\'>'
 

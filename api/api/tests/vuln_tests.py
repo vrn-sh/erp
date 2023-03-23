@@ -38,8 +38,11 @@ class VulnTestCase(TransactionTestCase):
                 'title': 'String Error Terminatoin', # Typo made on purpose
                 'vuln_type': 'XSS',
                 'serverity': 6.5,
+                'images': []
             }
         )
+
+        warn(f'{response.json()}')
 
         self.assertEqual(response.status_code, 201)
         vuln_id = response.data['id']

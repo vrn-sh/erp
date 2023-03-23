@@ -3,6 +3,8 @@ from warnings import warn
 
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.status import HTTP_404_NOT_FOUND
+from rest_framework.views import Response
 
 
 from api.models.vulns import ImageModel, Notes, VulnType, Vulnerability
@@ -68,19 +70,8 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
-        if 'images' in request.data:
-            request.data['images'] = [i.id for i in self.set_images(request.data)]
-        if "vuln_type" in request.data:
-            request.data["vuln_type"] = VulnType.objects.get(name=request.data["vuln_type"]).id
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        if 'author' in request.data:
-            request.data.pop("author")
-
         request.data['last_editor'] = request.user.id
-        if 'images' in request.data:
-            request.data['images'] = [i.id for i in self.set_images(request.data)]
-        if "vuln_type" in request.data:
-            request.data["vuln_type"] = VulnType.objects.get(name=request.data["vuln_type"]).id
         return super().update(request, *args, **kwargs)

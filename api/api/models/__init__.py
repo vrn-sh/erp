@@ -21,6 +21,8 @@ MAX_NOTE_LENGTH = 8186
 MAX_LINK_LENGTH = 1024
 NAME_LENGTH = 256
 
+USER_ROLES = ['unknown', 'pentester', 'manager']
+
 class Auth(AbstractUser):
     """
         Auth Model:
@@ -28,7 +30,7 @@ class Auth(AbstractUser):
             Basic model used to log in users.
             When authenticating users through views, this is the model recovered from the Token
 
-        role: string containing the current role of the user
+        role: integer containing the current role of the user
         password: hashed password of the user
         phone_number: phone number used for MFA (should use E164 format)
         tmp_token: token automatically generated, used for password reset or account confirmation
@@ -45,7 +47,7 @@ class Auth(AbstractUser):
 
     USER_TYPE_CHOICES = (
         (1, 'pentester'),
-        (2, 'admin'),
+        (2, 'manager'),
     )
 
     id: models.AutoField = models.AutoField(primary_key=True)
