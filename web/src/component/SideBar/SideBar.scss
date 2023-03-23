@@ -35,7 +35,7 @@
 
 .topBar-input {
     height: 30px;
-    box-sizing:border-box;
+    box-sizing: border-box;
     padding-left: 1.5rem;
     border: none;
     border-radius: 10px;
@@ -56,14 +56,15 @@
 
 .borderBtn:hover {
     background-color: var(--hover-effect);
-    transition: .5s ease-in-out;
+    transition: 0.5s ease-in-out;
 }
 
 .input::placeholder {
     font-size: 12px;
 }
 
-.btn, .btn-profile {
+.btn,
+.btn-profile {
     color: var(--gray-btn);
     padding: 5px;
     margin: 0px 5px;
@@ -77,11 +78,10 @@
     align-items: center;
 }
 
-
 //SideBar
 .site-title {
     font-size: 2rem;
-    font-family: "Poppins-Bold";
+    font-family: 'Poppins-Bold';
     text-align: left;
     color: var(--black);
     margin-left: 20px !important;
@@ -121,17 +121,18 @@
     list-style: none;
     height: 100%;
     font-size: 17px;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
 }
 
-.sidebar-link:hover, .dropdown-menu:hover {
+.sidebar-link:hover,
+.dropdown-menu:hover {
     background-color: var(--hover-effect);
-    transition: .5s ease-in-out;
+    transition: 0.5s ease-in-out;
     cursor: pointer;
 }
 
 .sidebar-link-bottom {
-    @extend .sidebar-link
+    @extend .sidebar-link;
 }
 
 .sidebar-link-bottom:hover {
@@ -157,7 +158,7 @@
     text-decoration: none;
     color: var(--black);
     font-size: 14px;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
     padding: 10px;
     padding-left: 3rem;
     list-style: none;
@@ -173,7 +174,7 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 100;
 }
 
@@ -199,17 +200,18 @@
 
 .error {
     width: 80%;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
     text-align: left;
     font-size: 13px;
     color: red;
 }
 
-.sendBtn, .cancelBtn {
+.sendBtn,
+.cancelBtn {
     min-width: 10px;
     width: 80%;
     border-radius: 20px;
-    transition: .3s ease-in-out;
+    transition: 0.3s ease-in-out;
 }
 
 .cancelBtn {

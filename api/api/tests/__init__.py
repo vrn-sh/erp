@@ -5,28 +5,30 @@ from faker import Faker
 
 from rest_framework.test import APIClient
 
-from api.tests.helpers import create_random_pentester, create_random_admin, random_user_password, \
+from api.tests.helpers import create_random_pentester, create_random_manager, random_user_password, \
         login_as
 
 
 # import unit tests from other files here
 from .notes_tests import *
+from .vuln_tests import *
+from .mission_tests import *
 
 
 class AuthTestCase(TransactionTestCase):
 
     """
-        Tests if accounts can be logged in (admin or pentester) and logged out
+        Tests if accounts can be logged in (manager or pentester) and logged out
         also tests for wrong password
     """
 
     def setUp(self) -> None:
         self.user = create_random_pentester()
-        self.admin = create_random_admin()
+        self.manager = create_random_manager()
 
     def tearDown(self) -> None:
         self.user.delete()
-        self.admin.delete()
+        self.manager.delete()
 
     def test_can_login_pentester_account(self) -> None:
         """any valid pentester account should be able to log in"""
@@ -37,18 +39,18 @@ class AuthTestCase(TransactionTestCase):
         response = client.get('/ping')
         self.assertEqual(response.status_code, 200) # type: ignore
 
-    def test_can_login_admin_account(self) -> None:
-        """any valid admin account should be able to log in"""
+    def test_can_login_manager_account(self) -> None:
+        """any valid manager account should be able to log in"""
 
         client = APIClient()
-        auth_token = login_as(self.admin.auth.email, random_user_password())
+        auth_token = login_as(self.manager.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
     def test_can_logout_account(self) -> None:
         """any account should be able to log out"""
 
         client = APIClient()
-        auth_token = login_as(self.admin.auth.email, random_user_password())
+        auth_token = login_as(self.manager.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
         response = client.get('/logout')
         self.assertEqual(response.status_code, 200) # type: ignore
@@ -71,7 +73,7 @@ class AuthTestCase(TransactionTestCase):
         response = client.post(
                 '/login',
                 format='json',
-                data={'email': self.admin.auth.email, 'password': '1234'}
+                data={'email': self.manager.auth.email, 'password': '1234'}
                 )
         self.assertEqual(response.status_code, 403) # type: ignore
 
@@ -112,23 +114,22 @@ class RegisterTestCase(TransactionTestCase):
         response = client.post('/register', format='json', data=registration_settings)
         self.assertEqual(response.status_code, 400) # type: ignore
 
-
-class CrudpentesterTestCase(TransactionTestCase):
-    """tests CRUD for pentester accounts"""
+class CRUDManagerTestCase(TransactionTestCase):
+    """tests CRUD for manager accounts"""
 
     def setUp(self) -> None:
-        self.admin = create_random_admin()
+        self.manager = create_random_manager()
         self.client = APIClient()
-        self.auth_token = login_as(self.admin.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, random_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
     def tearDown(self) -> None:
         response = self.client.get('/logout')
         self.assertEqual(response.status_code, 200)
-        self.admin.delete()
+        self.manager.delete()
 
-    def test_create_a_pentester(self):
-        """a pentester should be created no problem"""
+    def test_create_a_manager(self):
+        """a manager should be created no problem"""
 
         fake = Faker()
         name = fake.name()
@@ -142,12 +143,12 @@ class CrudpentesterTestCase(TransactionTestCase):
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
-        resp = self.client.post('/pentester', format='json', data=creation_data)
+        resp = self.client.post('/manager', format='json', data=creation_data)
         self.assertEqual(resp.status_code, 201)
 
 
-    def test_update_a_pentester(self):
-        """we should be able to update a pentester"""
+    def test_update_a_manager(self):
+        """we should be able to update a manager"""
 
         fake = Faker()
         name = fake.name()
@@ -161,7 +162,7 @@ class CrudpentesterTestCase(TransactionTestCase):
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
-        resp = self.client.post('/pentester', format='json', data=creation_data)
+        resp = self.client.post('/manager', format='json', data=creation_data)
         self.assertEqual(resp.status_code, 201)
         name = fake.name()
         update_data = {
@@ -176,15 +177,15 @@ class CrudpentesterTestCase(TransactionTestCase):
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
 
-        pentester_id: str = resp.data["id"] # type: ignore
-        resp = self.client.get(f'/pentester/{pentester_id}', format='json')
+        manager_id: str = resp.data["id"] # type: ignore
+        resp = self.client.get(f'/manager/{manager_id}', format='json')
         self.assertEqual(resp.status_code, 200)
 
-        resp = self.client.patch(f'/pentester/{pentester_id}', format='json', data=update_data)
+        resp = self.client.patch(f'/manager/{manager_id}', format='json', data=update_data)
         self.assertEqual(resp.status_code, 200)
 
-    def test_delete_a_pentester(self):
-        """we should be able to delete a pentester"""
+    def test_delete_a_manager(self):
+        """we should be able to delete a manager"""
 
         fake = Faker()
         name = fake.name()
@@ -198,9 +199,265 @@ class CrudpentesterTestCase(TransactionTestCase):
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
-        resp = self.client.post('/pentester', format='json', data=creation_data)
+        resp = self.client.post('/manager', format='json', data=creation_data)
         self.assertEqual(resp.status_code, 201)
 
-        pentester_id: str = resp.data["id"] # type: ignore
-        resp = self.client.delete(f'/pentester/{pentester_id}', format='json')
+        manager_id: str = resp.data["id"] # type: ignore
+        resp = self.client.delete(f'/manager/{manager_id}', format='json')
         self.assertEqual(resp.status_code, 204)
+
+
+class CRUDManagerTestCase(TransactionTestCase):
+    """tests CRUD for manager accounts"""
+
+    def setUp(self) -> None:
+        self.manager = create_random_manager()
+        self.client = APIClient()
+        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
+
+    def tearDown(self) -> None:
+        response = self.client.get('/logout')
+        self.assertEqual(response.status_code, 200)
+        self.manager.delete()
+
+    def test_create_a_manager(self):
+        """a manager should be created no problem"""
+
+        fake = Faker()
+        name = fake.name()
+        creation_data = {
+          "auth": {
+            "username": name.split(' ')[0],
+            "email": fake.email(),
+            "first_name": name.split(' ')[0],
+            "last_name": name.split(' ')[1],
+            "password": random_user_password()
+          },
+          "creation_date": "2022-12-17T21:36:37.402Z"
+        }
+        resp = self.client.post('/manager', format='json', data=creation_data)
+        self.assertEqual(resp.status_code, 201)
+
+
+    def test_update_a_manager(self):
+        """we should be able to update a manager"""
+
+        fake = Faker()
+        name = fake.name()
+        creation_data = {
+          "auth": {
+            "username": name.split(' ')[0],
+            "email": fake.email(),
+            "first_name": name.split(' ')[0],
+            "last_name": name.split(' ')[1],
+            "password": random_user_password()
+          },
+          "creation_date": "2022-12-17T21:36:37.402Z"
+        }
+        resp = self.client.post('/manager', format='json', data=creation_data)
+        self.assertEqual(resp.status_code, 201)
+        name = fake.name()
+        update_data = {
+            "auth": {
+                "username": name.split(' ')[0],
+                "email": fake.email(),
+                "first_name": name.split(' ')[0],
+                "last_name": name.split(' ')[1],
+                "role": 1,
+                "password": random_user_password()
+          },
+          "creation_date": "2022-12-17T21:36:37.402Z"
+        }
+
+        manager_id: str = resp.data["id"] # type: ignore
+        resp = self.client.get(f'/manager/{manager_id}', format='json')
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.client.patch(f'/manager/{manager_id}', format='json', data=update_data)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_delete_a_manager(self):
+        """we should be able to delete a manager"""
+
+        fake = Faker()
+        name = fake.name()
+        creation_data = {
+          "auth": {
+            "username": name.split(' ')[0],
+            "email": fake.email(),
+            "first_name": name.split(' ')[0],
+            "last_name": name.split(' ')[1],
+            "password": random_user_password()
+          },
+          "creation_date": "2022-12-17T21:36:37.402Z"
+        }
+        resp = self.client.post('/manager', format='json', data=creation_data)
+        self.assertEqual(resp.status_code, 201)
+
+        manager_id: str = resp.data["id"] # type: ignore
+        resp = self.client.delete(f'/manager/{manager_id}', format='json')
+        self.assertEqual(resp.status_code, 204)
+
+
+class CRUDTeamTestCase(TransactionTestCase):
+    """
+        tests scenarios for Team CRUD
+
+        1. create a team as manager
+        2. should not create team as pentester
+        3. update team settings
+        4. delete team
+        5. should fail to create team if wrong input is supplied
+        6. pentester should be able to read data
+    """
+
+    def setUp(self) -> None:
+        self.user: Pentester = create_random_pentester()
+        self.other_user: Pentester = create_random_pentester()
+        self.manager: Manager = create_random_manager()
+
+        self.uri = '/team'
+
+    def tearDown(self) -> None:
+        self.user.delete()
+        self.manager.delete()
+        self.other_user.delete()
+
+    def test_create_a_team(self):
+
+        # login as manager
+        self.client = APIClient()
+        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
+
+        # preparing fake data
+        fake_name: str = Faker().name()
+
+        # creating a team
+        data: dict[str, str] = {
+                'name': fake_name,
+                'members': [self.user.id, self.other_user.id]
+        }
+        resp = self.client.post(self.uri, format='json', data=data)
+        self.assertEqual(resp.status_code, 201)
+
+
+    def test_fail_if_pentester_creates_team(self):
+
+        # login as pentester
+        self.client = APIClient()
+        self.auth_token = login_as(self.user.auth.email, random_user_password())
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
+
+        # preparing fake data
+        fake_name: str = Faker().name()
+
+        # creating a team
+        data: dict[str, str] = {
+                'name': fake_name,
+                'members': [self.user.id, self.other_user.id]
+        }
+        resp = self.client.post(self.uri, format='json', data=data)
+        self.assertEqual(resp.status_code, 403)
+
+
+    def test_update_team(self):
+
+        # login as manager
+        self.client = APIClient()
+        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
+
+        # preparing fake data
+        fake_name: str = Faker().name()
+
+        # creating a team
+        data: dict[str, str] = {
+                'name': fake_name,
+                'members': [self.user.id]
+        }
+        resp = self.client.post(self.uri, format='json', data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        team_id = resp.data['id']
+        response = self.client.patch(
+            f'{self.uri}/{team_id}',
+            format='json',
+            data={
+                'name': fake_name,
+                'members': [self.user.id, self.other_user.id]
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_team(self):
+
+        # login as manager
+        self.client = APIClient()
+        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
+
+        # preparing fake data
+        fake_name: str = Faker().name()
+
+        # creating a team
+        data: dict[str, str] = {
+                'name': fake_name,
+                'members': [self.user.id]
+        }
+        resp = self.client.post(self.uri, format='json', data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        team_id = resp.data['id']
+        response = self.client.delete(
+            f'{self.uri}/{team_id}',
+            format='json',
+        )
+        self.assertEqual(response.status_code, 204)
+
+    def test_fail_if_wrong_input(self):
+
+        # login as manager
+        self.client = APIClient()
+        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
+
+        # preparing fake data
+        fake_name: str = Faker().name()
+
+        # creating a team
+        data: dict[str, str] = {
+                'garabage_value': fake_name,
+                'lol': [self.user.id]
+        }
+        resp = self.client.post(self.uri, format='json', data=data)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_pentester_can_read_team(self):
+
+        # login as manager
+        self.client = APIClient()
+        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
+
+        # preparing fake data
+        fake_name: str = Faker().name()
+
+        # creating a team
+        data: dict[str, str] = {
+                'name': fake_name,
+                'members': [self.user.id]
+        }
+        resp = self.client.post(self.uri, format='json', data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        team_id = resp.data['id']
+
+        # logging in as pentester
+        self.pentester_client = APIClient()
+        auth_token = login_as(self.user.auth.email, random_user_password())
+        self.pentester_client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}') # type: ignore
+
+        resp = self.pentester_client.get(f'{self.uri}/{team_id}', format='json')
+        self.assertEqual(resp.status_code, 200)

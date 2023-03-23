@@ -32,5 +32,5 @@ install_postgresql () {
 ############
 
 install_postgresql
-python3 manage.py makemigrations
+# python3 manage.py makemigrations
 python3 manage.py migrate

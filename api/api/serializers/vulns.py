@@ -1,9 +1,9 @@
-from datetime import datetime
+from warnings import warn
 
 from rest_framework import serializers
 
 from api.models.vulns import Notes, VulnType, ImageModel, Vulnerability
-from api.serializers import create_instance
+from api.serializers import create_instance, AuthSerializer
 
 
 class NotesSerializer(serializers.ModelSerializer):
@@ -13,16 +13,13 @@ class NotesSerializer(serializers.ModelSerializer):
         ]
         model = Notes
 
-    def create(self, validated_data):
-        if "creation_date" not in validated_data:
-            validated_data["creation_date"] = datetime.now()
-            validated_data["last_updated_date"] = datetime.now()
-        return super().create(validated_data)
+        def to_representation(self, instance):
 
-    def update(self, instance, validated_data):
-        if "last_updated_date" not in validated_data:
-            validated_data["last_updated_date"] = datetime.now()
-        return super().update(instance, validated_data)
+            author = instance.pop('author')
+            serializer = AuthSerializer(author)
+            instance["author"] = serializer.data
+            super().to_representation(instance)
+
 
 class VulnTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,6 +28,7 @@ class VulnTypeSerializer(serializers.ModelSerializer):
         ]
         model = VulnType
 
+
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         fields = [
@@ -38,14 +36,14 @@ class ImageSerializer(serializers.ModelSerializer):
         ]
         model = ImageModel
 
-class VulnerabilitySerializer(serializers.ModelSerializer):
 
-    images = ImageSerializer(many=True, read_only=False)
+class VulnerabilitySerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=False, required=False)
 
     class Meta:
         model = Vulnerability
         fields = [
-            'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type', 'cvss'
+            'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type'
         ]
 
     def create(self, validated_data):
