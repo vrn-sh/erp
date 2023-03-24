@@ -48,6 +48,15 @@ function DashboardMission() {
                         Note
                     </button>
                     <button
+                        key={3}
+                        id="vuln"
+                        type="button"
+                        className={active === 'vuln' ? 'active' : undefined}
+                        onClick={handleClick}
+                    >
+                        Vulnerability
+                    </button>
+                    <button
                         key={2}
                         id="dork"
                         type="button"

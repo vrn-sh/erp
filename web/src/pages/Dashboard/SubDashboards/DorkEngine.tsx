@@ -52,14 +52,18 @@ export default function DorkEngine() {
 
     return (
         <>
-            <input
-                type="text"
-                placeholder="Enter domain"
-                name="domain"
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                className="dork-input"
-            />
+            <div className='dork_input'>
+                <label>Target domain</label>
+                <input
+                    type="text"
+                    placeholder="Enter domain"
+                    name="domain"
+                    onChange={handleChange}
+                    onKeyDown={handleKeyDown}
+                    className="dork_input_field"
+                />
+
+            </div>
             <table className="no_center_container">
                 {records.map((dork) => {
                     return (
@@ -72,6 +76,7 @@ export default function DorkEngine() {
                                             dork[0].position,
                                             dork[0].path
                                         )}
+                                        className="dork_link"
                                     >
                                         {dork[0].title}
                                     </a>
@@ -83,6 +88,7 @@ export default function DorkEngine() {
                                             dork[1].position,
                                             dork[1].path
                                         )}
+                                        className="dork_link"
                                     >
                                         {dork[1].title}
                                     </a>

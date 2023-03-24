@@ -212,6 +212,34 @@ table input {
     }
 }
 
+// DorkEngine
+
+.dork_input {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.dork_input label {
+    @include non-margin-padding();
+    background: transparent;
+    margin-right: 1rem;
+}
+
+.dork_link {
+    text-decoration: none;
+    font-family: "Poppins-Regular";
+    color: var(--black);
+    cursor: pointer;
+}
+
+.dork_link:hover {
+    color: var(--primary-hover-btn);
+}
+
 .no_center_container {
     text-align: left !important;
 }
