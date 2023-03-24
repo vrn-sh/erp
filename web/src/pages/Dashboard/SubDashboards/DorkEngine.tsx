@@ -6,13 +6,8 @@ export default function DorkEngine() {
     const [tmpDomain, setTmpDomain] = useState('');
     const [inputDomain, setInputDomain] = useState('');
 
-    const getLink = (domain: string, pos: string, path: string) => {
-        let res = '';
-        if (pos === 'before') {
-            res = domain.concat(inputDomain).concat(path);
-        } else {
-            res = domain.concat(path).concat(inputDomain);
-        }
+    const getLink = (path: string) => {
+        const res = path.replace('{{DOMAIN}}', inputDomain);
         return res;
     };
 
@@ -52,7 +47,7 @@ export default function DorkEngine() {
 
     return (
         <>
-            <div className='dork_input'>
+            <div className="dork_input">
                 <label>Target domain</label>
                 <input
                     type="text"
@@ -62,7 +57,6 @@ export default function DorkEngine() {
                     onKeyDown={handleKeyDown}
                     className="dork_input_field"
                 />
-
             </div>
             <table className="no_center_container">
                 {records.map((dork) => {
@@ -71,11 +65,7 @@ export default function DorkEngine() {
                             <tr>
                                 <td>
                                     <a
-                                        href={getLink(
-                                            dork[0].domain,
-                                            dork[0].position,
-                                            dork[0].path
-                                        )}
+                                        href={getLink(dork[0].path)}
                                         className="dork_link"
                                     >
                                         {dork[0].title}
@@ -83,11 +73,7 @@ export default function DorkEngine() {
                                 </td>
                                 <td>
                                     <a
-                                        href={getLink(
-                                            dork[1].domain,
-                                            dork[1].position,
-                                            dork[1].path
-                                        )}
+                                        href={getLink(dork[1].path)}
                                         className="dork_link"
                                     >
                                         {dork[1].title}
