@@ -428,8 +428,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # creating a team
         data: dict[str, str] = {
-                'garabage_value': fake_name,
-                'lol': [self.user.id]
+                'members': [fake_name]
         }
         resp = self.client.post(self.uri, format='json', data=data)
         self.assertEqual(resp.status_code, 400)
