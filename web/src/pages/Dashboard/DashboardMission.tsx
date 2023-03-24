@@ -11,13 +11,14 @@ function DashboardMission() {
     };
 
     const getSubDashboard = () => {
-        if (active === 'main'){
-            return <Mission />
-        }else if (active === 'dork') {
-            return <DorkEngine />
+        if (active === 'main') {
+            return <Mission />;
         }
-        return null
-    }
+        if (active === 'dork') {
+            return <DorkEngine />;
+        }
+        return null;
+    };
 
     // const updatePercent = (n: number) => {
     //     setFinish(n);
