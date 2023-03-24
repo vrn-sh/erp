@@ -41,18 +41,16 @@ class VulnTestCase(TransactionTestCase):
             format='json',
             data={
                 'title': 'String Error Terminatoin', # Typo made on purpose
-                'vuln_type': 'XSS',
+                'vuln_type': 'Cross-Site Scripting (XSS)',
                 'serverity': 6.5,
                 'images': []
             }
         )
 
-        warn(f'{response.json()}')
-
         self.assertEqual(response.status_code, 201)
         vuln_id = response.data['id']
 
-        response = client.put(
+        response = client.patch(
             f'/vulnerability/{vuln_id}',
             format='json',
             data={

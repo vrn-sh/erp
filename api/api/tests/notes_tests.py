@@ -28,7 +28,6 @@ class NotesTestCase(TransactionTestCase):
         auth_token: str = login_as(self.user.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
-
         mission = create_mission(self.manager, [self.user])
         response = client.post(
             self.uri,

@@ -39,8 +39,6 @@ class TeamTestCase(TransactionTestCase):
         self.assertEqual(resp.status_code, 201)
 
         team_id = resp.data['id']
-
-
         response = client.post(
             "/mission",
             format='json',

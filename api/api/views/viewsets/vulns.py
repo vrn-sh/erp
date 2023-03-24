@@ -31,10 +31,7 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-
-        if "author" in request.data:
-            request.data.pop("author")
-
+        request.data.pop("author", None)
         request.data["last_editor"] = request.user.id
         return super().update(request, *args, **kwargs)
 
@@ -72,19 +69,36 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
 
-        vuln_name = request.data.get('vuln_type', None)
-        if not vuln_name:
+        vuln = request.data.get('vuln_type')
+        if not vuln:
             return Response({
-                'errors': 'missing field: vuln_type',
-                }, status=HTTP_400_BAD_REQUEST)
-
-        request.data['vuln_type'] = VulnType.objects.filter(name=vuln_name).first()
-        if not request.data.get('vuln_type'):
-            return Response({
-                'errors': 'unknown vulnerability type',
+                'errors': 'missing "vuln_type" field',
             }, status=HTTP_400_BAD_REQUEST)
+
+        vuln_obj = VulnType.objects.filter(name=vuln).first()
+        if not vuln_obj:
+            return Response({
+                'errors': 'unknown "vuln_type" type',
+            }, status=HTTP_400_BAD_REQUEST)
+
+        request.data['vuln_type'] = vuln_obj.id
+        if not 'description' in request.data:
+            request.data['description'] = vuln_obj.description
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
+        if 'author' in request.data:
+            request.data.pop('author')
         request.data['last_editor'] = request.user.id
+
+        if 'vuln_type' in request.data:
+            vuln_obj = VulnType.objects.filter(name=request.data['vuln_type']).first()
+            if not vuln_obj:
+                return Response({
+                    'errors': 'unknown "vuln_type" type',
+                }, status=HTTP_400_BAD_REQUEST)
+            request.data['vuln_type'] = vuln_obj.id
+            if not 'description' in request.data:
+                request.data['description'] = vuln_obj.description
+
         return super().update(request, *args, **kwargs)

@@ -85,18 +85,20 @@ h4 {
 }
 
 @media only screen and (max-width: 480px) {
-    .loader:after, .loader:before, .loader {
-        background:none;
+    .loader:after,
+    .loader:before,
+    .loader {
+        background: none;
         filter: none;
     }
 
-    .home-container h1{
+    .home-container h1 {
         font-size: 3rem;
     }
 }
 
 @media only screen and (max-width: 800px) {
-    .home-container h1{
+    .home-container h1 {
         font-size: 4rem;
     }
 }

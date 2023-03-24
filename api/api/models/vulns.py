@@ -1,6 +1,7 @@
+from django.core.exceptions import ValidationError
 from typing import List, Optional
 from django.db import models
-from django.db.models import ImageField
+from django.db.models import CharField, FloatField, ImageField, TextField
 
 from api.models import Pentester, Auth
 
@@ -37,10 +38,11 @@ class ImageModel(models.Model):
     image = ImageField(name='image')  # FIXME(adina): add storage, STATIC_FILES path in settings, setup nginx
 
 
-
 class VulnType(models.Model):
+    """Vulnerability type model (XSS, LFI, etc...)"""
 
     REQUIRED_FIELDS = ['name']
+
 
     class Meta:
         verbose_name = 'Vulnerability TYPE Model'
@@ -59,13 +61,14 @@ class VulnType(models.Model):
 
 
 class Vulnerability(models.Model):
+    """Model representing a vulnerability found by a Pentester"""
 
     REQUIRED_FIELDS = ['title', 'severity', 'author', 'last_editor', 'vuln_type']
 
     class Meta:
         verbose_name = 'Vulnerability Model'
         verbose_name_plural = 'Vulnerability models'
-        ordering = ['creation_date', 'serverity']
+        ordering = ['title']
 
     title = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(max_length=MAX_NOTE_LENGTH, blank=True)
@@ -74,8 +77,7 @@ class Vulnerability(models.Model):
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
 
-    author: Auth = models.ForeignKey(
-        Auth, on_delete=models.CASCADE, related_name='author')
+    author: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='author')
     last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
     vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
