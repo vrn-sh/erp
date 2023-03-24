@@ -1,3 +1,4 @@
+from datetime import datetime
 from warnings import warn
 
 from rest_framework import serializers
@@ -41,8 +42,36 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=False, required=False)
 
     class Meta:
+        model = Vulnerability
         fields = [
             'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type'
         ]
 
-        model = Vulnerability
+    def create(self, validated_data):
+
+        if "creation_date" not in validated_data:
+            validated_data["creation_date"] = datetime.now()
+            validated_data["last_updated_date"] = datetime.now()
+
+        if "last_editor" not in validated_data:
+            validated_data["last_editor"] = validated_data["author"]
+
+        validated_data["vuln_type"] = VulnType.objects.get(name=validated_data["vuln_type"])
+        if "images" in validated_data:
+            images = create_instance(ImageSerializer, validated_data, "images")
+            return Vulnerability.objects.create(images=images, **validated_data)
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if "last_updated_date" not in validated_data:
+            validated_data["last_updated_date"] = datetime.now()
+        if 'vuln_type' in validated_data:
+            validated_data["vuln_type"] = VulnType.objects.get(name=validated_data["vuln_type"])
+
+        if "images" in validated_data:
+            nested_serializer = self.fields['images']
+            nested_instance = instance.images
+            nested_data = validated_data.pop('images')
+            nested_serializer.update(nested_instance, nested_data)
+        return super().update(instance, validated_data)

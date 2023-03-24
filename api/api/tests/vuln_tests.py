@@ -36,7 +36,7 @@ class VulnTestCase(TransactionTestCase):
             format='json',
             data={
                 'title': 'String Error Terminatoin', # Typo made on purpose
-                'vuln_type': 'XSS'
+                'vuln_type': 'Cross-Site Scripting (XSS)'
             }
         )
 
