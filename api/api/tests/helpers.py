@@ -1,14 +1,14 @@
 """helper functions for unit tests"""
 
+from datetime import date, datetime
 from typing import Any
 from faker import Faker
 
 from rest_framework.test import APIRequestFactory
 
 from api.models import *
+from api.models.mission import Mission
 from api.views import LoginView
-
-
 
 
 def login_as(email: str, password: str) -> str:
@@ -35,7 +35,6 @@ def create_user(
         UserClass: Any ,
         is_manager: bool = False,
     ) -> Any:
-
     """create a user that is already validated"""
 
     auth = Auth(
@@ -91,3 +90,29 @@ def create_random_pentester() -> Pentester:
         Pentester,
         False
     )
+
+def create_team(leader: Manager, members: List[Pentester], *args, **kwargs) -> Team:
+    """create a team from users & manager"""
+    team = Team.objects.create(
+        name=kwargs.get('name', Faker().name()),
+        leader=leader,
+    )
+
+    for m in members:
+        team.members.add(m)
+    return team
+
+def create_mission(leader: Manager, members: List[Pentester], *args, **kwargs) -> Mission:
+    """create a mission using manager a pentesters provided as input"""
+
+    start: date = kwargs.get('start', datetime.today())
+    end: date = kwargs.get('end', datetime(year=datetime.today().year + 1, month=datetime.today().month, day=datetime.today().day))
+    team: Team = kwargs.get('team', create_team(leader, members))
+
+    return Mission.objects.create(
+            start=start,
+            end=end,
+            team=team,
+            created_by=leader.auth,
+            last_updated_by=leader.auth,
+            )

@@ -15,9 +15,9 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import Response
 from api.backends import EmailBackend
 
-from api.serializers import AdminSerializer, PentesterSerializer, AuthSerializer, TeamSerializer
+from api.serializers import ManagerSerializer, PentesterSerializer, AuthSerializer, TeamSerializer
 
-from api.models import Manager, Auth, Pentester, Team, get_user_model
+from api.models import USER_ROLES, Manager, Auth, Pentester, Team, get_user_model
 
 from api.permissions import IsManager, IsOwner, PostOnly, ReadOnly
 
@@ -36,7 +36,10 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
     def create(self, request, *args, **kwargs):
         owner = EmailBackend().get_user_by_email(request.user.email)
-        assert owner is not None
+        if owner is None or USER_ROLES[owner.role] != 'manager':
+            return Response({
+                'error': 'user cannot create a team',
+            }, status=HTTP_400_BAD_REQUEST)
 
         owner_model = get_user_model(owner)
         request.data['leader'] = owner_model.id
@@ -61,6 +64,7 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
     authentication_classes: List[type[TokenAuthentication]] = []
     serializer_class = PentesterSerializer
 
+
 class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
     """
@@ -78,13 +82,13 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
 
     """
        ManagerViewset
-            CRUD operations for Admin model (encompasses Auth model as well)
+            CRUD operations for Manager model (encompasses Auth model as well)
     """
 
     queryset = Manager.objects.all()
     permission_classes = [permissions.IsAuthenticated, IsManager]
     authentication_classes = [TokenAuthentication]
-    serializer_class = AdminSerializer
+    serializer_class = ManagerSerializer
 
 
 class AuthViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
