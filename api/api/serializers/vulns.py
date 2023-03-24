@@ -1,3 +1,4 @@
+from datetime import datetime
 from warnings import warn
 
 from rest_framework import serializers
@@ -55,7 +56,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         if "last_editor" not in validated_data:
             validated_data["last_editor"] = validated_data["author"]
 
-        validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
+        validated_data["vuln_type"] = VulnType.objects.get(name=validated_data["vuln_type"])
         if "images" in validated_data:
             images = create_instance(ImageSerializer, validated_data, "images")
             return Vulnerability.objects.create(images=images, **validated_data)
@@ -65,7 +66,8 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         if "last_updated_date" not in validated_data:
             validated_data["last_updated_date"] = datetime.now()
-        validated_data["vuln_type"] = VulnType.objects.filter(name=validated_data["vuln_type"]).id
+        if 'vuln_type' in validated_data:
+            validated_data["vuln_type"] = VulnType.objects.get(name=validated_data["vuln_type"])
 
         if "images" in validated_data:
             nested_serializer = self.fields['images']
