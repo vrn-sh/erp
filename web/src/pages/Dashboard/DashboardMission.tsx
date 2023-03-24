@@ -10,6 +10,15 @@ function DashboardMission() {
         setActive(event.target.id);
     };
 
+    const getSubDashboard = () => {
+        if (active === 'main'){
+            return <Mission />
+        }else if (active === 'dork') {
+            return <DorkEngine />
+        }
+        return null
+    }
+
     // const updatePercent = (n: number) => {
     //     setFinish(n);
     // }; // need to add setFinish on line 12
@@ -47,11 +56,7 @@ function DashboardMission() {
                         Dork Engine
                     </button>
                 </div>
-                {active === 'main' ? (
-                    <Mission />
-                ) : active === 'dork' ? (
-                    <DorkEngine />
-                ) : null}
+                {getSubDashboard()}
             </div>
         </div>
     );

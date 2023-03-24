@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import DorkList from '../../../assets/strings/en/dorks.json';
 import * as IoIcons from 'react-icons/io';
+import DorkList from '../../../assets/strings/en/dorks.json';
 
 export default function DorkEngine() {
     const [tmpDomain, setTmpDomain] = useState('');
