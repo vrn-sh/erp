@@ -3,13 +3,6 @@
     "sectionSubtitle": "Hand picked, free roaming, eco-friendly raised developers from various parts of the world",
     "members": [
         {
-            "name": "Matteo",
-            "avatar": "https://avatars.githubusercontent.com/u/60545269?v=4",
-            "description": "back-end engineer",
-            "timezone": "GMT",
-            "github": "https://github.com/TheOrionsB"
-        },
-        {
             "name": "djnn",
             "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
             "description": "tech lead  & offensive security enthusiast - PGP: 0xA43B3C34B2FF11CF",
@@ -27,13 +20,6 @@
             "name": "Blacky",
             "avatar": "https://avatars.githubusercontent.com/u/49866160?v=4",
             "description": "back-end engineer",
-            "timezone": "GMT+1",
-            "github": "https://github.com/TheOrionsB"
-        },
-        {
-            "name": "nathan",
-            "avatar": "https://avatars.githubusercontent.com/u/44578736?v=4",
-            "description": "occasional contributor",
             "timezone": "GMT+1",
             "github": "https://github.com/TheOrionsB"
         },
