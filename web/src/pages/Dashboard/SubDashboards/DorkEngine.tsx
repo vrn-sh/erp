@@ -3,24 +3,24 @@ import DorkList from '../../../assets/strings/en/dorks.json';
 import * as IoIcons from 'react-icons/io';
 
 export default function DorkEngine() {
-    const [ tmpDomain, setTmpDomain ] = useState("");
-    const [ inputDomain, setInputDomain ] = useState("");
+    const [tmpDomain, setTmpDomain] = useState('');
+    const [inputDomain, setInputDomain] = useState('');
 
-    const getLink = (domain: string, pos: string, path: string, ) => {
-        let res = "";
-        if (pos === "before") {
-            res = domain.concat(tmpDomain).concat(path);
+    const getLink = (domain: string, pos: string, path: string) => {
+        let res = '';
+        if (pos === 'before') {
+            res = domain.concat(inputDomain).concat(path);
         } else {
-            res = domain.concat(path).concat(tmpDomain);
+            res = domain.concat(path).concat(inputDomain);
         }
-        return res
-    }
+        return res;
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTmpDomain(e.target.value);
     };
-    
-    const handleKeyDown = (event: { key: string; }) => {
+
+    const handleKeyDown = (event: { key: string }) => {
         if (event.key === 'Enter') {
             setInputDomain(tmpDomain);
         }
@@ -53,41 +53,49 @@ export default function DorkEngine() {
     return (
         <>
             <input
-                type="text" 
-                placeholder='Enter domain' 
+                type="text"
+                placeholder="Enter domain"
                 name="domain"
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 className="dork-input"
             />
-            <table className='no_center_container'>
+            <table className="no_center_container">
                 {records.map((dork) => {
                     return (
                         <tbody key={dork[0].id}>
                             <tr>
                                 <td>
-                                    <a href={getLink(dork[0].domain, dork[0].position, dork[0].path)}>
+                                    <a
+                                        href={getLink(
+                                            dork[0].domain,
+                                            dork[0].position,
+                                            dork[0].path
+                                        )}
+                                    >
                                         {dork[0].title}
                                     </a>
                                 </td>
                                 <td>
-                                    <a href={getLink(dork[1].domain, dork[1].position, dork[1].path)}>
+                                    <a
+                                        href={getLink(
+                                            dork[1].domain,
+                                            dork[1].position,
+                                            dork[1].path
+                                        )}
+                                    >
                                         {dork[1].title}
                                     </a>
                                 </td>
                             </tr>
                         </tbody>
-                    )
+                    );
                 })}
             </table>
             <nav>
                 <ul className="pagination">
                     <li className="page-item">
-                        <a
-                            href="#"
-                            className="page-link"
-                            onClick={prePage}
-                        >
+                        <a href="#" className="page-link" onClick={prePage}>
                             <IoIcons.IoIosArrowBack />
                         </a>
                     </li>
@@ -96,9 +104,7 @@ export default function DorkEngine() {
                             <li
                                 key={n}
                                 className={`page-item ${
-                                    currentPage === n
-                                        ? 'active'
-                                        : ''
+                                    currentPage === n ? 'active' : ''
                                 }`}
                             >
                                 <a
@@ -112,16 +118,12 @@ export default function DorkEngine() {
                         );
                     })}
                     <li className="page-item">
-                        <a
-                            href="#"
-                            className="page-link"
-                            onClick={nextPage}
-                        >
+                        <a href="#" className="page-link" onClick={nextPage}>
                             <IoIcons.IoIosArrowForward />
                         </a>
                     </li>
                 </ul>
             </nav>
         </>
-    )
+    );
 }

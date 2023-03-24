@@ -3,7 +3,6 @@ import './Dashboard.scss';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
 
-
 function DashboardMission() {
     const [active, setActive] = useState('main');
 
@@ -50,9 +49,9 @@ function DashboardMission() {
                 </div>
                 {active === 'main' ? (
                     <Mission />
-                ) : active === "dork" ? (
-                        <DorkEngine />
-                    ) :null}
+                ) : active === 'dork' ? (
+                    <DorkEngine />
+                ) : null}
             </div>
         </div>
     );

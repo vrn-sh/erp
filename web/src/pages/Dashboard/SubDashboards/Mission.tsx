@@ -7,7 +7,7 @@ import '../Dashboard.scss';
 import * as IoIcons from 'react-icons/io';
 
 export default function Mission() {
-    const [ list ] = useState(DashboardMissionList as IDashboardMission[]);
+    const [list] = useState(DashboardMissionList as IDashboardMission[]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 3;
@@ -39,7 +39,7 @@ export default function Mission() {
 
     return (
         <>
-            <table className='no_center_container'>
+            <table className="no_center_container">
                 {records.map((mission) => {
                     return (
                         <tbody key={mission.id}>
@@ -68,8 +68,7 @@ export default function Mission() {
                                                     width: getwidth(
                                                         mission.percent
                                                     ),
-                                                    transition:
-                                                        'width 0.5s',
+                                                    transition: 'width 0.5s',
                                                 }}
                                             />
                                         </div>
@@ -86,11 +85,7 @@ export default function Mission() {
             <nav>
                 <ul className="pagination">
                     <li className="page-item">
-                        <a
-                            href="#"
-                            className="page-link"
-                            onClick={prePage}
-                        >
+                        <a href="#" className="page-link" onClick={prePage}>
                             <IoIcons.IoIosArrowBack />
                         </a>
                     </li>
@@ -99,9 +94,7 @@ export default function Mission() {
                             <li
                                 key={n}
                                 className={`page-item ${
-                                    currentPage === n
-                                        ? 'active'
-                                        : ''
+                                    currentPage === n ? 'active' : ''
                                 }`}
                             >
                                 <a
@@ -115,16 +108,12 @@ export default function Mission() {
                         );
                     })}
                     <li className="page-item">
-                        <a
-                            href="#"
-                            className="page-link"
-                            onClick={nextPage}
-                        >
+                        <a href="#" className="page-link" onClick={nextPage}>
                             <IoIcons.IoIosArrowForward />
                         </a>
                     </li>
                 </ul>
             </nav>
         </>
-    )
+    );
 }
