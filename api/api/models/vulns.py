@@ -26,6 +26,9 @@ class Notes(models.Model):
 
 
 class ImageModel(models.Model):
+
+    REQUIRED_FIELDS = ['image']
+
     class Meta:
         verbose_name = 'Image'
         verbose_name_plural = 'Images'
@@ -36,12 +39,16 @@ class ImageModel(models.Model):
 
 
 class VulnType(models.Model):
+
+    REQUIRED_FIELDS = ['name']
+
     class Meta:
         verbose_name = 'Vulnerability TYPE Model'
         verbose_name_plural = 'Vulnerability TYPES models'
         ordering = ['name']
 
-    name = models.CharField(max_length=NAME_LENGTH, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(blank=True)
 
     def __str__(self):
@@ -52,6 +59,9 @@ class VulnType(models.Model):
 
 
 class Vulnerability(models.Model):
+
+    REQUIRED_FIELDS = ['title', 'severity', 'author', 'last_editor', 'vuln_type']
+
     class Meta:
         verbose_name = 'Vulnerability Model'
         verbose_name_plural = 'Vulnerability models'
@@ -64,9 +74,9 @@ class Vulnerability(models.Model):
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
 
-    author: Optional[Auth] = models.ForeignKey(
-        Auth, on_delete=models.CASCADE, related_name='author', blank=True, null=True)
+    author: Auth = models.ForeignKey(
+        Auth, on_delete=models.CASCADE, related_name='author')
     last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
-    vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE, blank=True)
+    vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
     images: List[ImageModel] = models.ManyToManyField(ImageModel, blank=True, default=None)

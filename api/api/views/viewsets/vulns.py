@@ -3,8 +3,9 @@ from warnings import warn
 
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.status import HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.views import Response
+from api.models import Auth
 
 
 from api.models.vulns import ImageModel, Notes, VulnType, Vulnerability
@@ -40,7 +41,7 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
 
 class VulnTypeViewset(viewsets.ModelViewSet):
     """
-        Crud to add a new vulnerability type. Shouldn't happen often, but still.
+        CRUD to add a new vulnerability type. Shouldn't happen often, but still.
     """
     queryset = VulnType.objects.all()
     permissions = [permissions.IsAuthenticated]
@@ -70,6 +71,18 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
+
+        vuln_name = request.data.get('vuln_type', None)
+        if not vuln_name:
+            return Response({
+                'errors': 'missing field: vuln_type',
+                }, status=HTTP_400_BAD_REQUEST)
+
+        request.data['vuln_type'] = VulnType.objects.filter(name=vuln_name).first()
+        if not request.data.get('vuln_type'):
+            return Response({
+                'errors': 'unknown vulnerability type',
+            }, status=HTTP_400_BAD_REQUEST)
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):

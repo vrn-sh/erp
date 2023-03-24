@@ -10,16 +10,21 @@ from api.tests.helpers import create_random_pentester, create_random_manager, ra
     login_as
 
 from warnings import warn
+from django.core.management import call_command
+
+
 
 class VulnTestCase(TransactionTestCase):
 
     def setUp(self) -> None:
+
+        # ensure vuln types are in database
+        call_command('init_builtin_vuln_types')
+
         self.user: Pentester = create_random_pentester()
         self.other_user: Pentester = create_random_pentester()
         self.manager: Manager = create_random_manager()
 
-        # Create builtin vuln types in test DB
-        Command().handle()
 
     def tearDown(self) -> None:
         self.user.delete()
@@ -52,7 +57,6 @@ class VulnTestCase(TransactionTestCase):
             format='json',
             data={
                 'title': "String Error Termination",
-                'last_editor': self.user.id
             }
         )
 
