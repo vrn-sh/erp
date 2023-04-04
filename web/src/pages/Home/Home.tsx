@@ -4,6 +4,7 @@ import Footer from '../../component/Footer/Footer';
 import './Home.scss';
 import About from './About/About';
 import Team from './Team/Team';
+import Form from './Form/Form';
 
 export default function Home() {
     return (
@@ -22,6 +23,7 @@ export default function Home() {
                 </div>
                 <About />
                 <Team />
+                <Form />
             </section>
             <Footer />
         </>

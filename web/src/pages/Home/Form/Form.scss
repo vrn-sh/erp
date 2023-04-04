@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    }
+
+    form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: 0 auto;
+    }
+
+    label {
+    margin-top: 10px;
+    }
+
+    input, textarea, button {
+    margin-top: 5px;
+    }
+
+    button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    }
