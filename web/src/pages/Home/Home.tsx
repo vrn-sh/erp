@@ -5,6 +5,7 @@ import './Home.scss';
 import About from './About/About';
 import Team from './Team/Team';
 import Form from './Form/Form';
+import Timeline from './Timeline/Timeline';
 
 export default function Home() {
     return (
@@ -22,6 +23,7 @@ export default function Home() {
                     </div>
                 </div>
                 <About />
+                <Timeline />
                 <Team />
                 <Form />
             </section>

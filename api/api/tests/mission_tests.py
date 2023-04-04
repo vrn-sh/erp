@@ -8,7 +8,7 @@ from api.models import Manager, Pentester, Auth
 from api.tests.helpers import create_random_pentester, create_random_manager, random_user_password, login_as
 
 
-class NotesTestCase(TransactionTestCase):
+class TeamTestCase(TransactionTestCase):
 
     def setUp(self) -> None:
         self.user: Pentester = create_random_pentester()
@@ -39,14 +39,11 @@ class NotesTestCase(TransactionTestCase):
         self.assertEqual(resp.status_code, 201)
 
         team_id = resp.data['id']
-
-
         response = client.post(
             "/mission",
             format='json',
             data={
                 'title': 'ERP - Eip team',
-                'duration': '400.5',
                 'start': '2022-01-01',
                 'end': '2024-01-01',
                 'team': team_id,

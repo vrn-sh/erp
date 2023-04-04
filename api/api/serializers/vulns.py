@@ -1,48 +1,37 @@
+from datetime import datetime
 from warnings import warn
 
+from django.db import transaction
 from rest_framework import serializers
+from api.models import Auth
 
 from api.models.vulns import Notes, VulnType, ImageModel, Vulnerability
-from api.serializers import create_instance, AuthSerializer
+from api.serializers import AuthSerializer
+from api.serializers.mission import MissionSerializer
+from api.serializers.utils import create_instance
 
 
 class NotesSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = [
-            'id', 'content', 'creation_date', 'last_updated_date', 'author'
-        ]
         model = Notes
-
-        def to_representation(self, instance):
-
-            author = instance.pop('author')
-            serializer = AuthSerializer(author)
-            instance["author"] = serializer.data
-            super().to_representation(instance)
+        fields = '__all__'
 
 
 class VulnTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = [
-            'id', 'name', 'description'
-        ]
         model = VulnType
+        fields = '__all__'
 
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = [
-            'image'
-        ]
         model = ImageModel
+        fields = '__all__'
 
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, read_only=False, required=False)
+    images = ImageSerializer(read_only=True, many=True) # TODO: set read_only=True when s3 is supported
 
     class Meta:
-        fields = [
-            'id', 'title', 'description', 'images', 'author', 'last_editor', 'vuln_type'
-        ]
-
         model = Vulnerability
+        fields = '__all__'

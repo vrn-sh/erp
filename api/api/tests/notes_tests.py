@@ -4,7 +4,7 @@ from django.test import TransactionTestCase
 from rest_framework.test import APIClient
 from api.models import Manager, Pentester
 
-from api.tests.helpers import create_random_pentester, create_random_manager, random_user_password, login_as
+from api.tests.helpers import create_mission, create_random_pentester, create_random_manager, random_user_password, login_as
 
 class NotesTestCase(TransactionTestCase):
 
@@ -28,10 +28,14 @@ class NotesTestCase(TransactionTestCase):
         auth_token: str = login_as(self.user.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
+        mission = create_mission(self.manager, [self.user])
         response = client.post(
             self.uri,
             format='json',
-            data={'content': '#Exploit 1\n\nThis is an exploit.',}
+            data={
+                'content': '#Exploit 1\n\nThis is an exploit.',
+                'mission': mission.id,
+            }
         )
         self.assertEqual(response.status_code, 201)
         id: str = response.data['id']
@@ -52,10 +56,15 @@ class NotesTestCase(TransactionTestCase):
         auth_token: str = login_as(self.manager.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
+        mission = create_mission(self.manager, [self.user])
         response = client.post(
             self.uri,
             format='json',
-            data={'content': '#Exploit 1\n\nThis is an exploit.', 'author': self.user.id}
+            data={
+                'content': '#Exploit 1\n\nThis is an exploit.',
+                'author': self.user.id,
+                'mission': mission.id,
+            }
         )
         self.assertEqual(response.status_code, 201)
 
@@ -78,10 +87,15 @@ class NotesTestCase(TransactionTestCase):
         auth_token: str = login_as(self.user.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
+        mission = create_mission(self.manager, [self.user])
         response = client.post(
             self.uri,
             format='json',
-            data={'content': '#Exploit 1\n\nThis is an exploit.', 'author': self.user.id}
+            data={
+                'content': '#Exploit 1\n\nThis is an exploit.',
+                'author': self.user.id,
+                'mission': mission.id,
+            }
         )
 
         auth_token: str = login_as(self.other_user.auth.email, random_user_password())
