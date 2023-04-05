@@ -50,7 +50,7 @@ const SettingTeam: React.FC<UserGroupsProps> = ({ userId, role }) => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [maClasse, setMaClasse] = useState('action-ctn');
   const [width, setWidth] = useState('');
-  role = "Pentester";
+  role = "Manager";
 
   const [showPopup, setShowPopup] = useState(false);
   const [email, setEmail] = useState("");
