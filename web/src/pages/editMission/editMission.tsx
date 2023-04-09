@@ -45,6 +45,15 @@ export default function EditMission() {
             <SideBar />
             <div className="dashboard_container">
                 <TopBar />
+                <div className="page-info">
+                  <div>
+                    <h2 style={{fontSize:'28px', fontFamily:'Arial'}}>Edit mission</h2>
+                  </div>
+                  <div className="page-searcher">
+                    <label>Search on page</label>
+                    <input type="text" placeholder="Search..." />
+                  </div>
+                </div>
                 <div className="edit-container">
                     <div style={{margin:'20px', textAlign:'left', width:'30%'}}>
                         <h3  style={{margin:'0px'}}>Frame Mission Web</h3>

@@ -5,10 +5,10 @@
     margin: 20px;
     display: flex;
     font-family: 'Arial';
-font-style: normal;
-font-weight: 500;
-font-size: 20px;
-line-height: 160%;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 160%;  
 }
 .edit-form{
     width: 60%;
@@ -27,4 +27,7 @@ line-height: 160%;
     font-weight: bold;
     border: 1px solid #7C44F3;
     color: #7C44F3;
+}
+.page-info h2{
+    font-style: 'Roboto';
 }
