@@ -1,12 +1,17 @@
 name: deploy to prod
 
 on:
+  workflow_run:
+    workflows: ["frontend-unit-tests", "frontend-lint", "api-unit-tests", "docker-compose-test"]
+    branches: [current]
+    types:
+      - completed
   push:
     branches:
       - "current"
-    workflow_dispatch:
 
 jobs:
+
   deploy:
     runs-on: ubuntu-latest
     steps:

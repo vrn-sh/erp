@@ -1,11 +1,10 @@
-name: Compose
+name: docker-compose-test
 
 on:
   pull_request:
     branches:
       - "current"
       - "next"
-    workflow_dispatch:
 
 jobs:
   push:
@@ -23,7 +22,6 @@ jobs:
 
       - name: Start containers to check if it builds
         run: docker-compose -f "docker-compose.yml" up -d --build
-
 
       - name: show current logs
         run: sleep 5 && docker-compose logs -t

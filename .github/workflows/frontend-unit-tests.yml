@@ -1,10 +1,11 @@
-name: CI
-on: [push]
+name: frontend-unit-tests
+on: [push, pull_request]
 
 jobs:
   build:
-    name: Unit testing
+    name: Test the frontend
     runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '(web)')
     steps:
       - uses: actions/checkout@v3
       - name: Set Node.js 16.x
