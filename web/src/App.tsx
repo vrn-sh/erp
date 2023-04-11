@@ -8,7 +8,6 @@ import SignUp from './pages/SignUp/SignUp';
 import Dashboard from './pages/Dashboard/Dashboard';
 import NotFound from './pages/Error/Error';
 
-
 function App() {
     return (
         <div className="container">
