@@ -3,7 +3,7 @@
 - AuthViewset: Auth class CRUD
 - RegisterViewset: Pentester creation route
 - PentesterViewset: Pentester CRUD
-- AdminViewset: Admin CRUD
+- ManagerViewset: Manager CRUD
 - NodeViewset: Node class CRUD
 - AddressViewset: Address class CRUD (no preloaded data)
 """
@@ -11,12 +11,45 @@
 from typing import List
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.views import Response
+from api.backends import EmailBackend
 
-from api.serializers import AdminSerializer, PentesterSerializer, AuthSerializer
+from api.serializers import ManagerSerializer, PentesterSerializer, AuthSerializer, TeamSerializer
 
-from api.models import Admin, Auth, Pentester
+from api.models import USER_ROLES, Manager, Auth, Pentester, Team, get_user_model
 
-from api.permissions import IsAdmin, IsOwner, PostOnly
+from api.permissions import IsManager, IsOwner, PostOnly, ReadOnly
+
+
+class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+    """
+        Create and manage teams
+    """
+
+    queryset = Team.objects.all()
+    permission_classes = [permissions.IsAuthenticated & IsManager | \
+            permissions.IsAuthenticated & ReadOnly]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = TeamSerializer
+
+
+    def create(self, request, *args, **kwargs):
+        owner = EmailBackend().get_user_by_email(request.user.email)
+        if owner is None or USER_ROLES[owner.role] != 'manager':
+            return Response({
+                'error': 'user cannot create a team',
+            }, status=HTTP_400_BAD_REQUEST)
+
+        owner_model = get_user_model(owner)
+        request.data['leader'] = owner_model.id
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if 'leader' in request.data:
+            return Response({'error': 'cannot change owner once it is set!'}, status=HTTP_400_BAD_REQUEST)
+
+        return super().update(request, *args, **kwargs)
 
 
 class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -31,6 +64,7 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
     authentication_classes: List[type[TokenAuthentication]] = []
     serializer_class = PentesterSerializer
 
+
 class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
     """
@@ -39,22 +73,22 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     """
 
     queryset = Pentester.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsAdmin | IsOwner]
+    permission_classes = [permissions.IsAuthenticated & IsManager | IsOwner]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
 
 
-class AdminViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
 
     """
-       AdminViewset
-            CRUD operations for Admin model (encompasses Auth model as well)
+       ManagerViewset
+            CRUD operations for Manager model (encompasses Auth model as well)
     """
 
-    queryset = Admin.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    queryset = Manager.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsManager]
     authentication_classes = [TokenAuthentication]
-    serializer_class = AdminSerializer
+    serializer_class = ManagerSerializer
 
 
 class AuthViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -65,6 +99,6 @@ class AuthViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     """
 
     queryset = Auth.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsAdmin | IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsManager | IsOwner]
     authentication_classes = [TokenAuthentication]
     serializer_class = AuthSerializer

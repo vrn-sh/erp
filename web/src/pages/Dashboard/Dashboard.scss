@@ -7,20 +7,18 @@
     display: flex;
     flex-direction: row;
     height: 100vh;
-}
-
-.dashboard_container {
-    @include non-margin-padding;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100%;
-}
-
-.dashboard-pages {
-    @include non-margin-padding;
-    background-color: var(--basic-bg);
-    width: 100%;
+    &_container {
+        @include non-margin-padding;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+    }
+    &-pages {
+        @include non-margin-padding;
+        background-color: var(--basic-bg);
+        width: 100%;
+    }
 }
 
 .page-info {
@@ -148,29 +146,29 @@ table input {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-}
+    
+    &-bar {
+        position: relative;
+        width: 10rem;
+        height: 5px;
+        border-radius: 10px;
+        margin-right: 1rem;
+        background-color: var(--gradient-primary-btn);
+    }
 
-.process-bar {
-    position: relative;
-    width: 10rem;
-    height: 5px;
-    border-radius: 10px;
-    margin-right: 1rem;
-    background-color: var(--gradient-primary-btn);
-}
+    &-container {
+        width: 90%;
+        height: 100%;
+        border-radius: 10px;
+        background-color: var(--primary-btn);
+    }
 
-.process-container {
-    width: 90%;
-    height: 100%;
-    border-radius: 10px;
-    background-color: var(--primary-btn);
-}
-
-.process-percent {
-    font-family: 'Poppins-Regular';
-    font-weight: 400;
-    font-size: 14px;
-    color: black;
+    &-percent {
+        font-family: 'Poppins-Regular';
+        font-weight: 400;
+        font-size: 14px;
+        color: black;
+    }
 }
 
 //Pagination
@@ -212,4 +210,36 @@ table input {
     td {
         font-size: 13px;
     }
+}
+
+// DorkEngine
+
+.dork_input {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.dork_input label {
+    @include non-margin-padding();
+    background: transparent;
+    margin-right: 1rem;
+}
+
+.dork_link {
+    text-decoration: none;
+    font-family: "Poppins-Regular";
+    color: var(--black);
+    cursor: pointer;
+}
+
+.dork_link:hover {
+    color: var(--primary-hover-btn);
+}
+
+.no_center_container {
+    text-align: left !important;
 }

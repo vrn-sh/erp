@@ -1,47 +1,23 @@
 import React, { useState } from 'react';
 import './Dashboard.scss';
-import * as IoIcons from 'react-icons/io';
-import { IDashboardMission } from './DashboardMission.type';
+import DorkEngine from './SubDashboards/DorkEngine';
+import Mission from './SubDashboards/Mission';
 
-type Props = {
-    list: IDashboardMission[];
-};
-
-function DashboardMission(props: Props) {
-    const { list } = props;
-    const [active, setActive] = useState('mission');
-
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const recordsPerPage = 3;
-    const lastIndex = currentPage * recordsPerPage;
-    const firstIndex = lastIndex - recordsPerPage;
-    const records = list.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(list.length / recordsPerPage);
-    const nums = [...Array(npage + 1).keys()].slice(1);
-
-    const nextPage = () => {
-        if (currentPage !== npage) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const prePage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
-    const changePage = (n: number) => {
-        setCurrentPage(n);
-    };
+function DashboardMission() {
+    const [active, setActive] = useState('main');
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
     };
 
-    const getwidth = (n: number) => {
-        return `${n.toString()}%`;
+    const getSubDashboard = () => {
+        if (active === 'main') {
+            return <Mission />;
+        }
+        if (active === 'dork') {
+            return <DorkEngine />;
+        }
+        return null;
     };
 
     // const updatePercent = (n: number) => {
@@ -55,21 +31,39 @@ function DashboardMission(props: Props) {
                 <div className="subHeader">
                     <button
                         key={1}
-                        id="mission"
+                        id="main"
                         type="button"
-                        className={active === 'mission' ? 'active' : undefined}
+                        className={active === 'main' ? 'active' : undefined}
                         onClick={handleClick}
                     >
-                        My Mission
+                        Main
                     </button>
                     <button
                         key={2}
-                        id="roles"
+                        id="note"
                         type="button"
-                        className={active === 'roles' ? 'active' : undefined}
+                        className={active === 'note' ? 'active' : undefined}
                         onClick={handleClick}
                     >
-                        My Roles
+                        Note
+                    </button>
+                    <button
+                        key={3}
+                        id="vuln"
+                        type="button"
+                        className={active === 'vuln' ? 'active' : undefined}
+                        onClick={handleClick}
+                    >
+                        Vulnerability
+                    </button>
+                    <button
+                        key={2}
+                        id="dork"
+                        type="button"
+                        className={active === 'dork' ? 'active' : undefined}
+                        onClick={handleClick}
+                    >
+                        Dork Engine
                     </button>
                 </div>
                 {active === 'mission' ? (

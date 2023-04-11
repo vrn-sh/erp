@@ -1,54 +1,84 @@
+from django.core.exceptions import ValidationError
+from typing import List, Optional
 from django.db import models
-from django.db.models import ImageField
+from django.db.models import CharField, FloatField, ImageField, TextField
 
-from api.models import Pentester
+from api.models import Pentester, Auth
 
-MAX_NOTE_LENGTH = 8186
-MAX_LINK_LENGTH = 1024
-NAME_LENGTH=256
+from api.models import NAME_LENGTH, MAX_NOTE_LENGTH
+from api.models.mission import Mission
 
 
 class Notes(models.Model):
     """
-        In order to give pentesters flexibility in their work, we should let them save simple notes about the
+        In order to give pentesters flexibility in their
+        work, we should let them save simple notes about the
         current infrastructure.
     """
 
-    REQUIRED_FIELDS = ["content", "author"]
+    REQUIRED_FIELDS = ["content", "author", "mission"]
 
-    # FIXME(adina): add Mission-id (ForeignKey)
-
+    mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
-    creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
-    last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
-    author: models.ForeignKey = models.ForeignKey(Pentester, on_delete=models.CASCADE)
+
+    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
+    last_updated: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
+    author: Optional[Auth] = models.ForeignKey(Auth, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class ImageModel(models.Model):
+
+    REQUIRED_FIELDS = ['image']
+
     class Meta:
-        verbose_name = 'Image Model'
-        verbose_name_plural = 'Image models'
-        ordering = []
-    image = ImageField(name='image') # FIXME(adina): add storage, STATIC_FILES path in settings, setup nginx
+        verbose_name = 'Image'
+        verbose_name_plural = 'Images'
+        ordering = ['id']
+
+    image = ImageField(name='image')  # FIXME(adina): add storage, STATIC_FILES path in settings, setup nginx
+
 
 class VulnType(models.Model):
+    """Vulnerability type model (XSS, LFI, etc...)"""
+
+    REQUIRED_FIELDS = ['name']
+
+
     class Meta:
         verbose_name = 'Vulnerability TYPE Model'
         verbose_name_plural = 'Vulnerability TYPES models'
         ordering = ['name']
+
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(blank=True)
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f'<VulnType: \'{self.name}\'>'
+
+
 class Vulnerability(models.Model):
+    """Model representing a vulnerability found by a Pentester"""
+
+    REQUIRED_FIELDS = ['title', 'severity', 'author', 'last_editor', 'vuln_type']
+
     class Meta:
         verbose_name = 'Vulnerability Model'
         verbose_name_plural = 'Vulnerability models'
-        ordering = ['creation_date']
+        ordering = ['title']
+
     title = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(max_length=MAX_NOTE_LENGTH, blank=True)
+    serverity = models.FloatField()
+
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
-    author: models.ForeignKey = models.ForeignKey(Pentester, on_delete=models.CASCADE, related_name='author')
-    last_editor = models.ForeignKey(Pentester, on_delete=models.CASCADE, related_name='last_editor')
-    vuln_type = models.OneToOneField(VulnType, on_delete=models.CASCADE)
-    images = models.ManyToManyField(ImageModel)
+
+    author: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='author')
+    last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
+
+    vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
+    images: List[ImageModel] = models.ManyToManyField(ImageModel, blank=True, default=None)

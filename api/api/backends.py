@@ -15,7 +15,7 @@ class EmailBackend(ModelBackend):
     supports_anonymous_user = False
     supports_inactive_user = False
 
-    def get_user_by_email(self, email) -> Optional[AbstractBaseUser]:
+    def get_user_by_email(self, email) -> Optional[Auth]:
         """fetches user by his email"""
         return Auth.objects.filter(email=email).first()
 
