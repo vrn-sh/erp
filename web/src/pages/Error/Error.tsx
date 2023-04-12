@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function NotFound() {
-    console.log('Not Found');
     return (
         <html lang="en">
             <head>
