@@ -15,7 +15,7 @@ from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset
 
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 
-from api.views.viewsets.mission import MissionViewset, ReconViewset
+from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -40,6 +40,7 @@ router.register(r'vulnerability', VulnerabilityViewset)
 router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)
 router.register(r'recon', ReconViewset)
+router.register(r'nmap', NmapViewset)
 
 urlpatterns = [
     path('login', LoginView.as_view()),

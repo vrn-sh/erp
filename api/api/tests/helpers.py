@@ -7,7 +7,7 @@ from faker import Faker
 from rest_framework.test import APIRequestFactory
 
 from api.models import *
-from api.models.mission import Mission
+from api.models.mission import Mission, Recon
 from api.views import LoginView
 
 
@@ -108,6 +108,7 @@ def create_mission(leader: Manager, members: List[Pentester], *args, **kwargs) -
     start: date = kwargs.get('start', datetime.today())
     end: date = kwargs.get('end', datetime(year=datetime.today().year + 1, month=datetime.today().month, day=datetime.today().day))
     team: Team = kwargs.get('team', create_team(leader, members))
+    recon: Recon = Recon.objects.create()
 
     return Mission.objects.create(
             start=start,
@@ -115,4 +116,5 @@ def create_mission(leader: Manager, members: List[Pentester], *args, **kwargs) -
             team=team,
             created_by=leader.auth,
             last_updated_by=leader.auth,
+            recon=recon,
             )

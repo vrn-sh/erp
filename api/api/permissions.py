@@ -9,7 +9,7 @@ from typing import List
 from rest_framework import permissions
 
 from api.models import Auth, Pentester, Manager, Team
-from api.models.mission import Mission, Recon
+from api.models.mission import Mission, NmapScan, Recon
 from api.models.vulns import Notes, Vulnerability
 
 
@@ -75,6 +75,13 @@ class IsOwner(permissions.BasePermission):
 
         if isinstance(obj, Recon):
             mission_obj = Mission.objects.filter(recon_id=obj.id).first()
+            for m in mission_obj.team.members.all():
+                if m.auth.id == request.user.id:
+                    return True
+            return mission_obj.leader.auth.id == request.user.id
+
+        if isinstance(obj, NmapScan):
+            mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()
             for m in mission_obj.team.members.all():
                 if m.auth.id == request.user.id:
                     return True
