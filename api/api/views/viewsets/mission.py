@@ -1,10 +1,73 @@
+from datetime import datetime
+from warnings import warn
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.views import Response
+from rest_framework.routers import Response
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
-from api.models.mission import Mission, Recon
+from api.models.mission import Mission, NmapScan, Recon
 from api.permissions import IsManager, IsOwner, IsPentester, ReadOnly
-from api.serializers.mission import MissionSerializer, ReconSerializer
+from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer
+from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
+
+
+class NmapViewset(viewsets.ModelViewSet):
+    """
+        CRUD for Nmap scan object
+    """
+    queryset = NmapScan.objects.all()
+    authentication_classes = [TokenAuthentication]
+    serializer_class = NmapSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsPentester]
+
+    def create(self, request, *args, **kwargs):
+        fields = {
+                'ips': parse_nmap_ips,
+                'domain': parse_nmap_domain,
+                'ports': parse_nmap_scan,
+        }
+
+        for field, func in fields.items():
+            result = func(request.data.get('nmap_file', ''))
+            if result == [] or result is None:
+                return Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
+            request.data[field] = result
+
+        # this will just error in the serializer if input is not provided
+        request.data['recon'] = request.data.get('recon_id', 0)
+        request.data['creation_timestamp'] = datetime.now()
+        request.data.pop('nmap_file', None)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+        return Response(self.get_serializer(instance).data, status=HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        fields = {
+                'ips': parse_nmap_ips,
+                'domain': parse_nmap_domain,
+                'ports': parse_nmap_scan,
+        }
+
+        data = {}
+        # this will just error in the serializer if input is not provided
+        data['recon'] = request.data.get('recon_id', 0)
+
+        for field, func in fields.items():
+            result = func(request.data.get('nmap_file', ''))
+            if not result:
+                Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
+            data[field] = result
+
+        serializer = self.get_serializer(instance, data=data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+
+        return Response(self.get_serializer(instance).data)
 
 
 class ReconViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -12,11 +75,10 @@ class ReconViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         CRUD for Recon object
     """
 
-    # FIXME(adina): add isPartOfTheTeam
     queryset = Recon.objects.all()
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsManager]
+    permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsPentester]
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -24,7 +86,6 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
-    # FIXME(adina): add isPartOfTheTeam
     queryset = Mission.objects.all()
     permission_classes = [permissions.IsAuthenticated,  IsOwner, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
@@ -33,6 +94,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def create(self, request, *args, **kwargs):
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
+        request.data['recon'] = Recon.objects.create()
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
