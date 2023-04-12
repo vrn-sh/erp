@@ -46,9 +46,9 @@ class NmapScan(models.Model):
     REQUIRED_FIELDS = ['recon', 'ips', 'ports']
 
     recon: Recon = models.ForeignKey(Recon, on_delete=models.CASCADE)
-    creation_timestamp: models.DateTimeField = models.DateTimeField(editable=False, auto_created=True)
+    creation_timestamp: models.DateTimeField = models.DateTimeField(editable=False, auto_now=True)
 
-    ips: List[models.GenericIPAddressField] = ArrayField(models.GenericIPAddressField())
+    ips: List[models.CharField] = ArrayField(models.CharField(max_length=32))
     ports: List[NmapPortField] = ArrayField(NmapPortField())
 
 

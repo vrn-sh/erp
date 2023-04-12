@@ -8,17 +8,16 @@ from django.db import models
 
 class NmapPort:
     def __init__(
-        self, port_number: int, version: Optional[str], state: str, protocol: str, service: str, metadata: str
+        self, port_number: int, state: str, protocol: str, service: str, metadata: str
     ):
         self.port_number = port_number
-        self.version = version
         self.state = state
         self.protocol = protocol
         self.service = service
         self.metadata = metadata
 
     def __str__(self):
-        return f"{self.protocol.upper()} {self.port_number}/{self.service} ({self.state}): {self.version or ''}"
+        return f"{self.protocol.upper()} {self.port_number}/{self.service} ({self.state}): {self.metadata or ''}"
 
 
 class NmapPortField(models.Field):
@@ -30,21 +29,21 @@ class NmapPortField(models.Field):
     def from_db_value(self, value, _, __):
         if value is None:
             return value
-        port_number, version, state, protocol, service, metadata = value.split(",")
-        return NmapPort(int(port_number), version, state, protocol, service, metadata)
+        port_number, state, protocol, service, metadata = value.split(",")
+        return NmapPort(int(port_number), state, protocol, service, metadata)
 
     def to_python(self, value):
         if isinstance(value, NmapPort):
             return value
         if value is None:
             return value
-        port_number, version, state, protocol, service, metadata = value.split(",")
-        return NmapPort(int(port_number), version, state, protocol, service, metadata)
+        port_number, state, protocol, service, metadata = value.split(",")
+        return NmapPort(int(port_number), state, protocol, service, metadata)
 
     def get_prep_value(self, value):
         if value is None:
             return None
-        return f"{value.port_number},{value.version or ''},{value.state},{value.protocol},{value.service},{value.metadata}"
+        return f"{value.port_number},{value.state},{value.protocol},{value.service},{value.metadata or ''}"
 
     def get_internal_type(self):
         return "TextField"
@@ -80,8 +79,7 @@ def parse_nmap_scan(nmap_scan_output: str) -> List[NmapPort]:
                     protocol=port[1],
                     state=port[2],
                     service=port[3],
-                    version=port[4] if port[4] != '' else None,
-                    metadata=port[5] if port[5] != '' else None
+                    metadata=port[4] if len(port) > 3 else None
                 ) for port in port_matches
             ]
     return ports
