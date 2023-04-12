@@ -25,7 +25,7 @@ function ContactForm() {
     };
 
     return (
-        <div className={styles.container}>
+        <div id="contact" className={styles.container}>
             <div className={styles.formWrapper}>
                 <h2 className={styles.title}>Contact Us</h2>
                 <form onSubmit={handleSubmit}>

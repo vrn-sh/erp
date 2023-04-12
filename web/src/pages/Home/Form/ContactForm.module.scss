@@ -33,6 +33,7 @@
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #333333;
+  background-color: transparent;
 }
 
 .input {
@@ -63,15 +64,15 @@
 .button {
   width: 100%;
   padding: 0.5rem;
+  font-family: "Poppins-Regular";
   font-size: 1rem;
-  font-weight: 600;
   color: #ffffff;
-  background-color: #007bff;
+  background-color: var(--primary-btn);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 1rem;
   &:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-hover-btn);
   }
 }
