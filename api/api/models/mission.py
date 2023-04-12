@@ -43,12 +43,12 @@ class NmapScan(models.Model):
         verbose_name_plural = 'Nmap data'
         ordering = ['id']
 
-    REQUIRED_FIELDS = ['recon', 'ip', 'ports']
+    REQUIRED_FIELDS = ['recon', 'ips', 'ports']
 
     recon: Recon = models.ForeignKey(Recon, on_delete=models.CASCADE)
     creation_timestamp: models.DateTimeField = models.DateTimeField(editable=False, auto_created=True)
 
-    ip: models.IPAddressField = models.IPAddressField()
+    ips: List[models.GenericIPAddressField] = ArrayField(models.GenericIPAddressField())
     ports: List[NmapPortField] = ArrayField(NmapPortField())
 
 

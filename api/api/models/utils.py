@@ -4,7 +4,6 @@ import re
 from typing import List, Optional
 from django.db import models
 
-from django.db import models
 
 
 class NmapPort:
@@ -72,7 +71,7 @@ def is_valid_nmap_port(port: str) -> bool:
 def parse_nmap_scan(nmap_scan_output: str) -> List[NmapPort]:
     """parse ports from nmap scan"""
 
-    rgx = re.compile(r'(\d{1,5})\/(tcp|udp)[ \w]+(open|closed)[ \w]+(\S+)[ \w]+(.*)')
+    rgx = re.compile(r'(\d{1,5})\/(tcp|udp)\s+(\w+)\s+(.*?)\s*(\|.*)?\r?\n')
     port_matches = rgx.findall(nmap_scan_output)
 
     ports = [
@@ -91,7 +90,7 @@ def parse_nmap_scan(nmap_scan_output: str) -> List[NmapPort]:
 def parse_nmap_ips(nmap_scan_output: str) -> List[str]:
     """get a list of all IP addresses retrieved from the nmap scan"""
 
-    ip_regex = re.compile(r"(\d+\.\d+\.\d+\.\d+)|(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4})")
+    ip_regex = re.compile(r"(\d+\.\d+\.\d+\.\d+)")
     ip_matches = ip_regex.findall(nmap_scan_output)
 
     # removing duplicates

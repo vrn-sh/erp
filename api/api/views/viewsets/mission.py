@@ -2,9 +2,21 @@ from rest_framework import viewsets, permissions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import Response
 
-from api.models.mission import Mission, Recon
+from api.models.mission import Mission, NmapScan, Recon
 from api.permissions import IsManager, IsOwner, IsPentester, ReadOnly
-from api.serializers.mission import MissionSerializer, ReconSerializer
+from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer
+
+
+class NmapViewset(viewsets.ModelViewSet):
+    """
+        CRUD for Nmap scan object
+    """
+    queryset = NmapScan.objects.all()
+    authentication_classes = [TokenAuthentication]
+    serializer_class = NmapSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsManager]
+
+
 
 
 class ReconViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -12,7 +24,6 @@ class ReconViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         CRUD for Recon object
     """
 
-    # FIXME(adina): add isPartOfTheTeam
     queryset = Recon.objects.all()
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
