@@ -18,8 +18,8 @@ function DashboardMission() {
         if (active === 'dork') {
             return <DorkEngine />;
         }
-        if( active === 'note') {
-            return <Notes/>;
+        if (active === 'note') {
+            return <Notes />;
         }
         return null;
     };
