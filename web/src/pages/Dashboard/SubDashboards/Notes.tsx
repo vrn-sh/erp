@@ -42,7 +42,7 @@ function ViewNote({ note, func }: ViewNoteProps) {
 function AddNote({ func }: AddNoteProps) {
     const [name, setName] = useState('');
     const [title, setTitle] = useState('');
-    const content = '';
+    const [content, setContent] = useState('');
 
     const takeName = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
@@ -50,6 +50,10 @@ function AddNote({ func }: AddNoteProps) {
 
     const takeTitlee = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
+    };
+
+    const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setContent(event.target.value);
     };
 
     const handleSubmit = (
@@ -91,13 +95,14 @@ function AddNote({ func }: AddNoteProps) {
                         required
                         placeholder="Put your note here"
                         className="popup-textarea"
+                        onChange={takeContent}
                         value={content}
                     />
                     <div className="btn-block">
                         <button
                             type="button"
                             className="btn cancel"
-                            onClick={() => func}
+                            onClick={func}
                         >
                             Cancel
                         </button>
