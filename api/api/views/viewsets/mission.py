@@ -29,8 +29,8 @@ class NmapViewset(viewsets.ModelViewSet):
 
         for field, func in fields.items():
             result = func(request.data.get('nmap_file', ''))
-            if not result:
-                Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
+            if result == [] or result is None:
+                return Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
             request.data[field] = result
 
         # this will just error in the serializer if input is not provided
@@ -54,6 +54,8 @@ class NmapViewset(viewsets.ModelViewSet):
         }
 
         data = {}
+        # this will just error in the serializer if input is not provided
+        data['recon'] = request.data.get('recon_id', 0)
 
         for field, func in fields.items():
             result = func(request.data.get('nmap_file', ''))
