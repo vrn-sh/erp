@@ -1,5 +1,5 @@
 $opacity-transition: opacity;
-// $speed: ease-in-out;
+
 @mixin non-margin-padding {
     padding: 0;
     margin: 0;
@@ -251,7 +251,7 @@ table input {
 .container-note {
     overflow-y: scroll;
     padding: 10px;
-    scrollbar-color: rebeccapurple;
+    scrollbar-color: var(--primary-btn);
     scrollbar-width: thin;
 }
 
@@ -370,11 +370,11 @@ footer {
 
 .button__link {
     background-color: none;
-    color: rebeccapurple;
+    color: var(--primary-btn);
 }
 
 .button__link:hover {
-    color: #9067c5b4;
+    color: var(--gradient-primary-btn);
 }
 
 
@@ -396,18 +396,18 @@ footer {
 }
 
 .btn:hover {
-    background: #9067c5b4;
+    background: var(--gradient-primary-btn);
     color: white;
-  }
+}
 
 .submit {
     color: white;
-    background-color: rebeccapurple;
+    background-color: var(--primary-btn);
 }
 
 .cancel {
     border: 1px solid black;
-    border-color: rebeccapurple;
-    color: rebeccapurple;
+    border-color: var(--primary-btn);
+    color: var(--primary-btn);
     background-color: white;
 }
