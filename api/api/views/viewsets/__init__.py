@@ -62,7 +62,7 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
                 }
             )
         },
-        security=[],
+        security=['Bearer'],
         tags=['Team'],
     )
     def create(self, request, *args, **kwargs):
@@ -101,8 +101,8 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
                 }
             )
         },
-        security=[],
-            tags=['Team'],
+        security=['Bearer'],
+        tags=['Team'],
     )
     def update(self, request, *args, **kwargs):
         if 'leader' in request.data:

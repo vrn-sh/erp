@@ -51,7 +51,7 @@ class NmapViewset(viewsets.ModelViewSet):
                 }
             )
         },
-        security=[],
+        security=['Bearer'],
         tags=['NMAP'],
     )
     def create(self, request, *args, **kwargs):
@@ -153,7 +153,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 }
             )
         },
-        security=[],
+        security=['Bearer'],
         tags=['mission'],
     )
     def create(self, request, *args, **kwargs):

@@ -51,7 +51,7 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
                 }
             )
         },
-        security=[],
+        security=['Bearer'],
         tags=['notes'],
     )
     def create(self, request, *args, **kwargs):
@@ -119,7 +119,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                 }
             )
         },
-        security=[],
+        security=['Bearer'],
         tags=['vulnerability'],
     )
     def create(self, request, *args, **kwargs):
