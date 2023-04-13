@@ -5,9 +5,10 @@ from typing import List, Optional
 from django.db import models
 
 
+
 class NmapPort:
     def __init__(
-            self, port_number: int, state: str, protocol: str, service: str, metadata: str
+        self, port_number: int, state: str, protocol: str, service: str, metadata: str
     ):
         self.port_number = port_number
         self.state = state
@@ -140,3 +141,4 @@ HOP RTT       ADDRESS
 
 OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 # Nmap done at Sun Jul 18 15:33:48 2010 -- 1 IP address (1 host up) scanned in 22.47 seconds'''
+
