@@ -11,7 +11,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from api.models.mission import Mission, NmapScan, Recon
 from api.permissions import IsManager, IsOwner, IsPentester, ReadOnly
 from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer
-from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
+from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
 
 
 class NmapViewset(viewsets.ModelViewSet):
@@ -27,17 +27,12 @@ class NmapViewset(viewsets.ModelViewSet):
         operation_description="Creates and parses an NMAP output object.",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['ips'],
+            required=['recon_id', 'nmap_file'],
             properties={
                 'recon_id': openapi.Schema(type=openapi.TYPE_INTEGER,
                                            description="Id of recon"),
-                'ips': openapi.Schema(type=openapi.TYPE_ARRAY,
-                                      description="Array of string that corresponds to IP addresses.",
-                                      items=openapi.Items(type=openapi.TYPE_STRING), ),
-                'port': openapi.Schema(type=openapi.TYPE_ARRAY,
-                                       items=openapi.Items(type=openapi.TYPE_INTEGER),
-                                       description="List of port with format: [port_number,state,protocol,service,"
-                                                   "metadata]"),
+                'nmap_file': openapi.Schema(type=openapi.TYPE_STRING,
+                                      description="Nmap output.", default=default_nmap_output),
             },
         ),
         responses={
