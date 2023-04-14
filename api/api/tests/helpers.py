@@ -4,7 +4,7 @@ from datetime import date, datetime
 from typing import Any
 from faker import Faker
 
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIClient, APIRequestFactory
 
 from api.models import *
 from api.models.mission import Mission, Recon
@@ -14,15 +14,14 @@ from api.views import LoginView
 def login_as(email: str, password: str) -> str:
     """login as specific user (email/password)"""
     login = LoginView.as_view()
-    fct = APIRequestFactory()
+    fct = APIClient()
     body = {
         'email': email,
         'password': password
     }
 
-    request = fct.post('/login', data=body, format='json')
-    response = login(request)
-    assert response.status_code == 201
+    response = fct.post('/login', data=body, format='json')
+    assert response.status_code == 200
     return response.data['token'] # type: ignore
 
 

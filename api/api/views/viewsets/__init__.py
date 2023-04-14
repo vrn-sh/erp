@@ -12,16 +12,17 @@ from typing import List
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
 from rest_framework import viewsets, permissions
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import Response
+
+from knox.auth import TokenAuthentication
+
 from api.backends import EmailBackend
 
 from api.serializers import ManagerSerializer, PentesterSerializer, AuthSerializer, TeamSerializer
-
 from api.models import USER_ROLES, Manager, Auth, Pentester, Team, get_user_model
-
 from api.permissions import IsManager, IsOwner, PostOnly, ReadOnly
 
 
@@ -44,10 +45,10 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
             properties={
                 'name': openapi.Schema(type=openapi.TYPE_STRING,
                                        description="Team name"),
-                'members': openapi.Schema(type=openapi.TYPE_ARRAY, 
+                'members': openapi.Schema(type=openapi.TYPE_ARRAY,
                                           description="Array of id members",
                                           items=openapi.Items(type=openapi.TYPE_INTEGER),),
-                'leader': openapi.Schema(type=openapi.TYPE_INTEGER, 
+                'leader': openapi.Schema(type=openapi.TYPE_INTEGER,
                                          description="Id of the leader"),
             },
         ),
@@ -85,7 +86,7 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
             properties={
                 'name': openapi.Schema(type=openapi.TYPE_STRING,
                                        description="Team name"),
-                'members': openapi.Schema(type=openapi.TYPE_ARRAY, 
+                'members': openapi.Schema(type=openapi.TYPE_ARRAY,
                                           description="Array of id members",
                                           items=openapi.Items(type=openapi.TYPE_INTEGER),),
             },
@@ -132,7 +133,7 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     """
 
     queryset = Pentester.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsManager | IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsManager | IsOwner]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
 

@@ -1,4 +1,3 @@
-import warnings
 
 from django.test import TransactionTestCase
 from faker import Faker
@@ -52,11 +51,11 @@ class AuthTestCase(TransactionTestCase):
         client = APIClient()
         auth_token = login_as(self.manager.auth.email, random_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
-        response = client.get('/logout')
-        self.assertEqual(response.status_code, 200) # type: ignore
+        response = client.post('/logout')
+        self.assertEqual(response.status_code, 204) # type: ignore
 
     def test_unknown_account(self) -> None:
-        """unknown account should get 404"""
+        """unknown account should get 400"""
 
         client = APIClient()
         response = client.post(
@@ -64,10 +63,10 @@ class AuthTestCase(TransactionTestCase):
                 format='json',
                 data={'email': 'email@email.com', 'password': '1234'}
                 )
-        self.assertEqual(response.status_code, 404) # type: ignore
+        self.assertEqual(response.status_code, 400) # type: ignore
 
     def test_wrong_password(self) -> None:
-        """wrong password should get 403"""
+        """wrong password should get 400"""
 
         client = APIClient()
         response = client.post(
@@ -75,7 +74,7 @@ class AuthTestCase(TransactionTestCase):
                 format='json',
                 data={'email': self.manager.auth.email, 'password': '1234'}
                 )
-        self.assertEqual(response.status_code, 403) # type: ignore
+        self.assertEqual(response.status_code, 400) # type: ignore
 
 
 class RegisterTestCase(TransactionTestCase):
@@ -124,8 +123,8 @@ class CRUDManagerTestCase(TransactionTestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
     def tearDown(self) -> None:
-        response = self.client.get('/logout')
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/logout')
+        self.assertEqual(response.status_code, 204)
         self.manager.delete()
 
     def test_create_a_manager(self):
@@ -217,8 +216,8 @@ class CRUDManagerTestCase(TransactionTestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
     def tearDown(self) -> None:
-        response = self.client.get('/logout')
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/logout')
+        self.assertEqual(response.status_code, 204)
         self.manager.delete()
 
     def test_create_a_manager(self):
