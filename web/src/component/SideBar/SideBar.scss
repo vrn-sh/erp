@@ -192,10 +192,23 @@
 
 .popup-input {
     width: 80%;
-    height: 2rem;
+    height: 2.5rem;
     border-radius: 10px;
-    border: none;
-    margin: 1rem;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+.popup-input:hover, 
+.popup-textarea:hover {
+    border: 1px solid transparent;
+    box-shadow: 0 0 3px 0 #ab69be;
+}
+
+.popup-textarea {
+    width: 80%;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
 }
 
 .error {
