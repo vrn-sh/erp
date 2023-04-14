@@ -41,3 +41,4 @@ api/.coverage
 # Deployment & docker stuff
 .env
 ./volumes
+volumes/
