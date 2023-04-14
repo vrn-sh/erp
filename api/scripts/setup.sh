@@ -31,6 +31,10 @@ install_postgresql () {
 ## SCRIPT ##
 ############
 
+# necessary know dependencies
+sudo apt-get install build-essential libssl-dev libffi-dev python3-dev python-dev
+
+
 install_postgresql
-# python3 manage.py makemigrations
+
 python3 manage.py migrate

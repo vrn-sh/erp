@@ -4,7 +4,7 @@ from warnings import warn
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, permissions
-from rest_framework.authentication import TokenAuthentication
+from knox.auth import TokenAuthentication
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 

@@ -5,7 +5,12 @@ RUN apt-get update \
     && apt-get -y upgrade \
     && apt-get install -y --no-install-recommends \
     apt-utils \
-    postgresql-client
+    postgresql-client \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    python-dev
 
 WORKDIR /api
 
