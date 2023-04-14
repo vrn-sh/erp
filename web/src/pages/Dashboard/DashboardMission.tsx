@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Dashboard.scss';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
+import Notes from './SubDashboards/Notes';
 
 function DashboardMission() {
     const [active, setActive] = useState('main');
@@ -16,6 +17,9 @@ function DashboardMission() {
         }
         if (active === 'dork') {
             return <DorkEngine />;
+        }
+        if (active === 'note') {
+            return <Notes />;
         }
         return null;
     };
@@ -57,7 +61,7 @@ function DashboardMission() {
                         Vulnerability
                     </button>
                     <button
-                        key={2}
+                        key={4}
                         id="dork"
                         type="button"
                         className={active === 'dork' ? 'active' : undefined}

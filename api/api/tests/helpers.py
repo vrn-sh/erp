@@ -4,25 +4,24 @@ from datetime import date, datetime
 from typing import Any
 from faker import Faker
 
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIClient, APIRequestFactory
 
 from api.models import *
-from api.models.mission import Mission
+from api.models.mission import Mission, Recon
 from api.views import LoginView
 
 
 def login_as(email: str, password: str) -> str:
     """login as specific user (email/password)"""
     login = LoginView.as_view()
-    fct = APIRequestFactory()
+    fct = APIClient()
     body = {
         'email': email,
         'password': password
     }
 
-    request = fct.post('/login', data=body, format='json')
-    response = login(request)
-    assert response.status_code == 201
+    response = fct.post('/login', data=body, format='json')
+    assert response.status_code == 200
     return response.data['token'] # type: ignore
 
 
@@ -108,6 +107,7 @@ def create_mission(leader: Manager, members: List[Pentester], *args, **kwargs) -
     start: date = kwargs.get('start', datetime.today())
     end: date = kwargs.get('end', datetime(year=datetime.today().year + 1, month=datetime.today().month, day=datetime.today().day))
     team: Team = kwargs.get('team', create_team(leader, members))
+    recon: Recon = Recon.objects.create()
 
     return Mission.objects.create(
             start=start,
@@ -115,4 +115,5 @@ def create_mission(leader: Manager, members: List[Pentester], *args, **kwargs) -
             team=team,
             created_by=leader.auth,
             last_updated_by=leader.auth,
+            recon=recon,
             )

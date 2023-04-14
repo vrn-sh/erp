@@ -14,8 +14,16 @@ from pathlib import Path
 import string
 import os
 
+from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+REST_KNOX = {
+  'AUTH_TOKEN_CHARACTER_LENGTH': 128,
+  'TOKEN_TTL': timedelta(hours=12),
+}
 
 
 SWAGGER_SETTINGS = {
@@ -54,6 +62,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     "phonenumber_field",
     "corsheaders",
+    "knox",
 ]
 
 MIDDLEWARE = [
@@ -205,7 +214,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'knox.auth.TokenAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',

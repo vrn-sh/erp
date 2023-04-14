@@ -1,4 +1,4 @@
-django==4.1.7
+django==4.2
 djangorestframework==3.14.0
 django-cors-headers==3.14.0
 argon2-cffi==21.3
@@ -10,6 +10,7 @@ django-trench==0.3.1
 django-phonenumber-field[phonenumbers]
 secure==0.3.0
 Pillow==9.4.0
+django-rest-knox==4.2.0
 
 pylint
 prospector

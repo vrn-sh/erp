@@ -3,19 +3,17 @@
 from rest_framework import routers
 from rest_framework import permissions
 from rest_framework.urls import path
-
-from django.conf.urls.static import static
 from django.urls import re_path
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from api.views import LoginView, LogoutView, PingView, ConfirmAccountView, ResetPasswordView
+from knox.views import LogoutView
+
+from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
-
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
-
-from api.views.viewsets.mission import MissionViewset, ReconViewset
+from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -40,10 +38,11 @@ router.register(r'vulnerability', VulnerabilityViewset)
 router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)
 router.register(r'recon', ReconViewset)
+router.register(r'nmap', NmapViewset)
 
 urlpatterns = [
-    path('login', LoginView.as_view()),
-    path('logout', LogoutView.as_view()),
+    path(r'login', LoginView.as_view(), name='knox_login'),
+    path('logout', LogoutView.as_view(), name='knox_logout'),
     path('ping', PingView.as_view()),
     path('confirm', ConfirmAccountView.as_view()),
     path('reset', ResetPasswordView.as_view()),
