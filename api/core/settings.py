@@ -15,6 +15,7 @@ import string
 import os
 
 from datetime import timedelta
+from typing import List, Tuple
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +37,8 @@ SWAGGER_SETTINGS = {
    }
 }
 
+
+# email config
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
@@ -48,6 +51,25 @@ DEFAULT_FROM_EMAIL = os.environ['SENDGRID_SENDER']
 PHONENUMBER_DB_FORMAT = 'E164'
 PHONENUMBER_DEFAULT_REGION = 'FR'
 PHONENUMBER_DEFAULT_FORMAT = 'E164'
+
+# MinIO interface config
+MINIO_ENDPOINT = 's3:9000'
+MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = True
+MINIO_ACCESS_KEY = os.environ['MINIO_ACCESS_KEY']
+MINIO_SECRET_KEY = os.environ['MINIO_SECRET_KEY']
+MINIO_USE_HTTPS = False
+MINIO_URL_EXPIRY_HOURS = timedelta(days=1)
+MINIO_CONSISTENCY_CHECK_ON_START = True
+MINIO_PRIVATE_BUCKETS = []
+MINIO_PUBLIC_BUCKETS = [
+    'voron-static-public',
+]
+
+MINIO_POLICY_HOOKS: List[Tuple[str, dict]] = []
+# MINIO_MEDIA_FILES_BUCKET = 'voron-files'  # replacement for MEDIA_ROOT
+MINIO_STATIC_FILES_BUCKET = 'voron-static-public'  # replacement for STATIC_ROOT
+MINIO_BUCKET_CHECK_ON_SAVE = True  # Default: True // Creates bucket if missing, then save
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -63,6 +85,7 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "corsheaders",
     "knox",
+    'django_minio_backend.apps.DjangoMinioBackendConfig',
 ]
 
 MIDDLEWARE = [
