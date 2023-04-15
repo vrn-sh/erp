@@ -52,41 +52,6 @@ PHONENUMBER_DB_FORMAT = 'E164'
 PHONENUMBER_DEFAULT_REGION = 'FR'
 PHONENUMBER_DEFAULT_FORMAT = 'E164'
 
-# MinIO interface config
-MINIO_ENDPOINT = 's3:9000'
-MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = True
-MINIO_ACCESS_KEY = os.environ['MINIO_ACCESS_KEY']
-MINIO_SECRET_KEY = os.environ['MINIO_SECRET_KEY']
-MINIO_USE_HTTPS = False
-MINIO_URL_EXPIRY_HOURS = timedelta(days=1)
-MINIO_CONSISTENCY_CHECK_ON_START = True
-MINIO_PRIVATE_BUCKETS = []
-MINIO_PUBLIC_BUCKETS = [
-    'voron-static-public',
-]
-
-MINIO_POLICY_HOOKS: List[Tuple[str, dict]] = []
-# MINIO_MEDIA_FILES_BUCKET = 'voron-files'  # replacement for MEDIA_ROOT
-MINIO_STATIC_FILES_BUCKET = 'voron-static-public'  # replacement for STATIC_ROOT
-MINIO_BUCKET_CHECK_ON_SAVE = True  # Default: True // Creates bucket if missing, then save
-
-
-# Application definition
-INSTALLED_APPS = [
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'api',
-    'drf_yasg',
-    "phonenumber_field",
-    "corsheaders",
-    "knox",
-    'django_minio_backend.apps.DjangoMinioBackendConfig',
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,6 +90,24 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 if os.environ.get('PRODUCTION', '0') == '1':
+
+    # Application definition
+    INSTALLED_APPS = [
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'rest_framework',
+        'rest_framework.authtoken',
+        'api',
+        'drf_yasg',
+        "phonenumber_field",
+        "corsheaders",
+        "knox",
+        'django_minio_backend.apps.DjangoMinioBackendConfig',
+    ]
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -149,7 +132,42 @@ if os.environ.get('PRODUCTION', '0') == '1':
     CORS_ORIGIN_ALLOW_ALL = False
     CORS_ALLOW_CREDENTIALS = False
 
+    # MinIO interface config
+    MINIO_ENDPOINT = 's3:9000'
+    MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = True
+    MINIO_ACCESS_KEY = os.environ['MINIO_ACCESS_KEY']
+    MINIO_SECRET_KEY = os.environ['MINIO_SECRET_KEY']
+    MINIO_USE_HTTPS = False
+    MINIO_URL_EXPIRY_HOURS = timedelta(days=1)
+    MINIO_CONSISTENCY_CHECK_ON_START = True
+    MINIO_PRIVATE_BUCKETS = []
+    MINIO_PUBLIC_BUCKETS = [
+        'voron-static-public',
+    ]
+
+    MINIO_POLICY_HOOKS: List[Tuple[str, dict]] = []
+    # MINIO_MEDIA_FILES_BUCKET = 'voron-files'  # replacement for MEDIA_ROOT
+    MINIO_STATIC_FILES_BUCKET = 'voron-static-public'  # replacement for STATIC_ROOT
+    MINIO_BUCKET_CHECK_ON_SAVE = True  # Default: True // Creates bucket if missing, then save
+
 elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
+
+    # Application definition
+    INSTALLED_APPS = [
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'rest_framework',
+        'rest_framework.authtoken',
+        'api',
+        'drf_yasg',
+        "phonenumber_field",
+        "corsheaders",
+        "knox",
+    ]
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -168,7 +186,27 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     ]
     CORS_ORIGIN_ALLOW_ALL = True
 
+    MINIO_PRIVATE_BUCKETS = []
+    MINIO_PUBLIC_BUCKETS = []
+
 elif os.environ.get('CI') and os.environ.get('CI')  == '1':
+
+    # Application definition
+    INSTALLED_APPS = [
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'rest_framework',
+        'rest_framework.authtoken',
+        'api',
+        'drf_yasg',
+        "phonenumber_field",
+        "corsheaders",
+        "knox",
+    ]
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -187,7 +225,27 @@ elif os.environ.get('CI') and os.environ.get('CI')  == '1':
     ]
     CORS_ORIGIN_ALLOW_ALL = True
 
+    MINIO_PRIVATE_BUCKETS = []
+    MINIO_PUBLIC_BUCKETS = []
+
 else:
+
+    # Application definition
+    INSTALLED_APPS = [
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'rest_framework',
+        'rest_framework.authtoken',
+        'api',
+        'drf_yasg',
+        "phonenumber_field",
+        "corsheaders",
+        "knox",
+    ]
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -205,6 +263,10 @@ else:
         ["*"]
     ]
     CORS_ORIGIN_ALLOW_ALL = True
+
+    MINIO_PRIVATE_BUCKETS = []
+    MINIO_PUBLIC_BUCKETS = []
+    MINIO_USE_HTTPS = False
 
 
 
