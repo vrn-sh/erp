@@ -5,7 +5,7 @@ import { IoIosNotifications } from 'react-icons/io';
 import { BsCreditCard, BsFillShieldLockFill } from 'react-icons/bs';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
-import './setting.scss';
+import './Setting.scss';
 import SettingAccount from './setting-account';
 import SettingNotification from './set-notif';
 import SettingSecurity from './set-security';
