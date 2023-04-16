@@ -58,10 +58,10 @@ class IsOwner(permissions.BasePermission):
         if isinstance(obj, Auth):
             return obj.id == request.user.id # type: ignore
 
-        if isinstance(obj, Pentester) or isinstance(obj, Manager):
+        if isinstance(obj, (Pentester, Manager)):
             return obj.auth.id == request.user.id # type: ignore
 
-        if isinstance(obj, Notes) or isinstance(obj, Vulnerability):
+        if isinstance(obj, (Notes, Vulnerability)):
             return obj.author.id == request.user.id
 
         if isinstance(obj, Team):
@@ -75,6 +75,10 @@ class IsOwner(permissions.BasePermission):
 
         if isinstance(obj, Recon):
             mission_obj = Mission.objects.filter(recon_id=obj.id).first()
+            if not mission_obj:
+                logging.warning('IsOwner: Recon <%d> has no team', obj.id)
+                return False
+
             for m in mission_obj.team.members.all():
                 if m.auth.id == request.user.id:
                     return True
@@ -82,6 +86,10 @@ class IsOwner(permissions.BasePermission):
 
         if isinstance(obj, NmapScan):
             mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()
+            if not mission_obj:
+                logging.warning('IsOwner: NmapScan <%d> has no team', obj.id)
+                return False
+
             for m in mission_obj.team.members.all():
                 if m.auth.id == request.user.id:
                     return True

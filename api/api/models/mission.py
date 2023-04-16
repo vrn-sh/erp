@@ -5,6 +5,7 @@ The following models are present here:
     - Auth: Mission
 """
 from datetime import datetime, timedelta
+from os import environ
 from typing import List, Optional
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
@@ -94,6 +95,7 @@ class Mission(models.Model):
         return self.title.replace(' ', '_')
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
+        if self.pk is None and environ.get('PRODUCTION', '0') == '1':
             create_bucket(self.bucket_name)
+        super().save(*args, **kwargs)
 

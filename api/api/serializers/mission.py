@@ -40,7 +40,6 @@ class ReconSerializer(serializers.ModelSerializer):
 
 class MissionSerializer(serializers.ModelSerializer):
     recon = ReconSerializer(many=False, read_only=True)
-    team = TeamSerializer(many=False, read_only=True)
 
     class Meta:
         fields = '__all__'

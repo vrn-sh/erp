@@ -34,24 +34,6 @@ INSTALLED_APPS = [
     "knox",
 ]
 
-# django-storages configuration
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3Storage",
-    },
-}
-
-# S3 configuration
-# MinIO uses S3-compatible API, so django-storages uses
-# the same field for both
-AWS_ACCESS_KEY_ID = os.environ['MINIO_ROOT_USER']
-AWS_SECRET_ACCESS_KEY = os.environ['MINIO_ROOT_PASSWORD']
-AWS_STORAGE_BUCKET_NAME = "rootbucket"
-AWS_S3_ENDPOINT_URL = "s3:9000"
-AWS_DEFAULT_ACL = None
-AWS_QUERYSTRING_AUTH = True
-AWS_S3_FILE_OVERWRITE = False
-
 
 # auth-token configuration
 REST_KNOX = {
@@ -124,6 +106,25 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 if os.environ.get('PRODUCTION', '0') == '1':
+
+    # S3 configuration
+    # MinIO uses S3-compatible API, so django-storages uses
+    # the same field for both
+    AWS_ACCESS_KEY_ID = os.environ['MINIO_ROOT_USER']
+    AWS_SECRET_ACCESS_KEY = os.environ['MINIO_ROOT_PASSWORD']
+    AWS_STORAGE_BUCKET_NAME = "rootbucket"
+    AWS_S3_ENDPOINT_URL = "s3:9000"
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = True
+    AWS_S3_FILE_OVERWRITE = False
+
+    # django-storages configuration
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3boto3.S3Storage",
+        },
+    }
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

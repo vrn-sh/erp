@@ -77,6 +77,6 @@ class Vulnerability(models.Model):
     last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
     vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
-    images: List[ImageField] = ArrayField(ImageField())
+    images: Optional[List[ImageField]] = ArrayField(ImageField(), blank=True, null=True)
 
     mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
