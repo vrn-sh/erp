@@ -7,16 +7,16 @@ import minio
 def client() -> minio.Minio:
     """load minio client"""
 
-    return Minio(
+    return minio.Minio(
         "s3:9000",
-        access_key = os.getenv("MINIO_ACCESS_KEY"),
-        secret_access_key = os.getenv("MINIO_SECRET_KEY"),
+        access_key = os.getenv("MINIO_ROOT_USER"),
+        secret_access_key = os.getenv("MINIO_ROOT_PASSWORD"),
     )
 
 
 def get_bucket(bucket: str) -> None:
     """creates S3 bucket if it does not exist"""
 
-    client = client()
-    if not client.bucket_exists(bucket):
-        client.make_bucket(bucket)
+    s3 = client()
+    if not s3.bucket_exists(bucket):
+        s3.make_bucket(bucket)

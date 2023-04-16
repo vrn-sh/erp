@@ -11,11 +11,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-import string
 import os
 
 from datetime import timedelta
-from typing import List, Tuple
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,15 +34,33 @@ INSTALLED_APPS = [
     "knox",
 ]
 
+# django-storages configuration
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+    },
+}
+
+# S3 configuration
+# MinIO uses S3-compatible API, so django-storages uses
+# the same field for both
+AWS_ACCESS_KEY_ID = os.environ['MINIO_ROOT_USER']
+AWS_SECRET_ACCESS_KEY = os.environ['MINIO_ROOT_PASSWORD']
+AWS_STORAGE_BUCKET_NAME = "rootbucket"
+AWS_S3_ENDPOINT_URL = "s3:9000"
+AWS_DEFAULT_ACL = None
+AWS_QUERYSTRING_AUTH = True
+AWS_S3_FILE_OVERWRITE = False
 
 
-
+# auth-token configuration
 REST_KNOX = {
   'AUTH_TOKEN_CHARACTER_LENGTH': 128,
   'TOKEN_TTL': timedelta(hours=12),
 }
 
 
+# openapi generator config
 SWAGGER_SETTINGS = {
    'SECURITY_DEFINITIONS': {
       'Bearer': {
