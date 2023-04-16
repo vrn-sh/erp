@@ -75,11 +75,11 @@ export default function Login() {
     return (
         <section className="login-container">
             <div className="login-text" id="login-text">
-                 <div>
-                     <h2>voron</h2>
-                     <h1>In efficiency we trust</h1>
-                 </div>
-             </div>
+                <div>
+                    <h2>voron</h2>
+                    <h1>In efficiency we trust</h1>
+                </div>
+            </div>
 
             <div className="login-form" id="login-form">
                 <div className="wrapper">
