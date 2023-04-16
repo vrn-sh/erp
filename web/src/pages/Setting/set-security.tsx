@@ -5,8 +5,6 @@ export default function SettingSecurity() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-
-
     const handleChangePassword = () => {
         // Vérifier que les champs de mot de passe ne sont pas vides et que le nouveau mot de passe correspond à la confirmation
         if (
