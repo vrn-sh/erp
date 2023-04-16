@@ -79,5 +79,6 @@ dependencies: ## Install dependencies
 
 .PHONY: check
 check: dependencies ## Run various checks on project files
+	rm -rf dist
 	yarn run lint
 	yarn run build

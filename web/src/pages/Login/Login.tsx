@@ -48,10 +48,18 @@ export default function Login() {
         if (email !== '' && pwd.length > 7) {
             try {
                 await axios
-                    .post(`${config.apiUrl}/login`, {
-                        email,
-                        password: pwd,
-                    })
+                    .post(
+                        `${config.apiUrl}/login`,
+                        JSON.stringify({
+                            email,
+                            password: pwd,
+                        }),
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        }
+                    )
                     .then(() => {
                         navigate('/dashboard');
                     })
