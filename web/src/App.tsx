@@ -18,7 +18,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/setting" element={<Setting/>} />
+                <Route path="/setting" element={<Setting />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </div>
