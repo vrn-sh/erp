@@ -141,10 +141,50 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 description="200 OK",
                 examples={
                     "id": 1,
-                    "title": "Pentest Epitech",
+                    "title": "Pentest mission",
                     "start": "2020-06-03",
                     "end": "2022-06-03",
-                    "team": 2
+                    "team": {
+                        "leader": {
+                            "id": 1,
+                            "auth": {
+                                "first_name": "john",
+                                "last_name": "doe",
+                                "email": "john.doe@email.com",
+                                "username": "jdoe",
+                                "phone_number": "0000000000",
+                                "last_login": "some date here",
+                                "date_joined": "some date here",
+                            }
+                        },
+                        "members":[{
+                            "id": 2,
+                            "auth": {
+                                "first_name": "dwight",
+                                "last_name": "shrute",
+                                "email": "dwight.shrute@email.com",
+                                "username": "assistant-manager",
+                                "phone_number": "0000000000",
+                                "last_login": "some date here",
+                                "date_joined": "some date here",
+                            }
+                        },
+                        {
+                            "id": 3,
+                            "auth": {
+                                "first_name": "jim",
+                                "last_name": "halpert",
+                                "email": "jim.halpert@email.com",
+                                "username": "jhalpert",
+                                "phone_number": "0000000000",
+                                "last_login": "some date here",
+                                "date_joined": "some date here",
+                            }
+                        }]
+                    },
+                    "recon": {
+                        "nmap": []
+                    }
                 }
             )
         },

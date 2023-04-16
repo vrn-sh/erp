@@ -11,6 +11,7 @@ from django.contrib.postgres.fields import ArrayField
 
 from api.models import Auth, MAX_TITLE_LENGTH, Team
 from api.models.utils import NmapPortField
+from api.services.s3 import create_bucket
 
 
 class Recon(models.Model):
@@ -87,3 +88,12 @@ class Mission(models.Model):
     def days_left(self) -> float:
         """get number of days left in this mission"""
         return self.get_delta(datetime.today(), self.end).days
+
+    @property
+    def bucket_name(self) -> str:
+        return self.title.replace(' ', '_')
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            create_bucket(self.bucket_name)
+

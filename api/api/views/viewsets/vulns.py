@@ -9,7 +9,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.views import Response
 from api.models import Auth
 
-from api.models.vulns import ImageModel, Notes, VulnType, Vulnerability
+from api.models.vulns import Notes, VulnType, Vulnerability
 from api.permissions import IsManager, IsOwner, IsPentester
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
@@ -83,16 +83,6 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     permissions = [permissions.IsAuthenticated & IsOwner & IsPentester]  # FIXME(adina): add is PartOfTheTeam
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
-
-    @staticmethod
-    def set_images(data: dict[str, str]) -> List[ImageModel]:
-        """gets or creates image from request data"""
-        images: List[ImageModel] = []
-
-        for img_data in data['images']:
-            images.append(ImageModel.objects.get_or_create(img_data))  # FIXME(adina): make this suck less
-
-        return images
 
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
