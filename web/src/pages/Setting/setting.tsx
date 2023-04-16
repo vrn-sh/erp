@@ -26,31 +26,31 @@ const subPagesData: SubPage[] = [
         title: 'Account',
         content: <SettingAccount />,
         icon: <FaUser style={{ fontSize: '20px' }} />,
-        key: 1,
+        key: 0,
     },
     {
         title: 'Notification',
         content: <SettingNotification />,
         icon: <IoIosNotifications style={{ fontSize: '22px' }} />,
-        key: 2,
+        key: 1,
     },
     {
         title: 'Security',
         content: <SettingSecurity />,
         icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
-        key: 3,
+        key: 2,
     },
     {
         title: 'Billing',
         content: <SettingBilling />,
         icon: <BsCreditCard style={{ fontSize: '22px' }} />,
-        key: 4,
+        key: 3,
     },
     {
         title: 'Team',
         content: <SettingTeam userId={0} userRole="Manager" />, // TOFIX, Idk what role to put
         icon: <RiTeamLine style={{ fontSize: '22px' }} />,
-        key: 5,
+        key: 4,
     },
 ];
 
@@ -129,12 +129,7 @@ export default function Setting() {
 
                 <div className="setting-container">
                     <div className="page-info">
-                        <div>
-                            <h3>
-                                Voron <span> &gt;</span> settings
-                            </h3>
-                            <h1>Settings</h1>
-                        </div>
+                        <h1>Settings</h1>
                         <div className="page-searcher">
                             <label>Search on page</label>
                             <input type="text" placeholder="Search..." />

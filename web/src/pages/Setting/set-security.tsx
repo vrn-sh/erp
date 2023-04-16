@@ -4,7 +4,8 @@ export default function SettingSecurity() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
+
+
 
     const handleChangePassword = () => {
         // Vérifier que les champs de mot de passe ne sont pas vides et que le nouveau mot de passe correspond à la confirmation
@@ -14,9 +15,7 @@ export default function SettingSecurity() {
             !confirmPassword ||
             newPassword !== confirmPassword
         ) {
-            alert(
-                'Veuillez remplir tous les champs de mot de passe et vous assurer que les mots de passe correspondent.'
-            );
+            alert('Please check all the password were filled correctly');
             return;
         }
 
@@ -25,28 +24,18 @@ export default function SettingSecurity() {
         // Sinon, afficher un message d'erreur
         // Remarque : ceci est un exemple simplifié à des fins de démonstration uniquement
         if (currentPassword === 'currentpassword') {
-            alert('Le mot de passe a été modifié avec succès!');
+            alert('Changed password successfully!');
         } else {
-            alert('Le mot de passe actuel est incorrect.');
+            alert('The actual password is incorrect.');
         }
     };
 
-    const handleToggleTwoFactor = () => {
-        setIsTwoFactorEnabled(!isTwoFactorEnabled);
-        // Appeler l'API pour activer/désactiver la validation en deux étapes
-        // Remarque : ceci est un exemple simplifié à des fins de démonstration uniquement
-        alert(
-            `La validation en deux étapes a été ${
-                isTwoFactorEnabled ? 'désactivée' : 'activée'
-            } avec succès!`
-        );
-    };
     return (
         <div>
-            <h1>Paramètres de sécurité</h1>
+            <h1>Security</h1>
 
-            <h2>Modifier le mot de passe</h2>
-            <label htmlFor="currentPassword">Mot de passe actuel :</label>
+            <h2>Change your password</h2>
+            <label htmlFor="currentPassword">Actual password :</label>
             <input
                 type="password"
                 id="currentPassword"
@@ -54,7 +43,7 @@ export default function SettingSecurity() {
                 onChange={(e) => setCurrentPassword(e.target.value)}
             />
             <br />
-            <label htmlFor="newPassword">Nouveau mot de passe :</label>
+            <label htmlFor="newPassword">New password :</label>
             <input
                 type="password"
                 id="newPassword"
@@ -62,9 +51,7 @@ export default function SettingSecurity() {
                 onChange={(e) => setNewPassword(e.target.value)}
             />
             <br />
-            <label htmlFor="confirmPassword">
-                Confirmer le nouveau mot de passe :
-            </label>
+            <label htmlFor="confirmPassword">Confirm the new password :</label>
             <input
                 type="password"
                 id="confirmPassword"
@@ -73,19 +60,8 @@ export default function SettingSecurity() {
             />
             <br />
             <button type="submit" onClick={handleChangePassword}>
-                Modifier le mot de passe
+                Change your password
             </button>
-
-            <h2>Validation en deux étapes</h2>
-            <label htmlFor="toggleTwoFactor">
-                Activer la validation en deux étapes :
-            </label>
-            <input
-                type="checkbox"
-                id="toggleTwoFactor"
-                checked={isTwoFactorEnabled}
-                onChange={handleToggleTwoFactor}
-            />
         </div>
     );
 }

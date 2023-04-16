@@ -9,6 +9,7 @@ module.exports = {
         'react/jsx-props-no-spreading': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
         'jsx-a11y/anchor-is-valid': 0,
+        "no-alert": "off",
     },
     root: true,
     extends: [

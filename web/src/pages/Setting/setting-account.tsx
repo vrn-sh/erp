@@ -40,7 +40,7 @@ export default function SettingAccount() {
         };
     };
     return (
-        <div className="container">
+        <div className="setting-container">
             <div>
                 <p>Avatar </p>
                 {photoUrl ? (
@@ -71,7 +71,7 @@ export default function SettingAccount() {
             </div>
             <div className="input-group">
                 <Input label="Full name" size="medium" />
-                <Input label="Email address *" size="medium" />
+                <Input label="Email address" size="medium" />
             </div>
             <Input label="Bio" size="large" />
             <Input label="Customized link" size="medium" />

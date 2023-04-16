@@ -38,7 +38,7 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
             isOpen={isOpen}
             onRequestClose={onRequestClose}
         >
-            <h2>Inviter un nouveau membre par email</h2>
+            <h2>Send a mail to invite a new member</h2>
             <form className="form-popup" onSubmit={handleFormSubmit}>
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -47,7 +47,7 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
                     name="email"
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <button type="submit">Inviter</button>
+                <button type="submit">Invite</button>
             </form>
         </Modal>
     );
@@ -89,11 +89,11 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
         }
     }, [userRole]);
 
-    const handleDeleteGroup = (_: number) => {
+    const handleDeleteGroup = () => {
         // appel de l'API pour supprimer le groupe
     };
 
-    const handleResetGroup = (_: number) => {
+    const handleResetGroup = () => {
         // appel de l'API pour réinitialiser le groupe
     };
 
@@ -106,8 +106,8 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Groupe</th>
-                            <th>Rôle</th>
+                            <th>Group</th>
+                            <th>Role</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -121,7 +121,8 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                                         <button
                                             type="button"
                                             onClick={() =>
-                                                handleResetGroup(group.id)
+                                                // group.id as param
+                                                handleResetGroup()
                                             }
                                         >
                                             Reset
@@ -130,7 +131,8 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                                             type="button"
                                             className="dlt-btn"
                                             onClick={() =>
-                                                handleDeleteGroup(group.id)
+                                                // group.id as param
+                                                handleDeleteGroup()
                                             }
                                         >
                                             Delete
@@ -149,8 +151,8 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                     <table>
                         <thead>
                             <tr>
-                                <th>Groupe</th>
-                                <th>Rôle</th>
+                                <th>Group</th>
+                                <th>Role</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
