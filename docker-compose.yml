@@ -1,6 +1,6 @@
 version: '3.9'
-services:
 
+services:
   nginx:
     image: nginx:1.23.3
     ports:
@@ -8,14 +8,16 @@ services:
     env_file:
       - api/.env
     volumes:
-      - ./services/nginx/nginx.conf:/etc/nginx/templates/nginx.conf.template
+      - ./services/nginx/nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
       - ./volumes/nginx/logs:/var/log/nginx:delegated
     networks:
       - api-layer
       - web-layer
+      - s3-layer
     depends_on:
       - api
       - web
+      - s3
 
   db:
     image: postgres:15.2-alpine3.17
@@ -28,7 +30,7 @@ services:
     networks:
       - db-layer
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./volumes/postgres:/var/lib/postgresql/data
 
   api:
     env_file:
@@ -42,6 +44,7 @@ services:
     networks:
       - api-layer
       - db-layer
+      - s3-layer
 
   web:
     build:
@@ -56,11 +59,22 @@ services:
     networks:
       - web-layer
 
+  s3:
+    image: quay.io/minio/minio:latest
+    command: server --console-address ":9001" /data
+    ports:
+      - "9000"
+      - "9001"
+    env_file:
+      - ./api/.env
+    volumes:
+      - ./volumes/s3:/data
+    networks:
+      - s3-layer
+      - api-layer
+
 networks:
   db-layer:
   api-layer:
   web-layer:
-
-volumes:
-  pgdata:
-
+  s3-layer:

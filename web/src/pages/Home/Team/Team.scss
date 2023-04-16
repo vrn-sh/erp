@@ -9,7 +9,7 @@
     height: 100vh;
     justify-content: center;
     align-items: center;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
 }
 
 .heading {
@@ -19,7 +19,7 @@
 
 .team h1 {
     font-size: 2rem;
-    font-family: "Poppins-Bold";
+    font-family: 'Poppins-Bold';
     color: var(--primary-btn);
 }
 
@@ -120,7 +120,7 @@
         justify-content: center;
     }
 
-    .carroussel-item h2{
+    .carroussel-item h2 {
         @include non_margin_padding();
     }
 
