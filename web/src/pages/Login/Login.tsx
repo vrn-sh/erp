@@ -52,7 +52,8 @@ export default function Login() {
                         email,
                         password: pwd,
                     })
-                    .then(() => {
+                    .then((data) => {
+                        localStorage.setItem("token", data.data.token);
                         navigate('/dashboard');
                     })
                     .catch(() => {

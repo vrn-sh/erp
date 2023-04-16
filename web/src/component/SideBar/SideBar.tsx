@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
 import SideBarData from './SideBarData';
@@ -47,6 +47,13 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
 };
 
 export default function SideBar() {
+    const navigate = useNavigate();
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        navigate('/');
+    };
+
     return (
         <div className="sidebar">
             <Link to="/dashboard">
@@ -59,18 +66,18 @@ export default function SideBar() {
             </div>
 
             <div className="sidebar-tool">
-                <Link to="/dashboard" className="sidebar-link-bottom">
+                <div className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiSettings />
                         <span className="menu-txt">Settings</span>
                     </div>
-                </Link>
-                <Link to="/dashboard" className="sidebar-link-bottom">
+                </div>
+                <div className="sidebar-link-bottom" onClick={logout}>
                     <div className="sidebar-item">
                         <FiIcons.FiLogOut />
                         <span className="menu-txt">Disconnect</span>
                     </div>
-                </Link>
+                </div>
             </div>
         </div>
     );
