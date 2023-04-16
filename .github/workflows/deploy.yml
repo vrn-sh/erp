@@ -31,4 +31,5 @@ jobs:
           git pull origin current
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker image prune -af
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S rm -rf ./volumes && docker volume prune -f # will be removed once ready for production
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose up -d

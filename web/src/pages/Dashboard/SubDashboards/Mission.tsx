@@ -40,7 +40,7 @@ export default function Mission() {
     };
 
     const NavEditMission = () => {
-        navigate('/edit_mission');
+        navigate('/mission/edit');
     };
 
     return (

@@ -48,10 +48,18 @@ export default function Login() {
         if (email !== '' && pwd.length > 7) {
             try {
                 await axios
-                    .post(`${config.apiUrl}/login`, {
-                        email,
-                        password: pwd,
-                    })
+                    .post(
+                        `${config.apiUrl}/login`,
+                        JSON.stringify({
+                            email,
+                            password: pwd,
+                        }),
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        }
+                    )
                     .then(() => {
                         navigate('/dashboard');
                     })
@@ -69,18 +77,14 @@ export default function Login() {
             <div className="login-text" id="login-text">
                 <div>
                     <h2>voron</h2>
-                    <h1>{import.meta.env.VITE_REACT_APP_SLOGAN}</h1>
-                    <span className="no-bold">
-                        Lorem ipsum dolor sit amet consectetur. Quis platea
-                        lectus.
-                    </span>
+                    <h1>In efficiency we trust</h1>
                 </div>
             </div>
 
             <div className="login-form" id="login-form">
                 <div className="wrapper">
                     <div className="form-wrapper">
-                        <h2>Welcome back!</h2>
+                        <h2>Welcome back !</h2>
 
                         <div className="form-group">
                             <label>Email</label>
