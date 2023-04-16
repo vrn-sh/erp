@@ -33,7 +33,11 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
             {subnav &&
                 item.subNav.map((subItem) => {
                     return (
-                        <Link to={subItem.path} className="dropdown-menu">
+                        <Link
+                            key={subItem.title}
+                            to={subItem.path}
+                            className="dropdown-menu"
+                        >
                             <p>{subItem.title}</p>
                         </Link>
                     );
@@ -50,12 +54,12 @@ export default function SideBar() {
             </Link>
             <div>
                 {SideBarData.map((item) => {
-                    return <SubMenuItem item={item} />;
+                    return <SubMenuItem key={item.title} item={item} />;
                 })}
             </div>
 
             <div className="sidebar-tool">
-                <Link to="/dashboard" className="sidebar-link-bottom">
+                <Link to="/setting" className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiSettings />
                         <span className="menu-txt">Settings</span>

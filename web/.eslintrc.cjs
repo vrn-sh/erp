@@ -8,7 +8,9 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         'react/jsx-props-no-spreading': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
-        "jsx-a11y/anchor-is-valid": 0,
+        'jsx-a11y/anchor-is-valid': 0,
+        'no-alert': 'off',
+        'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
     },
     root: true,
     extends: [

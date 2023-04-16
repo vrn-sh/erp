@@ -17,6 +17,7 @@
     margin: 5px;
     display: flex;
 }
+
 .setting-menu{
     width: 25%;
     padding: 25px;
@@ -24,26 +25,22 @@
 
 .setting-content{
     width: 70%;
+    border-radius: 10px;
     height: fit-content;
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding: 5px;
 }
-.set-menu{
-}
 
-.set-menu ul{
-
-}
 .set-menu li{
     list-style: none;
     margin: 10px;
 }
+
 .menu-btn{
     background-color:transparent;
     color: black;
     font-weight: bold;
-
 }
 
 .set-input{
@@ -51,73 +48,71 @@
     width: 100%;
     margin: 20px;
 }
-/*profile*/
-.container {
+.setting-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: .5rem;
     padding: 10px;
     height:auto;
-  }
+}
   
-  .input {
+.input {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     position: relative;
-  }
-  
-  .input label {
-    font-size: 1rem;
-    font-weight: bold;
+}
+
+.input label {
+    font-size: .9rem;
     position: absolute;
     top: 0;
     left: 0;
     transform: translate(0, -50%);
-  }
-  
-  .input input[type='text'] {
+}
+
+.input input[type='text'] {
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
     margin-top: 1.5rem; /* Ajout de la marge pour laisser de la place pour le label */
-  }
-  
-  .input-small input[type='text'] {
+}
+
+.input-small input[type='text'] {
     width: 150px;
-  }
-  
-  .input-medium input[type='text'] {
+}
+
+.input-medium input[type='text'] {
     width: 100%;
     height: 40px;
-  }
+}
   
-  .input-large input[type='text'] {
+.input-large input[type='text'] {
     width: 100%;
     height: 90px;
-  }
-  
-  .input-group {
+}
+
+.input-group {
     display: flex;
     gap: 1rem;
-  }
+}
   
 .input-group .input {
     flex-basis: 50%;
-  }
-  
-  .buttons-container{
+}
+
+.buttons-container{
     display: flex;
     gap: 1rem;
     width: max-content;
-  }
+}
 
-  .submit-button{
+.submit-button{
     width: 160px;
-  }
-  .cancel-button{
+}
+.cancel-button{
     background-color: white;
     width: 5px;
     color: #7C44F3;
-  }
+}

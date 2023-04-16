@@ -8,12 +8,20 @@ The following models are present here:
 """
 
 import os
+from typing import List, Optional
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from argon2 import PasswordHasher
+from django.db.models.deletion import CASCADE
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.mail import send_mail
 
+MAX_TITLE_LENGTH = 256
+MAX_NOTE_LENGTH = 8186
+MAX_LINK_LENGTH = 1024
+NAME_LENGTH = 256
+
+USER_ROLES = ['unknown', 'pentester', 'manager']
 
 class Auth(AbstractUser):
     """
@@ -22,7 +30,7 @@ class Auth(AbstractUser):
             Basic model used to log in users.
             When authenticating users through views, this is the model recovered from the Token
 
-        role: string containing the current role of the user
+        role: integer containing the current role of the user
         password: hashed password of the user
         phone_number: phone number used for MFA (should use E164 format)
         tmp_token: token automatically generated, used for password reset or account confirmation
@@ -39,19 +47,19 @@ class Auth(AbstractUser):
 
     USER_TYPE_CHOICES = (
         (1, 'pentester'),
-        (2, 'admin'),
+        (2, 'manager'),
     )
 
-    id = models.AutoField(primary_key=True)
-    role = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, editable=False)
-    password = models.CharField(max_length=128)
-    phone_number = PhoneNumberField(null=True, blank=True)
-    email = models.EmailField(unique=True, null=False, blank=False)
+    id: models.AutoField = models.AutoField(primary_key=True)
+    role: models.PositiveSmallIntegerField = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, editable=False)
+    password: models.CharField = models.CharField(max_length=128)
+    phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
+    email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
 
     # account confirmation / password reset stuff
     # TODO: have a different token for password reset & account confirmation
-    tmp_token = models.CharField(max_length=32, null=True, default=None)
-    is_disabled = models.BooleanField(default=True)
+    tmp_token: models.CharField = models.CharField(max_length=32, null=True, default=None)
+    is_disabled: models.BooleanField = models.BooleanField(default=True)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -75,7 +83,7 @@ class Auth(AbstractUser):
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
-        url = f'https://voron.sh/reset?token={self.tmp_token}'
+        url = f'https://voron.djnn.sh/reset?token={self.tmp_token}'
         return send_mail(
             f'{self.first_name}, reset your password',
             f'Please click on the following link to reset your password:{url}',
@@ -91,29 +99,29 @@ class Auth(AbstractUser):
         return super().save(*args, **kwargs)
 
 
-class Admin(models.Model):
+class Manager(models.Model):
     """
-        Admin model
+        Manager model
 
         auth -> one-to-one to Auth model
         creation_date -> read-only field expressing creation date
 
     """
     class Meta:
-        verbose_name = 'Administrator'
-        verbose_name_plural = 'Administrators'
+        verbose_name = 'Manager'
+        verbose_name_plural = 'Managers'
         ordering = ['creation_date']
 
-    id = models.AutoField(primary_key=True)
-    auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
-    creation_date = models.DateTimeField(auto_now=True, editable=False)
+    id: models.AutoField = models.AutoField(primary_key=True)
+    auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
 
 
 class Pentester(models.Model):
     """
         Pentester model
 
-        (Main difference with Admin model is that pentesters can own domains)
+        (Main difference with Manager model is that pentesters cannot own teams)
 
         auth -> one-to-one to Auth model
         creation_date -> read-only field expressing creation date
@@ -123,6 +131,33 @@ class Pentester(models.Model):
         verbose_name_plural = 'Pentesters'
         ordering = ['creation_date']
 
-    id = models.AutoField(primary_key=True)
-    auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
-    creation_date = models.DateTimeField(auto_now=True, editable=False)
+    id: models.AutoField = models.AutoField(primary_key=True)
+    auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
+
+
+class Team(models.Model):
+    """Model for representing a team of pentester, with one manager"""
+    class Meta:
+        verbose_name = 'Team'
+        verbose_name_plural = 'Teams'
+        ordering = ['name']
+
+    REQUIRED_FIELDS = ['name', 'leader', 'members']
+
+    name: models.CharField = models.CharField(max_length=32)
+    leader: Manager = models.OneToOneField(Manager, on_delete=CASCADE)
+    members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
+
+
+AuthenticatedUser = Pentester | Manager
+
+
+def get_user_model(auth: Auth) -> AuthenticatedUser:
+    """fetches User model from base authentication model"""
+
+    roles = ['placeholder', 'pentester', 'manager']
+
+    if roles[auth.role] == 'pentester':
+        return Pentester.objects.get(auth_id=auth.id)
+    return Manager.objects.get(auth_id=auth.id)

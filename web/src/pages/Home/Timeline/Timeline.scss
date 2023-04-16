@@ -1,0 +1,43 @@
+.timeline {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.title {
+    font-size: 2rem;
+    font-family: 'Poppins-Bold';
+    color: var(--primary-btn);
+}
+
+.timeline_container {
+    text-align: left;
+}
+
+
+// Sorry for using the important 
+// because timeline is a reactjs tool
+// the default style is not adapted to our website
+.timeline-title {
+    font-family: 'Poppins-Medium';
+    font-size: 1rem !important;
+}
+
+.timeline-description {
+    font-family: 'Poppins-Light';
+    font-size: 14px !important;
+}
+
+.vertical-timeline, .vertical-timeline-element {
+    padding: 0 !important;
+}
+
+.vertical-timeline-element {
+    margin-bottom: 0.5em !important;
+    margin-top: 0.5em !important;
+}
+
+.date {
+    color: var(--primary-btn);
+}

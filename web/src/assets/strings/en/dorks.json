@@ -1,0 +1,154 @@
+{
+    "dorks": [
+        [{
+            "id": 1,
+            "title": "Directory listing vulnerabilities",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+intitle:index.of"
+        },
+        {
+            "id": 2,
+            "title": "Exposed Configuration files",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+ext:xml+|+ext:conf+|+ext:cnf+|+ext:reg+|+ext:inf+|+ext:rdp+|+ext:cfg+|+ext:txt+|+ext:ora+|+ext:ini"
+        }],
+        [{
+            "id": 3,
+            "title": "Exposed Database files",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+ext:sql+|+ext:dbf+|+ext:mdb"
+        },
+        {
+            "id": 4,
+            "title": "Find WordPress",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+inurl:wp-+|+inurl:wp-content+|+inurl:plugins+|+inurl:uploads+|+inurl:themes+|+inurl:download"
+        }],
+        [{
+            "id": 5,
+            "title": "Exposed log files",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+ext:log"
+        },
+        {
+            "id": 6,
+            "title": "Login pages",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+inurl:login"
+        }],
+        [{
+            "id": 7,
+            "title":"SQL errors",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+intext:%22sql+syntax+near%22+|+intext:%22syntax+error+has+occurred%22+|+intext:%22incorrect+syntax+near%22+|+intext:%22unexpected+end+of+SQL+command%22+|+intext:%22Warning:+mysql_connect()%22+|+intext:%22Warning:+mysql_query()%22+|+intext:%22Warning:+pg_connect()%22"
+        },
+        {
+            "id": 8,
+            "title": "Publicly exposed documents",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+ext:doc+|+ext:docx+|+ext:odt+|+ext:pdf+|+ext:rtf+|+ext:sxw+|+ext:psw+|+ext:ppt+|+ext:pptx+|+ext:pps+|+ext:csv"
+        }],
+        [{
+            "id": 9,
+            "title": "phpinfo()",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+ext:php+intitle:phpinfo+%22published+by+the+PHP+Group%22"
+        },
+        {
+            "id": 10,
+            "title": "Finding Backdoors",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+inurl:shell+%7C+inurl:backdoor+%7C+inurl:wso+%7C+inurl:cmd+%7C+shadow+%7C+passwd+%7C+boot.ini+%7C+inurl:backdoor"
+        }],
+        [{
+            "id": 11,
+            "title": "Install / Setup files",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+inurl:readme+|+inurl:license+|+inurl:install+|+inurl:setup+|+inurl:config"
+        },
+        {
+            "id": 12,
+            "title": "Open Redirects",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+inurl:redir+|+inurl:url+|+inurl:redirect+|+inurl:return+|+inurl:src=http+|+inurl:r=http"
+        }],
+        [{
+            "id": 13,
+            "title": "Apache STRUTS RCE",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+ext:action+|+ext:struts+|+ext:do"
+        },
+        {
+            "id": 14,
+            "title": "Find Pastebin entries",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}pastebin.com+{{DOMAIN}}"
+        }],
+        [{
+            "id": 15,
+            "title": "Employees on LINKEDIN",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}linkedin.com+employees+{{DOMAIN}}"
+        },
+        {
+            "id": 16,
+            "title": "Check in CENSYS [IP4]",
+            "path": "https://search.censys.io/domain?q={{DOMAIN}}"
+        }],
+        [{
+            "id": 17,
+            "title": "Find Subdomains",
+            "path": "https://www.google.com/search?q=site:*.{{DOMAIN}}"
+        },
+        {
+            "id": 18,
+            "title": "Find Sub-Subdomains",
+            "path": "https://www.google.com/search?q=site:*.*.{{DOMAIN}}"
+        }],
+        [{
+            "id": 19,
+            "title": "Find WordPress #2",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+inurl:wp-content+|+inurl:wp-includes"
+        },
+        {
+            "id": 20,
+            "title": "Find WordPresss [Wayback Machine]",
+            "path": "http://wwwb-dedup.us.archive.org:8083/cdx/search?url={{DOMAIN}}/&matchType=domain&collapse=digest&output=text&fl=original,timestamp&filter=urlkey:.*wp[-].*&limit=1000000&xx="
+        }],
+        [{
+            "id": 21,
+            "title": "Search in GITHUB",
+            "path": "https://github.com/search?q=%22*.{{DOMAIN}}%22&type=host"
+        },
+        {
+            "id": 22,
+            "title": "Search in OpenBugBounty",
+            "path": "https://www.openbugbounty.org/search/?search={{DOMAIN}}&type=host"
+        }],
+        [{
+            "id": 23,
+            "title": "Search in Reddit",
+            "path": "https://www.reddit.com/search/?q={{DOMAIN}}&source=recent"
+        },
+        {
+            "id": 24,
+            "title": "Test CrossDomain",
+            "path": "https://www.{{DOMAIN}}/crossdomain.xml"
+        }],
+        [{
+            "id": 25,
+            "title": "Check in ThreatCrowd",
+            "path": "http://threatcrowd.org/domain.php?domain={{DOMAIN}}"
+        },
+        {
+            "id": 26,
+            "title": "Find .SWF file (Google)",
+            "path": "https://www.google.com/search?q=+inurl:{{DOMAIN}}+ext:swf"
+        }],
+        [{
+            "id": 27,
+            "title": "Find .SWF file (Yandex)",
+            "path": "https://yandex.com/search/?text=site:{{DOMAIN}}%20mime:swf"
+        },
+        {
+            "id": 28,
+            "title": "Search SWF in WayBack Machine",
+            "path": "https://web.archive.org/cdx/search?url={{DOMAIN}}/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=urlkey:.*swf&limit=100000&_=1507209148310"
+        }],
+        [{
+            "id": 29,
+            "title": "Search in WayBack Machine #2",
+            "path": "https://web.archive.org/cdx/search?url={{DOMAIN}}/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=mimetype:application/x-shockwave-flash&limit=100000&_=1507209148310"
+        },
+        {
+            "id": 30,
+            "title": "Search in SHODAN",
+            "path": "https://www.shodan.io/search?query={{DOMAIN}}"
+        }]
+    ]
+}
