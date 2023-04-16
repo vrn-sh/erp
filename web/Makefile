@@ -67,7 +67,7 @@ build: dependencies ## Build the project
 
 .PHONY: watch
 watch: dependencies ## Runs the project preview
-	yarn preview --host
+	yarn run dev
 
 .PHONY: dependencies
 dependencies: ## Install dependencies

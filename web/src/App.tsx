@@ -23,8 +23,8 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/settings" element={<Setting />} />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/edit_mission" element={<EditMission />} />
-                <Route path="/create_mission" element={<CreateMission />} />
+                <Route path="/mission/edit" element={<EditMission />} />
+                <Route path="/mission/create" element={<CreateMission />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </div>
