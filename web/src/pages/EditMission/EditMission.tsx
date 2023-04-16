@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './EditMission.scss';
-import '../Setting/setting.scss';
+import './Mission.scss';
+import '../Settings/Settings.scss';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './profile.scss';
-import '../Setting/setting.scss';
+import './Profile.scss';
+import '../Settings/Settings.scss';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 
