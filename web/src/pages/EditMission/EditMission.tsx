@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Mission.scss';
 import '../Settings/Settings.scss';
+import { useNavigate } from 'react-router-dom';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 
@@ -29,17 +30,23 @@ function Input({ label, size }: InputProps) {
     );
 }
 
-const UpdateMission = () => {
-    // appel de l'API pour supprimer le groupe
-};
-const CancelMission = () => {
-    // appel de l'API pour supprimer le groupe
-};
-const DeleteMission = () => {
-    // appel de l'API pour supprimer le groupe
-};
-
 export default function EditMission() {
+    const navigate = useNavigate();
+
+    const UpdateMission = () => {
+        navigate('/dashboard');
+        // appel de l'API pour supprimer le groupe
+    };
+
+    const CancelMission = () => {
+        navigate('/dashboard');
+    };
+
+    const DeleteMission = () => {
+        navigate('/dashboard');
+        // appel de l'API pour supprimer le groupe
+    };
+
     return (
         <div className="dashboard">
             <SideBar />

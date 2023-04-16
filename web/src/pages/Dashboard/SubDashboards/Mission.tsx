@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import {
     IDashboardMission,
@@ -16,6 +17,7 @@ export default function Mission() {
     const records = list.slice(firstIndex, lastIndex);
     const npage = Math.ceil(list.length / recordsPerPage);
     const nums = [...Array(npage + 1).keys()].slice(1);
+    const navigate = useNavigate();
 
     const nextPage = () => {
         if (currentPage !== npage) {
@@ -37,6 +39,10 @@ export default function Mission() {
         return `${n.toString()}%`;
     };
 
+    const NavEditMission = () => {
+        navigate('/edit_mission');
+    };
+
     return (
         <>
             <table className="no_center_container">
@@ -56,6 +62,7 @@ export default function Mission() {
                                         type="button"
                                         value="Edit"
                                         className="borderBtn"
+                                        onClick={NavEditMission}
                                     />
                                 </td>
                                 {/* Process bar */}
