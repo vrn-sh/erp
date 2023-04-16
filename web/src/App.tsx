@@ -7,7 +7,8 @@ import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import SignUp from './pages/SignUp/SignUp';
 import NotFound from './pages/Error/Error';
-import Setting from './pages/Setting/Setting';
+// eslint-disable-next-line [import/extensions]
+import Setting from './pages/Setting/Setting'; // eslint-disable-line
 
 function App() {
     return (
