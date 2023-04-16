@@ -1,0 +1,29 @@
+.profile-container{
+    background-color: #FCFBFD;
+    display: flex;
+}
+.profile-infos{
+    text-align: left;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    width: 63%;
+    height: fit-content;
+    margin: 50px;
+}
+
+.profile-pic{
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    width: 30%;
+    height: 500px;
+    margin-top: 50px;
+}
+
+.cover-img{
+    background-image: url("../../assets/cover.jpg");
+    height: 45%;
+}
