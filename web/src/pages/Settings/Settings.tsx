@@ -5,12 +5,12 @@ import { IoIosNotifications } from 'react-icons/io';
 import { BsCreditCard, BsFillShieldLockFill } from 'react-icons/bs';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
-import './Setting.scss';
-import SettingAccount from './Setting-pages/setting-account';
-import SettingNotification from './Setting-pages/set-notif';
-import SettingSecurity from './Setting-pages/set-security';
-import SettingBilling from './Setting-pages/set-billing';
-import SettingTeam from './Setting-pages/set-team';
+import './Settings.scss';
+import SettingAccount from './Settings-pages/setting-account';
+import SettingNotification from './Settings-pages/set-notif';
+import SettingSecurity from './Settings-pages/set-security';
+import SettingBilling from './Settings-pages/set-billing';
+import SettingTeam from './Settings-pages/set-team';
 
 // Interface pour les données de sous-pages
 interface SubPage {
