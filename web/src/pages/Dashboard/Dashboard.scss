@@ -143,11 +143,13 @@ table input {
     cursor: pointer;
 }
 
-.process-td {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+.process {
+    &-td {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
 
     &-bar {
         position: relative;
