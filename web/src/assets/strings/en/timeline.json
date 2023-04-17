@@ -1,0 +1,32 @@
+{
+    "timelineElements": [
+        {
+            "id": 1,
+            "title": "Group Creation",
+            "description": "Februry 19 2023",
+            "date": "Februry 19 2023",
+            "icon": "work"
+        },
+        {
+            "id": 2,
+            "title": "Step 1",
+            "description": "Build some basic fonctions of our applications, for example the landing page, management of authentification and develop a dashboard to aggregate notes and findings between pentesters",
+            "date": "Februry 2023 - Present",
+            "icon": ""
+        },
+        {
+            "id": 3,
+            "title": "Step 2",
+            "description": "Add legal form, identify scan automation and versioned log storage for traceability",
+            "date": "Future planning",
+            "icon": ""
+        },
+        {
+            "id": 4,
+            "title": "Step 3",
+            "description": "Develop a tool to log pentester scans, and actions during the tests, also build a C2",
+            "date": "Future planning",
+            "icon": ""
+        }
+    ]
+}

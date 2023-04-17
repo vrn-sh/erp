@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
+import axios from 'axios';
 import './Login.scss';
+import config from '../../config';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -42,12 +44,31 @@ export default function Login() {
         }
     };
 
-    const submit = () => {
+    const submit = async () => {
         if (email !== '' && pwd.length > 7) {
-            // console.log('Log in successfully!')
-            navigate('/dashboard');
-        } else {
-            //    console.log('Something is wrong')
+            try {
+                await axios
+                    .post(
+                        `${config.apiUrl}/login`,
+                        JSON.stringify({
+                            email,
+                            password: pwd,
+                        }),
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        }
+                    )
+                    .then(() => {
+                        navigate('/dashboard');
+                    })
+                    .catch(() => {
+                        setErrorEmail('Invalid email or password!');
+                    });
+            } catch (error) {
+                setErrorEmail('Invalid email or password!');
+            }
         }
     };
 
@@ -56,18 +77,14 @@ export default function Login() {
             <div className="login-text" id="login-text">
                 <div>
                     <h2>voron</h2>
-                    <h1>{import.meta.env.VITE_REACT_APP_SLOGAN}</h1>
-                    <span className="no-bold">
-                        Lorem ipsum dolor sit amet consectetur. Quis platea
-                        lectus.
-                    </span>
+                    <h1>In efficiency we trust</h1>
                 </div>
             </div>
 
             <div className="login-form" id="login-form">
                 <div className="wrapper">
                     <div className="form-wrapper">
-                        <h2>Welcome back!</h2>
+                        <h2>Welcome back !</h2>
 
                         <div className="form-group">
                             <label>Email</label>
@@ -94,9 +111,10 @@ export default function Login() {
                             <p className="error">
                                 {errorPwd} {errorEmail}
                             </p>
-                            <div className="submit">
+                            <div className="login-submit">
+                                <p>Forgot password ? </p>
                                 <button type="button" onClick={submit}>
-                                    LOG IN
+                                    LOGIN
                                 </button>
                             </div>
                         </div>

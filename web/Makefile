@@ -67,7 +67,7 @@ build: dependencies ## Build the project
 
 .PHONY: watch
 watch: dependencies ## Runs the project preview
-	yarn preview --host
+	yarn run dev
 
 .PHONY: dependencies
 dependencies: ## Install dependencies
@@ -78,5 +78,7 @@ dependencies: ## Install dependencies
 # ------------------------------
 
 .PHONY: check
-check:  ## Run various checks on project files
-
+check: dependencies ## Run various checks on project files
+	rm -rf dist
+	yarn run lint
+	yarn run build

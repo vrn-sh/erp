@@ -14,71 +14,11 @@ from pathlib import Path
 import string
 import os
 
+from datetime import timedelta
+from typing import List, Tuple
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-SWAGGER_SETTINGS = {
-   'SECURITY_DEFINITIONS': {
-      'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-      }
-   }
-}
-
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = os.environ['SENDGRID_SENDER']
-
-TRENCH_AUTH = {
-    "USER_MFA_MODEL": "trench.MFAMethod",
-    "USER_ACTIVE_FIELD": "is_active",
-    "BACKUP_CODES_QUANTITY": 5,
-    "BACKUP_CODES_LENGTH": 12,
-    "BACKUP_CODES_CHARACTERS": (string.ascii_letters + string.digits),
-    "SECRET_KEY_LENGTH": 32,
-    "DEFAULT_VALIDITY_PERIOD": 30,
-    "CONFIRM_DISABLE_WITH_CODE": False,
-    "CONFIRM_BACKUP_CODES_REGENERATION_WITH_CODE": True,
-    "ALLOW_BACKUP_CODES_REGENERATION": True,
-    "ENCRYPT_BACKUP_CODES": True,
-    "APPLICATION_ISSUER_NAME": "voron.sh",
-    "MFA_METHODS": {
-        "email": {
-            "VERBOSE_NAME": "email",
-            "VALIDITY_PERIOD": 60 * 5,
-            "HANDLER": "trench.backends.basic_mail.SendMailMessageDispatcher",
-            "SOURCE_FIELD": "auth.email",
-            "EMAIL_SUBJECT": "Your verification code",
-            "EMAIL_PLAIN_TEMPLATE": "trench/backends/email/code.txt",
-            "EMAIL_HTML_TEMPLATE": "trench/backends/email/code.html",
-        },
-        "sms_api": {
-            "VERBOSE_NAME": "sms_api",
-            "VALIDITY_PERIOD": 60,
-            "HANDLER": "trench.backends.sms_api.SMSAPIMessageDispatcher",
-            "SOURCE_FIELD": "auth.phone_number",
-            "SMSAPI_ACCESS_TOKEN": os.environ.get('TWILIO_API_KEY'),
-            "SMSAPI_FROM_NUMBER": os.environ.get('TWILIO_PHONE_NUMBER'),
-        },
-        "app": {
-            "VERBOSE_NAME": "app",
-            "VALIDITY_PERIOD": 30,
-            "USES_THIRD_PARTY_CLIENT": True,
-            "HANDLER": "trench.backends.application.ApplicationMessageDispatcher",
-        }
-    }
-}
-
-PHONENUMBER_DB_FORMAT = 'E164'
-PHONENUMBER_DEFAULT_REGION = 'FR'
-PHONENUMBER_DEFAULT_FORMAT = 'E164'
 
 # Application definition
 INSTALLED_APPS = [
@@ -91,9 +31,45 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'api',
     'drf_yasg',
-    'trench',
     "phonenumber_field",
+    "corsheaders",
+    "knox",
 ]
+
+
+
+
+REST_KNOX = {
+  'AUTH_TOKEN_CHARACTER_LENGTH': 128,
+  'TOKEN_TTL': timedelta(hours=12),
+}
+
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}
+
+
+# email config
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = os.environ['SENDGRID_SENDER']
+
+# phonenumber_field config
+PHONENUMBER_DB_FORMAT = 'E164'
+PHONENUMBER_DEFAULT_REGION = 'FR'
+PHONENUMBER_DEFAULT_FORMAT = 'E164'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -104,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'api.management.middlewares.set_secure_headers',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -149,6 +126,12 @@ if os.environ.get('PRODUCTION', '0') == '1':
             f'https://{os.environ["DOMAIN_NAME"]}',
             f'http://{os.environ["DOMAIN_NAME"]}'
             ]
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        f'https://{os.environ.get("DOMAIN_NAME")}',
+    ]
+    CORS_ORIGIN_ALLOW_ALL = False
+    CORS_ALLOW_CREDENTIALS = False
+
 elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     DATABASES = {
         'default': {
@@ -163,6 +146,11 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
     DEBUG = True
     ALLOWED_HOSTS = ['*']
+    CORS_ALLOWED_ORIGIN = [
+        ["*"]
+    ]
+    CORS_ORIGIN_ALLOW_ALL = True
+
 elif os.environ.get('CI') and os.environ.get('CI')  == '1':
     DATABASES = {
         'default': {
@@ -177,6 +165,11 @@ elif os.environ.get('CI') and os.environ.get('CI')  == '1':
     SECRET_KEY = 'django-insecure-234kj23h4jkj2134ho20d109fu3f0943f03hg34g094318943f'
     DEBUG = True
     ALLOWED_HOSTS = ['*']
+    CORS_ALLOWED_ORIGIN = [
+        ["*"]
+    ]
+    CORS_ORIGIN_ALLOW_ALL = True
+
 else:
     DATABASES = {
         'default': {
@@ -191,6 +184,11 @@ else:
     SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
     DEBUG = True
     ALLOWED_HOSTS = ['*']
+    CORS_ALLOWED_ORIGIN = [
+        ["*"]
+    ]
+    CORS_ORIGIN_ALLOW_ALL = True
+
 
 
 # Password validation
@@ -222,7 +220,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'knox.auth.TokenAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',

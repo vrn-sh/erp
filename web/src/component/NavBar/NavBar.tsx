@@ -28,7 +28,9 @@ export default function NavBar() {
                 <div className="nav-left">
                     <CustomLink to="#home">Home</CustomLink>
                     <CustomLink to="#about">About</CustomLink>
+                    <CustomLink to="#timeline">Timeline</CustomLink>
                     <CustomLink to="#team">Team</CustomLink>
+                    <CustomLink to="#contact">Contact</CustomLink>
                 </div>
                 <div className="nav-right">
                     <Link to="/signup">Sign up</Link>
