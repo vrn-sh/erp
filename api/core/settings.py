@@ -15,9 +15,28 @@ import string
 import os
 
 from datetime import timedelta
+from typing import List, Tuple
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'api',
+    'drf_yasg',
+    "phonenumber_field",
+    "corsheaders",
+    "knox",
+]
+
+
 
 
 REST_KNOX = {
@@ -36,6 +55,8 @@ SWAGGER_SETTINGS = {
    }
 }
 
+
+# email config
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = os.environ['SENDGRID_API_KEY']
@@ -49,21 +70,6 @@ PHONENUMBER_DB_FORMAT = 'E164'
 PHONENUMBER_DEFAULT_REGION = 'FR'
 PHONENUMBER_DEFAULT_FORMAT = 'E164'
 
-# Application definition
-INSTALLED_APPS = [
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'api',
-    'drf_yasg',
-    "phonenumber_field",
-    "corsheaders",
-    "knox",
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
