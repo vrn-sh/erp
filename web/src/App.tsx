@@ -10,6 +10,7 @@ import Setting from './pages/Setting/setting';
 import ProfilePage from './pages/Profile/profile';
 import EditMission from './pages/editMission/editMission';
 import CreateMission from './pages/editMission/createMission';
+import AddVulnerability from './pages/vulnerability/addvulnerability';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/editmission" element={<EditMission />} />
                 <Route path="/createmission" element={<CreateMission />} />
+                <Route path="/addvulnerability" element={<AddVulnerability />} />
             </Routes>
         </div>
     );

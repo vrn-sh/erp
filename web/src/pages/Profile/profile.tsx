@@ -40,16 +40,16 @@ export default function ProfilePage() {
                   <div className="profile-infos">
                       <h1>General Infos</h1>
                       <div className="input-group">
-                        <Input label="First Name" size="medium" />
+                        <Input label="First Name *" size="medium" />
                         <Input label="Last Name *" size="medium" />
                       </div>
                       <div className="input-group">
                         <Input label="Age" size="medium" />
-                        <Input label="Gender *" size="medium" />
+                        <Input label="Gender" size="medium" />
                       </div>
                       <div className="input-group">
-                        <Input label="Email" size="medium" />
-                        <Input label="Phone *" size="medium" />
+                        <Input label="Email *" size="medium" />
+                        <Input label="Phone " size="medium" />
                       </div>
                       <h1>Skills</h1>
                       <Input label="Skills" size="large" />  
