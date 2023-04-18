@@ -10,7 +10,7 @@ from rest_framework.views import Response
 from api.models import Auth
 
 from api.models.vulns import Notes, VulnType, Vulnerability
-from api.permissions import IsManager, IsOwner, IsPentester
+from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
 
@@ -22,7 +22,7 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     """
 
     queryset = Notes.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsManager | IsOwner]  # FIXME(adina): add isPartOfTheTeam
+    permission_classes = [permissions.IsAuthenticated & IsManager | permissions.IsAuthenticated & IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = NotesSerializer
 
@@ -80,7 +80,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         CRUD to manage vulnerabilities.
     """
     queryset = Vulnerability.objects.all()
-    permissions = [permissions.IsAuthenticated & IsOwner & IsPentester]  # FIXME(adina): add is PartOfTheTeam
+    permissions = [permissions.IsAuthenticated, IsLinkedToData & IsPentester | IsManager & IsLinkedToData & ReadOnly]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
 
@@ -129,7 +129,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             }, status=HTTP_400_BAD_REQUEST)
 
         request.data['vuln_type'] = vuln_obj.id
-        if not 'description' in request.data:
+        if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
         return super().create(request, *args, **kwargs)
 

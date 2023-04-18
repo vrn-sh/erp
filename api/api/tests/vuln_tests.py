@@ -6,7 +6,7 @@ from api.models import Manager, Pentester
 from api.management.commands.init_builtin_vuln_types import Command
 from api.models import Manager, Pentester
 
-from api.tests.helpers import create_mission, create_random_pentester, create_random_manager, random_user_password, \
+from api.tests.helpers import create_mission, create_random_pentester, create_random_manager, default_user_password, \
     login_as
 
 from warnings import warn
@@ -36,7 +36,7 @@ class VulnTestCase(TransactionTestCase):
 
         mission = create_mission(self.manager, [self.user, self.other_user])
 
-        auth_token: str = login_as(self.user.auth.email, random_user_password())
+        auth_token: str = login_as(self.user.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
         response = client.post(
             '/vulnerability',

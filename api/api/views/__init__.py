@@ -232,10 +232,10 @@ class ConfirmAccountView(APIView):
             return Response({
                 'message': 'success! you may now connect to voron!',
             }, status=HTTP_200_OK)
-        else:
-            return Response({
-                'error': 'no account has been found'
-            }, status=HTTP_404_NOT_FOUND)
+
+        return Response({
+            'error': 'no account has been found'
+        }, status=HTTP_404_NOT_FOUND)
 
 
 

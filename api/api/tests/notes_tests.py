@@ -4,7 +4,7 @@ from django.test import TransactionTestCase
 from rest_framework.test import APIClient
 from api.models import Manager, Pentester
 
-from api.tests.helpers import create_mission, create_random_pentester, create_random_manager, random_user_password, login_as
+from api.tests.helpers import create_mission, create_random_pentester, create_random_manager, default_user_password, login_as
 
 class ReconTestCase(TransactionTestCase):
     """test case for all things related to recon, include Nmap etc"""
@@ -16,7 +16,7 @@ class ReconTestCase(TransactionTestCase):
         self.mission = create_mission(self.manager, [self.user, self.other_user])
 
         self.pentester_client = APIClient()
-        auth_token = login_as(self.user.auth.email, random_user_password())
+        auth_token = login_as(self.user.auth.email, default_user_password())
         self.pentester_client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
     def tearDown(self) -> None:
@@ -189,7 +189,7 @@ class NotesTestCase(TransactionTestCase):
         """
         client: APIClient = APIClient()
 
-        auth_token: str = login_as(self.user.auth.email, random_user_password())
+        auth_token: str = login_as(self.user.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
         mission = create_mission(self.manager, [self.user])
@@ -217,7 +217,7 @@ class NotesTestCase(TransactionTestCase):
         """
         client: APIClient = APIClient()
 
-        auth_token: str = login_as(self.manager.auth.email, random_user_password())
+        auth_token: str = login_as(self.manager.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
         mission = create_mission(self.manager, [self.user])
@@ -248,7 +248,7 @@ class NotesTestCase(TransactionTestCase):
 
         client: APIClient = APIClient()
 
-        auth_token: str = login_as(self.user.auth.email, random_user_password())
+        auth_token: str = login_as(self.user.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
         mission = create_mission(self.manager, [self.user])
@@ -262,7 +262,7 @@ class NotesTestCase(TransactionTestCase):
                     }
                 )
 
-        auth_token: str = login_as(self.other_user.auth.email, random_user_password())
+        auth_token: str = login_as(self.other_user.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
         notes_id = response.data.get('id')
 

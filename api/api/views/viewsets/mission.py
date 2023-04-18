@@ -9,7 +9,7 @@ from rest_framework.routers import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from api.models.mission import Mission, NmapScan, Recon
-from api.permissions import IsManager, IsOwner, IsPentester, ReadOnly
+from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer
 from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
 
@@ -21,7 +21,7 @@ class NmapViewset(viewsets.ModelViewSet):
     queryset = NmapScan.objects.all()
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsPentester]
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
     @swagger_auto_schema(
         operation_description="Creates and parses an NMAP output object.",
@@ -107,7 +107,7 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     queryset = Recon.objects.all()
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsPentester]
+    permission_classes = [permissions.IsAuthenticated & IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -116,7 +116,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     """
 
     queryset = Mission.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsOwner, IsPentester & ReadOnly | IsManager]
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
 
