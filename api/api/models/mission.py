@@ -98,4 +98,3 @@ class Mission(models.Model):
         if self.pk is None and environ.get('PRODUCTION', '0') == '1':
             create_bucket(self.bucket_name)
         super().save(*args, **kwargs)
-

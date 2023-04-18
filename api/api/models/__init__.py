@@ -149,6 +149,10 @@ class Team(models.Model):
     leader: Manager = models.OneToOneField(Manager, on_delete=CASCADE)
     members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
 
+    def is_member(self, user) -> bool:
+        """check if user is member of the team"""
+        return self.leader == user or user in self.members
+
 
 AuthenticatedUser = Pentester | Manager
 
