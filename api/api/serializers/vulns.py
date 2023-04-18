@@ -1,5 +1,6 @@
 from datetime import datetime
 from warnings import warn
+from django.core.files.base import ContentFile
 
 from rest_framework import serializers
 from io import BytesIO
@@ -29,26 +30,23 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def to_representation(self, instance):
-        bucket_name = instance.bucket_name
-
         representation = super().to_representation(instance)
         s3_client = client()
-        images = []
-
-        to_serialize = representation.get('images')
-        if not to_serialize:
-            return representation
-
-        for image in representation.get('images', []):
-            data = s3_client.get_object(
-                bucket_name=bucket_name,
-                object_name=str(image)
-            )
-            data = BytesIO(data.read())
-            image_data = base64.b64encode(data.getvalue()).decode()
-            images.append(image_data)
-
-        representation['images'] = images
+        for index, image in enumerate(instance.images):
+            image_data = s3_client.get_object(instance.bucket_name, str(image))
+            image_content = image_data.read()
+            representation['images'][index] = image_content.encode('base64').decode()
         return representation
 
-
+    def to_internal_value(self, data):
+        internal_value = super().to_internal_value(data)
+        s3_client = client()
+        images = []
+        for image_data in data.get('images', []):
+            decoded_image = image_data.decode('base64')
+            content_file = ContentFile(decoded_image)
+            image_name = s3_client.presigned_put_object(internal_value.bucket_name, content_file.name)
+            s3_client.put_object(internal_value.bucket_name, image_name, content_file, length=content_file.size)
+            images.append(image_name)
+        internal_value['images'] = images
+        return internal_value
