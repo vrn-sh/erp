@@ -54,7 +54,7 @@ def create_user(
     return user
 
 
-def random_user_password() -> str:
+def default_user_password() -> str:
     """give password to user"""
     return 'secretpassword'
 
@@ -68,7 +68,7 @@ def create_random_manager() -> Manager:
         name.split(' ')[0],
         name.split(' ')[1],
         fake.email(),
-        random_user_password(),
+        default_user_password(),
         name,
         Manager,
         True
@@ -84,7 +84,7 @@ def create_random_pentester() -> Pentester:
         name.split(' ')[0],
         name.split(' ')[1],
         fake.email(),
-        random_user_password(),
+        default_user_password(),
         name,
         Pentester,
         False

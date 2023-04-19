@@ -1,13 +1,12 @@
 """This module stores all the basic serializers for user & authentication management"""
 
-from typing import List, Optional, OrderedDict
+from typing import Optional, OrderedDict
 from rest_framework import serializers
 from argon2 import PasswordHasher
-from django.contrib.auth import authenticate
 from api.backends import EmailBackend
 
 from api.models import Manager, Pentester, Auth, Team
-from api.serializers.utils import create_instance, get_multiple_instances
+from api.serializers.utils import create_instance
 
 
 class LoginSerializer(serializers.Serializer):
@@ -115,10 +114,10 @@ class TeamSerializer(serializers.ModelSerializer):
     """nested serializer for a Team (which allows Pentester creation)"""
 
     def to_representation(self, instance):
-       ret = super().to_representation(instance)
-       ret['members'] = PentesterSerializer(instance.members, many=True).data
-       ret['leader'] = ManagerSerializer(instance.leader).data
-       return ret
+        ret = super().to_representation(instance)
+        ret['members'] = PentesterSerializer(instance.members, many=True).data
+        ret['leader'] = ManagerSerializer(instance.leader).data
+        return ret
 
     class Meta:
         model = Team
