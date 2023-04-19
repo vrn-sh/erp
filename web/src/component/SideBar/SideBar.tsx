@@ -4,6 +4,8 @@ import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
 import SideBarData from './SideBarData';
 import { ICardItem } from './SideBarMenu.type';
+import axios from 'axios';
+import config from '../../config';
 
 const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
     const [subnav, setSubnav] = useState(false);
@@ -48,10 +50,22 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
 
 export default function SideBar() {
     const navigate = useNavigate();
-
-    const logout = () => {
-        localStorage.removeItem('token');
-        navigate('/');
+    const t = localStorage.getItem("token");
+    const headers = { 'Authorization': `Token ${t}` };
+    const logout = async () => {
+        try {
+            await axios
+                .get(`${config.apiUrl}/logout`, {headers})
+                .then(() => {
+                    localStorage.removeItem('token');
+                    navigate('/');
+                    console.log("ok")
+                })
+                .catch(() => {
+                });
+        } catch(e) {
+            console.log(e)
+        }
     };
 
     return (
