@@ -22,6 +22,7 @@ interface SignUpState {
 
 export default function SignUp() {
     const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
+    const [role, setRole] = useState('pentester');
     const [conPwdIcon, setConPwdIcon] = useState(
         <AiIcons.AiOutlineEyeInvisible />
     );
@@ -41,6 +42,10 @@ export default function SignUp() {
     });
     const navigate = useNavigate();
     const { errors } = state;
+
+    const onRoleChange = (e: any) => {
+        setRole(e.target.value);
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -133,12 +138,8 @@ export default function SignUp() {
         <section className="signup-container">
             <div className="signup-text" id="signup-text">
                 <div>
-                    <h2 className="alpha">voron</h2>
-                    <h1>{import.meta.env.VITE_REACT_APP_SLOGAN}</h1>
-                    <span className="no-bold">
-                        Lorem ipsum dolor sit amet consectetur. Quis platea
-                        lectus.
-                    </span>
+                    <h2>voron</h2>
+                    <h1>In efficiency we trust</h1>
                 </div>
             </div>
 
@@ -148,7 +149,11 @@ export default function SignUp() {
                         <span className="welcom">
                             <h2>Welcome to voron</h2>
                         </span>
-                        <form onSubmit={submit} noValidate>
+                        <form
+                            onSubmit={submit}
+                            noValidate
+                            className="form-signup"
+                        >
                             <div className="input-block">
                                 <label
                                     className="placeholder"
@@ -171,6 +176,30 @@ export default function SignUp() {
                                     name="email"
                                     onChange={handleChange}
                                 />
+                            </div>
+                            <div className="role-choose">
+                                <div className="radio-container">
+                                    <input
+                                        type="radio"
+                                        id="pentester"
+                                        name="role"
+                                        value="pentester"
+                                        checked={role === 'pentester'}
+                                        onChange={onRoleChange}
+                                    />
+                                    <label>Pentester</label>
+                                </div>
+                                <div className="radio-container">
+                                    <input
+                                        type="radio"
+                                        id="manager"
+                                        name="role"
+                                        value="manager"
+                                        checked={role === 'manager'}
+                                        onChange={onRoleChange}
+                                    />
+                                    <label>Manager</label>
+                                </div>
                             </div>
                             <div className="input-block">
                                 <label
