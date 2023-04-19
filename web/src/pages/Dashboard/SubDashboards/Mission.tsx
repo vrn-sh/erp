@@ -43,6 +43,10 @@ export default function Mission() {
         navigate('/mission/edit');
     };
 
+    const NavMissionDetail = () => {
+        navigate('/mission/detail');
+    };
+
     return (
         <>
             <table className="no_center_container">
@@ -57,6 +61,7 @@ export default function Mission() {
                                         type="button"
                                         value="Open"
                                         className="openBtn"
+                                        onClick={NavMissionDetail}
                                     />
                                     <input
                                         type="button"

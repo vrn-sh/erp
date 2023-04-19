@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import './Mission.scss';
-import '../Settings/Settings.scss';
-import SideBar from '../../component/SideBar/SideBar';
-import TopBar from '../../component/SideBar/TopBar';
+import './EditMission.scss';
+import '../../../Settings/Settings.scss';
+import SideBar from '../../../../component/SideBar/SideBar';
+import TopBar from '../../../../component/SideBar/TopBar';
 
 type InputSizes = 'small' | 'medium' | 'large';
 

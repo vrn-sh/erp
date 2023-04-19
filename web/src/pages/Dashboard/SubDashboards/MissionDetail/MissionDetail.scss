@@ -1,0 +1,21 @@
+.mission-detail-container {
+    background-color: var(--basic-bg);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 20px;
+    padding: 10px;
+    line-height: 160%;
+
+    & h1 {
+        text-align: left;
+        font-size: 24px;
+        font-family: "Poppins-Regular";
+    }
+
+    & p {
+        text-align: left;
+        font-size: 14px;
+        font-family: "Poppins-Regular";
+        color: var(--gray-btn);
+    }
+}

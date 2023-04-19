@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './Mission.scss';
-import '../Settings/Settings.scss';
+import './EditMission.scss';
+import '../../../Settings/Settings.scss';
 import { useNavigate } from 'react-router-dom';
-import SideBar from '../../component/SideBar/SideBar';
-import TopBar from '../../component/SideBar/TopBar';
+import SideBar from '../../../../component/SideBar/SideBar';
+import TopBar from '../../../../component/SideBar/TopBar';
 
 type InputSizes = 'small' | 'medium' | 'large';
 

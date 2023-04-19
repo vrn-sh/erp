@@ -88,11 +88,11 @@ $opacity-transition: opacity;
 .subHeader {
     display: flex;
     flex-direction: row;
-    width: 90%;
-    align-items: flex-start;
+    width: 100%;
+    justify-content: space-between;
 }
 
-.subHeader button {
+.submenu-mission button {
     min-width: 1rem;
     background-color: transparent;
     text-transform: uppercase;
@@ -101,10 +101,24 @@ $opacity-transition: opacity;
     border-radius: 0;
 }
 
-.subHeader button:hover,
-button.active {
+.submenu-mission button:hover, button.active {
     color: var(--primary-hover-btn);
     border-bottom: 1px var(--primary-hover-btn) solid;
+    transition: 0.5s ease-in-out;
+}
+
+.mission_create {
+    min-width: 1rem;
+    background-color: transparent;
+    border: 1px solid var(--primary-btn);
+    color: var(--primary-btn);
+    font-family: 'Poppins-Medium';
+    border-radius: 6px;
+}
+
+.mission_create:hover {
+    background-color: var(--hover-effect);
+    color: var(--primary-btn);
     transition: 0.5s ease-in-out;
 }
 
