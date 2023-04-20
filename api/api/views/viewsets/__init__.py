@@ -122,7 +122,11 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
     queryset = Pentester.objects.all()
     permission_classes = [PostOnly]
     authentication_classes: List[type[TokenAuthentication]] = []
-    serializer_class = PentesterSerializer
+
+    def get_serializer_class(self):
+        if self.request.data.get('role', 'manager') == 'manager':
+            return ManagerSerializer
+        return PentesterSerializer
 
 
 class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
