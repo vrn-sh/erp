@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework.views import APIView
 from knox.auth import TokenAuthentication
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import (
@@ -230,18 +229,13 @@ class ConfirmAccountView(APIView):
             account.set_password(password)
             account.save()
 
-            authenticated_account = EmailBackend().get_user(account.id)
-            token, _ = Token.objects.get_or_create(user=authenticated_account)
-            login(request, authenticated_account)
-
             return Response({
-                'token': token.key,
-                'id': account.id,
+                'message': 'success! you may now connect to voron!',
             }, status=HTTP_200_OK)
-        else:
-            return Response({
-                'error': 'no account has been found'
-            }, status=HTTP_404_NOT_FOUND)
+
+        return Response({
+            'error': 'no account has been found'
+        }, status=HTTP_404_NOT_FOUND)
 
 
 
