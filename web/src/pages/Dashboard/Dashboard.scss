@@ -132,7 +132,13 @@ td {
     border-bottom: 1px solid var(--gray-btn);
     padding: 1rem;
     font-family: 'Poppins-Light';
-    font-size: 16px;
+    font-size: 14px;
+}
+
+th {
+    font-family: "Poppins-Light";
+    font-size: 14px;
+    padding: 1rem;
 }
 
 table input {
