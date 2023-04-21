@@ -60,7 +60,7 @@ export default function SignUp() {
                         : '';
                 break;
             case 'role':
-                errors.role = value.length === 0 ? 'Pleas choose a role' : '';
+                errors.role = value.length === 0 ? 'Please choose a role' : '';
                 break;
             case 'password':
                 errors.password =
