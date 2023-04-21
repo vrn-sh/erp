@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
@@ -11,18 +11,19 @@ interface SignUpState {
     username: string;
     email: string;
     password: string;
+    role: string;
     confirmpassword: string;
     errors: {
         username: string;
         email: string;
         password: string;
+        role: string;
         confirmpassword: string;
     };
 }
 
 export default function SignUp() {
     const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
-    const [role, setRole] = useState('pentester');
     const [conPwdIcon, setConPwdIcon] = useState(
         <AiIcons.AiOutlineEyeInvisible />
     );
@@ -32,20 +33,18 @@ export default function SignUp() {
         username: '',
         email: '',
         password: '',
+        role: 'pentester',
         confirmpassword: '',
         errors: {
             username: '',
             email: '',
             password: '',
+            role: '',
             confirmpassword: '',
         },
     });
     const navigate = useNavigate();
     const { errors } = state;
-
-    const onRoleChange = (e: any) => {
-        setRole(e.target.value);
-    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -59,6 +58,9 @@ export default function SignUp() {
                     value.length < 5
                         ? 'Username must be 5 characters long!'
                         : '';
+                break;
+            case 'role':
+                errors.role = value.length === 0 ? 'Pleas choose a role' : '';
                 break;
             case 'password':
                 errors.password =
@@ -78,8 +80,12 @@ export default function SignUp() {
         setState({ ...state, errors, [name]: value });
     };
 
+    useEffect(() => {
+        localStorage.setItem('user_info', JSON.stringify(state));
+    }, [state]);
+
     const submit = async () => {
-        const { username, email, password } = state;
+        const { username, email, role, password } = state;
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
                 await axios
@@ -87,6 +93,7 @@ export default function SignUp() {
                         auth: {
                             username,
                             email,
+                            role,
                             password,
                         },
                     })
@@ -181,22 +188,20 @@ export default function SignUp() {
                                 <div className="radio-container">
                                     <input
                                         type="radio"
-                                        id="pentester"
                                         name="role"
                                         value="pentester"
-                                        checked={role === 'pentester'}
-                                        onChange={onRoleChange}
+                                        checked={state.role === 'pentester'}
+                                        onChange={handleChange}
                                     />
                                     <label>Pentester</label>
                                 </div>
                                 <div className="radio-container">
                                     <input
                                         type="radio"
-                                        id="manager"
                                         name="role"
                                         value="manager"
-                                        checked={role === 'manager'}
-                                        onChange={onRoleChange}
+                                        checked={state.role === 'manager'}
+                                        onChange={handleChange}
                                     />
                                     <label>Manager</label>
                                 </div>
