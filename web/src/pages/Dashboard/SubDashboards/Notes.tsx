@@ -1,7 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
-import { IDashboardNotes, DashboardNotesList } from '../DashBoardNote.type';
+import axios from 'axios';
 import '../Dashboard.scss';
+import config from '../../../config';
+import {
+    Alert,
+    Snackbar,
+    SelectChangeEvent,
+    Select,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Stack,
+    InputBase,
+} from '@mui/material';
+import { PrimaryButton, SecondaryButton } from '../../../component/Button';
+import { IDashboardNotes } from '../DashBoardNote.type';
 
 interface ViewNoteProps {
     note: IDashboardNotes;
@@ -12,13 +26,164 @@ interface AddNoteProps {
     func: React.MouseEventHandler<HTMLButtonElement>;
 }
 
+const name: { id: number; title: string }[] = [];
+
+const getMission = async () => {
+    try {
+        await axios
+            .get(`http://localhost:8080/mission?page=1`)
+            .then((data) => {
+                for (var i in data.data.results) {
+                    var test = {
+                        id: i.id,
+                        title: i.title,
+                    };
+                    name.push(test);
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 function ViewNote({ note, func }: ViewNoteProps) {
+    const [open, setOpen] = useState(false);
+    const [isEdit, SetisEdit] = useState(false);
+    const [content, setContent] = useState(note.content);
+    
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setContent(event.target.value);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleDelete = async (
+        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+
+        if (isEdit) {
+            SetisEdit(!isEdit);
+            return;
+        }
+        try {
+            await axios
+                .delete(`http://localhost:8080/note/${note.id}`)
+                .then(() => {
+                    handleClick();
+                    func(evt);
+                    return (
+                        <Snackbar
+                            open={open}
+                            autoHideDuration={1000}
+                            onClose={handleClose}
+                        >
+                            <Alert
+                                onClose={handleClose}
+                                severity="success"
+                                sx={{ width: '100%' }}
+                            >
+                                Note deleted !
+                            </Alert>
+                        </Snackbar>
+                    );
+                })
+                .catch((e) => {
+                    console.log(note.id);
+                    handleClick();
+                    return (
+                        <Snackbar
+                            open={open}
+                            autoHideDuration={1000}
+                            onClose={handleClose}
+                        >
+                            <Alert
+                                onClose={handleClose}
+                                severity="error"
+                                sx={{ width: '100%' }}
+                            >
+                                {e.message}
+                            </Alert>
+                        </Snackbar>
+                    );
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleEdit = async (
+        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+
+        if (isEdit !== true) {
+            SetisEdit(!isEdit);
+            return;
+        }
+
+        try {
+            await axios
+                .put(`http://localhost:8080/note/${note.id}`, {
+                    title : note.title,
+                    content,
+                    mission: note.mission,
+                })
+                .then(() => {
+                    handleClick();
+                    return (
+                        <Snackbar
+                            open={open}
+                            autoHideDuration={1000}
+                            onClose={handleClose}
+                        >
+                            <Alert
+                                onClose={handleClose}
+                                severity="success"
+                                sx={{ width: '100%' }}
+                            >
+                                Successfuly edit!
+                            </Alert>
+                        </Snackbar>
+                    );
+                })
+                .catch((e) => {
+                    console.log(note.id);
+                    handleClick();
+                    return (
+                        <Snackbar
+                            open={open}
+                            autoHideDuration={1000}
+                            onClose={handleClose}
+                        >
+                            <Alert
+                                onClose={handleClose}
+                                severity="error"
+                                sx={{ width: '100%' }}
+                            >
+                                {e.message}
+                            </Alert>
+                        </Snackbar>
+                    );
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="modal-wrapper">
             <div className="modal-card">
                 <div className="modal">
                     <div className="modal-header">
-                        <h2 className="heading">{note.title}</h2>
+                        <h2 className="heading">Coucou</h2>
                         <a
                             onClick={func}
                             onKeyDown={() => func}
@@ -32,7 +197,22 @@ function ViewNote({ note, func }: ViewNoteProps) {
                             </svg>
                         </a>
                     </div>
-                    <p>{note.content}</p>
+                    {isEdit && (
+                        <textarea
+                        rows={5}
+                        required
+                        className="popup-textarea modal-body"
+                        onChange={takeContent}
+                        value={content}
+                        />
+                    )}
+                    {!isEdit && (
+                        <p>{note.content}</p>
+                    )}
+                    <Stack direction="row" justifyContent={"center"} mt={3} spacing={4}>
+                        <SecondaryButton variant="outlined" onClick={handleDelete}>{isEdit ? "Cancel" : "Delete"}</SecondaryButton>
+                        <PrimaryButton variant="contained" color="primary" onClick={handleEdit}>{isEdit ? "Save" : "Edit"}</PrimaryButton>
+                    </Stack>
                 </div>
             </div>
         </div>
@@ -40,13 +220,10 @@ function ViewNote({ note, func }: ViewNoteProps) {
 }
 
 function AddNote({ func }: AddNoteProps) {
-    const [name, setName] = useState('');
+    const [mission, setMission] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-
-    const takeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
-    };
+    const [open, setOpen] = useState(false);
 
     const takeTitlee = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
@@ -56,17 +233,75 @@ function AddNote({ func }: AddNoteProps) {
         setContent(event.target.value);
     };
 
-    const handleSubmit = (
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setMission(event.target.value);
+    };
+
+    const handleSubmit = async (
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
-        const note: IDashboardNotes = {
-            id: DashboardNotesList.length.toString(),
-            title,
-            content,
-            author: name,
-        };
-        DashboardNotesList.unshift(note);
-        func(evt);
+        try {
+            await axios
+                .post(`http://localhost:8080/note`, {
+                    title,
+                    content,
+                    mission: 1,
+                })
+                .then(() => {
+                    handleClick();
+                    func(evt);
+                    // handleClick();
+                    return (
+                        <Snackbar
+                            open={open}
+                            autoHideDuration={1000}
+                            onClose={handleClose}
+                        >
+                            <Alert
+                                onClose={handleClose}
+                                severity="success"
+                                sx={{ width: '100%' }}
+                            >
+                                Successfuly add!
+                            </Alert>
+                        </Snackbar>
+                    );
+                })
+                .catch((e) => {
+                    handleClick();
+                    return (
+                        <Snackbar
+                            open={open}
+                            autoHideDuration={1000}
+                            onClose={handleClose}
+                        >
+                            <Alert
+                                onClose={handleClose}
+                                severity="error"
+                                sx={{ width: '100%' }}
+                            >
+                                {e.message}
+                            </Alert>
+                        </Snackbar>
+                    );
+                });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -74,6 +309,27 @@ function AddNote({ func }: AddNoteProps) {
             <div className="modal-card ">
                 <div className="modal centered">
                     <h2 className="heading">Add a note</h2>
+                    <FormControl sx={{paddingY: 2, width: "80%" }} variant="standard" size="small">
+                        <InputLabel id="Mission" sx={{fontFamily: 'Poppins-Regular', fontSize: "14px"}}>
+                            Mission
+                        </InputLabel>
+                        <Select
+                            labelId="Mission"
+                            id="Mission-select"
+                            value={mission}
+                            label="Mission"
+                            input={<InputBase className='popup-input'/>}
+                            onChange={handleChange}
+                        >
+                            {name.map((miss) => {
+                                return (
+                                    <MenuItem sx={{fontFamily: 'Poppins-Regular', fontSize: "14px"}} value={miss.id}>
+                                        {miss.title}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
                     <input
                         type="text"
                         required
@@ -81,14 +337,6 @@ function AddNote({ func }: AddNoteProps) {
                         className="popup-input"
                         onChange={takeTitlee}
                         value={title}
-                    />
-                    <input
-                        required
-                        type="text"
-                        placeholder="Enter your name"
-                        className="popup-input"
-                        onChange={takeName}
-                        value={name}
                     />
                     <textarea
                         rows={8}
@@ -121,7 +369,7 @@ function AddNote({ func }: AddNoteProps) {
 }
 
 export default function Notes() {
-    const [list] = useState(DashboardNotesList as IDashboardNotes[]);
+    const [list, setList] = useState<IDashboardNotes[] | undefined>([]);
     const [modal, setModal] = useState(false);
     const [displayed, setDisplayed] = useState(-1);
 
@@ -136,6 +384,26 @@ export default function Notes() {
             setDisplayed(-1);
         }
     };
+
+    const getNotes = async () => {
+        try {
+            await axios
+                .get('http://localhost:8080/note')
+                .then((e) => {
+                    setList(e.data.results);
+                })
+                .catch((e) => {
+                    console.log(e.message);
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getNotes();
+        getMission();
+    }, []);
 
     return (
         <div className="container-note cards">
@@ -156,7 +424,7 @@ export default function Notes() {
                 </footer>
             </div>
             {modal && <AddNote func={modalClick} />}
-            {list.map((notes, index) => {
+            {list!.map((notes, index) => {
                 return (
                     <div className="card" key={`component-${notes.id}`}>
                         <div>
@@ -164,7 +432,8 @@ export default function Notes() {
                             <p className="card-content">{notes.content}</p>
                         </div>
                         <footer>
-                            {notes.author}
+                            1
+                            {/* {notes.author.toString()} */}
                             <a
                                 role="button"
                                 className="button__link"
@@ -183,7 +452,7 @@ export default function Notes() {
                         {displayed === index && (
                             <ViewNote
                                 note={notes}
-                                func={() => viewClick(index)}
+                                func={() => viewClick(notes.id)}
                             />
                         )}
                     </div>
