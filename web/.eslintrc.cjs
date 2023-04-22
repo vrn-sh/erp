@@ -9,6 +9,9 @@ module.exports = {
         'react/jsx-props-no-spreading': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
         'jsx-a11y/anchor-is-valid': 0,
+        'no-alert': 'off',
+        '@typescript-eslint/no-empty-interface': 'off',
+        'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
     },
     root: true,
     extends: [
