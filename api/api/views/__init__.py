@@ -91,6 +91,7 @@ class ResetPasswordView(APIView):
         user.set_password(new_pass)
         user.save()
 
+        cache.delete(token)
         return Response({
                 'message': success_msg,
         }, status=HTTP_200_OK)
@@ -235,6 +236,7 @@ class ConfirmAccountView(APIView):
             account.set_password(password)
             account.save()
 
+            cache.delete(token)
             return Response({
                 'message': 'success! you may now connect to voron!',
             }, status=HTTP_200_OK)
