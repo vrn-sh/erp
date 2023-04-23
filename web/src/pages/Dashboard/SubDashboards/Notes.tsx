@@ -4,8 +4,6 @@ import axios from 'axios';
 import '../Dashboard.scss';
 import config from '../../../config';
 import {
-    Alert,
-    Snackbar,
     SelectChangeEvent,
     Select,
     FormControl,
@@ -13,9 +11,13 @@ import {
     MenuItem,
     Stack,
     InputBase,
+    AlertColor,
 } from '@mui/material';
 import { PrimaryButton, SecondaryButton } from '../../../component/Button';
 import { IDashboardNotes } from '../DashBoardNote.type';
+import Cookies from 'js-cookie';
+import { Feedback } from '../../../component/FeedBack';
+
 
 interface ViewNoteProps {
     note: IDashboardNotes;
@@ -50,21 +52,15 @@ const getMission = async () => {
 };
 
 function ViewNote({ note, func }: ViewNoteProps) {
-    const [open, setOpen] = useState(false);
     const [isEdit, SetisEdit] = useState(false);
+    const [open, setOpen] = useState(false);
     const [content, setContent] = useState(note.content);
-    
-    const handleClick = () => {
-        setOpen(true);
-    };
+    let message : {mes : any, color : AlertColor};
 
     const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(event.target.value);
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const handleDelete = async (
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -76,44 +72,19 @@ function ViewNote({ note, func }: ViewNoteProps) {
         }
         try {
             await axios
-                .delete(`http://localhost:8080/note/${note.id}`)
+                .delete(`http://localhost:8080/note/${note.id}`, {
+                    headers: {
+                        Authorization: `Token ${Cookies.get('Token')}`
+                    },
+                })
                 .then(() => {
-                    handleClick();
                     func(evt);
-                    return (
-                        <Snackbar
-                            open={open}
-                            autoHideDuration={1000}
-                            onClose={handleClose}
-                        >
-                            <Alert
-                                onClose={handleClose}
-                                severity="success"
-                                sx={{ width: '100%' }}
-                            >
-                                Note deleted !
-                            </Alert>
-                        </Snackbar>
-                    );
+                    message.mes = 'Note deleted !';
+                    message.color = 'success';
                 })
                 .catch((e) => {
-                    console.log(note.id);
-                    handleClick();
-                    return (
-                        <Snackbar
-                            open={open}
-                            autoHideDuration={1000}
-                            onClose={handleClose}
-                        >
-                            <Alert
-                                onClose={handleClose}
-                                severity="error"
-                                sx={{ width: '100%' }}
-                            >
-                                {e.message}
-                            </Alert>
-                        </Snackbar>
-                    );
+                    message.mes = e.message;
+                    message.color = 'error';
                 });
         } catch (error) {
             console.log(error);
@@ -135,43 +106,20 @@ function ViewNote({ note, func }: ViewNoteProps) {
                     title : note.title,
                     content,
                     mission: note.mission,
+                }, {
+                    headers: {
+                        Authorization: `Token ${Cookies.get('Token')}`
+                    },
                 })
                 .then(() => {
-                    handleClick();
-                    return (
-                        <Snackbar
-                            open={open}
-                            autoHideDuration={1000}
-                            onClose={handleClose}
-                        >
-                            <Alert
-                                onClose={handleClose}
-                                severity="success"
-                                sx={{ width: '100%' }}
-                            >
-                                Successfuly edit!
-                            </Alert>
-                        </Snackbar>
-                    );
+                    setOpen(!open);
+                    message.mes = 'Successfuly Edit!';
+                    message.color = 'success';
                 })
                 .catch((e) => {
-                    console.log(note.id);
-                    handleClick();
-                    return (
-                        <Snackbar
-                            open={open}
-                            autoHideDuration={1000}
-                            onClose={handleClose}
-                        >
-                            <Alert
-                                onClose={handleClose}
-                                severity="error"
-                                sx={{ width: '100%' }}
-                            >
-                                {e.message}
-                            </Alert>
-                        </Snackbar>
-                    );
+                    setOpen(!open);
+                    message.mes = e.message;
+                    message.color = 'error';
                 });
         } catch (error) {
             console.log(error);
@@ -206,6 +154,9 @@ function ViewNote({ note, func }: ViewNoteProps) {
                         value={content}
                         />
                     )}
+                    {open && (
+                        Feedback(message!.mes, message!.color)
+                    )}
                     {!isEdit && (
                         <p>{note.content}</p>
                     )}
@@ -224,6 +175,8 @@ function AddNote({ func }: AddNoteProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [open, setOpen] = useState(false);
+    let message : {mes : any, color : AlertColor} = {mes : '', color: 'success'};
+
 
     const takeTitlee = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
@@ -231,20 +184,6 @@ function AddNote({ func }: AddNoteProps) {
 
     const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(event.target.value);
-    };
-
-    const handleClick = () => {
-        setOpen(true);
-    };
-
-    const handleClose = (
-        event?: React.SyntheticEvent | Event,
-        reason?: string
-    ) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
     };
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -260,49 +199,25 @@ function AddNote({ func }: AddNoteProps) {
                     title,
                     content,
                     mission: 1,
-                })
+                },{ headers: {
+                    Authorization: `Token ${Cookies.get('Token')}`
+                }})
                 .then(() => {
-                    handleClick();
+                    setOpen(true);
+                    message.mes = 'Successfuly Add!';
+                    message.color = 'success';
                     func(evt);
-                    // handleClick();
-                    return (
-                        <Snackbar
-                            open={open}
-                            autoHideDuration={1000}
-                            onClose={handleClose}
-                        >
-                            <Alert
-                                onClose={handleClose}
-                                severity="success"
-                                sx={{ width: '100%' }}
-                            >
-                                Successfuly add!
-                            </Alert>
-                        </Snackbar>
-                    );
                 })
                 .catch((e) => {
-                    handleClick();
-                    return (
-                        <Snackbar
-                            open={open}
-                            autoHideDuration={1000}
-                            onClose={handleClose}
-                        >
-                            <Alert
-                                onClose={handleClose}
-                                severity="error"
-                                sx={{ width: '100%' }}
-                            >
-                                {e.message}
-                            </Alert>
-                        </Snackbar>
-                    );
+                    setOpen(!open);
+                    message.mes = e.message;
+                    message.color = 'error';
                 });
         } catch (error) {
             console.log(error);
         }
     };
+
 
     return (
         <div className="modal-wrapper">
@@ -361,6 +276,10 @@ function AddNote({ func }: AddNoteProps) {
                         >
                             Submit
                         </button>
+                        
+                        {open && (
+                            Feedback(message!.mes, message!.color)
+                        )}
                     </div>
                 </div>
             </div>
@@ -374,6 +293,7 @@ export default function Notes() {
     const [displayed, setDisplayed] = useState(-1);
 
     const modalClick = () => {
+        if (modal) getNotes();
         setModal(!modal);
     };
 
@@ -382,13 +302,19 @@ export default function Notes() {
             setDisplayed(idx);
         } else {
             setDisplayed(-1);
+            getNotes();
         }
     };
 
     const getNotes = async () => {
         try {
             await axios
-                .get('http://localhost:8080/note')
+                .get('http://localhost:8080/note?page=1',
+                {
+                    headers: {
+                        Authorization: `Token ${Cookies.get('Token')}`
+                    },
+                })
                 .then((e) => {
                     setList(e.data.results);
                 })
