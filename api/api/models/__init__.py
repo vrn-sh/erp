@@ -7,14 +7,20 @@ The following models are present here:
     - Admin: Model used for admins. Can do account creation, overall administration, etc.
 """
 
+import uuid
+from logging import info
 import os
 from typing import List, Optional
+
+from argon2 import PasswordHasher
+
+from phonenumber_field.modelfields import PhoneNumberField
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from argon2 import PasswordHasher
 from django.db.models.deletion import CASCADE
-from phonenumber_field.modelfields import PhoneNumberField
 from django.core.mail import send_mail
+from django.core.cache import cache
 
 MAX_TITLE_LENGTH = 256
 MAX_NOTE_LENGTH = 8186
@@ -22,6 +28,11 @@ MAX_LINK_LENGTH = 1024
 NAME_LENGTH = 256
 
 USER_ROLES = ['unknown', 'pentester', 'manager']
+
+
+CONFIRM_TOKEN_TIMEOUT_SECONDS = 15 * 60 # 15 minutes
+RESETPW_TOKEN_TIMEOUT_SECONDS = 5 * 60  # 5 minutes
+
 
 class Auth(AbstractUser):
     """
@@ -33,7 +44,6 @@ class Auth(AbstractUser):
         role: integer containing the current role of the user
         password: hashed password of the user
         phone_number: phone number used for MFA (should use E164 format)
-        tmp_token: token automatically generated, used for password reset or account confirmation
         is_disabled: boolean value checking if user has been locked, or has not confirmed account yet
 
     """
@@ -55,11 +65,7 @@ class Auth(AbstractUser):
     password: models.CharField = models.CharField(max_length=128)
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
-
-    # account confirmation / password reset stuff
-    # TODO: have a different token for password reset & account confirmation
-    tmp_token: models.CharField = models.CharField(max_length=32, null=True, default=None)
-    is_disabled: models.BooleanField = models.BooleanField(default=True)
+    is_enabled: models.BooleanField = models.BooleanField(default=True)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -72,10 +78,19 @@ class Auth(AbstractUser):
 
     def send_confirm_email(self) -> int:
         """sends account-confirmation email"""
-        url = f'https://voron.sh/confirm?token={self.tmp_token}'
+
+        if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
+            info(f'Passing send_confirm_email() to {self.email}')
+            return 1
+
+        tmp_token = uuid.uuid4()
+        url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
+        cache.set(f'{self.email};CONFIRM', tmp_token, CONFIRM_TOKEN_TIMEOUT_SECONDS)
+
+        info(f'Sending confirmation email to {self.email}')
         return send_mail(
             f'Welcome {self.first_name} !',
-            f'Hello and welcome!\nPlease click on the following link to confirm your account:{url}',
+            f'Hello and welcome!\nPlease click on the following link to confirm your account: {url}',
             os.environ['SENDGRID_SENDER'],
             [self.email],
             fail_silently=False,
@@ -83,10 +98,19 @@ class Auth(AbstractUser):
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
-        url = f'https://voron.djnn.sh/reset?token={self.tmp_token}'
+
+        if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
+            info(f'Passing send_reset_password_email() to {self.email}')
+            return 1
+
+        tmp_token = uuid.uuid4()
+        url = f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
+        cache.set(f'{self.email};RESETPW', tmp_token, RESETPW_TOKEN_TIMEOUT_SECONDS)
+
+        info(f'Sending password-reset email to {self.email}')
         return send_mail(
             f'{self.first_name}, reset your password',
-            f'Please click on the following link to reset your password:{url}',
+            f'Please click on the following link to reset your password: {url}',
             os.environ['SENDGRID_SENDER'],
             [self.email],
             fail_silently=False,
@@ -94,8 +118,8 @@ class Auth(AbstractUser):
 
     def save(self, *args, **kwargs) -> None:
         if self.pk is None:
-            #self.send_confirm_email()
-            self.is_disabled = False
+            self.send_confirm_email()
+            self.is_enabled = False
         return super().save(*args, **kwargs)
 
 

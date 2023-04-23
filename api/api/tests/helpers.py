@@ -49,6 +49,9 @@ def create_user(
     auth.set_password(password)
     auth.save()
 
+    auth.is_enabled = True
+    auth.save()
+
     user = UserClass(auth=auth)
     user.save()
     return user
