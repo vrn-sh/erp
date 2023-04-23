@@ -46,6 +46,18 @@ services:
       - db-layer
       - s3-layer
 
+  memcached:
+   image: memcached
+   ports:
+     - "11211:11211"
+   entrypoint:
+    - memcached
+    - -m 64
+   networks:
+    - api-layer
+   depends_on:
+     - api
+
   web:
     build:
       context: ./web

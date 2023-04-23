@@ -25,7 +25,7 @@ class LoginSerializer(serializers.Serializer):
         if not account:
             raise serializers.ValidationError("no such account")
 
-        if account.is_disabled:
+        if not account.is_enabled:
             raise serializers.ValidationError("please confirm account first")
 
         authenticated_account = EmailBackend().authenticate(None, username=email, password=password)
