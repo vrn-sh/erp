@@ -18,7 +18,6 @@ import { IDashboardNotes } from '../DashBoardNote.type';
 import Cookies from 'js-cookie';
 import { Feedback } from '../../../component/FeedBack';
 
-
 interface ViewNoteProps {
     note: IDashboardNotes;
     func: React.MouseEventHandler<HTMLAnchorElement>;
@@ -33,12 +32,17 @@ const name: { id: number; title: string }[] = [];
 const getMission = async () => {
     try {
         await axios
-            .get(`http://localhost:8080/mission?page=1`)
+            .get(`http://localhost:8080/mission?page=1`, {
+                headers: {
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
             .then((data) => {
-                for (var i in data.data.results) {
-                    var test = {
-                        id: i.id,
-                        title: i.title,
+                for (let i = 0; i < data.data.results.length; i++) {
+                    let res = data.data.results[i];
+                    let test = {
+                        id: res.id,
+                        title: res.title,
                     };
                     name.push(test);
                 }
@@ -55,17 +59,15 @@ function ViewNote({ note, func }: ViewNoteProps) {
     const [isEdit, SetisEdit] = useState(false);
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState(note.content);
-    let message : {mes : any, color : AlertColor};
+    const [message, setMessage] = useState({ mes: '', color: 'success' });
 
     const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(event.target.value);
     };
 
-
     const handleDelete = async (
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
-
         if (isEdit) {
             SetisEdit(!isEdit);
             return;
@@ -74,17 +76,15 @@ function ViewNote({ note, func }: ViewNoteProps) {
             await axios
                 .delete(`http://localhost:8080/note/${note.id}`, {
                     headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`
+                        Authorization: `Token ${Cookies.get('Token')}`,
                     },
                 })
                 .then(() => {
+                    setMessage({ mes: 'Note deleted!', color: 'success' });
                     func(evt);
-                    message.mes = 'Note deleted !';
-                    message.color = 'success';
                 })
                 .catch((e) => {
-                    message.mes = e.message;
-                    message.color = 'error';
+                    setMessage({ mes: e.message, color: 'error' });
                 });
         } catch (error) {
             console.log(error);
@@ -94,7 +94,6 @@ function ViewNote({ note, func }: ViewNoteProps) {
     const handleEdit = async (
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
-
         if (isEdit !== true) {
             SetisEdit(!isEdit);
             return;
@@ -102,24 +101,27 @@ function ViewNote({ note, func }: ViewNoteProps) {
 
         try {
             await axios
-                .put(`http://localhost:8080/note/${note.id}`, {
-                    title : note.title,
-                    content,
-                    mission: note.mission,
-                }, {
-                    headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`
+                .put(
+                    `http://localhost:8080/note/${note.id}`,
+                    {
+                        title: note.title,
+                        content,
+                        mission: note.mission,
                     },
-                })
+                    {
+                        headers: {
+                            Authorization: `Token ${Cookies.get('Token')}`,
+                        },
+                    }
+                )
                 .then(() => {
-                    setOpen(!open);
-                    message.mes = 'Successfuly Edit!';
-                    message.color = 'success';
+                    SetisEdit(false);
+                    // setOpen(!open);
+                    // setMessage({mes : 'Successfuly Edit!', color: 'success'})
                 })
                 .catch((e) => {
                     setOpen(!open);
-                    message.mes = e.message;
-                    message.color = 'error';
+                    setMessage({ mes: e.message, color: 'error' });
                 });
         } catch (error) {
             console.log(error);
@@ -147,22 +149,35 @@ function ViewNote({ note, func }: ViewNoteProps) {
                     </div>
                     {isEdit && (
                         <textarea
-                        rows={5}
-                        required
-                        className="popup-textarea modal-body"
-                        onChange={takeContent}
-                        value={content}
+                            rows={5}
+                            required
+                            className="popup-textarea modal-body"
+                            onChange={takeContent}
+                            value={content}
                         />
                     )}
-                    {open && (
-                        Feedback(message!.mes, message!.color)
-                    )}
-                    {!isEdit && (
-                        <p>{note.content}</p>
-                    )}
-                    <Stack direction="row" justifyContent={"center"} mt={3} spacing={4}>
-                        <SecondaryButton variant="outlined" onClick={handleDelete}>{isEdit ? "Cancel" : "Delete"}</SecondaryButton>
-                        <PrimaryButton variant="contained" color="primary" onClick={handleEdit}>{isEdit ? "Save" : "Edit"}</PrimaryButton>
+                    {open &&
+                        Feedback(message!.mes, message!.color as AlertColor)}
+                    {!isEdit && <p>{note.content}</p>}
+                    <Stack
+                        direction="row"
+                        justifyContent={'center'}
+                        mt={3}
+                        spacing={4}
+                    >
+                        <SecondaryButton
+                            variant="outlined"
+                            onClick={handleDelete}
+                        >
+                            {isEdit ? 'Cancel' : 'Delete'}
+                        </SecondaryButton>
+                        <PrimaryButton
+                            variant="contained"
+                            color="primary"
+                            onClick={handleEdit}
+                        >
+                            {isEdit ? 'Save' : 'Edit'}
+                        </PrimaryButton>
                     </Stack>
                 </div>
             </div>
@@ -175,8 +190,7 @@ function AddNote({ func }: AddNoteProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [open, setOpen] = useState(false);
-    let message : {mes : any, color : AlertColor} = {mes : '', color: 'success'};
-
+    const [message, setMessage] = useState({ mes: '', color: 'success' });
 
     const takeTitlee = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
@@ -195,37 +209,50 @@ function AddNote({ func }: AddNoteProps) {
     ) => {
         try {
             await axios
-                .post(`http://localhost:8080/note`, {
-                    title,
-                    content,
-                    mission: 1,
-                },{ headers: {
-                    Authorization: `Token ${Cookies.get('Token')}`
-                }})
+                .post(
+                    `http://localhost:8080/note`,
+                    {
+                        title,
+                        content,
+                        mission: 1,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Token ${Cookies.get('Token')}`,
+                        },
+                    }
+                )
                 .then(() => {
                     setOpen(true);
-                    message.mes = 'Successfuly Add!';
-                    message.color = 'success';
+                    setMessage({ mes: 'Successfuly Add!', color: 'success' });
                     func(evt);
                 })
                 .catch((e) => {
                     setOpen(!open);
-                    message.mes = e.message;
-                    message.color = 'error';
+                    setMessage({ mes: e.message, color: 'error' });
                 });
         } catch (error) {
             console.log(error);
         }
     };
 
-
     return (
         <div className="modal-wrapper">
             <div className="modal-card ">
                 <div className="modal centered">
                     <h2 className="heading">Add a note</h2>
-                    <FormControl sx={{paddingY: 2, width: "80%" }} variant="standard" size="small">
-                        <InputLabel id="Mission" sx={{fontFamily: 'Poppins-Regular', fontSize: "14px"}}>
+                    <FormControl
+                        sx={{ paddingY: 2, width: '80%' }}
+                        variant="standard"
+                        size="small"
+                    >
+                        <InputLabel
+                            id="Mission"
+                            sx={{
+                                fontFamily: 'Poppins-Regular',
+                                fontSize: '14px',
+                            }}
+                        >
                             Mission
                         </InputLabel>
                         <Select
@@ -233,12 +260,18 @@ function AddNote({ func }: AddNoteProps) {
                             id="Mission-select"
                             value={mission}
                             label="Mission"
-                            input={<InputBase className='popup-input'/>}
+                            input={<InputBase className="popup-input" />}
                             onChange={handleChange}
                         >
                             {name.map((miss) => {
                                 return (
-                                    <MenuItem sx={{fontFamily: 'Poppins-Regular', fontSize: "14px"}} value={miss.id}>
+                                    <MenuItem
+                                        sx={{
+                                            fontFamily: 'Poppins-Regular',
+                                            fontSize: '14px',
+                                        }}
+                                        value={miss.id}
+                                    >
                                         {miss.title}
                                     </MenuItem>
                                 );
@@ -276,10 +309,12 @@ function AddNote({ func }: AddNoteProps) {
                         >
                             Submit
                         </button>
-                        
-                        {open && (
-                            Feedback(message!.mes, message!.color)
-                        )}
+
+                        {open &&
+                            Feedback(
+                                message!.mes,
+                                message!.color as AlertColor
+                            )}
                     </div>
                 </div>
             </div>
@@ -309,10 +344,9 @@ export default function Notes() {
     const getNotes = async () => {
         try {
             await axios
-                .get('http://localhost:8080/note?page=1',
-                {
+                .get('http://localhost:8080/note?page=1', {
                     headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`
+                        Authorization: `Token ${Cookies.get('Token')}`,
                     },
                 })
                 .then((e) => {
@@ -358,8 +392,9 @@ export default function Notes() {
                             <p className="card-content">{notes.content}</p>
                         </div>
                         <footer>
-                            1
-                            {/* {notes.author.toString()} */}
+                            {notes.author !== null
+                                ? notes.author.toString()
+                                : 1}
                             <a
                                 role="button"
                                 className="button__link"
