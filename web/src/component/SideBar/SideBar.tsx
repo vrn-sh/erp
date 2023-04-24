@@ -59,7 +59,7 @@ export default function SideBar() {
             </div>
 
             <div className="sidebar-tool">
-                <Link to="/setting" className="sidebar-link-bottom">
+                <Link to="/settings" className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiSettings />
                         <span className="menu-txt">Settings</span>
