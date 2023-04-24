@@ -117,6 +117,16 @@ if os.environ.get('PRODUCTION', '0') == '1':
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_FILE_OVERWRITE = False
 
+
+    # cache configuration
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+            "LOCATION": "memcached:11211",
+        }
+    }
+
+
     # django-storages configuration
     STORAGES = {
         "staticfiles": {
@@ -167,6 +177,13 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     ]
     CORS_ORIGIN_ALLOW_ALL = True
 
+    # cache configuration
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+
 elif os.environ.get('CI') and os.environ.get('CI')  == '1':
     DATABASES = {
         'default': {
@@ -186,6 +203,13 @@ elif os.environ.get('CI') and os.environ.get('CI')  == '1':
     ]
     CORS_ORIGIN_ALLOW_ALL = True
 
+    # cache configuration
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+
 else:
     DATABASES = {
         'default': {
@@ -204,6 +228,13 @@ else:
         ["*"]
     ]
     CORS_ORIGIN_ALLOW_ALL = True
+
+    # cache configuration
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
 
 
 

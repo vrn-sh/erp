@@ -1,9 +1,5 @@
-"""This module manages generic models required for missions
+"""This module manages generic models required for missions"""
 
-The following models are present here:
-
-    - Auth: Mission
-"""
 from datetime import datetime, timedelta
 from os import environ
 from typing import List, Optional
@@ -74,7 +70,7 @@ class Mission(models.Model):
     last_updated_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_updated_by')
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
 
-    team: Team = models.OneToOneField(Team, on_delete=models.CASCADE)
+    team: Team = models.ForeignKey(Team, on_delete=models.CASCADE)
     recon: Optional[Recon] = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
 
     @staticmethod

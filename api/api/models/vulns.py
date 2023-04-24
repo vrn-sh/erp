@@ -1,10 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from typing import List, Optional
 from django.db import models
-from django.db.models import CharField, FloatField, ImageField, TextField
-from django.conf import settings
-
-from storages.backends.s3boto3 import S3Boto3StorageFile
+from django.db.models import FloatField, ImageField, TextField
 
 from api.models import Auth, NAME_LENGTH, MAX_NOTE_LENGTH
 from api.models.mission import Mission
@@ -20,9 +17,10 @@ class Notes(models.Model):
         current infrastructure.
     """
 
-    REQUIRED_FIELDS = ["content", "author", "mission"]
+    REQUIRED_FIELDS = ["content", "author", "mission", "title"]
 
     mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
+    title: models.TextField = models.TextField(default="New note")
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
 
     creation_date: models.DateField = models.DateField(auto_now=True, editable=False)

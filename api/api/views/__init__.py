@@ -4,6 +4,7 @@
 
 from typing import List, Optional, Type
 from django.contrib.auth import authenticate, login
+from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import permissions
@@ -74,16 +75,23 @@ class ResetPasswordView(APIView):
         """
         token: Optional[str] = request.query_params.get('token', None)
         new_pass: Optional[str] = request.data.get('password', None)
-        user: Optional[Auth] = Auth.objects.filter(tmp_token=token).first() if token else None
+
+        user: Optional[Auth] = None
+        token_key: str = cache.get('token')
+        if token_key:
+            email = token_key.split(';')[0]
+            user = Auth.objects.filter(email=email).first()
 
         if not user or not token or not new_pass:
             return Response({
                     'error': 'could not find account',
-                }, status=HTTP_404_NOT_FOUND)
+            }, status=HTTP_404_NOT_FOUND)
+
         success_msg: str = 'password changed. please log in'
         user.set_password(new_pass)
         user.save()
 
+        cache.delete(token)
         return Response({
                 'message': success_msg,
         }, status=HTTP_200_OK)
@@ -118,11 +126,10 @@ class ResetPasswordView(APIView):
                 'error': 'no such account. please register',
             }, status=HTTP_404_NOT_FOUND)
 
-        else:
-            account.send_reset_password_email()
-            return Response({
-                'message': 'email has been sent',
-            }, status=HTTP_200_OK)
+        account.send_reset_password_email()
+        return Response({
+            'message': 'email has been sent',
+        }, status=HTTP_200_OK)
 
 
 class ConfirmAccountView(APIView):
@@ -167,19 +174,15 @@ class ConfirmAccountView(APIView):
 
         email = email.lower()
         user = Auth.objects.filter(email=email).first()
-        if user is not None:
-            if user.is_disabled:
-                user.tmp_token = None
-                user.send_confirm_email()
-                user.save()
-                return Response({
-                    'message': 'success',
-                    'id': user.id
-                }, status=HTTP_200_OK)
+        if user is not None and not user.is_enabled:
+            user.send_confirm_email()
             return Response({
-                'error': 'account is not locked and has already confirmed',
-            }, status=HTTP_403_FORBIDDEN)
-        return Response(status=HTTP_404_NOT_FOUND)
+                'message': 'success',
+                'id': user.id
+            }, status=HTTP_200_OK)
+        return Response({
+            'error': 'this email cannot request confirmation email',
+        }, status=HTTP_403_FORBIDDEN)
 
 
     @swagger_auto_schema(
@@ -222,13 +225,18 @@ class ConfirmAccountView(APIView):
                 'error': 'no password provided',
             }, status=HTTP_400_BAD_REQUEST)
 
-        account = Auth.objects.filter(confirm_token=token).first()
+        account: Optional[Auth] = None
+        token_key: str = cache.get('token')
+        if token_key:
+            email = token_key.split(';')[0]
+            account = Auth.objects.filter(email=email).first()
+
         if account:
-            account.tmp_token = None
-            account.is_disabled = False
+            account.is_enabled = True
             account.set_password(password)
             account.save()
 
+            cache.delete(token)
             return Response({
                 'message': 'success! you may now connect to voron!',
             }, status=HTTP_200_OK)
