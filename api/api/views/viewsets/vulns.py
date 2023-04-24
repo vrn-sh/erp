@@ -32,12 +32,18 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
             type=openapi.TYPE_OBJECT,
             required=['mission', 'content'],
             properties={
-                'title': openapi.Schema(type=openapi.TYPE_STRING,
-                                       description="Title of the note, if any"),
-                'mission': openapi.Schema(type=openapi.TYPE_NUMBER,
-                                          description="Id of the mission",),
-                'content': openapi.Schema(type=openapi.TYPE_STRING,
-                                         description="Content of the note"),
+                'title': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="Title of the note, if any"
+                ),
+                'mission': openapi.Schema(
+                    type=openapi.TYPE_NUMBER,
+                    description="Id of the mission",
+                ),
+                'content': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="Content of the note"
+                ),
             },
         ),
         responses={

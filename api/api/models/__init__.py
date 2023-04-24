@@ -170,7 +170,7 @@ class Team(models.Model):
     REQUIRED_FIELDS = ['name', 'leader', 'members']
 
     name: models.CharField = models.CharField(max_length=32)
-    leader: Manager = models.OneToOneField(Manager, on_delete=CASCADE)
+    leader: Manager = models.ForeignKey(Manager, on_delete=CASCADE)
     members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
 
     def is_member(self, user) -> bool:
