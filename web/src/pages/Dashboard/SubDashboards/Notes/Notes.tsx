@@ -19,6 +19,7 @@ interface NoteGridProps {
 }
 
 function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
+    console.log(list)
     return list[count].notes.map((note: IDashboardNotes, index: number) => {
         return (
             <div className="card" key={`component-${note.id}`}>
@@ -75,6 +76,7 @@ function Notes() {
     );
     const [max, setMax] = useState(0);
     const [count, setCount] = useState(0);
+    const [loading, setLoad] = useState(true);
 
     const changeMission = (state: string) => {
         if (state === 'plus') {
@@ -135,6 +137,7 @@ function Notes() {
                 })
                 .then((e) => {
                     const tab = [];
+                    console.log(idMission.length)
                     for (let i = 0; i < idMission.length; i += 1) {
                         const note = e.data.results.filter(
                             (elem) => elem.mission === idMission[i].id
@@ -142,6 +145,7 @@ function Notes() {
                         tab.push({ id: idMission[i].id, notes: note });
                     }
                     setList(tab);
+                    setLoad(false);
                 })
                 .catch((e) => {
                     console.log(e.message);
@@ -153,8 +157,11 @@ function Notes() {
 
     useEffect(() => {
         getMission();
-        getNotes();
     }, []);
+
+    useEffect(( ) => {
+        getNotes();
+    } ,[idMission])
 
     const modalClick = () => {
         if (modal) getNotes();

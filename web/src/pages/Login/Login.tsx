@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
+import Cookies from 'js-cookie';
 import config from '../../config';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [pwd, setPwd] = useState('');
+    const [email, setEmail] = useState('admin@voron.sh');
+    const [pwd, setPwd] = useState('!ChangeMe!');
     const [errorEmail, setErrorEmail] = useState('');
     const [errorPwd, setErrorPwd] = useState('');
     const [pwdType, setPwdType] = useState('password');
@@ -49,7 +50,7 @@ export default function Login() {
             try {
                 await axios
                     .post(
-                        `${config.apiUrl}/login`,
+                        `http://localhost:8080/login`,
                         JSON.stringify({
                             email,
                             password: pwd,
@@ -60,8 +61,12 @@ export default function Login() {
                             },
                         }
                     )
-                    .then(() => {
+                    .then((e) => {
+                        console.log(e.data.expiry);
                         navigate('/dashboard');
+                        Cookies.set('Token', e.data.token, {
+                            expires: Date.parse(e.data.expiry),
+                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
