@@ -8,9 +8,9 @@ from knox.auth import TokenAuthentication
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
-from api.models.mission import Mission, NmapScan, Recon
+from api.models.mission import Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsOwner, IsPentester, ReadOnly
-from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer
+from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
 from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
 
 
@@ -109,6 +109,11 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = ReconSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsPentester]
 
+class CrtShViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
+    queryset = CrtSh.objects.all()
+    authentication_classes = [TokenAuthentication]
+    serializer_class = CrtShSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwner, IsManager & ReadOnly | IsPentester]
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     """
