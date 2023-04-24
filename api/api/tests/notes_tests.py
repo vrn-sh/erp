@@ -197,7 +197,8 @@ class NotesTestCase(TransactionTestCase):
                 self.uri,
                 format='json',
                 data={
-                    'content': '#Exploit 1\n\nThis is an exploit.',
+                    'title': 'Exploit 1',
+                    'content': 'This is an exploit.',
                     'mission': mission.id,
                     }
                 )
@@ -225,7 +226,8 @@ class NotesTestCase(TransactionTestCase):
                 self.uri,
                 format='json',
                 data={
-                    'content': '#Exploit 1\n\nThis is an exploit.',
+                    'title': 'Exploit 1',
+                    'content': 'This is an exploit.',
                     'author': self.user.id,
                     'mission': mission.id,
                     }
