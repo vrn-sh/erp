@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Dashboard.scss';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
-import Notes from './SubDashboards/Notes';
+import Notes from './SubDashboards/Notes/Notes';
 
 function DashboardMission() {
     const [active, setActive] = useState('main');
