@@ -19,7 +19,6 @@ interface NoteGridProps {
 }
 
 function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
-    console.log(list)
     return list[count].notes.map((note: IDashboardNotes, index: number) => {
         return (
             <div className="card" key={`component-${note.id}`}>
@@ -76,7 +75,6 @@ function Notes() {
     );
     const [max, setMax] = useState(0);
     const [count, setCount] = useState(0);
-    const [loading, setLoad] = useState(true);
 
     const changeMission = (state: string) => {
         if (state === 'plus') {
@@ -96,72 +94,62 @@ function Notes() {
     };
 
     const getMission = async () => {
-        try {
-            await axios
-                .get(`http://localhost:8080/mission?page=1`, {
-                    headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`,
-                    },
-                })
-                .then((data) => {
-                    const tab: {
-                        id: number;
-                        title: string;
-                    }[] = [];
-                    for (let i = 0; i < data.data.results.length; i += 1) {
-                        const res = data.data.results[i];
-                        const test = {
-                            id: res.id,
-                            title: res.title,
-                        };
-                        tab.push(test);
-                    }
-                    setIsMission(tab);
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+        await axios
+            .get(`http://localhost:8080/mission?page=1`, {
+                headers: {
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const tab: {
+                    id: number;
+                    title: string;
+                }[] = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    const res = data.data.results[i];
+                    const test = {
+                        id: res.id,
+                        title: res.title,
+                    };
+                    tab.push(test);
+                }
+                setIsMission(tab);
+            })
+            .catch((e) => {
+                throw new Error(e);
+            });
     };
 
     const getNotes = async () => {
         setMax(idMission.length);
-        try {
-            await axios
-                .get('http://localhost:8080/note?page=1', {
-                    headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`,
-                    },
-                })
-                .then((e) => {
-                    const tab = [];
-                    console.log(idMission.length)
-                    for (let i = 0; i < idMission.length; i += 1) {
-                        const note = e.data.results.filter(
-                            (elem) => elem.mission === idMission[i].id
-                        );
-                        tab.push({ id: idMission[i].id, notes: note });
-                    }
-                    setList(tab);
-                    setLoad(false);
-                })
-                .catch((e) => {
-                    console.log(e.message);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+        await axios
+            .get('http://localhost:8080/note?page=1', {
+                headers: {
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((e) => {
+                const tab = [];
+                for (let i = 0; i < idMission.length; i += 1) {
+                    const note = e.data.results.filter(
+                        (elem) => elem.mission === idMission[i].id
+                    );
+                    tab.push({ id: idMission[i].id, notes: note });
+                }
+                setList(tab);
+            })
+            .catch((e) => {
+                throw new Error(e.message);
+            });
     };
 
     useEffect(() => {
         getMission();
     }, []);
 
-    useEffect(( ) => {
+    useEffect(() => {
         getNotes();
-    } ,[idMission])
+    }, [idMission]);
 
     const modalClick = () => {
         if (modal) getNotes();

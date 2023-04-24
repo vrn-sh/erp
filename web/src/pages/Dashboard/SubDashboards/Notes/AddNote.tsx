@@ -27,31 +27,28 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
     const handleSubmit = async (
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
-        try {
-            await axios
-                .post(
-                    `http://localhost:8080/note`,
-                    {
-                        title,
-                        content,
-                        mission: idMission[count].id,
+        await axios
+            .post(
+                `http://localhost:8080/note`,
+                {
+                    title,
+                    content,
+                    mission: idMission[count].id,
+                },
+                {
+                    headers: {
+                        Authorization: `Token ${Cookies.get('Token')}`,
                     },
-                    {
-                        headers: {
-                            Authorization: `Token ${Cookies.get('Token')}`,
-                        },
-                    }
-                )
-                .then(() => {
-                    setOpen(true);
-                    func(evt);
-                })
-                .catch(() => {
-                    setOpen(!open);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+                }
+            )
+            .then(() => {
+                setOpen(true);
+                func(evt);
+            })
+            .catch((e) => {
+                setOpen(!open);
+                throw new Error(e.message);
+            });
     };
 
     return (

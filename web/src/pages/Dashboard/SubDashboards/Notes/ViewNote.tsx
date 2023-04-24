@@ -26,22 +26,18 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
             SetisEdit(!isEdit);
             return;
         }
-        try {
-            await axios
-                .delete(`http://localhost:8080/note/${note.id}`, {
-                    headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`,
-                    },
-                })
-                .then(() => {
-                    func(evt);
-                })
-                .catch((e) => {
-                    console.log(e.message);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+        await axios
+            .delete(`http://localhost:8080/note/${note.id}`, {
+                headers: {
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then(() => {
+                func(evt);
+            })
+            .catch((e) => {
+                throw new Error(e);
+            });
     };
 
     const handleEdit = async () => {
@@ -50,30 +46,26 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
             return;
         }
 
-        try {
-            await axios
-                .put(
-                    `http://localhost:8080/note/${note.id}`,
-                    {
-                        title: note.title,
-                        content,
-                        mission: note.mission,
+        await axios
+            .put(
+                `http://localhost:8080/note/${note.id}`,
+                {
+                    title: note.title,
+                    content,
+                    mission: note.mission,
+                },
+                {
+                    headers: {
+                        Authorization: `Token ${Cookies.get('Token')}`,
                     },
-                    {
-                        headers: {
-                            Authorization: `Token ${Cookies.get('Token')}`,
-                        },
-                    }
-                )
-                .then(() => {
-                    SetisEdit(false);
-                })
-                .catch((e) => {
-                    console.log(e.message);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+                }
+            )
+            .then(() => {
+                SetisEdit(false);
+            })
+            .catch((e) => {
+                throw new Error(e.message);
+            });
     };
 
     return (
