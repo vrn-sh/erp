@@ -115,7 +115,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team
-        fields = ['id', 'leader', 'members', 'title']
+        fields = ['id', 'leader', 'members', 'name']
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
