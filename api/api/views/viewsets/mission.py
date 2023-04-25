@@ -86,6 +86,25 @@ class NmapViewset(viewsets.ModelViewSet):
         data = {}
         # this will just error in the serializer if input is not provided
         data['recon'] = request.data.get('recon_id', 0)
+import requests
+from typing import List, Dict
+
+CRTSH_API_BASE_URL = "https://crt.sh/?q="
+
+
+def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str]]:
+    """
+    Fetches certificates for a given domain using the crt.sh API.
+
+    :param domain: The domain to search for certificates.
+    :return: A list of certificates.
+    """
+    response = requests.get(f"{CRTSH_API_BASE_URL}{domain}&output=json")
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return []
 
         for field, func in fields.items():
             result = func(request.data.get('nmap_file', ''))
@@ -116,7 +135,38 @@ class CrtShViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = CrtShSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
+    @swagger_auto_schema(
+        operation_description="Fetches certificates for a given domain.",
+        manual_parameters=[
+            openapi.Parameter(
+                name="domain",
+                in_=openapi.IN_QUERY,
+                description="Domain to search for certificates.",
+                required=True,
+                type=openapi.TYPE_STRING,
+            )
+        ],
+        responses={
+            "200": openapi.Response(
+                description="200 OK",
+            ),
+            "400": openapi.Response(
+                description="400 Bad Request",
+            )
+        },
+        security=['Bearer'],
+        tags=['CrtSh'],
+    )
+    def list(self, request, *args, **kwargs):
+        domain = request.query_params.get('domain')
+        if not domain:
+            return Response({"error": "Domain parameter is required."}, status=HTTP_400_BAD_REQUEST)
+
+        certificates = fetch_certificates_from_crtsh(domain)
+        return Response(certificates, status=status.HTTP_200_OK)
+
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
+
     """
         CRUD for mission object
     """
