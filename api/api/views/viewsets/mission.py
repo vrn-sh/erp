@@ -129,14 +129,14 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     serializer_class = ReconSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
-class CrtShViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
+class CrtShViewSet(viewsets.ModelViewSet):
     queryset = CrtSh.objects.all()
     authentication_classes = [TokenAuthentication]
     serializer_class = CrtShSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
     @swagger_auto_schema(
-        operation_description="Fetches certificates for a given domain.",
+        operation_description="Fetches certificates for a given domain and saves them to a mission.",
         manual_parameters=[
             openapi.Parameter(
                 name="domain",
@@ -144,11 +144,18 @@ class CrtShViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
                 description="Domain to search for certificates.",
                 required=True,
                 type=openapi.TYPE_STRING,
+            ),
+            openapi.Parameter(
+                name="mission_id",
+                in_=openapi.IN_QUERY,
+                description="ID of the mission to save the certificates.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
             )
         ],
         responses={
-            "200": openapi.Response(
-                description="200 OK",
+            "201": openapi.Response(
+                description="201 Created",
             ),
             "400": openapi.Response(
                 description="400 Bad Request",
@@ -157,14 +164,25 @@ class CrtShViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         security=['Bearer'],
         tags=['CrtSh'],
     )
-    def list(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         domain = request.query_params.get('domain')
-        if not domain:
-            return Response({"error": "Domain parameter is required."}, status=HTTP_400_BAD_REQUEST)
+        mission_id = request.query_params.get('mission_id')
+
+        if not domain or not mission_id:
+            return Response({"error": "Domain and mission_id parameters are required."}, status=HTTP_400_BAD_REQUEST)
 
         certificates = fetch_certificates_from_crtsh(domain)
-        return Response(certificates, status=status.HTTP_200_OK)
 
+        # Save certificates to the database
+        mission = Mission.objects.filter(id=mission_id).first()
+        if not mission:
+            return Response({"error": "Mission not found."}, status=HTTP_400_BAD_REQUEST)
+
+        for cert in certificates:
+            crtsh_instance = CrtSh(mission=mission, certificate_data=cert)
+            crtsh_instance.save()
+
+        return Response(certificates, status=status.HTTP_201_CREATED)
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
 
     """
