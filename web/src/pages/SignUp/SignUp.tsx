@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
@@ -11,11 +11,13 @@ interface SignUpState {
     username: string;
     email: string;
     password: string;
+    role: string;
     confirmpassword: string;
     errors: {
         username: string;
         email: string;
         password: string;
+        role: string;
         confirmpassword: string;
     };
 }
@@ -31,11 +33,13 @@ export default function SignUp() {
         username: '',
         email: '',
         password: '',
+        role: 'pentester',
         confirmpassword: '',
         errors: {
             username: '',
             email: '',
             password: '',
+            role: '',
             confirmpassword: '',
         },
     });
@@ -55,6 +59,9 @@ export default function SignUp() {
                         ? 'Username must be 5 characters long!'
                         : '';
                 break;
+            case 'role':
+                errors.role = value.length === 0 ? 'Please choose a role' : '';
+                break;
             case 'password':
                 errors.password =
                     value.length < 8
@@ -73,8 +80,12 @@ export default function SignUp() {
         setState({ ...state, errors, [name]: value });
     };
 
+    useEffect(() => {
+        localStorage.setItem('user_info', JSON.stringify(state));
+    }, [state]);
+
     const submit = async () => {
-        const { username, email, password } = state;
+        const { username, email, role, password } = state;
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
                 await axios
@@ -82,6 +93,7 @@ export default function SignUp() {
                         auth: {
                             username,
                             email,
+                            role,
                             password,
                         },
                     })
@@ -133,12 +145,8 @@ export default function SignUp() {
         <section className="signup-container">
             <div className="signup-text" id="signup-text">
                 <div>
-                    <h2 className="alpha">voron</h2>
-                    <h1>{import.meta.env.VITE_REACT_APP_SLOGAN}</h1>
-                    <span className="no-bold">
-                        Lorem ipsum dolor sit amet consectetur. Quis platea
-                        lectus.
-                    </span>
+                    <h2>voron</h2>
+                    <h1>In efficiency we trust</h1>
                 </div>
             </div>
 
@@ -148,7 +156,11 @@ export default function SignUp() {
                         <span className="welcom">
                             <h2>Welcome to voron</h2>
                         </span>
-                        <form onSubmit={submit} noValidate>
+                        <form
+                            onSubmit={submit}
+                            noValidate
+                            className="form-signup"
+                        >
                             <div className="input-block">
                                 <label
                                     className="placeholder"
@@ -171,6 +183,28 @@ export default function SignUp() {
                                     name="email"
                                     onChange={handleChange}
                                 />
+                            </div>
+                            <div className="role-choose">
+                                <div className="radio-container">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="pentester"
+                                        checked={state.role === 'pentester'}
+                                        onChange={handleChange}
+                                    />
+                                    <label>Pentester</label>
+                                </div>
+                                <div className="radio-container">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="manager"
+                                        checked={state.role === 'manager'}
+                                        onChange={handleChange}
+                                    />
+                                    <label>Manager</label>
+                                </div>
                             </div>
                             <div className="input-block">
                                 <label
