@@ -113,14 +113,13 @@ class ManagerSerializer(serializers.ModelSerializer):
 class TeamSerializer(serializers.ModelSerializer):
     """nested serializer for a Team (which allows Pentester creation)"""
 
+    class Meta:
+        model = Team
+        fields = ['id', 'leader', 'members', 'title']
+
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['members'] = PentesterSerializer(instance.members, many=True).data
         ret['leader'] = ManagerSerializer(instance.leader).data
         return ret
 
-    class Meta:
-        model = Team
-        fields = [
-            'id', 'leader', 'members',
-        ]
