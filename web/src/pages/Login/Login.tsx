@@ -49,7 +49,7 @@ export default function Login() {
             try {
                 await axios
                     .post(
-                        `http://localhost:8080/login`,
+                        `${config.apiUrl}/login`,
                         JSON.stringify({
                             email,
                             password: pwd,

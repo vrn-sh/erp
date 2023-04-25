@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { IDashboardNotes } from '../../DashBoardNote.type';
 import AddNote from './AddNote';
 import ViewNote from './ViewNote';
+import config from '../../../../config';
 
 interface NoteGridProps {
     list: {
@@ -95,8 +96,9 @@ function Notes() {
 
     const getMission = async () => {
         await axios
-            .get(`http://localhost:8080/mission?page=1`, {
+            .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
+                    'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
@@ -123,8 +125,9 @@ function Notes() {
     const getNotes = async () => {
         setMax(idMission.length);
         await axios
-            .get('http://localhost:8080/note?page=1', {
+            .get(`${config.apiUrl}/note?page=1`, {
                 headers: {
+                    'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
@@ -132,7 +135,8 @@ function Notes() {
                 const tab = [];
                 for (let i = 0; i < idMission.length; i += 1) {
                     const note = e.data.results.filter(
-                        (elem) => elem.mission === idMission[i].id
+                        (elem: IDashboardNotes) =>
+                            elem.mission === idMission[i].id
                     );
                     tab.push({ id: idMission[i].id, notes: note });
                 }

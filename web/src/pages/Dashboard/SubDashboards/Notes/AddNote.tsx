@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import '../../Dashboard.scss';
 import React, { useState } from 'react';
 import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
+import config from '../../../../config';
 
 interface AddNoteProps {
     func: React.MouseEventHandler<HTMLButtonElement>;
@@ -29,7 +30,7 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
     ) => {
         await axios
             .post(
-                `http://localhost:8080/note`,
+                `${config.apiUrl}/note`,
                 {
                     title,
                     content,
@@ -37,6 +38,7 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
                 },
                 {
                     headers: {
+                        'Content-type': 'application/json',
                         Authorization: `Token ${Cookies.get('Token')}`,
                     },
                 }

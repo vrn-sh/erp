@@ -5,10 +5,11 @@ import React, { useState } from 'react';
 import '../../Dashboard.scss';
 import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
 import { IDashboardNotes } from '../../DashBoardNote.type';
+import config from '../../../../config';
 
 interface ViewNoteProps {
     note: IDashboardNotes;
-    func: React.MouseEventHandler<HTMLAnchorElement>;
+    func: any;
 }
 
 export default function ViewNote({ note, func }: ViewNoteProps) {
@@ -19,21 +20,20 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
         setContent(event.target.value);
     };
 
-    const handleDelete = async (
-        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => {
+    const handleDelete = async () => {
         if (isEdit) {
             SetisEdit(!isEdit);
             return;
         }
         await axios
-            .delete(`http://localhost:8080/note/${note.id}`, {
+            .delete(`${config.apiUrl}/note/${note.id}`, {
                 headers: {
+                    'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
             .then(() => {
-                func(evt);
+                func();
             })
             .catch((e) => {
                 throw new Error(e);
@@ -48,7 +48,7 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
 
         await axios
             .put(
-                `http://localhost:8080/note/${note.id}`,
+                `${config.apiUrl}/note/${note.id}`,
                 {
                     title: note.title,
                     content,
@@ -56,6 +56,7 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
                 },
                 {
                     headers: {
+                        'Content-type': 'application/json',
                         Authorization: `Token ${Cookies.get('Token')}`,
                     },
                 }
@@ -73,7 +74,7 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
             <div className="modal-card">
                 <div className="modal">
                     <div className="modal-header">
-                        <h2 className="heading">Coucou</h2>
+                        <h2 className="heading">{note.title}</h2>
                         <a
                             onClick={func}
                             onKeyDown={() => func}
