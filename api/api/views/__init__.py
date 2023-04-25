@@ -24,7 +24,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from api.backends import EmailBackend
-from api.models import Auth
+from api.models import Auth, Manager, Pentester
 
 from knox.views import LoginView as KnoxLoginView
 
@@ -275,11 +275,23 @@ class LoginView(KnoxLoginView):
     def post(self, request):
         """Logs in account, after checking if account has been disabled or not"""
 
+        auth_model_dict = [None, Pentester, Manager]
+
         serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return super().post(request, format=None)
+        if not serializer.is_valid():
+            return Response({
+                'errors': serializer.errors,
+            }, status=HTTP_400_BAD_REQUEST)
+
+        auth = serializer.validated_data['user']
+        login(request, auth)
+
+        knox_resp = super().post(request, format=None)
+        user = auth_model_dict[auth.role].objects.get(auth_id=auth.id)
+
+        knox_resp.data['role'] = auth.role
+        knox_resp.data['id'] = user.id
+        return knox_resp
 
 
 class PingView(APIView):
