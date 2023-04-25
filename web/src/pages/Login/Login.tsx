@@ -4,6 +4,7 @@ import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
 import Cookies from 'js-cookie';
+import config from '../../config';
 
 export default function Login() {
     const [email, setEmail] = useState('');

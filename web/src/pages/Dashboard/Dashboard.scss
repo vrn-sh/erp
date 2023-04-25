@@ -352,8 +352,6 @@ footer {
 
 .modal {
     transition: $opacity-transition;
-    // display: flex;
-    // justify-content: end;
 
     &:target {
         opacity: 1;
