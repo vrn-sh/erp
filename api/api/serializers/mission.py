@@ -28,21 +28,24 @@ class NmapSerializer(serializers.ModelSerializer):
         ordering = ['-creation_timestamp']
 
 
+class CrtShSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = CrtSh
+
+
 class ReconSerializer(serializers.ModelSerializer):
     nmap = NmapSerializer(many=True, read_only=True)
+    crtsh = CrtShSerializer(many=False, read_only=True)
 
     class Meta:
         fields = '__all__'
         model = Recon
 
-class CrtShSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-        model = CrtSh
+
 class MissionSerializer(serializers.ModelSerializer):
     recon = ReconSerializer(many=False, read_only=True)
-    crtsh = CrtShSerializer(many=False, read_only=True)
+
     class Meta:
         fields = '__all__'
         model = Mission
-

@@ -29,10 +29,13 @@ class Recon(models.Model):
     REQUIRED_FIELDS = []
 
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
+    crtsh = models.OneToOneField('CrtSh', on_delete=models.CASCADE, blank=True, null=True)
+
 
 class CrtSh(models.Model):
     recon = models.OneToOneField(Recon, on_delete=models.CASCADE)
     crt_sh_api_key = models.CharField(max_length=255)
+
 
 class NmapScan(models.Model):
     """
@@ -77,7 +80,6 @@ class Mission(models.Model):
 
     team: Team = models.OneToOneField(Team, on_delete=models.CASCADE)
     recon: Optional[Recon] = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
-    crtsh = models.OneToOneField(CrtSh, on_delete=models.CASCADE, blank=True, null=True)
 
     @staticmethod
     def get_delta(start: datetime, end: datetime) -> timedelta:

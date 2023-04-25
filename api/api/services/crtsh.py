@@ -1,9 +1,10 @@
 import requests
+from typing import List, Dict
 
 CRTSH_API_BASE_URL = "https://crt.sh/?q="
 
 
-def fetch_certificates_from_crtsh(domain: str) -> list:
+def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str]]:
     """
     Fetches certificates for a given domain using the crt.sh API.
 
