@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import {
@@ -6,12 +6,13 @@ import {
     DashboardMissionList,
 } from '../DashboardMission.type';
 import '../Dashboard.scss';
+import axios from 'axios';
 
 export default function Mission() {
     const [list] = useState(DashboardMissionList as IDashboardMission[]);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const recordsPerPage = 3;
+    const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
     const records = list.slice(firstIndex, lastIndex);
@@ -35,13 +36,36 @@ export default function Mission() {
         setCurrentPage(n);
     };
 
+    const getMission = async () => {
+        try {
+            await axios
+                .get(`http://localhost:8080/mission/`)
+                .then((data) => {
+                    data;
+                })
+                .catch((e) => {
+                    throw e.message
+                });
+        } catch (error) {
+            throw error;
+        }
+    };
+
     const getwidth = (n: number) => {
         return `${n.toString()}%`;
     };
 
-    const NavEditMission = () => {
-        navigate('/mission/edit');
+    const NavEditMission = (id : number) => {
+        navigate('/mission/edit', {
+            state: {
+                missionId: id,
+              }
+          });
     };
+
+    useEffect(() => {
+        getMission();
+    }, []);
 
     return (
         <>
@@ -51,7 +75,7 @@ export default function Mission() {
                         <tbody key={mission.id}>
                             <tr key={mission.id}>
                                 <td>{mission.name}</td>
-                                <td>{mission.type}</td>
+                                <td>{mission.team}</td>
                                 <td>
                                     <input
                                         type="button"
@@ -62,11 +86,11 @@ export default function Mission() {
                                         type="button"
                                         value="Edit"
                                         className="borderBtn"
-                                        onClick={NavEditMission}
+                                        onClick={() => NavEditMission(mission.id)}
                                     />
                                 </td>
                                 {/* Process bar */}
-                                <td>
+                                {/* <td>
                                     <div className="process-td">
                                         <div className="process-bar">
                                             <div
@@ -83,7 +107,7 @@ export default function Mission() {
                                             {mission.percent}%
                                         </span>
                                     </div>
-                                </td>
+                                </td> */}
                             </tr>
                         </tbody>
                     );

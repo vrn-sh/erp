@@ -9,15 +9,14 @@ import {
     Select,
     MenuItem,
     SelectChangeEvent,
-    Snackbar,
-    Alert,
 } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateField } from '@mui/x-date-pickers/DateField';
+import { DateField } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
+import Feedbacks from '../../component/Feedback';
 
 type InputSizes = 'small' | 'medium' | 'large';
 
@@ -54,11 +53,18 @@ const CancelMission = () => {
 
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [Team, setTeam] = useState('');
-    const [start, setStart] = React.useState<Dayjs | null>(dayjs());
-    const [end, setEnd] = React.useState<Dayjs | null>(dayjs());
+    const [start, setStart] = useState<Dayjs | null>(dayjs());
+    const [end, setEnd] = useState<Dayjs | null>(dayjs());
     const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
     let teamList: number[] = [0, 1, 2, 3];
+
+    const navigate = useNavigate();
 
     const getTeam = async () => {
         try {
@@ -81,12 +87,12 @@ export default function CreateMission() {
         setTeam(event.target.value);
     };
 
-    const handleClick = () => {
-        setOpen(true);
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess: mess, color: color });
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const CancelMission = () => {
+        navigate('/dashboard');
     };
 
     const handleSubmit = async () => {
@@ -96,37 +102,22 @@ export default function CreateMission() {
                     Title,
                     start,
                     end,
-                    Team
+                    Team,
                 })
                 .then(() => {
-                    handleClick
-                    return (
-                        <Snackbar
-                            open={open}
-                            autoHideDuration={1000}
-                            onClose={handleClose}
-                        >
-                            <Alert
-                                onClose={handleClose}
-                                severity="success"
-                                sx={{ width: '100%' }}
-                            >
-                                Successfuly add!
-                            </Alert>
-                        </Snackbar>
-                    );
+                    setMessage('Created!', 'sucess');
                 })
                 .catch((e) => {
-                    console.log(e.message);
+                    setMessage(e.message, 'error');
                 });
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     };
 
-    useEffect(() => {
-        getTeam();
-    }, []);
+    // useEffect(() => {
+    //     getTeam();
+    // }, []);
 
     return (
         <div className="dashboard">
@@ -164,6 +155,12 @@ export default function CreateMission() {
                             setLabel={setTitle}
                             size="medium"
                         />
+                        <Input
+                            labelState={description}
+                            setLabel={setDescription}
+                            label="Description"
+                            size="medium"
+                        />
                         <FormControl
                             sx={{ paddingY: 2, width: '100%' }}
                             size="small"
@@ -181,6 +178,7 @@ export default function CreateMission() {
                                 labelId="Team"
                                 id="Team-select"
                                 value={Team}
+                                required
                                 label="Team"
                                 onChange={handleChange}
                             >
@@ -199,37 +197,51 @@ export default function CreateMission() {
                                 })}
                             </Select>
                         </FormControl>
-                        <LocalizationProvider spacing={4} dateAdapter={AdapterDayjs}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateField
                                 label="Start date"
                                 value={start}
-                                required
+                                sx={{ padding: '6px', width: '50%' }}
                                 onChange={(newValue: any) => setStart(newValue)}
                             />
+                        </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateField
                                 label="End date"
                                 value={end}
-                                required
+                                sx={{ padding: '6px', width: '50%' }}
                                 onChange={(newValue: any) => setEnd(newValue)}
                             />
                         </LocalizationProvider>
                         <br />
-                        <div style={{ display: 'flex', width: '150px' }}>
-                            <button
-                                type="submit"
-                                className="submit-button"
-                                onClick={() => CreateM()}
-                            >
-                                Save
-                            </button>
+                        <div
+                            style={{
+                                display: 'flex',
+                                width: '150px',
+                                justifyContent: 'space-between',
+                            }}
+                        >
                             <button
                                 type="submit"
                                 className="cancel-btn"
-                                onClick={() => handleSubmit()}
+                                onClick={CancelMission}
                             >
                                 Cancel
                             </button>
+                            <button
+                                type="submit"
+                                className="submit-button"
+                                onClick={() => {
+                                    handleSubmit();
+                                    setOpen(true);
+                                }}
+                            >
+                                Save
+                            </button>
                         </div>
+                        {open && (
+                            <Feedbacks mess={message.mess} color={message.color} open={open}/>
+                        )}
                     </div>
                 </div>
             </div>
