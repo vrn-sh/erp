@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../../Dashboard.scss';
 import { Stack, Divider } from '@mui/material';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import { IDashboardNotes } from '../../DashBoardNote.type';
 import AddNote from './AddNote';
 import ViewNote from './ViewNote';
@@ -67,15 +68,12 @@ function Notes() {
     const [modal, setModal] = useState(false);
     const [displayed, setDisplayed] = useState(-1);
     const [idMission, setIsMission] = useState<{ id: number; title: string }[]>(
-        [
-            {
-                id: 0,
-                title: '',
-            },
-        ]
+        [{ id: 0, title: '' }]
     );
     const [max, setMax] = useState(0);
+    const isPentester = Cookies.get('Role') === '1';
     const [count, setCount] = useState(0);
+    const navigate = useNavigate();
 
     const changeMission = (state: string) => {
         if (state === 'plus') {
@@ -140,6 +138,7 @@ function Notes() {
                     );
                     tab.push({ id: idMission[i].id, notes: note });
                 }
+                tab.reverse();
                 setList(tab);
             })
             .catch((e) => {
@@ -160,6 +159,10 @@ function Notes() {
         setModal(!modal);
     };
 
+    const addMission = () => {
+        navigate('/mission/create');
+    };
+
     const viewClick = (idx: number) => {
         if (displayed === -1) {
             setDisplayed(idx);
@@ -170,76 +173,99 @@ function Notes() {
     };
 
     return (
-        <>
-            <Stack
-                direction="row"
-                justifyContent="start"
-                alignItems="center"
-                spacing={4}
-                ml={2}
-                width="50%"
-            >
+        <div>
+            {!idMission[count].title ? (
+                <Stack spacing={4}>
+                    <h2>Create a mission to add a note</h2>
+                    <button
+                        style={{
+                            width: 'fit-content',
+                        }}
+                        type="button"
+                        className="mission_create centered"
+                        onClick={addMission}
+                    >
+                        Create a mission
+                    </button>
+                </Stack>
+            ) : (
                 <div>
-                    <h2>{idMission[count].title}</h2>
-                </div>
-                <a
-                    onClick={() => changeMission('moins')}
-                    onKeyDown={() => changeMission('moins')}
-                    tabIndex={0}
-                    role="button"
-                >
-                    <IoIcons.IoIosArrowBack size="25px" color="rebeccapurple" />
-                </a>
-                <a
-                    onClick={() => changeMission('plus')}
-                    onKeyDown={() => changeMission('plus')}
-                    tabIndex={0}
-                    role="button"
-                >
-                    <IoIcons.IoIosArrowForward
-                        size="25px"
-                        color="rebeccapurple"
-                    />
-                </a>
-            </Stack>
-            <Divider variant="middle" />
-            <div className="container-note cards">
-                <div className="card">
-                    <div>
-                        <h2 className="heading">Add a note</h2>
-                    </div>
-                    <footer>
+                    <Stack
+                        direction="row"
+                        justifyContent="start"
+                        alignItems="center"
+                        spacing={4}
+                        ml={2}
+                        width="50%"
+                    >
+                        <div>
+                            <h2>{idMission[count].title}</h2>
+                        </div>
                         <a
-                            onClick={modalClick}
-                            onKeyDown={modalClick}
+                            onClick={() => changeMission('moins')}
+                            onKeyDown={() => changeMission('moins')}
                             tabIndex={0}
                             role="button"
-                            className="button__link"
                         >
-                            <IoIcons.IoIosAdd
-                                size="90px"
+                            <IoIcons.IoIosArrowBack
+                                size="25px"
                                 color="rebeccapurple"
                             />
                         </a>
-                    </footer>
+                        <a
+                            onClick={() => changeMission('plus')}
+                            onKeyDown={() => changeMission('plus')}
+                            tabIndex={0}
+                            role="button"
+                        >
+                            <IoIcons.IoIosArrowForward
+                                size="25px"
+                                color="rebeccapurple"
+                            />
+                        </a>
+                    </Stack>
+                    <Divider variant="middle" />
+                    <div className="container-note cards">
+                        {isPentester && (
+                            <div className="card">
+                                <div>
+                                    <h2 className="heading">Add a note</h2>
+                                </div>
+                                <footer>
+                                    <a
+                                        onClick={modalClick}
+                                        onKeyDown={modalClick}
+                                        tabIndex={0}
+                                        role="button"
+                                        className="button__link"
+                                    >
+                                        <IoIcons.IoIosAdd
+                                            size="90px"
+                                            color="rebeccapurple"
+                                        />
+                                    </a>
+                                </footer>
+                            </div>
+                        )}
+                        {modal && (
+                            <AddNote
+                                func={modalClick}
+                                count={count}
+                                idMission={idMission}
+                            />
+                        )}
+                        {list[count].notes !== undefined && (
+                            <NoteGrid
+                                list={list}
+                                count={count}
+                                displayed={displayed}
+                                viewClick={viewClick}
+                            />
+                        )}
+                    </div>
                 </div>
-                {modal && (
-                    <AddNote
-                        func={modalClick}
-                        count={count}
-                        idMission={idMission}
-                    />
-                )}
-                {list[count].notes !== undefined && (
-                    <NoteGrid
-                        list={list}
-                        count={count}
-                        displayed={displayed}
-                        viewClick={viewClick}
-                    />
-                )}
-            </div>
-        </>
+            )}
+        </div>
     );
 }
 
