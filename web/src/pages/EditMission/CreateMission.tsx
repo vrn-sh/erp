@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Mission.scss';
 import '../Settings/Settings.scss';
-import SideBar from '../../component/SideBar/SideBar';
-import TopBar from '../../component/SideBar/TopBar';
 import {
     FormControl,
     InputLabel,
@@ -16,7 +14,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
+import TopBar from '../../component/SideBar/TopBar';
+import SideBar from '../../component/SideBar/SideBar';
+import config from '../../config';
 
 type InputSizes = 'small' | 'medium' | 'large';
 
@@ -44,51 +46,55 @@ function Input({ label, labelState, setLabel, size }: InputProps) {
     );
 }
 
-const CreateM = () => {
-    // appel de l'API pour supprimer le groupe
-};
-const CancelMission = () => {
-    // appel de l'API pour supprimer le groupe
-};
-
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [Team, setTeam] = useState('');
-    const [start, setStart] = useState<Dayjs | null>(dayjs());
-    const [end, setEnd] = useState<Dayjs | null>(dayjs());
+    const [Team, setTeam] = useState(0);
+    const [start, setStart] = useState<Dayjs>(dayjs());
+    const [end, setEnd] = useState<Dayjs>(dayjs());
     const [open, setOpen] = useState(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',
         color: 'success',
     });
-    let teamList: number[] = [0, 1, 2, 3];
+    const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
+        { id: 0, name: '' },
+    ]);
 
     const navigate = useNavigate();
 
     const getTeam = async () => {
-        try {
-            await axios
-                .get(`http://localhost:8080/team?page=1`)
-                .then((data) => {
-                    for (let i = 0; i < data.data.results.length; i += 1) {
-                        teamList.push(data.data.results[i].id);
-                    }
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+        await axios
+            .get(`${config.apiUrl}/team?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    tab.push({
+                        id: data.data.results[i].id,
+                        name: data.data.results[i].name,
+                    });
+                }
+                setTeamList(tab);
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
+    const close = () => {
+        setOpen(false);
     };
 
     const handleChange = (event: SelectChangeEvent) => {
-        setTeam(event.target.value);
+        setTeam(Number(event.target.value));
     };
 
     const setMessage = (mess: string, color: string) => {
-        setMess({ mess: mess, color: color });
+        setMess({ mess, color });
     };
 
     const CancelMission = () => {
@@ -96,28 +102,44 @@ export default function CreateMission() {
     };
 
     const handleSubmit = async () => {
-        try {
-            await axios
-                .post(`http://localhost:8080/mission`, {
-                    Title,
-                    start,
-                    end,
-                    Team,
-                })
-                .then(() => {
-                    setMessage('Created!', 'sucess');
-                })
-                .catch((e) => {
-                    setMessage(e.message, 'error');
-                });
-        } catch (error) {
-            throw error;
+        if (Team === 0) {
+            setMessage('Please choose a team', 'error');
+            return;
         }
+        if (start.isBefore(dayjs(), 'day') || end.isBefore(dayjs(), 'day')) {
+            setMessage(
+                'Please select a date that has not already passed !',
+                'error'
+            );
+            return;
+        }
+        await axios
+            .post(
+                `${config.apiUrl}/mission`,
+                {
+                    title: Title,
+                    start: start.format('YYYY-MM-DD'),
+                    end: end.format('YYYY-MM-DD'),
+                    team: Team,
+                },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then(() => {
+                setMessage('Created!', 'success');
+            })
+            .catch((e) => {
+                setMessage(e.message, 'error');
+            });
     };
 
-    // useEffect(() => {
-    //     getTeam();
-    // }, []);
+    useEffect(() => {
+        getTeam();
+    }, []);
 
     return (
         <div className="dashboard">
@@ -155,12 +177,6 @@ export default function CreateMission() {
                             setLabel={setTitle}
                             size="medium"
                         />
-                        <Input
-                            labelState={description}
-                            setLabel={setDescription}
-                            label="Description"
-                            size="medium"
-                        />
                         <FormControl
                             sx={{ paddingY: 2, width: '100%' }}
                             size="small"
@@ -177,21 +193,21 @@ export default function CreateMission() {
                             <Select
                                 labelId="Team"
                                 id="Team-select"
-                                value={Team}
+                                value={Team.toString()}
                                 required
                                 label="Team"
                                 onChange={handleChange}
                             >
-                                {teamList!.map((miss) => {
+                                {teamList!.map((team) => {
                                     return (
                                         <MenuItem
                                             sx={{
                                                 fontFamily: 'Poppins-Regular',
                                                 fontSize: '14px',
                                             }}
-                                            value={miss}
+                                            value={team.id}
                                         >
-                                            {miss}
+                                            {team.name}
                                         </MenuItem>
                                     );
                                 })}
@@ -240,7 +256,12 @@ export default function CreateMission() {
                             </button>
                         </div>
                         {open && (
-                            <Feedbacks mess={message.mess} color={message.color} open={open}/>
+                            <Feedbacks
+                                mess={message.mess}
+                                color={message.color}
+                                close={close}
+                                open={open}
+                            />
                         )}
                     </div>
                 </div>

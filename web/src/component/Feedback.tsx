@@ -1,25 +1,31 @@
 import { Alert, AlertColor, Snackbar } from '@mui/material';
+import React from 'react';
 
 export interface IFeedback {
     mess: string;
     color: string;
     open: boolean;
+    close: any;
 }
 
-const Feedbacks = (message: IFeedback) => {
+function Feedbacks({ mess, color, open, close }: IFeedback) {
+    const handleClose = () => {
+        close();
+    };
     return (
         <Snackbar
-            key={message.color}
-            open={message.open}
+            key={color}
+            open={open}
             anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'center',
             }}
-            autoHideDuration={2000}
+            onClose={handleClose}
+            autoHideDuration={4000}
         >
-            <Alert severity={message.color as AlertColor}>{message.mess}</Alert>
+            <Alert severity={color as AlertColor}>{mess}</Alert>
         </Snackbar>
     );
-};
+}
 
 export default Feedbacks;

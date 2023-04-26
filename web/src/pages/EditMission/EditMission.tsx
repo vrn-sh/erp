@@ -2,14 +2,22 @@ import React, { useEffect, useState } from 'react';
 import './Mission.scss';
 import '../Settings/Settings.scss';
 import { useLocation, useNavigate } from 'react-router-dom';
-import SideBar from '../../component/SideBar/SideBar';
-import TopBar from '../../component/SideBar/TopBar';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import {
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+} from '@mui/material';
 import { LocalizationProvider, DateField } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
+import TopBar from '../../component/SideBar/TopBar';
+import SideBar from '../../component/SideBar/SideBar';
+import config from '../../config';
 
 type InputSizes = 'small' | 'medium' | 'large';
 
@@ -19,7 +27,6 @@ type InputProps = {
     setLabel: React.Dispatch<React.SetStateAction<string>>;
     size: InputSizes;
 };
-
 
 function Input({ label, labelState, setLabel, size }: InputProps) {
     return (
@@ -40,10 +47,9 @@ function Input({ label, labelState, setLabel, size }: InputProps) {
 
 export default function EditMission() {
     const [Title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
     const [Team, setTeam] = useState(0);
-    const [start, setStart] = useState<Dayjs | null>(dayjs());
-    const [end, setEnd] = useState<Dayjs | null>(dayjs());
+    const [start, setStart] = useState<Dayjs>(dayjs());
+    const [end, setEnd] = useState<Dayjs>(dayjs());
     const [open, setOpen] = useState(false);
     const [id, setId] = useState(0);
     const location = useLocation();
@@ -51,46 +57,52 @@ export default function EditMission() {
         mess: '',
         color: 'success',
     });
-    let teamList: number[] = [0, 1, 2, 3];
+    const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
+        { id: 0, name: '' },
+    ]);
 
     const navigate = useNavigate();
 
     const getTeam = async () => {
-        try {
-            await axios
-                .get(`http://localhost:8080/team?page=1`)
-                .then((data) => {
-                    for (let i = 0; i < data.data.results.length; i += 1) {
-                        teamList.push(data.data.results[i].id);
-                    }
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+        await axios
+            .get(`${config.apiUrl}/team?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    tab.push({
+                        id: data.data.results[i].id,
+                        name: data.data.results[i].name,
+                    });
+                }
+                setTeamList(tab);
+            })
+            .catch((e) => {
+                throw e;
+            });
     };
 
     const getMission = async () => {
-        try {
-            await axios
-                .get(`http://localhost:8080/mission/${id}`)
-                .then((data) => {
-                    for (let i = 0; i < data.data.results.length; i += 1) {
-                        teamList.push(data.data.results[i].id);
-                    }
-                    setTitle(data.data.results.title);
-                    setEnd(data.data.results.end);
-                    setStart(data.data.results.start);
-                    setTeam(data.data.results.team);
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        } catch (error) {
-            console.log(error);
-        }
+        await axios
+            .get(`${config.apiUrl}/mission/${id}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setTitle(data.data.title);
+                setEnd(dayjs(data.data.end));
+                setStart(dayjs(data.data.start));
+                setTeam(data.data.team);
+            })
+            .catch((e) => {
+                throw e;
+            });
     };
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -98,24 +110,47 @@ export default function EditMission() {
     };
 
     const setMessage = (mess: string, color: string) => {
-        setMess({ mess: mess, color: color });
+        setMess({ mess, color });
+    };
+
+    const close = () => {
+        setOpen(false);
     };
 
     const UpdateMission = async () => {
-            try {
-                await axios
-                    .patch(`http://localhost:8080/mission/${id}`, 
-                    )
-                    .then(() => {
-                        setMessage('Saved !', 'sucess');
-                        navigate('/dashboard');
-                    })
-                    .catch((e) => {
-                        setMessage(e.message, 'error');
-                    });
-            } catch (error) {
-                throw error;
-            }
+        if (Team === 0) {
+            setMessage('Please choose a team', 'error');
+            return;
+        }
+        if (end.isBefore(dayjs())) {
+            setMessage(
+                'Please select a date that has not already passed !',
+                'error'
+            );
+            return;
+        }
+        await axios
+            .patch(
+                `${config.apiUrl}/mission/${id}`,
+                {
+                    title: Title,
+                    end: end.format('YYYY-MM-DD'),
+                    start: start.format('YYYY-MM-DD'),
+                    team: Team,
+                },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then(() => {
+                setMessage('Saved !', 'success');
+            })
+            .catch((e) => {
+                setMessage(e.message, 'error');
+            });
     };
 
     const CancelMission = () => {
@@ -124,9 +159,12 @@ export default function EditMission() {
 
     useEffect(() => {
         setId(location.state.missionId);
+    }, []);
+
+    useEffect(() => {
         getTeam();
         getMission();
-    }, []);
+    }, [id]);
 
     return (
         <div className="dashboard">
@@ -164,12 +202,6 @@ export default function EditMission() {
                             setLabel={setTitle}
                             size="medium"
                         />
-                        <Input
-                            labelState={description}
-                            setLabel={setDescription}
-                            label="Description"
-                            size="medium"
-                        />
                         <FormControl
                             sx={{ paddingY: 2, width: '100%' }}
                             size="small"
@@ -198,9 +230,9 @@ export default function EditMission() {
                                                 fontFamily: 'Poppins-Regular',
                                                 fontSize: '14px',
                                             }}
-                                            value={miss}
+                                            value={miss.id}
                                         >
-                                            {miss}
+                                            {miss.name}
                                         </MenuItem>
                                     );
                                 })}
@@ -249,7 +281,12 @@ export default function EditMission() {
                             </button>
                         </div>
                         {open && (
-                            <Feedbacks mess={message.mess} color={message.color} open={open}/>
+                            <Feedbacks
+                                mess={message.mess}
+                                close={close}
+                                color={message.color}
+                                open={open}
+                            />
                         )}
                     </div>
                 </div>

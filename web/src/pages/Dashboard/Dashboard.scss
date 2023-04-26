@@ -163,6 +163,21 @@ table input {
     cursor: pointer;
 }
 
+.borderBtnError {
+    border: 1px #aa3434 solid;
+    color: #da3e3e;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin: 0 0.5rem;
+}
+
+.borderBtnError:hover {
+    background-color: var(--hover-effect);
+    transition: 0.5s ease-in-out;
+}
+
 .process {
     &-td {
         display: flex;
@@ -215,6 +230,7 @@ table input {
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
+    align-content: center;
     font-family: 'Poppins-Regular';
 }
 
@@ -400,6 +416,12 @@ footer {
 
 .button__link:hover {
     color: var(--gradient-primary-btn);
+}
+
+.centered{
+    transform: translateX(-50%);
+    position: relative;
+    left: 50%;
 }
 
 .btn-block {
