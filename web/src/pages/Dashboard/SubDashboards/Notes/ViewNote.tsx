@@ -1,0 +1,125 @@
+import { Stack } from '@mui/material';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import React, { useState } from 'react';
+import '../../Dashboard.scss';
+import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
+import { IDashboardNotes } from '../../DashBoardNote.type';
+import config from '../../../../config';
+
+interface ViewNoteProps {
+    note: IDashboardNotes;
+    func: any;
+}
+
+export default function ViewNote({ note, func }: ViewNoteProps) {
+    const [isEdit, SetisEdit] = useState(false);
+    const [content, setContent] = useState(note.content);
+
+    const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setContent(event.target.value);
+    };
+
+    const handleDelete = async () => {
+        if (isEdit) {
+            SetisEdit(!isEdit);
+            return;
+        }
+        await axios
+            .delete(`${config.apiUrl}/note/${note.id}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then(() => {
+                func();
+            })
+            .catch((e) => {
+                throw new Error(e);
+            });
+    };
+
+    const handleEdit = async () => {
+        if (isEdit !== true) {
+            SetisEdit(!isEdit);
+            return;
+        }
+
+        await axios
+            .put(
+                `${config.apiUrl}/note/${note.id}`,
+                {
+                    title: note.title,
+                    content,
+                    mission: note.mission,
+                },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then(() => {
+                SetisEdit(false);
+            })
+            .catch((e) => {
+                throw new Error(e.message);
+            });
+    };
+
+    return (
+        <div className="modal-wrapper">
+            <div className="modal-card">
+                <div className="modal">
+                    <div className="modal-header">
+                        <h2 className="heading">{note.title}</h2>
+                        <a
+                            onClick={func}
+                            onKeyDown={() => func}
+                            role="button"
+                            className="close"
+                            aria-label="close this modal"
+                            tabIndex={0}
+                        >
+                            <svg viewBox="0 0 24 24">
+                                <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+                            </svg>
+                        </a>
+                    </div>
+                    {isEdit && (
+                        <textarea
+                            rows={5}
+                            required
+                            className="popup-textarea modal-body"
+                            onChange={takeContent}
+                            value={content}
+                        />
+                    )}
+                    {!isEdit && <p>{content}</p>}
+                    <Stack
+                        direction="row"
+                        justifyContent="center"
+                        mt={3}
+                        spacing={4}
+                    >
+                        <SecondaryButton
+                            variant="outlined"
+                            onClick={handleDelete}
+                        >
+                            {isEdit ? 'Cancel' : 'Delete'}
+                        </SecondaryButton>
+                        <PrimaryButton
+                            variant="contained"
+                            color="primary"
+                            onClick={handleEdit}
+                        >
+                            {isEdit ? 'Save' : 'Edit'}
+                        </PrimaryButton>
+                    </Stack>
+                </div>
+            </div>
+        </div>
+    );
+}

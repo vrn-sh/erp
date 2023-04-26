@@ -3,7 +3,7 @@ import './Dashboard.scss';
 import { useNavigate } from 'react-router-dom';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
-import Notes from './SubDashboards/Notes';
+import Notes from './SubDashboards/Notes/Notes';
 
 function DashboardMission() {
     const [active, setActive] = useState('main');

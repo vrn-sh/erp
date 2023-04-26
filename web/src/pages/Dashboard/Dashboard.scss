@@ -292,6 +292,7 @@ table input {
     height: 270px;
     margin-top: 10px;
     border-radius: 5px;
+    font-family: 'Poppins-Light';
 
     &-content {
         overflow: hidden;
@@ -299,6 +300,7 @@ table input {
         height: 120px;
         text-align: start;
         text-overflow: ellipsis;
+        font-family: 14px;
     }
 }
 
@@ -321,10 +323,10 @@ footer {
 }
 
 .close {
-    // background: none;
     border: none;
     cursor: pointer;
     display: flex;
+    justify-content: end;
     height: 16px;
     text-decoration: none;
     width: 16px;
@@ -332,6 +334,10 @@ footer {
     svg {
         width: 16px;
     }
+}
+
+.rotate {
+    transform: rotate(90deg);
 }
 
 .modal-wrapper {
@@ -348,15 +354,15 @@ footer {
 
 .modal-card {
     max-width: 500px;
-        opacity: 1;
-        transform: translateY(-100px);
-        transition: $opacity-transition;
-        width: 100%;
-        z-index: 1;
-        text-align: start;
-        padding: 16px;
-        border-radius: 10px;
-        background-color: white;
+    opacity: 1;
+    transform: translateY(-100px);
+    transition: $opacity-transition;
+    width: 100%;
+    z-index: 1;
+    text-align: start;
+    padding: 16px;
+    border-radius: 10px;
+    background-color: white;
 
     .centered {
         justify-content: center;
@@ -364,7 +370,7 @@ footer {
     }
 }
 
-.modal{
+.modal {
     transition: $opacity-transition;
 
     &:target {
@@ -376,19 +382,16 @@ footer {
         }
     }
 
-    .modal-body {
+    &-body {
         max-width: 500px;
         opacity: 1;
-        transform: translateY(-100px);
-        transition: $opacity-transition;
         width: 100%;
-        z-index: 1;
+        display: flex;
+        justify-content: 'center';
         text-align: start;
         padding: 16px;
-        background-color: white;
     }
 }
-
 
 .button__link {
     background-color: none;
@@ -398,7 +401,6 @@ footer {
 .button__link:hover {
     color: var(--gradient-primary-btn);
 }
-
 
 .btn-block {
     margin-top: 10px;
