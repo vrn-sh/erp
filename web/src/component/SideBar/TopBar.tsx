@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import './SideBar.scss';
 import * as BiIcons from 'react-icons/bi';
 import * as FaIcons from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 export default function TopBar() {
     const [popup, setPopup] = useState(false);
     const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState('');
+    const navigate = useNavigate();
     const isPentester = Cookies.get('Role') === '1';
 
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,11 +26,16 @@ export default function TopBar() {
         setPopup(!popup);
     };
 
+    const handleKeydown = () => {};
     const sendInvitation = () => {
         if (email !== '' && errorEmail === '') {
             // send API here
             popupClick();
         }
+    };
+
+    const goProfile = () => {
+        navigate('/profile');
     };
 
     return (
@@ -56,7 +63,12 @@ export default function TopBar() {
                     <span className="btn">
                         <FaIcons.FaBell size="22px" color="#8A8A8A" />
                     </span>
-                    <span className="btn-profile">
+                    <span
+                        className="btn-profile"
+                        onClick={goProfile}
+                        onKeyDown={handleKeydown}
+                        role="presentation"
+                    >
                         <FaIcons.FaUserCircle size="22px" color="#8A8A8A" />
                     </span>
                 </div>
