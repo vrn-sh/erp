@@ -1,9 +1,8 @@
 let apiUrl = '';
 
-if (import.meta.env.NODE_ENV === 'development')
-    apiUrl = import.meta.env.LOCAL_API_URL as string;
-else if (import.meta.env.NODE_ENV === 'production')
-    apiUrl = import.meta.env.REMOTE_API_URL as string;
+if (import.meta.env.VITE_REACT_APP_NODE_ENV === 'development')
+    apiUrl = import.meta.env.VITE_REACT_APP_LOCAL_API_URL as string;
+else apiUrl = import.meta.env.VITE_REACT_APP_REMOTE_API_URL as string;
 
 const config = {
     apiUrl,

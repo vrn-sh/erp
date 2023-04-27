@@ -239,6 +239,10 @@ export default function Mission() {
         navigate('/mission/create');
     };
 
+    const NavMissionDetail = () => {
+        navigate('/mission/detail');
+    };
+
     return (
         <>
             {!list.length ? (
@@ -279,6 +283,9 @@ export default function Mission() {
                                                 type="button"
                                                 value="Open"
                                                 className="openBtn"
+                                                onClick={() =>
+                                                    NavMissionDetail()
+                                                }
                                             />
                                             {!isPentester && (
                                                 <>
