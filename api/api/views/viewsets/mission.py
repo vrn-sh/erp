@@ -1,4 +1,5 @@
 from datetime import datetime
+from json import dumps, loads
 from warnings import warn
 
 from drf_yasg import openapi
@@ -22,7 +23,6 @@ class NmapViewset(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
-
 
     @swagger_auto_schema(
         operation_description="Creates and parses an NMAP output object.",
@@ -86,25 +86,6 @@ class NmapViewset(viewsets.ModelViewSet):
         data = {}
         # this will just error in the serializer if input is not provided
         data['recon'] = request.data.get('recon_id', 0)
-import requests
-from typing import List, Dict
-
-CRTSH_API_BASE_URL = "https://crt.sh/?q="
-
-
-def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str]]:
-    """
-    Fetches certificates for a given domain using the crt.sh API.
-
-    :param domain: The domain to search for certificates.
-    :return: A list of certificates.
-    """
-    response = requests.get(f"{CRTSH_API_BASE_URL}{domain}&output=json")
-
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return []
 
         for field, func in fields.items():
             result = func(request.data.get('nmap_file', ''))
@@ -139,16 +120,16 @@ class CrtShViewSet(viewsets.ModelViewSet):
         operation_description="Fetches certificates for a given domain and saves them to a mission.",
         manual_parameters=[
             openapi.Parameter(
-                name="domain",
-                in_=openapi.IN_QUERY,
-                description="Domain to search for certificates.",
-                required=True,
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
                 name="mission_id",
                 in_=openapi.IN_QUERY,
                 description="ID of the mission to save the certificates.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+            ),
+            openapi.Parameter(
+                name="domain",
+                in_=openapi.IN_QUERY,
+                description="domain name to check.",
                 required=True,
                 type=openapi.TYPE_INTEGER,
             )
@@ -165,25 +146,31 @@ class CrtShViewSet(viewsets.ModelViewSet):
         tags=['CrtSh'],
     )
     def create(self, request, *args, **kwargs):
-        domain = request.query_params.get('domain')
         mission_id = request.query_params.get('mission_id')
+        domain = request.query_params.get('domain')
 
-        if not domain or not mission_id:
+        if not mission_id or not domain:
             return Response({"error": "Domain and mission_id parameters are required."}, status=HTTP_400_BAD_REQUEST)
 
-        certificates = fetch_certificates_from_crtsh(domain)
-
-        # Save certificates to the database
+        # getting related mission
         mission = Mission.objects.filter(id=mission_id).first()
         if not mission:
             return Response({"error": "Mission not found."}, status=HTTP_400_BAD_REQUEST)
 
-        for cert in certificates:
-            crtsh_instance = CrtSh(mission=mission, certificate_data=cert)
-            crtsh_instance.save()
+        # if CrtSh already exists, no need to recreate it
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        if not crt_object:
+            certificates = fetch_certificates_from_crtsh(domain)
+            cert_dump = dumps(certificates)
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=cert_dump)
+            crt_object.save()
 
-        return Response(certificates, status=status.HTTP_201_CREATED)
+        # return json parsed data
+        return Response(loads(crt_object.dump), status=HTTP_201_CREATED)
+
+
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
+
 
     """
         CRUD for mission object
@@ -215,10 +202,13 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 description="200 OK",
                 examples={
                     "id": 1,
-                    "title": "Pentest Epitech",
+                    "title": "Pentest mission",
                     "start": "2020-06-03",
                     "end": "2022-06-03",
-                    "team": 2
+                    "team": 1,
+                    "recon": {
+                        "nmap": []
+                    }
                 }
             )
         },

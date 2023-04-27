@@ -1,8 +1,9 @@
 let apiUrl = '';
 
-if (process.env.NODE_ENV === 'development') apiUrl = 'http://localhost:8080';
-else if (process.env.NODE_ENV === 'production')
-    apiUrl = 'https://voron.djnn.sh/api';
+if (import.meta.env.NODE_ENV === 'development')
+    apiUrl = import.meta.env.LOCAL_API_URL as string;
+else if (import.meta.env.NODE_ENV === 'production')
+    apiUrl = import.meta.env.REMOTE_API_URL as string;
 
 const config = {
     apiUrl,

@@ -1,13 +1,14 @@
-from django.core.exceptions import ValidationError
+from django.contrib.postgres.fields import ArrayField
 from typing import List, Optional
 from django.db import models
-from django.db.models import CharField, FloatField, ImageField, TextField
+from django.db.models import FloatField, ImageField, TextField
 
-from api.models import Pentester, Auth
-
-from api.models import NAME_LENGTH, MAX_NOTE_LENGTH
+from api.models import Auth, NAME_LENGTH, MAX_NOTE_LENGTH
 from api.models.mission import Mission
 
+
+def get_bucket_path(instance, filename) -> str:
+    return f'{instance.bucket_name}/{instance.title.replace(" ", "_")}/{filename}'
 
 class Notes(models.Model):
     """
@@ -16,26 +17,15 @@ class Notes(models.Model):
         current infrastructure.
     """
 
-    REQUIRED_FIELDS = ["content", "author", "mission"]
+    REQUIRED_FIELDS = ["content", "author", "mission", "title"]
 
     mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
+    title: models.TextField = models.TextField(default="New note")
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
 
     creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
     last_updated: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
     author: Optional[Auth] = models.ForeignKey(Auth, on_delete=models.CASCADE, blank=True, null=True)
-
-
-class ImageModel(models.Model):
-
-    REQUIRED_FIELDS = ['image']
-
-    class Meta:
-        verbose_name = 'Image'
-        verbose_name_plural = 'Images'
-        ordering = ['id']
-
-    image = ImageField(name='image')  # FIXME(adina): add storage, STATIC_FILES path in settings, setup nginx
 
 
 class VulnType(models.Model):
@@ -70,6 +60,10 @@ class Vulnerability(models.Model):
         verbose_name_plural = 'Vulnerability models'
         ordering = ['title']
 
+    @property
+    def bucket_name(self):
+        return self.mission.bucket_name
+
     title = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(max_length=MAX_NOTE_LENGTH, blank=True)
     serverity = models.FloatField()
@@ -81,4 +75,6 @@ class Vulnerability(models.Model):
     last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
     vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
-    images: List[ImageModel] = models.ManyToManyField(ImageModel, blank=True, default=None)
+    images: Optional[List[ImageField]] = ArrayField(ImageField(), blank=True, null=True)
+
+    mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)

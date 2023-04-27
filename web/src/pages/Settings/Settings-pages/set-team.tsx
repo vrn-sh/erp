@@ -34,7 +34,7 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
 
     return (
         <Modal
-            className="popup"
+            className="team-popup"
             isOpen={isOpen}
             onRequestClose={onRequestClose}
         >
