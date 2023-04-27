@@ -6,7 +6,7 @@ import './global-variable.scss';
 import Login from './pages/Login/Login';
 import ProfilePage from './pages/Profile/Profile';
 import Dashboard from './pages/Dashboard/Dashboard';
-import AddVulnerability from './pages/Vulnerability/Add';
+import AddVulnerability from './pages/Vulnerability/AddVul';
 import SignUp from './pages/SignUp/SignUp';
 import NotFound from './pages/Error/Error';
 import Settings from './pages/Settings/Settings';

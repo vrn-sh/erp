@@ -3,6 +3,7 @@ import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 import scope_list from '../../assets/strings/en/mission_scope.json';
 
 export default function Scope(/* need to add list as a param here */) {
@@ -15,6 +16,7 @@ export default function Scope(/* need to add list as a param here */) {
     const records = scope_list.scope.slice(firstIndex, lastIndex);
     const npage = Math.ceil(scope_list.scope.length / recordsPerPage);
     const nums = [...Array(npage + 1).keys()].slice(1);
+    const navigate = useNavigate();
 
     const nextPage = () => {
         if (currentPage !== npage) {
@@ -49,6 +51,10 @@ export default function Scope(/* need to add list as a param here */) {
             }
             if (find === true) break;
         }
+    };
+
+    const NavAddVul = () => {
+        navigate('/vuln/add');
     };
 
     return (
@@ -115,6 +121,7 @@ export default function Scope(/* need to add list as a param here */) {
                                         type="button"
                                         value="Add"
                                         className="borderBtn"
+                                        onClick={NavAddVul}
                                     />
                                     <AiIcons.AiFillDelete
                                         className="scope-action-icons"
