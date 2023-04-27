@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import '../../Dashboard.scss';
+import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
-import scope_list from '../../../../assets/strings/en/mission_scope.json';
+import scope_list from '../../assets/strings/en/mission_scope.json';
 
 export default function Scope(/* need to add list as a param here */) {
     const [keyword, setKeyword] = useState('');
@@ -84,32 +84,28 @@ export default function Scope(/* need to add list as a param here */) {
             <table className="no_center_container">
                 <tbody>
                     <tr>
-                        <th>Status</th>
-                        <th>Name</th>
-                        <th>Badges</th>
-                        <th>Actions</th>
+                        {/* <th>Status</th> */}
+                        <th className="md-5">Name</th>
+                        <th className="md-3">Badges</th>
+                        <th className="md-2">Actions</th>
                     </tr>
                     {records.map((s_list) => {
                         return (
                             <tr key={s_list.id}>
-                                <td style={{ fontSize: '18px' }}>
+                                {/* <td style={{ fontSize: '18px' }}>
                                     {s_list.status ? (
                                         <AiIcons.AiOutlineCheckCircle />
                                     ) : (
                                         <AiIcons.AiOutlineCloseCircle />
                                     )}
-                                </td>
+                                </td> */}
                                 <td id="name">{s_list.name}</td>
                                 <td>
-                                    {s_list.bages.map((badge) => {
+                                    {/* utiliser les types de vulnérability */}
+                                    {s_list.bages.map((badge: string) => {
                                         return (
-                                            <label
-                                                style={{
-                                                    padding: 0,
-                                                    margin: 0,
-                                                }}
-                                            >
-                                                {badge}{' '}
+                                            <label className="scope-badges">
+                                                {badge}
                                             </label>
                                         );
                                     })}

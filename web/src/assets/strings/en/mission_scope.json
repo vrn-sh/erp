@@ -3,7 +3,6 @@
         {
             "id": 1,
             "name": "https://evil.djnn.sh",
-            "status": true,
             "bages": [
                 "ReactJs",
                 "SQLI",
@@ -13,7 +12,6 @@
         {
             "id": 2,
             "name": "https://github.com/bogdzn/gork",
-            "status": false,
             "bages": [
                 "XSS",
                 "LFI"
@@ -21,8 +19,7 @@
         },
         {
             "id": 3,
-            "name": "check_edge",
-            "status": true,
+            "name": "https://github.com/vrn-sh/erp",
             "bages": [
                 "XSS",
                 "LFI"
@@ -30,8 +27,7 @@
         },
         {
             "id": 4,
-            "name": "https://github.com/bogdzn/gork",
-            "status": true,
+            "name": "https://voron.djnn.sh",
             "bages": [
                 "XSS",
                 "LFI"
@@ -40,7 +36,6 @@
         {
             "id": 5,
             "name": "https://github.com/bogdzn/gork",
-            "status": true,
             "bages": [
                 "XSS",
                 "LFI"
@@ -48,8 +43,7 @@
         },
         {
             "id": 6,
-            "name": "check_page2",
-            "status": true,
+            "name": "https://github.com/bogdzn/gork",
             "bages": [
                 "XSS",
                 "LFI"

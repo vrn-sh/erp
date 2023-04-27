@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import SideBar from '../../../../component/SideBar/SideBar';
-import TopBar from '../../../../component/SideBar/TopBar';
-import '../../Dashboard.scss';
+import SideBar from '../../component/SideBar/SideBar';
+import TopBar from '../../component/SideBar/TopBar';
+import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import Scope from './Scope';
 

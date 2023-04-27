@@ -23,6 +23,7 @@
 .mission-tool-line {
     display: flex;
     flex-direction: row;
+    margin-top: 1rem;
     width: 100%;
     justify-content: space-between;
 }
@@ -69,6 +70,17 @@
     }
 }
 
+.md-5 {
+    width: 50%;
+}
+
+.md-3 {
+    width: 30%;
+}
+.md-2 {
+    width: 20%;
+}
+
 .input_btn {
     min-width: 10px;
 }
@@ -82,4 +94,11 @@
     font-size: 20px;
     margin-left: 1rem;
     cursor: pointer;
+}
+
+.scope-badges {
+    padding: 2px 8px;
+    margin: .3rem;
+    border-radius: 10px;
+    background-color: var(--colorful-yellow);
 }

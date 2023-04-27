@@ -12,7 +12,7 @@ import NotFound from './pages/Error/Error';
 import Settings from './pages/Settings/Settings';
 import EditMission from './pages/EditMission/EditMission';
 import CreateMission from './pages/EditMission/CreateMission';
-import MissionDetail from './pages/Dashboard/SubDashboards/MissionDetail/MissionDetail';
+import MissionDetail from './pages/MissionDetail/MissionDetail';
 
 function App() {
     return (
