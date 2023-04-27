@@ -1,0 +1,59 @@
+{
+    "scope": [
+        {
+            "id": 1,
+            "name": "https://evil.djnn.sh",
+            "status": true,
+            "bages": [
+                "ReactJs",
+                "SQLI",
+                "XSS"
+            ]
+        },
+        {
+            "id": 2,
+            "name": "https://github.com/bogdzn/gork",
+            "status": false,
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 3,
+            "name": "check_edge",
+            "status": true,
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 4,
+            "name": "https://github.com/bogdzn/gork",
+            "status": true,
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 5,
+            "name": "https://github.com/bogdzn/gork",
+            "status": true,
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 6,
+            "name": "check_page2",
+            "status": true,
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        }
+    ]
+}

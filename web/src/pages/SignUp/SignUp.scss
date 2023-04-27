@@ -138,20 +138,20 @@ label {
     position: relative;
     width: 100%;
     margin: 20px;
-}
 
-.input-block input {
-    padding: 10px 10px;
-    border-radius: 5px;
+    & input {
+        padding: 10px 10px;
+        border-radius: 5px;
 
-    width: 100%;
-    height: 50px;
+        width: 100%;
+        height: 50px;
 
-    font-size: 14px;
-    font-family: 'Poppins-Regular';
-    border-radius: 5px;
-    outline: none;
-    border: 1px solid #9a9a9a;
+        font-size: 14px;
+        font-family: 'Poppins-Regular';
+        border-radius: 5px;
+        outline: none;
+        border: 1px solid #9a9a9a;
+    }
 }
 
 .placeholder {

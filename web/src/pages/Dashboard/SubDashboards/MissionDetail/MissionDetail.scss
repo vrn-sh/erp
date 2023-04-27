@@ -19,3 +19,67 @@
         color: var(--gray-btn);
     }
 }
+
+.mission-tool-line {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.mission-borderBtn {
+    border: 1px var(--primary-btn) solid;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.search-name {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    justify-content: flex-start;
+}
+
+.mission-input-block {
+    position: relative;
+    width: 30%;
+    padding: 0;
+    background-color: var(--basic-bg);
+    & input {
+        width: 100%;
+        text-align: left;
+        border-radius: 5px;
+        height: 50px;
+        font-size: 14px;
+        font-family: 'Poppins-Regular';
+        border-radius: 5px;
+        outline: none;
+        border: 1px solid #9a9a9a;
+        background-color: var(--basic-bg);
+    }
+
+    & label {
+        background-color: var(--basic-bg);
+    }
+
+    & button {
+        min-width: 10px;
+
+    }
+}
+
+.input_btn {
+    min-width: 10px;
+}
+
+.scope-table-action {
+    display: flex;
+    align-items: center;
+}
+
+.scope-action-icons {
+    font-size: 20px;
+    margin-left: 1rem;
+    cursor: pointer;
+}
