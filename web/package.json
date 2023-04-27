@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development vite",
+    "dev": "VITE_REACT_APP_NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.ts,.tsx .",

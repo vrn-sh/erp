@@ -105,7 +105,7 @@ export default function SignUp() {
                             ...state,
                             errors: {
                                 ...state.errors,
-                                email: ' ',
+                                email: 'Email or username already exists!',
                             },
                         });
                     });
