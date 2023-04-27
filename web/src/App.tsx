@@ -5,13 +5,14 @@ import About from './pages/Home/About/About';
 import './global-variable.scss';
 import Login from './pages/Login/Login';
 import ProfilePage from './pages/Profile/Profile';
-import EditMission from './pages/Dashboard/SubDashboards/EditMission/EditMission';
-import CreateMission from './pages/Dashboard/SubDashboards/EditMission/CreateMission';
-import MissionDetail from './pages/Dashboard/SubDashboards/MissionDetail/MissionDetail';
 import Dashboard from './pages/Dashboard/Dashboard';
+import AddVulnerability from './pages/Vulnerability/Add';
 import SignUp from './pages/SignUp/SignUp';
 import NotFound from './pages/Error/Error';
-import Setting from './pages/Settings/Settings';
+import Settings from './pages/Settings/Settings';
+import EditMission from './pages/EditMission/EditMission';
+import CreateMission from './pages/EditMission/CreateMission';
+import MissionDetail from './pages/Dashboard/SubDashboards/MissionDetail/MissionDetail';
 
 function App() {
     return (
@@ -22,7 +23,8 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/settings" element={<Setting />} />
+                <Route path="/vuln/add" element={<AddVulnerability />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/mission/detail" element={<MissionDetail />} />
                 <Route path="/mission/edit" element={<EditMission />} />

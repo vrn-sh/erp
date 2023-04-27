@@ -23,7 +23,7 @@ from api.backends import EmailBackend
 
 from api.serializers import ManagerSerializer, PentesterSerializer, AuthSerializer, TeamSerializer
 from api.models import USER_ROLES, Manager, Auth, Pentester, Team, get_user_model
-from api.permissions import IsManager, IsOwner, PostOnly, ReadOnly
+from api.permissions import IsManager, IsLinkedToData, IsPentester, PostOnly, ReadOnly
 
 
 class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -32,8 +32,11 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     """
 
     queryset = Team.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsManager | \
-            permissions.IsAuthenticated & ReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        # IsLinkedToData,
+        IsManager | IsPentester & ReadOnly
+    ]
     authentication_classes = [TokenAuthentication]
     serializer_class = TeamSerializer
 
@@ -122,7 +125,11 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
     queryset = Pentester.objects.all()
     permission_classes = [PostOnly]
     authentication_classes: List[type[TokenAuthentication]] = []
-    serializer_class = PentesterSerializer
+
+    def get_serializer_class(self):
+        if self.request.data.get('role', 'manager') == 'manager':
+            return ManagerSerializer
+        return PentesterSerializer
 
 
 class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -133,7 +140,7 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     """
 
     queryset = Pentester.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsManager | IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsManager | IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
 
@@ -146,7 +153,7 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
     """
 
     queryset = Manager.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsManager]
+    permission_classes = [permissions.IsAuthenticated & IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = ManagerSerializer
 
@@ -159,6 +166,6 @@ class AuthViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     """
 
     queryset = Auth.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsManager | IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsManager | IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = AuthSerializer

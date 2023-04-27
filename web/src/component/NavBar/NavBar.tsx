@@ -33,7 +33,7 @@ export default function NavBar() {
                     <CustomLink to="#contact">Contact</CustomLink>
                 </div>
                 <div className="nav-right">
-                    <Link to="/signup">Sign up</Link>
+                    <Link to="/sign_up">Sign up</Link>
                     <li className="login">
                         <Link to="/login">Log in</Link>
                     </li>
