@@ -19,3 +19,4 @@ pylint
 prospector
 django-types
 django-stubs
+sendgrid-django
