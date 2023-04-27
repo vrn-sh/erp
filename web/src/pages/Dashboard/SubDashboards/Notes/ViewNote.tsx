@@ -6,6 +6,7 @@ import '../../Dashboard.scss';
 import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
 import { IDashboardNotes } from '../../DashBoardNote.type';
 import config from '../../../../config';
+import Feedbacks from '../../../../component/Feedback';
 
 interface ViewNoteProps {
     note: IDashboardNotes;
@@ -15,9 +16,23 @@ interface ViewNoteProps {
 export default function ViewNote({ note, func }: ViewNoteProps) {
     const [isEdit, SetisEdit] = useState(false);
     const [content, setContent] = useState(note.content);
+    const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+    const isPentester = Cookies.get('Role') === '1';
 
     const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(event.target.value);
+    };
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const close = () => {
+        setOpen(false);
     };
 
     const handleDelete = async () => {
@@ -33,10 +48,11 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
                 },
             })
             .then(() => {
+                setMessage('Successfuly deleted', 'success');
                 func();
             })
             .catch((e) => {
-                throw new Error(e);
+                setMessage(e.message, 'error');
             });
     };
 
@@ -63,9 +79,10 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
             )
             .then(() => {
                 SetisEdit(false);
+                setMessage('Saved !', 'success');
             })
             .catch((e) => {
-                throw new Error(e.message);
+                setMessage(e.message, 'error');
             });
     };
 
@@ -98,27 +115,37 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
                         />
                     )}
                     {!isEdit && <p>{content}</p>}
-                    <Stack
-                        direction="row"
-                        justifyContent="center"
-                        mt={3}
-                        spacing={4}
-                    >
-                        <SecondaryButton
-                            variant="outlined"
-                            onClick={handleDelete}
+                    {isPentester && (
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            mt={3}
+                            spacing={4}
                         >
-                            {isEdit ? 'Cancel' : 'Delete'}
-                        </SecondaryButton>
-                        <PrimaryButton
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEdit}
-                        >
-                            {isEdit ? 'Save' : 'Edit'}
-                        </PrimaryButton>
-                    </Stack>
+                            <SecondaryButton
+                                variant="outlined"
+                                onClick={handleDelete}
+                            >
+                                {isEdit ? 'Cancel' : 'Delete'}
+                            </SecondaryButton>
+                            <PrimaryButton
+                                variant="contained"
+                                color="primary"
+                                onClick={handleEdit}
+                            >
+                                {isEdit ? 'Save' : 'Edit'}
+                            </PrimaryButton>
+                        </Stack>
+                    )}
                 </div>
+                {open && (
+                    <Feedbacks
+                        mess={message.mess}
+                        color={message.color}
+                        close={close}
+                        open={open}
+                    />
+                )}
             </div>
         </div>
     );

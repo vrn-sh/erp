@@ -5,6 +5,7 @@ import '../../Dashboard.scss';
 import React, { useState } from 'react';
 import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
 import config from '../../../../config';
+import Feedbacks from '../../../../component/Feedback';
 
 interface AddNoteProps {
     func: React.MouseEventHandler<HTMLButtonElement>;
@@ -16,13 +17,25 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
 
     const takeTitlee = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
     };
 
+    const close = () => {
+        setOpen(false);
+    };
+
     const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(event.target.value);
+    };
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
     };
 
     const handleSubmit = async (
@@ -44,12 +57,11 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
                 }
             )
             .then(() => {
-                setOpen(true);
+                setMessage('Created!', 'success');
                 func(evt);
             })
             .catch((e) => {
-                setOpen(!open);
-                throw new Error(e.message);
+                setMessage(e.message, 'error');
             });
     };
 
@@ -93,12 +105,23 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
                         <PrimaryButton
                             variant="contained"
                             color="primary"
-                            onClick={handleSubmit}
+                            onClick={(e) => {
+                                setOpen(true);
+                                handleSubmit(e);
+                            }}
                         >
                             Submit
                         </PrimaryButton>
                     </Stack>
                 </div>
+                {open && (
+                    <Feedbacks
+                        mess={message.mess}
+                        color={message.color}
+                        close={close}
+                        open={open}
+                    />
+                )}
             </div>
         </div>
     );
