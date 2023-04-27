@@ -4,7 +4,7 @@ from faker import Faker
 
 from rest_framework.test import APIClient
 
-from api.tests.helpers import create_random_pentester, create_random_manager, random_user_password, \
+from api.tests.helpers import create_random_pentester, create_random_manager, default_user_password, \
         login_as
 
 
@@ -33,7 +33,7 @@ class AuthTestCase(TransactionTestCase):
         """any valid pentester account should be able to log in"""
 
         client = APIClient()
-        auth_token = login_as(self.user.auth.email, random_user_password())
+        auth_token = login_as(self.user.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
         response = client.get('/ping')
         self.assertEqual(response.status_code, 200) # type: ignore
@@ -42,14 +42,14 @@ class AuthTestCase(TransactionTestCase):
         """any valid manager account should be able to log in"""
 
         client = APIClient()
-        auth_token = login_as(self.manager.auth.email, random_user_password())
+        auth_token = login_as(self.manager.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
     def test_can_logout_account(self) -> None:
         """any account should be able to log out"""
 
         client = APIClient()
-        auth_token = login_as(self.manager.auth.email, random_user_password())
+        auth_token = login_as(self.manager.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
         response = client.post('/logout')
         self.assertEqual(response.status_code, 204) # type: ignore
@@ -95,7 +95,7 @@ class RegisterTestCase(TransactionTestCase):
             "email": fake.email(),
             "first_name": name.split(' ')[0],
             "last_name": name.split(' ')[1],
-            "password": random_user_password()
+            "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -119,7 +119,7 @@ class CRUDManagerTestCase(TransactionTestCase):
     def setUp(self) -> None:
         self.manager = create_random_manager()
         self.client = APIClient()
-        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
     def tearDown(self) -> None:
@@ -138,7 +138,7 @@ class CRUDManagerTestCase(TransactionTestCase):
             "email": fake.email(),
             "first_name": name.split(' ')[0],
             "last_name": name.split(' ')[1],
-            "password": random_user_password()
+            "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -157,7 +157,7 @@ class CRUDManagerTestCase(TransactionTestCase):
             "email": fake.email(),
             "first_name": name.split(' ')[0],
             "last_name": name.split(' ')[1],
-            "password": random_user_password()
+            "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -171,7 +171,7 @@ class CRUDManagerTestCase(TransactionTestCase):
                 "first_name": name.split(' ')[0],
                 "last_name": name.split(' ')[1],
                 "role": 1,
-                "password": random_user_password()
+                "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -194,7 +194,7 @@ class CRUDManagerTestCase(TransactionTestCase):
             "email": fake.email(),
             "first_name": name.split(' ')[0],
             "last_name": name.split(' ')[1],
-            "password": random_user_password()
+            "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -212,7 +212,7 @@ class CRUDManagerTestCase(TransactionTestCase):
     def setUp(self) -> None:
         self.manager = create_random_manager()
         self.client = APIClient()
-        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
     def tearDown(self) -> None:
@@ -231,7 +231,7 @@ class CRUDManagerTestCase(TransactionTestCase):
             "email": fake.email(),
             "first_name": name.split(' ')[0],
             "last_name": name.split(' ')[1],
-            "password": random_user_password()
+            "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -250,7 +250,7 @@ class CRUDManagerTestCase(TransactionTestCase):
             "email": fake.email(),
             "first_name": name.split(' ')[0],
             "last_name": name.split(' ')[1],
-            "password": random_user_password()
+            "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -264,7 +264,7 @@ class CRUDManagerTestCase(TransactionTestCase):
                 "first_name": name.split(' ')[0],
                 "last_name": name.split(' ')[1],
                 "role": 1,
-                "password": random_user_password()
+                "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -287,7 +287,7 @@ class CRUDManagerTestCase(TransactionTestCase):
             "email": fake.email(),
             "first_name": name.split(' ')[0],
             "last_name": name.split(' ')[1],
-            "password": random_user_password()
+            "password": default_user_password()
           },
           "creation_date": "2022-12-17T21:36:37.402Z"
         }
@@ -327,7 +327,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # login as manager
         self.client = APIClient()
-        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
         # preparing fake data
@@ -346,7 +346,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # login as pentester
         self.client = APIClient()
-        self.auth_token = login_as(self.user.auth.email, random_user_password())
+        self.auth_token = login_as(self.user.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
         # preparing fake data
@@ -365,7 +365,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # login as manager
         self.client = APIClient()
-        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
         # preparing fake data
@@ -394,7 +394,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # login as manager
         self.client = APIClient()
-        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
         # preparing fake data
@@ -419,7 +419,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # login as manager
         self.client = APIClient()
-        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
         # preparing fake data
@@ -436,7 +436,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # login as manager
         self.client = APIClient()
-        self.auth_token = login_as(self.manager.auth.email, random_user_password())
+        self.auth_token = login_as(self.manager.auth.email, default_user_password())
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.auth_token}') # type: ignore
 
         # preparing fake data
@@ -454,7 +454,7 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         # logging in as pentester
         self.pentester_client = APIClient()
-        auth_token = login_as(self.user.auth.email, random_user_password())
+        auth_token = login_as(self.user.auth.email, default_user_password())
         self.pentester_client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}') # type: ignore
 
         resp = self.pentester_client.get(f'{self.uri}/{team_id}', format='json')

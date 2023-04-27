@@ -12,6 +12,9 @@ secure==0.3.0
 Pillow==9.4.0
 django-rest-knox==4.2.0
 minio==7.1.14
+django-storages==1.13.2
+boto3==1.26.114
+pymemcache==4.0.0
 
 pylint
 prospector

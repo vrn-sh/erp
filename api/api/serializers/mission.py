@@ -1,8 +1,10 @@
+from json import loads
 from warnings import warn
 from rest_framework import serializers
 
-from api.models.mission import Mission, Recon, NmapScan
+from api.models.mission import Mission, Recon, NmapScan, CrtSh
 from api.models.utils import NmapPort, NmapPortField, parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
+from api.serializers import TeamSerializer
 
 
 class NmapPortSerializer(serializers.Field):
@@ -12,9 +14,10 @@ class NmapPortSerializer(serializers.Field):
     def to_internal_value(self, data):
         if isinstance(data, dict):
             return NmapPort(**data)
-        elif isinstance(data, NmapPort):
+        if isinstance(data, NmapPort):
             return data
         self.fail('invalid', input=data)
+        return {}
 
 
 class NmapSerializer(serializers.ModelSerializer):
@@ -28,8 +31,20 @@ class NmapSerializer(serializers.ModelSerializer):
         ordering = ['-creation_timestamp']
 
 
+class CrtShSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['dump']
+        model = CrtSh
+
+    def to_representation(self, instance):
+        data = {}
+        data['certificates'] = loads(instance.dump)
+        return data
+
+
 class ReconSerializer(serializers.ModelSerializer):
     nmap = NmapSerializer(many=True, read_only=True)
+    crtsh = CrtShSerializer(many=False, read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -42,4 +57,3 @@ class MissionSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Mission
-

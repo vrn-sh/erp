@@ -118,7 +118,7 @@ function SettingsSubPages({ selectedSubPage }: { selectedSubPage: number }) {
     );
 }
 
-export default function Setting() {
+export default function Settings() {
     const [selectedSubPage, setSelectedSubPage] = useState<number>(0);
 
     return (
