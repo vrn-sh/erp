@@ -191,9 +191,12 @@ export default function CreateTeam() {
                             setLabel={setTitle}
                             size="medium"
                         />
-                        <FormControl sx={{
+                        <FormControl
+                            sx={{
                                 marginTop: '15px',
-                            }} fullWidth>
+                            }}
+                            fullWidth
+                        >
                             <InputLabel id="manager-select-label">
                                 Manager
                             </InputLabel>
