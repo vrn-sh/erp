@@ -41,24 +41,46 @@ export default function CreateTeam() {
     });
     const [penList, setListPen] = useState<{ id: number; name: string }[]>([]); // recupère la liste des pentester dispo
     const navigate = useNavigate();
-    const [personName, setPersonName] = React.useState<string[]>([]); // reécupère la liste des pen à mettre dans la team
+    const [personName, setPersonName] = useState<string[]>([]);
+    const [manager, setManager] = useState(''); // reécupère la liste des pen à mettre dans la team
+    const [managerList, setManagerList] = useState<
+        { id: number; name: string }[]
+    >([]);
 
     const handleChange = (event: SelectChangeEvent) => {
         const {
             target: { value },
         } = event;
-        setPersonName(
-            typeof value === 'string' ? value.split(',') : value
-        );
+        setPersonName(typeof value === 'string' ? value.split(',') : value);
         let tab = [];
         for (let i = 0; i < value.length; i += 1) {
-        const note = penList.filter(
-            (elem) =>
-                elem.id === Number(value[i])
-        );
-        tab.push(note[0].name);
+            const note = penList.filter((elem) => elem.id === Number(value[i]));
+            tab.push(note[0].name);
         }
         setTeam(tab);
+    };
+
+    const getManager = async () => {
+        await axios
+            .get(`${config.apiUrl}/manager?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    tab.push({
+                        id: data.data.results[i].id,
+                        name: data.data.results[i].auth.username,
+                    });
+                }
+                setManagerList(tab);
+            })
+            .catch((e) => {
+                throw e;
+            });
     };
 
     const getPentester = async () => {
@@ -92,6 +114,10 @@ export default function CreateTeam() {
         setMess({ mess, color });
     };
 
+    const handleChangeMana = (event: SelectChangeEvent) => {
+        setManager(event.target.value as string);
+    };
+
     const CancelTeam = () => {
         navigate('/team');
     };
@@ -107,6 +133,7 @@ export default function CreateTeam() {
                 {
                     name: Title,
                     members: personName,
+                    leader: manager,
                 },
                 {
                     headers: {
@@ -125,6 +152,7 @@ export default function CreateTeam() {
 
     useEffect(() => {
         getPentester();
+        getManager();
     }, []);
 
     return (
@@ -163,6 +191,24 @@ export default function CreateTeam() {
                             setLabel={setTitle}
                             size="medium"
                         />
+                        <FormControl fullWidth>
+                            <InputLabel id="manager-select-label">
+                                Manager
+                            </InputLabel>
+                            <Select
+                                labelId="manager-select-label"
+                                id="select"
+                                value={manager}
+                                label="Manager"
+                                onChange={handleChangeMana}
+                            >
+                                {managerList.map((name) => (
+                                    <MenuItem key={name.id} value={name.id}>
+                                        {name.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <FormControl
                             sx={{ paddingY: 2, width: '100%' }}
                             size="small"
@@ -197,7 +243,12 @@ export default function CreateTeam() {
                                         }}
                                     >
                                         {Team!.map((value) => (
-                                            <Chip key={value} variant="outlined" color="secondary" label={value} />
+                                            <Chip
+                                                key={value}
+                                                variant="outlined"
+                                                color="secondary"
+                                                label={value}
+                                            />
                                         ))}
                                     </Box>
                                 )}

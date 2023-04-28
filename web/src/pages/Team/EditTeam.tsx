@@ -44,6 +44,10 @@ export default function CreateTeam() {
     const location = useLocation();
     const [id, setId] = useState(0);
     const [personName, setPersonName] = React.useState<string[]>([]); // reécupère la liste des pen à mettre dans la team
+    const [manager, setManager] = useState(''); // reécupère la liste des pen à mettre dans la team
+    const [managerList, setManagerList] = useState<
+        { id: number; name: string }[]
+    >([]);
 
     const handleChange = (event: SelectChangeEvent) => {
         const {
@@ -56,6 +60,33 @@ export default function CreateTeam() {
             tab.push(note[0].name);
         }
         setTeam(tab);
+    };
+
+    const handleChangeMana = (event: SelectChangeEvent) => {
+        setManager(event.target.value as string);
+    };
+
+    const getManager = async () => {
+        await axios
+            .get(`${config.apiUrl}/manager?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    tab.push({
+                        id: data.data.results[i].id,
+                        name: data.data.results[i].auth.username,
+                    });
+                }
+                setManagerList(tab);
+            })
+            .catch((e) => {
+                throw e;
+            });
     };
 
     const getPentester = async () => {
@@ -106,6 +137,7 @@ export default function CreateTeam() {
                 setPersonName(tab);
                 const pentesterList = await getPentester();
 
+                setManager(data.data.leader.id as string);
                 setTitle(data.data.name);
                 let arr = [];
                 for (let i = 0; i < tab.length; i += 1) {
@@ -143,6 +175,7 @@ export default function CreateTeam() {
                 `${config.apiUrl}/team/${id}`,
                 {
                     title: Title,
+                    leader: manager,
                     team: personName,
                 },
                 {
@@ -166,6 +199,7 @@ export default function CreateTeam() {
 
     useEffect(() => {
         getTeamMember();
+        getManager();
     }, [id]);
 
     useEffect(() => {
@@ -208,6 +242,29 @@ export default function CreateTeam() {
                             setLabel={setTitle}
                             size="medium"
                         />
+                        <FormControl sx={{
+                                        marginTop:'15px'
+                                    }} fullWidth>
+                            <InputLabel id="manager-select-label">
+                                Manager
+                            </InputLabel>
+                            <Select
+                                labelId="manager-select-label"
+                                id="select"
+                                value={manager}
+                                label="Manager"
+                                onChange={handleChangeMana}
+                            >
+                                {managerList.map((name) => (
+                                    <MenuItem sx={{
+                                        fontFamily: 'Poppins-Regular',
+                                        fontSize: '14px',
+                                    }} key={name.id} value={name.id}>
+                                        {name.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <FormControl
                             sx={{ paddingY: 2, width: '100%' }}
                             size="small"
