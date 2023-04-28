@@ -27,7 +27,7 @@ const SideBarData = [
     },
     {
         title: 'Create a team',
-        path: '/dashboard', // change when build client page
+        path: '/team/create', // change when build client page
         icon: <BsIcons.BsPeople />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
@@ -36,6 +36,14 @@ const SideBarData = [
     {
         title: 'Missions',
         path: '/dashboard', // change when build client page
+        icon: <BsIcons.BsJournals />,
+        iconClosed: <IoIcons.IoIosArrowForward />,
+        iconOpened: <IoIcons.IoIosArrowDown />,
+        subNav: [],
+    },
+    {
+        title: 'Teams',
+        path: '/team', // change when build client page
         icon: <BsIcons.BsJournals />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
