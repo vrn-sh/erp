@@ -13,6 +13,9 @@ import Settings from './pages/Settings/Settings';
 import EditMission from './pages/EditMission/EditMission';
 import CreateMission from './pages/EditMission/CreateMission';
 import MissionDetail from './pages/MissionDetail/MissionDetail';
+import Team from './pages/Team/Team';
+import CreateTeam from './pages/Team/CreateTeam';
+import EditTeam from './pages/Team/EditTeam';
 
 function App() {
     return (
@@ -29,6 +32,9 @@ function App() {
                 <Route path="/mission/detail" element={<MissionDetail />} />
                 <Route path="/mission/edit" element={<EditMission />} />
                 <Route path="/mission/create" element={<CreateMission />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/team/create" element={<CreateTeam />} />
+                <Route path="/team/edit" element={<EditTeam />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </div>
