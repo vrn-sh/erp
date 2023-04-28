@@ -5,7 +5,7 @@ import '../Dashboard/Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
-import { DeleteConfirm } from '../../component/DeleteConfirm';
+import DeleteConfirm from '../../component/DeleteConfirm';
 
 export default function TeamList() {
     const [list, setList] = useState<

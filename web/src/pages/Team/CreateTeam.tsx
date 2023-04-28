@@ -191,7 +191,9 @@ export default function CreateTeam() {
                             setLabel={setTitle}
                             size="medium"
                         />
-                        <FormControl fullWidth>
+                        <FormControl sx={{
+                                marginTop: '15px',
+                            }} fullWidth>
                             <InputLabel id="manager-select-label">
                                 Manager
                             </InputLabel>
@@ -226,7 +228,7 @@ export default function CreateTeam() {
                                 labelId="demo-multiple-chip-label"
                                 id="demo-multiple-chip"
                                 multiple
-                                value={personName}
+                                value={personName as unknown as string}
                                 onChange={handleChange}
                                 input={
                                     <OutlinedInput

@@ -289,7 +289,7 @@ export default function CreateTeam() {
                                 labelId="demo-multiple-chip-label"
                                 id="demo-multiple-chip"
                                 multiple
-                                value={personName}
+                                value={personName as unknown as string}
                                 onChange={handleChange}
                                 input={
                                     <OutlinedInput
