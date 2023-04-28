@@ -4,12 +4,10 @@ import * as IoIcons from 'react-icons/io';
 import '../Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { AlertColor, Chip, Stack } from '@mui/material';
+import { AlertColor, Chip } from '@mui/material';
 import dayjs from 'dayjs';
-import { PrimaryButton, SecondaryButton } from '../../../component/Button';
-import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
-import { DeleteConfirm } from '../../../component/DeleteConfirm';
+import DeleteConfirm from '../../../component/DeleteConfirm';
 
 export default function Mission() {
     const [list, setList] = useState<
@@ -22,7 +20,11 @@ export default function Mission() {
     >([]);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [item, setItem] = useState<{ id: number; title: string; type: string }>();
+    const [item, setItem] = useState<{
+        id: number;
+        title: string;
+        type: string;
+    }>();
     const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
         { id: 0, name: '' },
     ]);
@@ -219,7 +221,7 @@ export default function Mission() {
                                                             setItem({
                                                                 id: mission.id,
                                                                 title: mission.name,
-                                                                type: 'mission'
+                                                                type: 'mission',
                                                             });
                                                             setOpen(true);
                                                         }}

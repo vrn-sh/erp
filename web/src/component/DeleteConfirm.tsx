@@ -1,18 +1,18 @@
-import { Stack } from "@mui/material";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { useState } from "react";
+import { Stack } from '@mui/material';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import React, { useState } from 'react';
 import config from '../config';
-import { SecondaryButton, PrimaryButton } from "./Button";
-import Feedbacks from "./Feedback";
+import { SecondaryButton, PrimaryButton } from './Button';
+import Feedbacks from './Feedback';
 import '../pages/Dashboard/Dashboard.scss';
 
 interface DeleteProps {
     func: any;
-    item: { id: number; title: string; type : string;  };
+    item: { id: number; title: string; type: string };
 }
 
-export function DeleteConfirm({ func, item }: DeleteProps) {
+export default function DeleteConfirm({ func, item }: DeleteProps) {
     const [open, setOpen] = useState(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',

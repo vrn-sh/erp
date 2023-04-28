@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import Feedbacks from '../../component/Feedback';
 import '../EditMission/Mission.scss';
 import '../Settings/Settings.scss';
 import {
@@ -15,6 +14,7 @@ import {
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
@@ -54,7 +54,7 @@ export default function CreateTeam() {
             target: { value },
         } = event;
         setPersonName(typeof value === 'string' ? value.split(',') : value);
-        let tab = [];
+        const tab = [];
         for (let i = 0; i < value.length; i += 1) {
             const note = penList.filter((elem) => elem.id === Number(value[i]));
             tab.push(note[0].name);
@@ -130,7 +130,7 @@ export default function CreateTeam() {
                 },
             })
             .then(async (data) => {
-                let tab: string[] = [];
+                const tab: string[] = [];
                 for (let i = 0; i < data.data.members.length; i += 1) {
                     tab.push(data.data.members[i].id);
                 }
@@ -139,7 +139,7 @@ export default function CreateTeam() {
 
                 setManager(data.data.leader.id as string);
                 setTitle(data.data.name);
-                let arr = [];
+                const arr = [];
                 for (let i = 0; i < tab.length; i += 1) {
                     const note = pentesterList.filter(
                         (elem) => elem.id === Number(tab[i])
@@ -242,9 +242,12 @@ export default function CreateTeam() {
                             setLabel={setTitle}
                             size="medium"
                         />
-                        <FormControl sx={{
-                                        marginTop:'15px'
-                                    }} fullWidth>
+                        <FormControl
+                            sx={{
+                                marginTop: '15px',
+                            }}
+                            fullWidth
+                        >
                             <InputLabel id="manager-select-label">
                                 Manager
                             </InputLabel>
@@ -256,10 +259,14 @@ export default function CreateTeam() {
                                 onChange={handleChangeMana}
                             >
                                 {managerList.map((name) => (
-                                    <MenuItem sx={{
-                                        fontFamily: 'Poppins-Regular',
-                                        fontSize: '14px',
-                                    }} key={name.id} value={name.id}>
+                                    <MenuItem
+                                        sx={{
+                                            fontFamily: 'Poppins-Regular',
+                                            fontSize: '14px',
+                                        }}
+                                        key={name.id}
+                                        value={name.id}
+                                    >
                                         {name.name}
                                     </MenuItem>
                                 ))}

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import Feedbacks from '../../component/Feedback';
 import '../EditMission/Mission.scss';
 import '../Settings/Settings.scss';
 import {
@@ -15,6 +14,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
@@ -52,7 +52,7 @@ export default function CreateTeam() {
             target: { value },
         } = event;
         setPersonName(typeof value === 'string' ? value.split(',') : value);
-        let tab = [];
+        const tab = [];
         for (let i = 0; i < value.length; i += 1) {
             const note = penList.filter((elem) => elem.id === Number(value[i]));
             tab.push(note[0].name);
