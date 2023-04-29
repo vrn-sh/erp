@@ -3,7 +3,6 @@ import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import * as IoIcons from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
-import scope_list from '../../assets/strings/en/recon.json';
 import {
     Accordion,
     AccordionDetails,
@@ -17,19 +16,19 @@ import Cookies from 'js-cookie';
 import config from '../../config';
 
 export interface IRecon {
-    id: number,
-    updated_at: string,
-    nmap? : INMAP[],
+    id: number;
+    updated_at: string;
+    nmap?: INMAP[];
 }
 
 export interface INMAP {
     nmap: {
-        id: number,
-        ips: string [],
-        ports:  string [],
-        creation_timestamp: string,
-        recon: number
-    },
+        id: number;
+        ips: string[];
+        ports: string[];
+        creation_timestamp: string;
+        recon: number;
+    };
 }
 
 export default function Recon() {
@@ -81,7 +80,6 @@ export default function Recon() {
                 },
             })
             .then((data) => {
-                console.log(data.data.results);
                 setRecon(data.data.results);
             })
             .catch((e) => {
@@ -123,32 +121,55 @@ export default function Recon() {
                                 <AccordionSummary
                                     expandIcon={<IoIcons.IoIosArrowDown />}
                                     aria-controls="panel1bh-content"
-                                    sx={{backgroundColor: 'rgba(0, 0, 0, .02)',}}
+                                    sx={{
+                                        backgroundColor: 'rgba(0, 0, 0, .02)',
+                                    }}
                                     id="panel1bh-header"
                                 >
-                                    <Stack direction="row" spacing={22} justifyContent={'space-between'}>
+                                    <Stack
+                                        direction="row"
+                                        spacing={22}
+                                        justifyContent="space-between"
+                                    >
                                         <p>{s_list.id}</p>
                                         <p>{s_list.updated_at}</p>
                                         <p>{s_list.nmap?.length}</p>
                                     </Stack>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {!s_list.nmap?.length ? <h3 style={{fontFamily: "Poppins-Regular"}} className='centered'>Nothing to show</h3> : 
-                                    <>
-                                    ({s_list!.nmap.map((nmap) => {
-                                        return (
-                                            <Tooltip title="See more" arrow>
-                                                <Chip
-                                                sx={{margin: '8px'}}
-                                                    label={
-                                                        nmap.nmap.creation_timestamp
-                                                    }
-                                                />
-                                            </Tooltip>
-                                        );
-                                    })})
-                                    </>
-                                }
+                                    {!s_list.nmap?.length ? (
+                                        <h3
+                                            style={{
+                                                fontFamily: 'Poppins-Regular',
+                                            }}
+                                            className="centered"
+                                        >
+                                            Nothing to show
+                                        </h3>
+                                    ) : (
+                                        <>
+                                            (
+                                            {s_list!.nmap.map((nmap) => {
+                                                return (
+                                                    <Tooltip
+                                                        title="See more"
+                                                        arrow
+                                                    >
+                                                        <Chip
+                                                            sx={{
+                                                                margin: '8px',
+                                                            }}
+                                                            label={
+                                                                nmap.nmap
+                                                                    .creation_timestamp
+                                                            }
+                                                        />
+                                                    </Tooltip>
+                                                );
+                                            })}
+                                            )
+                                        </>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
                         );
