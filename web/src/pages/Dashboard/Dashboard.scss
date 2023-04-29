@@ -88,11 +88,11 @@ $opacity-transition: opacity;
 .subHeader {
     display: flex;
     flex-direction: row;
-    width: 90%;
-    align-items: flex-start;
+    width: 100%;
+    justify-content: space-between;
 }
 
-.subHeader button {
+.submenu-mission button {
     min-width: 1rem;
     background-color: transparent;
     text-transform: uppercase;
@@ -101,10 +101,24 @@ $opacity-transition: opacity;
     border-radius: 0;
 }
 
-.subHeader button:hover,
-button.active {
+.submenu-mission button:hover, button.active {
     color: var(--primary-hover-btn);
     border-bottom: 1px var(--primary-hover-btn) solid;
+    transition: 0.5s ease-in-out;
+}
+
+.mission_create {
+    min-width: 1rem;
+    background-color: transparent;
+    border: 1px solid var(--primary-btn);
+    color: var(--primary-btn);
+    font-family: 'Poppins-Medium';
+    border-radius: 6px;
+}
+
+.mission_create:hover {
+    background-color: var(--hover-effect);
+    color: var(--primary-btn);
     transition: 0.5s ease-in-out;
 }
 
@@ -116,9 +130,15 @@ table {
 
 td {
     border-bottom: 1px solid var(--gray-btn);
-    padding: 1rem;
+    padding: .7rem;
     font-family: 'Poppins-Light';
-    font-size: 16px;
+    font-size: 14px;
+}
+
+th {
+    font-family: "Poppins-Light";
+    font-size: 14px;
+    padding: .7rem;
 }
 
 table input {
@@ -143,11 +163,28 @@ table input {
     cursor: pointer;
 }
 
-.process-td {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+.borderBtnError {
+    border: 1px #aa3434 solid;
+    color: #da3e3e;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin: 0 0.5rem;
+}
+
+.borderBtnError:hover {
+    background-color: var(--hover-effect);
+    transition: 0.5s ease-in-out;
+}
+
+.process {
+    &-td {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
 
     &-bar {
         position: relative;
@@ -193,6 +230,7 @@ table input {
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
+    align-content: center;
     font-family: 'Poppins-Regular';
 }
 
@@ -270,6 +308,7 @@ table input {
     height: 270px;
     margin-top: 10px;
     border-radius: 5px;
+    font-family: 'Poppins-Light';
 
     &-content {
         overflow: hidden;
@@ -277,6 +316,7 @@ table input {
         height: 120px;
         text-align: start;
         text-overflow: ellipsis;
+        font-family: 14px;
     }
 }
 
@@ -299,10 +339,10 @@ footer {
 }
 
 .close {
-    // background: none;
     border: none;
     cursor: pointer;
     display: flex;
+    justify-content: end;
     height: 16px;
     text-decoration: none;
     width: 16px;
@@ -310,6 +350,10 @@ footer {
     svg {
         width: 16px;
     }
+}
+
+.rotate {
+    transform: rotate(90deg);
 }
 
 .modal-wrapper {
@@ -326,15 +370,15 @@ footer {
 
 .modal-card {
     max-width: 500px;
-        opacity: 1;
-        transform: translateY(-100px);
-        transition: $opacity-transition;
-        width: 100%;
-        z-index: 1;
-        text-align: start;
-        padding: 16px;
-        border-radius: 10px;
-        background-color: white;
+    opacity: 1;
+    transform: translateY(-100px);
+    transition: $opacity-transition;
+    width: 100%;
+    z-index: 1;
+    text-align: start;
+    padding: 16px;
+    border-radius: 10px;
+    background-color: white;
 
     .centered {
         justify-content: center;
@@ -342,7 +386,7 @@ footer {
     }
 }
 
-.modal{
+.modal {
     transition: $opacity-transition;
 
     &:target {
@@ -354,19 +398,16 @@ footer {
         }
     }
 
-    .modal-body {
+    &-body {
         max-width: 500px;
         opacity: 1;
-        transform: translateY(-100px);
-        transition: $opacity-transition;
         width: 100%;
-        z-index: 1;
+        display: flex;
+        justify-content: 'center';
         text-align: start;
         padding: 16px;
-        background-color: white;
     }
 }
-
 
 .button__link {
     background-color: none;
@@ -377,6 +418,11 @@ footer {
     color: var(--gradient-primary-btn);
 }
 
+.centered{
+    transform: translateX(-50%);
+    position: relative;
+    left: 50%;
+}
 
 .btn-block {
     margin-top: 10px;

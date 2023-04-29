@@ -48,9 +48,7 @@ update: ## Updates dependencies
 
 .PHONY: docker
 docker: ## Build the Docker image
-	docker build \
-		--network host \
-		--rm --tag $(DOCKER_LOCAL_IMAGE) .
+	docker build --tag $(DOCKER_LOCAL_IMAGE) .
 
 # Development targets
 # -------------------

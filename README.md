@@ -20,11 +20,8 @@ git clone git@github.com:vrn-sh/erp.git
 
 Currently supported docker-compose version:
 ```bash
-$ docker-compose version
-docker-compose version 1.29.2, build unknown
-docker-py version: 5.0.3
-CPython version: 3.10.9
-OpenSSL version: OpenSSL 3.0.7 1 Nov 2022
+$ docker compose version
+Docker Compose version v2.17.2
 ```
 
 ```bash
@@ -44,7 +41,7 @@ vim .env
 cd ..
 
 # run the containers
-docker-compose up
+docker compose up
 ```
 
 Then, you can use your favorite browser to go to the following address: `http://voron.lan:8080`.

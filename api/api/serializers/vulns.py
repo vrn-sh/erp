@@ -1,14 +1,13 @@
 from datetime import datetime
 from warnings import warn
+from django.core.files.base import ContentFile
 
-from django.db import transaction
 from rest_framework import serializers
-from api.models import Auth
+from io import BytesIO
+import base64
 
-from api.models.vulns import Notes, VulnType, ImageModel, Vulnerability
-from api.serializers import AuthSerializer
-from api.serializers.mission import MissionSerializer
-from api.serializers.utils import create_instance
+from api.services.s3 import client
+from api.models.vulns import Notes, VulnType, Vulnerability
 
 
 class NotesSerializer(serializers.ModelSerializer):
@@ -23,15 +22,31 @@ class VulnTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ImageModel
-        fields = '__all__'
-
-
 class VulnerabilitySerializer(serializers.ModelSerializer):
-    images = ImageSerializer(read_only=True, many=True) # TODO: set read_only=True when s3 is supported
+    images = serializers.ListField(child=serializers.ImageField(), required=False)
 
     class Meta:
         model = Vulnerability
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        s3_client = client()
+        for index, image in enumerate(instance.images):
+            image_data = s3_client.get_object(instance.bucket_name, str(image))
+            image_content = image_data.read()
+            representation['images'][index] = image_content.encode('base64').decode()
+        return representation
+
+    def to_internal_value(self, data):
+        internal_value = super().to_internal_value(data)
+        s3_client = client()
+        images = []
+        for image_data in data.get('images', []):
+            decoded_image = image_data.decode('base64')
+            content_file = ContentFile(decoded_image)
+            image_name = s3_client.presigned_put_object(internal_value.bucket_name, content_file.name)
+            s3_client.put_object(internal_value.bucket_name, image_name, content_file, length=content_file.size)
+            images.append(image_name)
+        internal_value['images'] = images
+        return internal_value

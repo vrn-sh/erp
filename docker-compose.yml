@@ -30,7 +30,7 @@ services:
     networks:
       - db-layer
     volumes:
-      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./volumes/postgres:/var/lib/postgresql/data:delegated
 
   api:
     env_file:
@@ -46,6 +46,18 @@ services:
       - db-layer
       - s3-layer
 
+  memcached:
+   image: memcached
+   ports:
+     - "11211:11211"
+   entrypoint:
+    - memcached
+    - -m 64
+   networks:
+    - api-layer
+   depends_on:
+     - api
+
   web:
     build:
       context: ./web
@@ -59,16 +71,28 @@ services:
     networks:
       - web-layer
 
+  createbuckets:
+    image: quay.io/minio/mc:latest
+    depends_on:
+      - s3
+    env_file:
+      - ./api/.env
+    volumes:
+      - ./services/mc:/tmp/seeds:ro
+    entrypoint: /tmp/seeds/entrypoint.sh
+    networks:
+      - s3-layer
+
   s3:
     image: quay.io/minio/minio:latest
     command: server --console-address ":9001" /data
     ports:
       - "9000"
-      - "9001"
+      - "127.0.0.1:9001:9001"
     env_file:
       - ./api/.env
     volumes:
-      - ./volumes/s3:/data
+      - ./volumes/s3:/data:delegated
     networks:
       - s3-layer
       - api-layer

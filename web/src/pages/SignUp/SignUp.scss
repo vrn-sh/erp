@@ -17,6 +17,16 @@
     text-align: left;
     align-items: center;
 }
+
+.signup-container h2 {
+    font-family: 'Poppins-Black';
+    font-size: 2rem;
+}
+
+.signup-text h1 {
+    font-family: 'Poppins-Regular';
+    font-size: 2.5rem;
+}
 .text-box {
     display: flex;
     flex-direction: column;
@@ -128,6 +138,7 @@ label {
 }
 
 .submit {
+    background-color: transparent;
     margin-left: 20px;
     width: 94%;
     display: flex;
@@ -138,20 +149,25 @@ label {
     position: relative;
     width: 100%;
     margin: 20px;
+
+    & input {
+        padding: 10px 10px;
+        border-radius: 5px;
+        width: 100%;
+        height: 50px;
+
+        font-size: 14px;
+        font-family: 'Poppins-Regular';
+        border-radius: 5px;
+        outline: none;
+        border: 1px solid #9a9a9a;
+    }
 }
 
-.input-block input {
-    padding: 10px 10px;
-    border-radius: 5px;
-
-    width: 100%;
-    height: 50px;
-
-    font-size: 14px;
-    font-family: 'Poppins-Regular';
-    border-radius: 5px;
-    outline: none;
-    border: 1px solid #9a9a9a;
+.form-signup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .placeholder {
@@ -180,7 +196,7 @@ label {
     background: #fff;
 }
 .log-box {
-    margin: 10px 170px;
+    margin-top: 1rem;
     font-family: 'Roboto-Light';
     font-size: 13px;
 }
@@ -203,6 +219,26 @@ label {
 .i:hover {
     background: transparent;
     color: var(--primary-hover-btn);
+}
+
+.role-choose {
+    width: 100%;
+    padding: 10px 0;
+    margin: 0 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.radio-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.radio-container label {
+    margin: 0 10px;
+    padding: 0;
 }
 
 @media screen and (max-width: 1270px) {
