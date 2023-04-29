@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import styles from './ContactForm.module.scss';
 
 interface FormData {
@@ -20,8 +21,23 @@ function ContactForm() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
+        emailjs
+            .sendForm(
+                import.meta.env.VITE_REACT_APP_SERVICE_ID_CONTACT_FORM,
+                import.meta.env.VITE_REACT_APP_TEMP_ID_CONTACT_FORM,
+                e.target,
+                import.meta.env.VITE_REACT_APP_PUBLIC_KEY_CONTACT_FORM
+            )
+            .then(
+                (result) => {
+                    console.log(result.text);
+                },
+                (error) => {
+                    console.log(error.text);
+                }
+            );
     };
 
     return (
@@ -71,7 +87,11 @@ function ContactForm() {
                             required
                         />
                     </div>
-                    <button className={styles.button} type="submit">
+                    <button
+                        className={styles.button}
+                        type="submit"
+                        value="Send"
+                    >
                         Submit
                     </button>
                 </form>
