@@ -4,6 +4,7 @@ import TopBar from '../../component/SideBar/TopBar';
 import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import Scope from './Scope';
+import Recon from './Recon';
 
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
@@ -17,7 +18,7 @@ export default function MissionDetail() {
             return <Scope />;
         }
         if (active === 'recon') {
-            // return <>;
+            return <Recon />;
         }
         return null;
     };
