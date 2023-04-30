@@ -24,7 +24,7 @@ interface SignUpState {
 
 export default function SignUp() {
     const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
-    const [popUp, setPopUp] = useState(true);
+    const [popUp, setPopUp] = useState(false);
     const [conPwdIcon, setConPwdIcon] = useState(
         <AiIcons.AiOutlineEyeInvisible />
     );
