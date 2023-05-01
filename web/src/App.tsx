@@ -16,12 +16,16 @@ import MissionDetail from './pages/MissionDetail/MissionDetail';
 import Team from './pages/Team/Team';
 import CreateTeam from './pages/Team/CreateTeam';
 import EditTeam from './pages/Team/EditTeam';
+import PrivatePolicy from './pages/Home/PrivacyPolicy';
+import TermOfUse from './pages/Home/TermOfUse';
 
 function App() {
     return (
         <div className="container">
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/privacypolicy" element={<PrivatePolicy />} />
+                <Route path="/termofuse" element={<TermOfUse />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />

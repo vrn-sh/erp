@@ -26,8 +26,8 @@ export default function Footer() {
             <p>Contact voron@djnn.sh</p>
             <div className="policy-link">
                 <ul>
-                    <CustomLink to="/">Legal Stuff</CustomLink>
-                    <CustomLink to="/">Privacy Policy</CustomLink>
+                    <CustomLink to="/termofuse">Term of use</CustomLink>
+                    <CustomLink to="/privacypolicy">Privacy Policy</CustomLink>
                     <CustomLink to="/">Security</CustomLink>
                 </ul>
             </div>
