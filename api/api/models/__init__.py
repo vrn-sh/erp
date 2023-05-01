@@ -8,7 +8,7 @@ The following models are present here:
 """
 
 import uuid
-from logging import info
+from logging import info, warn
 import os
 from typing import List, Optional
 
@@ -65,7 +65,7 @@ class Auth(AbstractUser):
     password: models.CharField = models.CharField(max_length=128)
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
-    is_enabled: models.BooleanField = models.BooleanField(default=True)
+    is_enabled: models.BooleanField = models.BooleanField(default=False)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -80,14 +80,14 @@ class Auth(AbstractUser):
         """sends account-confirmation email"""
 
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
-            info(f'Passing send_confirm_email() to {self.email}')
+            warn(f'Passing send_confirm_email() to {self.email}')
             return 1
 
         tmp_token = uuid.uuid4()
         url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
         cache.set(f'{self.email};CONFIRM', tmp_token, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
-        info(f'Sending confirmation email to {self.email}')
+        warn(f'Sending confirmation email to {self.email}')
         return send_mail(
             f'Welcome {self.first_name} !',
             f'Hello and welcome!\nPlease click on the following link to confirm your account: {url}',
@@ -117,7 +117,7 @@ class Auth(AbstractUser):
         )
 
     def save(self, *args, **kwargs) -> None:
-        if self.pk is None:
+        if self.is_enabled is False:
             self.send_confirm_email()
             self.is_enabled = False
         return super().save(*args, **kwargs)
