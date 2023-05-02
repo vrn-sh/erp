@@ -51,10 +51,11 @@ class ResetPasswordView(APIView):
     @swagger_auto_schema(
         operation_description="sets new password",
         manual_parameters=[
-            openapi.Parameter(name="token",
+            openapi.Parameter(
+                "token",
+                "path",
                 required=True,
-                type="string",
-                in_="path",
+                type=openapi.TYPE_STRING,
                 description="account confirmation token",
             ),
         ],
@@ -77,9 +78,8 @@ class ResetPasswordView(APIView):
         new_pass: Optional[str] = request.data.get('password', None)
 
         user: Optional[Auth] = None
-        token_key: str = cache.get('token')
-        if token_key:
-            email = token_key.split(';')[0]
+        email: str = cache.get(token)
+        if email:
             user = Auth.objects.filter(email=email).first()
 
         if not user or not token or not new_pass:
@@ -166,7 +166,7 @@ class ConfirmAccountView(APIView):
             Requests a (new) confirmation email. Expects an email field.
         """
 
-        email = request.GET.get('email')
+        email = request.data.get('email')
         if email is None:
             return Response({
                 'error': 'no email provided',
@@ -188,10 +188,11 @@ class ConfirmAccountView(APIView):
     @swagger_auto_schema(
         operation_description="confirms account using a token and sets new password",
         manual_parameters=[
-            openapi.Parameter(name="token",
+            openapi.Parameter(
+                "token",
+                "path",
                 required=True,
-                type="string",
-                in_="path",
+                type=openapi.TYPE_STRING,
                 description="account confirmation token",
             ),
         ],
@@ -226,9 +227,9 @@ class ConfirmAccountView(APIView):
             }, status=HTTP_400_BAD_REQUEST)
 
         account: Optional[Auth] = None
-        token_key: str = cache.get('token')
-        if token_key:
-            email = token_key.split(';')[0]
+        email: str = cache.get(token)
+
+        if email:
             account = Auth.objects.filter(email=email).first()
 
         if account:
