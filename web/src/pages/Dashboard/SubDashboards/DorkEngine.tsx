@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import * as IoIcons from 'react-icons/io';
 import DorkList from '../../../assets/strings/en/dorks.json';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function DorkEngine() {
     const [tmpDomain, setTmpDomain] = useState('');
@@ -18,8 +19,14 @@ export default function DorkEngine() {
     const handleKeyDown = (event: { key: string }) => {
         if (event.key === 'Enter') {
             setInputDomain(tmpDomain);
+            toast.success('Searching domain');
         }
     };
+
+    const searchDomain = () => {
+        setInputDomain(tmpDomain);
+        toast.success('Searching domain');
+    }
 
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 5;
@@ -47,7 +54,10 @@ export default function DorkEngine() {
 
     return (
         <>
-            <div style={{ marginTop: '4px' }} className="dork_input">
+            <div style={{ marginTop: '4px', justifyContent: 'center' }} className="dork_input">
+                <div>
+                    <Toaster position="top-center" reverseOrder={false} />
+                </div>
                 <label>Target domain</label>
                 <input
                     type="text"
@@ -57,6 +67,13 @@ export default function DorkEngine() {
                     onKeyDown={handleKeyDown}
                     className="dork_input_field"
                 />
+                <button
+                    type="button"
+                    onClick={searchDomain}
+                    className='searchBtn'
+                >
+                    Search
+                </button>
             </div>
             <table style={{ marginTop: '4px' }} className="no_center_container">
                 {records.map((dork) => {
