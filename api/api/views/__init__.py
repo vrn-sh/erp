@@ -4,12 +4,12 @@
 
 from typing import List, Optional, Type
 from django.contrib.auth import authenticate, login
+from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import permissions
 from rest_framework.views import APIView
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.authtoken.models import Token
+from knox.auth import TokenAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import (
@@ -24,7 +24,11 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from api.backends import EmailBackend
-from api.models import Auth
+from api.models import Auth, Manager, Pentester
+
+from knox.views import LoginView as KnoxLoginView
+
+from api.serializers import LoginSerializer
 
 
 class ResetPasswordView(APIView):
@@ -71,16 +75,23 @@ class ResetPasswordView(APIView):
         """
         token: Optional[str] = request.query_params.get('token', None)
         new_pass: Optional[str] = request.data.get('password', None)
-        user: Optional[Auth] = Auth.objects.filter(tmp_token=token).first() if token else None
+
+        user: Optional[Auth] = None
+        token_key: str = cache.get('token')
+        if token_key:
+            email = token_key.split(';')[0]
+            user = Auth.objects.filter(email=email).first()
 
         if not user or not token or not new_pass:
             return Response({
                     'error': 'could not find account',
-                }, status=HTTP_404_NOT_FOUND)
+            }, status=HTTP_404_NOT_FOUND)
+
         success_msg: str = 'password changed. please log in'
         user.set_password(new_pass)
         user.save()
 
+        cache.delete(token)
         return Response({
                 'message': success_msg,
         }, status=HTTP_200_OK)
@@ -115,11 +126,10 @@ class ResetPasswordView(APIView):
                 'error': 'no such account. please register',
             }, status=HTTP_404_NOT_FOUND)
 
-        else:
-            account.send_reset_password_email()
-            return Response({
-                'message': 'email has been sent',
-            }, status=HTTP_200_OK)
+        account.send_reset_password_email()
+        return Response({
+            'message': 'email has been sent',
+        }, status=HTTP_200_OK)
 
 
 class ConfirmAccountView(APIView):
@@ -164,19 +174,15 @@ class ConfirmAccountView(APIView):
 
         email = email.lower()
         user = Auth.objects.filter(email=email).first()
-        if user is not None:
-            if user.is_disabled:
-                user.tmp_token = None
-                user.send_confirm_email()
-                user.save()
-                return Response({
-                    'message': 'success',
-                    'id': user.id
-                }, status=HTTP_200_OK)
+        if user is not None and not user.is_enabled:
+            user.send_confirm_email()
             return Response({
-                'error': 'account is not locked and has already confirmed',
-            }, status=HTTP_403_FORBIDDEN)
-        return Response(status=HTTP_404_NOT_FOUND)
+                'message': 'success',
+                'id': user.id
+            }, status=HTTP_200_OK)
+        return Response({
+            'error': 'this email cannot request confirmation email',
+        }, status=HTTP_403_FORBIDDEN)
 
 
     @swagger_auto_schema(
@@ -219,29 +225,29 @@ class ConfirmAccountView(APIView):
                 'error': 'no password provided',
             }, status=HTTP_400_BAD_REQUEST)
 
-        account = Auth.objects.filter(confirm_token=token).first()
+        account: Optional[Auth] = None
+        token_key: str = cache.get('token')
+        if token_key:
+            email = token_key.split(';')[0]
+            account = Auth.objects.filter(email=email).first()
+
         if account:
-            account.tmp_token = None
-            account.is_disabled = False
+            account.is_enabled = True
             account.set_password(password)
             account.save()
 
-            authenticated_account = EmailBackend().get_user(account.id)
-            token, _ = Token.objects.get_or_create(user=authenticated_account)
-            login(request, authenticated_account)
-
+            cache.delete(token)
             return Response({
-                'token': token.key,
-                'id': account.id,
+                'message': 'success! you may now connect to voron!',
             }, status=HTTP_200_OK)
-        else:
-            return Response({
-                'error': 'no account has been found'
-            }, status=HTTP_404_NOT_FOUND)
+
+        return Response({
+            'error': 'no account has been found'
+        }, status=HTTP_404_NOT_FOUND)
 
 
 
-class LoginView(APIView):
+class LoginView(KnoxLoginView):
     """
         LoginView:
             Logs in any account
@@ -270,69 +276,24 @@ class LoginView(APIView):
     @csrf_exempt
     def post(self, request):
         """Logs in account, after checking if account has been disabled or not"""
-        email = request.data.get("email")
-        password = request.data.get("password")
 
-        if not email or not password:
+        auth_model_dict = [None, Pentester, Manager]
+
+        serializer = LoginSerializer(data=request.data)
+        if not serializer.is_valid():
             return Response({
-                'error': 'login request requires email and password fields',
+                'errors': serializer.errors,
             }, status=HTTP_400_BAD_REQUEST)
 
-        email = email.lower()
-        account = Auth.objects.filter(email=email).first()
-        if not account:
-            return Response({
-                'error': 'no such account',
-            }, status=HTTP_404_NOT_FOUND)
+        auth = serializer.validated_data['user']
+        login(request, auth)
 
-        if account.is_disabled:
-            return Response({
-                'error': 'please confirm account first',
-            }, status=HTTP_403_FORBIDDEN)
+        knox_resp = super().post(request, format=None)
+        user = auth_model_dict[auth.role].objects.get(auth_id=auth.id)
 
-        authenticated_account = authenticate(request, username=email, password=password)
-        if not authenticated_account:
-            return Response({
-                'error': 'incorrect password',
-            }, status=HTTP_403_FORBIDDEN)
-
-        token, _ = Token.objects.get_or_create(user=account)
-        return Response({
-            'token': str(token),
-            'id': account.id,
-        }, status=HTTP_201_CREATED)
-
-
-class LogoutView(APIView):
-    """LogoutView: Logs out account"""
-
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
-
-    @swagger_auto_schema(
-        operation_description="Logs out account",
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=[],
-            properties={
-            },
-        ),
-        security=['Bearer'],
-        tags=['Logout'],
-    )
-
-    @staticmethod
-    def get(request) -> Response:
-        """Just destroys token if it finds one. As simple as it gets."""
-        if hasattr(request.user, 'email'):
-            request.user.auth_token.delete()
-            return Response({
-                'message': 'success',
-            }, status=HTTP_200_OK)
-
-        return Response({
-            'error': 'no account matching your token',
-        }, status=HTTP_404_NOT_FOUND)
+        knox_resp.data['role'] = auth.role
+        knox_resp.data['id'] = user.id
+        return knox_resp
 
 
 class PingView(APIView):

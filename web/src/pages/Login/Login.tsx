@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
+import Cookies from 'js-cookie';
 import config from '../../config';
 
 export default function Login() {
@@ -48,13 +49,26 @@ export default function Login() {
         if (email !== '' && pwd.length > 7) {
             try {
                 await axios
-                    .post(`${config.apiUrl}/login`, {
-                        email,
-                        password: pwd,
-                    })
-                    .then((data) => {
-                        localStorage.setItem("token", data.data.token);
+                    .post(
+                        `${config.apiUrl}/login`,
+                        JSON.stringify({
+                            email,
+                            password: pwd,
+                        }),
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        }
+                    )
+                    .then((e) => {
                         navigate('/dashboard');
+                        Cookies.set('Token', e.data.token, {
+                            expires: Date.parse(e.data.expiry),
+                        });
+                        Cookies.set('Role', e.data.role, {
+                            expires: Date.parse(e.data.expiry),
+                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
@@ -70,18 +84,14 @@ export default function Login() {
             <div className="login-text" id="login-text">
                 <div>
                     <h2>voron</h2>
-                    <h1>{import.meta.env.VITE_REACT_APP_SLOGAN}</h1>
-                    <span className="no-bold">
-                        Lorem ipsum dolor sit amet consectetur. Quis platea
-                        lectus.
-                    </span>
+                    <h1>In efficiency we trust</h1>
                 </div>
             </div>
 
             <div className="login-form" id="login-form">
                 <div className="wrapper">
                     <div className="form-wrapper">
-                        <h2>Welcome back!</h2>
+                        <h2>Welcome back !</h2>
 
                         <div className="form-group">
                             <label>Email</label>

@@ -1,0 +1,33 @@
+.edit-container{
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 20px;
+    display: flex;
+    font-family: 'Arial';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 160%;  
+}
+.edit-form{
+    width: 60%;
+    margin: 20px;
+}
+
+.input-label {
+    font-family: Arial;
+    font-style: "Poppins-regular";
+    color: #737272;
+  }
+
+.cancel-btn{
+    background-color:transparent;
+    color: black;
+    font-weight: bold;
+    border: 1px solid #7C44F3;
+    color: #7C44F3;
+}
+.page-info h2{
+    font-style: 'Roboto';
+}

@@ -1,0 +1,18 @@
+.first-container{
+    display: flex;
+    height: 150px;
+}
+.small-card{
+    background-color:#F4F5F8;
+    width: 100%;
+    margin: 20px;
+    height:fit-content;
+}
+.small-card a {
+    text-decoration: none;
+}
+.sec-container{
+    background-color: #F4F5F8;
+    height: 270px;
+    margin: 10px;
+}

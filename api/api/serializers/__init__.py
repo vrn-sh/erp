@@ -1,11 +1,39 @@
 """This module stores all the basic serializers for user & authentication management"""
 
-from typing import List, OrderedDict
+from typing import Optional, OrderedDict
 from rest_framework import serializers
 from argon2 import PasswordHasher
+from api.backends import EmailBackend
 
 from api.models import Manager, Pentester, Auth, Team
-from api.serializers.utils import create_instance, get_multiple_instances
+from api.serializers.utils import create_instance
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email: Optional[str] = attrs.get("email")
+        password: Optional[str] = attrs.get("password")
+
+        if not email or not password:
+            raise serializers.ValidationError("login request requires email and password fields")
+
+        email = email.lower()
+        account = Auth.objects.filter(email=email).first()
+        if not account:
+            raise serializers.ValidationError("no such account")
+
+        if not account.is_enabled:
+            raise serializers.ValidationError("please confirm account first")
+
+        authenticated_account = EmailBackend().authenticate(None, username=email, password=password)
+        if not authenticated_account:
+            raise serializers.ValidationError("incorrect password")
+
+        return {'user': authenticated_account}
+
 
 class AuthSerializer(serializers.ModelSerializer):
     """Serializer for Base Auth model (should only be used nested in other serializers)"""
@@ -13,7 +41,7 @@ class AuthSerializer(serializers.ModelSerializer):
         model = Auth
         fields = [
             'username', 'email', 'first_name', 'last_name',
-            'last_login', 'date_joined', 'password', 'phone_number'
+            'last_login', 'date_joined', 'password', 'phone_number', 'role'
         ]
 
     def update(self, instance, validated_data) -> Auth:
@@ -85,14 +113,13 @@ class ManagerSerializer(serializers.ModelSerializer):
 class TeamSerializer(serializers.ModelSerializer):
     """nested serializer for a Team (which allows Pentester creation)"""
 
-    def to_representation(self, instance):
-       ret = super().to_representation(instance)
-       ret['members'] = PentesterSerializer(instance.members, many=True).data
-       ret['leader'] = ManagerSerializer(instance.leader).data
-       return ret
-
     class Meta:
         model = Team
-        fields = [
-            'id', 'leader', 'members',
-        ]
+        fields = ['id', 'leader', 'members', 'name']
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['members'] = PentesterSerializer(instance.members, many=True).data
+        ret['leader'] = ManagerSerializer(instance.leader).data
+        return ret
+

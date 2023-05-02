@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
+// import axios from 'axios';
 import SideBarData from './SideBarData';
 import { ICardItem } from './SideBarMenu.type';
-import axios from 'axios';
 import config from '../../config';
 
 const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
@@ -50,23 +50,22 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
 
 export default function SideBar() {
     const navigate = useNavigate();
-    const t = localStorage.getItem("token");
-    const headers = { 'Authorization': `Token ${t}` };
-    const logout = async () => {
-        try {
-            await axios
-                .get(`${config.apiUrl}/logout`, {headers})
-                .then(() => {
-                    localStorage.removeItem('token');
-                    navigate('/');
-                    console.log("ok")
-                })
-                .catch(() => {
-                });
-        } catch(e) {
-            console.log(e)
-        }
-    };
+    const t = localStorage.getItem('token');
+    const headers = { Authorization: `Token ${t}` };
+    // const logout = async () => {
+    //     try {
+    //         await axios
+    //             .get(`${config.apiUrl}/logout`, { headers })
+    //             .then(() => {
+    //                 localStorage.removeItem('token');
+    //                 navigate('/');
+    //                 console.log('ok');
+    //             })
+    //             .catch(() => {});
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // };
 
     return (
         <div className="sidebar">
@@ -80,13 +79,13 @@ export default function SideBar() {
             </div>
 
             <div className="sidebar-tool">
-                <div className="sidebar-link-bottom">
+                <Link to="/settings" className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiSettings />
                         <span className="menu-txt">Settings</span>
                     </div>
-                </div>
-                <div className="sidebar-link-bottom" onClick={logout}>
+                </Link>
+                <div className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiLogOut />
                         <span className="menu-txt">Disconnect</span>

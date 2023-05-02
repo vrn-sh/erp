@@ -1,12 +1,17 @@
 name: deploy to prod
 
 on:
+  workflow_run:
+    workflows: ["frontend-lint", "api-unit-tests", "docker-compose-test"]
+    branches: [current]
+    types:
+      - completed
   push:
     branches:
       - "current"
-    workflow_dispatch:
 
 jobs:
+
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -26,4 +31,5 @@ jobs:
           git pull origin current
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker image prune -af
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S rm -rf ./volumes && docker volume prune -f # will be removed once ready for production
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose up -d

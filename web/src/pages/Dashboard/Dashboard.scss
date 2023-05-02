@@ -1,3 +1,5 @@
+$opacity-transition: opacity;
+
 @mixin non-margin-padding {
     padding: 0;
     margin: 0;
@@ -86,11 +88,11 @@
 .subHeader {
     display: flex;
     flex-direction: row;
-    width: 90%;
-    align-items: flex-start;
+    width: 100%;
+    justify-content: space-between;
 }
 
-.subHeader button {
+.submenu-mission button {
     min-width: 1rem;
     background-color: transparent;
     text-transform: uppercase;
@@ -99,10 +101,24 @@
     border-radius: 0;
 }
 
-.subHeader button:hover,
-button.active {
+.submenu-mission button:hover, button.active {
     color: var(--primary-hover-btn);
     border-bottom: 1px var(--primary-hover-btn) solid;
+    transition: 0.5s ease-in-out;
+}
+
+.mission_create {
+    min-width: 1rem;
+    background-color: transparent;
+    border: 1px solid var(--primary-btn);
+    color: var(--primary-btn);
+    font-family: 'Poppins-Medium';
+    border-radius: 6px;
+}
+
+.mission_create:hover {
+    background-color: var(--hover-effect);
+    color: var(--primary-btn);
     transition: 0.5s ease-in-out;
 }
 
@@ -114,9 +130,15 @@ table {
 
 td {
     border-bottom: 1px solid var(--gray-btn);
-    padding: 1rem;
+    padding: .7rem;
     font-family: 'Poppins-Light';
-    font-size: 16px;
+    font-size: 14px;
+}
+
+th {
+    font-family: "Poppins-Light";
+    font-size: 14px;
+    padding: .7rem;
 }
 
 table input {
@@ -141,12 +163,29 @@ table input {
     cursor: pointer;
 }
 
-.process-td {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    
+.borderBtnError {
+    border: 1px #aa3434 solid;
+    color: #da3e3e;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin: 0 0.5rem;
+}
+
+.borderBtnError:hover {
+    background-color: var(--hover-effect);
+    transition: 0.5s ease-in-out;
+}
+
+.process {
+    &-td {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
     &-bar {
         position: relative;
         width: 10rem;
@@ -191,6 +230,7 @@ table input {
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
+    align-content: center;
     font-family: 'Poppins-Regular';
 }
 
@@ -231,7 +271,7 @@ table input {
 
 .dork_link {
     text-decoration: none;
-    font-family: "Poppins-Regular";
+    font-family: 'Poppins-Regular';
     color: var(--black);
     cursor: pointer;
 }
@@ -250,4 +290,177 @@ table input {
 .crt_tr {
     font-family: "Poppins-Regular";
     font-size: 15px;
+}
+//Notes
+
+.container-note {
+    overflow-y: scroll;
+    padding: 10px;
+    scrollbar-color: var(--primary-btn);
+    scrollbar-width: thin;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-gap: 30px;
+}
+
+.card {
+    display: grid;
+    grid-template-rows: max-content 200px 1fr;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 250px;
+    height: 270px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-family: 'Poppins-Light';
+
+    &-content {
+        overflow: hidden;
+        padding: 2px 16px;
+        height: 120px;
+        text-align: start;
+        text-overflow: ellipsis;
+        font-family: 14px;
+    }
+}
+
+.card:hover {
+    box-shadow: 0 8px 18px 0 rgba(0, 0, 0, 0.2);
+}
+
+footer {
+    display: flex;
+    justify-content: start;
+    padding: 8px 16px;
+    border-radius: 0px 0px 5px 5px;
+    justify-content: space-around;
+}
+
+.modal-header {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+}
+
+.close {
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: end;
+    height: 16px;
+    text-decoration: none;
+    width: 16px;
+
+    svg {
+        width: 16px;
+    }
+}
+
+.rotate {
+    transform: rotate(90deg);
+}
+
+.modal-wrapper {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.219);
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+.modal-card {
+    max-width: 500px;
+    opacity: 1;
+    transform: translateY(-100px);
+    transition: $opacity-transition;
+    width: 100%;
+    z-index: 1;
+    text-align: start;
+    padding: 16px;
+    border-radius: 10px;
+    background-color: white;
+
+    .centered {
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.modal {
+    transition: $opacity-transition;
+
+    &:target {
+        opacity: 1;
+        visibility: visible;
+
+        .modal-body {
+            transform: translateY(1);
+        }
+    }
+
+    &-body {
+        max-width: 500px;
+        opacity: 1;
+        width: 100%;
+        display: flex;
+        justify-content: 'center';
+        text-align: start;
+        padding: 16px;
+    }
+}
+
+.button__link {
+    background-color: none;
+    color: var(--primary-btn);
+}
+
+.button__link:hover {
+    color: var(--gradient-primary-btn);
+}
+
+.centered{
+    transform: translateX(-50%);
+    position: relative;
+    left: 50%;
+}
+
+.btn-block {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex-direction: row;
+    justify-content: space-evenly;
+    display: flex;
+}
+
+.btn {
+    min-width: 20px;
+    width: 35%;
+    height: 35px;
+    border-radius: 10px;
+    text-align: center;
+    align-items: center;
+}
+
+.btn:hover {
+    background: var(--gradient-primary-btn);
+    color: white;
+}
+
+.submit {
+    color: white;
+    background-color: var(--primary-btn);
+}
+
+.cancel {
+    border: 1px solid black;
+    border-color: var(--primary-btn);
+    color: var(--primary-btn);
+    background-color: white;
 }

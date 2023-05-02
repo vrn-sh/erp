@@ -5,7 +5,7 @@ from faker import Faker
 from rest_framework.test import APIClient
 from api.models import Manager, Pentester, Auth
 
-from api.tests.helpers import create_random_pentester, create_random_manager, random_user_password, login_as
+from api.tests.helpers import create_random_pentester, create_random_manager, default_user_password, login_as
 
 
 class TeamTestCase(TransactionTestCase):
@@ -24,7 +24,7 @@ class TeamTestCase(TransactionTestCase):
         """
         client: APIClient = APIClient()
 
-        auth_token: str = login_as(self.manager.auth.email, random_user_password())
+        auth_token: str = login_as(self.manager.auth.email, default_user_password())
         client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
 
         # preparing fake data

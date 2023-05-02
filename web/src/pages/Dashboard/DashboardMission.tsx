@@ -3,6 +3,7 @@ import './Dashboard.scss';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
 import CrtSh from './SubDashboards/CrtSh';
+import Notes from './SubDashboards/Notes/Notes';
 
 function MissionSubMenu(props: any) {
     const tmp = props;
@@ -34,6 +35,9 @@ function DashboardMission() {
         if (active === 'dork') {
             return <DorkEngine />;
         }
+        if (active === 'note') {
+            return <Notes />;
+        }
         if (active === 'crt') {
             return <CrtSh />;
         }
@@ -49,41 +53,43 @@ function DashboardMission() {
             <h1>Assigned missions</h1>
             <div className="dashboard-content">
                 <div className="subHeader">
-                    <MissionSubMenu
-                        key_p="1"
-                        id_p="main"
-                        active={active}
-                        handleClick={handleClick}
-                        title="Main"
-                    />
-                    <MissionSubMenu
-                        key_p="2"
-                        id_p="note"
-                        active={active}
-                        handleClick={handleClick}
-                        title="Note"
-                    />
-                    <MissionSubMenu
-                        key_p="3"
-                        id_p="vuln"
-                        active={active}
-                        handleClick={handleClick}
-                        title="Vulnerability"
-                    />
-                    <MissionSubMenu
-                        key_p="4"
-                        id_p="dork"
-                        active={active}
-                        handleClick={handleClick}
-                        title="Dork Engine"
-                    />
-                    <MissionSubMenu
-                        key_p="5"
-                        id_p="crt"
-                        active={active}
-                        handleClick={handleClick}
-                        title="crt.sh"
-                    />
+                    <div className="submenu-mission">
+                        <MissionSubMenu
+                            key_p="1"
+                            id_p="main"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Main"
+                        />
+                        <MissionSubMenu
+                            key_p="2"
+                            id_p="note"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Note"
+                        />
+                        <MissionSubMenu
+                            key_p="3"
+                            id_p="vuln"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Vulnerability"
+                        />
+                        <MissionSubMenu
+                            key_p="4"
+                            id_p="dork"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Dork Engine"
+                        />
+                        <MissionSubMenu
+                            key_p="5"
+                            id_p="crt"
+                            active={active}
+                            handleClick={handleClick}
+                            title="crt.sh"
+                        />
+                    </div>
                 </div>
                 {getSubDashboard()}
             </div>

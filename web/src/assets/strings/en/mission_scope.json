@@ -1,0 +1,53 @@
+{
+    "scope": [
+        {
+            "id": 1,
+            "name": "https://evil.djnn.sh",
+            "bages": [
+                "ReactJs",
+                "SQLI",
+                "XSS"
+            ]
+        },
+        {
+            "id": 2,
+            "name": "https://github.com/bogdzn/gork",
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 3,
+            "name": "https://github.com/vrn-sh/erp",
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 4,
+            "name": "https://voron.djnn.sh",
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 5,
+            "name": "https://github.com/bogdzn/gork",
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        },
+        {
+            "id": 6,
+            "name": "https://github.com/bogdzn/gork",
+            "bages": [
+                "XSS",
+                "LFI"
+            ]
+        }
+    ]
+}

@@ -22,7 +22,7 @@ export default function DorkEngine() {
     };
 
     const [currentPage, setCurrentPage] = useState(1);
-    const recordsPerPage = 3;
+    const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
     const records = DorkList.dorks.slice(firstIndex, lastIndex);
@@ -47,7 +47,7 @@ export default function DorkEngine() {
 
     return (
         <>
-            <div className="dork_input">
+            <div style={{ marginTop: '4px' }} className="dork_input">
                 <label>Target domain</label>
                 <input
                     type="text"
@@ -58,7 +58,7 @@ export default function DorkEngine() {
                     className="sub_input_field"
                 />
             </div>
-            <table className="no_center_container">
+            <table style={{ marginTop: '4px' }} className="no_center_container">
                 {records.map((dork) => {
                     return (
                         <tbody key={dork[0].id}>
