@@ -56,6 +56,8 @@ jobs:
 
           SENDGRID_API_KEY: something
           SENDGRID_SENDER: important.person@email.com
+          SENDGRID_CONFIRM_TEMPLATE_ID: d-1234567890
+          SENDGRID_RESET_TEMPLATE_ID: d-1234567890
 
         run: |
             cd api
