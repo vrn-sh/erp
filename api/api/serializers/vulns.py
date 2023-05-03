@@ -6,7 +6,7 @@ from rest_framework import serializers
 from io import BytesIO
 import base64
 
-from api.services.s3 import client
+from api.services.s3 import S3Bucket
 from api.models.vulns import Notes, VulnType, Vulnerability
 
 
@@ -31,7 +31,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        s3_client = client()
+        s3_client = S3Bucket()
         for index, image in enumerate(instance.images):
             image_data = s3_client.get_object(instance.bucket_name, str(image))
             image_content = image_data.read()
@@ -40,13 +40,12 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         internal_value = super().to_internal_value(data)
-        s3_client = client()
+        s3_client = S3Bucket()
         images = []
         for image_data in data.get('images', []):
             decoded_image = image_data.decode('base64')
             content_file = ContentFile(decoded_image)
-            image_name = s3_client.presigned_put_object(internal_value.bucket_name, content_file.name)
-            s3_client.put_object(internal_value.bucket_name, image_name, content_file, length=content_file.size)
+            image_name = s3_client.upload_file(internal_value.bucket_name, content_file.name, content_file)
             images.append(image_name)
         internal_value['images'] = images
         return internal_value
