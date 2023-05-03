@@ -8,7 +8,7 @@ The following models are present here:
 """
 
 import uuid
-from logging import info
+from logging import info, warning
 import os
 from typing import List, Optional
 
@@ -21,7 +21,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.cache import cache
-from services import sendgrid_mail
+
+from api.services.sendgrid_mail import *
 
 MAX_TITLE_LENGTH = 256
 MAX_NOTE_LENGTH = 8186
@@ -66,7 +67,7 @@ class Auth(AbstractUser):
     password: models.CharField = models.CharField(max_length=128)
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
-    is_enabled: models.BooleanField = models.BooleanField(default=True)
+    is_enabled: models.BooleanField = models.BooleanField(default=False)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -81,8 +82,13 @@ class Auth(AbstractUser):
         """sends account-confirmation email"""
 
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
-            info(f'Passing send_confirm_email() to {self.email}')
+            warning(f'Passing send_confirm_email() to {self.email}')
             return 1
+
+        tmp_token = uuid.uuid4().hex
+        url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
+        cache.set(tmp_token, self.email, CONFIRM_TOKEN_TIMEOUT_SECONDS)
+
 
         mail = sendgrid_mail.SendgridClient([self.email])
         mail.set_template_data({
@@ -91,9 +97,6 @@ class Auth(AbstractUser):
             'url': f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
         })
         mail.set_template_id(os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID'))
-
-        tmp_token = uuid.uuid4()
-        cache.set(f'{self.email};CONFIRM', tmp_token, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
         info(f'Sending confirmation email to {self.email}')
         return mail.send()
@@ -105,6 +108,11 @@ class Auth(AbstractUser):
             info(f'Passing send_reset_password_email() to {self.email}')
             return 1
 
+        tmp_token = uuid.uuid4().hex
+        url = f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
+        cache.set(tmp_token, self.email, RESETPW_TOKEN_TIMEOUT_SECONDS)
+
+
         mail = sendgrid_mail.SendgridClient([self.email])
         mail.set_template_data({
             'username': self.first_name,
@@ -113,16 +121,13 @@ class Auth(AbstractUser):
         })
         mail.set_template_id(os.environ.get('SENDGRID_RESET_TEMPLATE_ID'))
 
-        tmp_token = uuid.uuid4()
-        cache.set(f'{self.email};RESETPW', tmp_token, RESETPW_TOKEN_TIMEOUT_SECONDS)
-
         info(f'Sending reset password email to {self.email}')
         return mail.send()
 
+
     def save(self, *args, **kwargs) -> None:
-        if self.pk is None:
+        if self.is_enabled is False:
             self.send_confirm_email()
-            self.is_enabled = False
         return super().save(*args, **kwargs)
 
 

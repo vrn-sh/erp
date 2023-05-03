@@ -25,12 +25,12 @@ type InputProps = {
     label: string;
     labelState: any;
     setLabel: React.Dispatch<React.SetStateAction<string>>;
-    size: InputSizes;
+    size: string;
 };
 
-function Input({ label, labelState, setLabel, size }: InputProps) {
+export function Input({ label, labelState, setLabel, size }: InputProps) {
     return (
-        <div className={`input input-${size}`}>
+        <div className={`input input-${size as InputSizes}`}>
             <label htmlFor={`input-${label}`} className="input-label">
                 {label}
             </label>
