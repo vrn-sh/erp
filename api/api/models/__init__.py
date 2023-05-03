@@ -8,7 +8,7 @@ The following models are present here:
 """
 
 import uuid
-from logging import info
+from logging import info, warning
 import os
 from typing import List, Optional
 
@@ -65,7 +65,7 @@ class Auth(AbstractUser):
     password: models.CharField = models.CharField(max_length=128)
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
-    is_enabled: models.BooleanField = models.BooleanField(default=True)
+    is_enabled: models.BooleanField = models.BooleanField(default=False)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -80,17 +80,17 @@ class Auth(AbstractUser):
         """sends account-confirmation email"""
 
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
-            info(f'Passing send_confirm_email() to {self.email}')
+            warning(f'Passing send_confirm_email() to {self.email}')
             return 1
 
-        tmp_token = uuid.uuid4()
+        tmp_token = uuid.uuid4().hex
         url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
-        cache.set(f'{self.email};CONFIRM', tmp_token, CONFIRM_TOKEN_TIMEOUT_SECONDS)
+        cache.set(tmp_token, self.email, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
-        info(f'Sending confirmation email to {self.email}')
+        warning(f'Sending confirmation email to {self.email}')
         return send_mail(
             f'Welcome {self.first_name} !',
-            f'Hello and welcome!\nPlease click on the following link to confirm your account: {url}',
+            f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
             os.environ['SENDGRID_SENDER'],
             [self.email],
             fail_silently=False,
@@ -103,23 +103,22 @@ class Auth(AbstractUser):
             info(f'Passing send_reset_password_email() to {self.email}')
             return 1
 
-        tmp_token = uuid.uuid4()
+        tmp_token = uuid.uuid4().hex
         url = f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
-        cache.set(f'{self.email};RESETPW', tmp_token, RESETPW_TOKEN_TIMEOUT_SECONDS)
+        cache.set(tmp_token, self.email, RESETPW_TOKEN_TIMEOUT_SECONDS)
 
-        info(f'Sending password-reset email to {self.email}')
+        warning(f'Sending password-reset email to {self.email}')
         return send_mail(
             f'{self.first_name}, reset your password',
-            f'Please click on the following link to reset your password: {url}',
+            f'Hello there\nPlease click on this link to reset your password: {url}',
             os.environ['SENDGRID_SENDER'],
             [self.email],
             fail_silently=False,
         )
 
     def save(self, *args, **kwargs) -> None:
-        if self.pk is None:
+        if self.is_enabled is False:
             self.send_confirm_email()
-            self.is_enabled = False
         return super().save(*args, **kwargs)
 
 
