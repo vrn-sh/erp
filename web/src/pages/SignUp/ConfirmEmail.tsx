@@ -9,7 +9,8 @@ export default function ConfirmEmail() {
     const [query, setQuery] = useSearchParams();
     const token = query.get('token');
     const [confirmed, setConfirmed] = useState(false);
-    const pwd = localStorage.getItem('pwd');
+    const user = localStorage.getItem('user_info');
+    const pwd = user !== null ? JSON.parse(user).password : '';
 
     const confirmFun = async () => {
         try {
@@ -35,7 +36,6 @@ export default function ConfirmEmail() {
                 <div>
                     <h2>voron</h2>
                     <h1>In efficiency we trust</h1>
-                    <p>{token}</p>
                 </div>
             </div>
 

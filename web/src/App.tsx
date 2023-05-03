@@ -26,10 +26,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />
-                <Route
-                    path="/sign_up/confirm_email"
-                    element={<ConfirmEmail />}
-                />
+                <Route path="/confirm" element={<ConfirmEmail />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/vuln/add" element={<AddVulnerability />} />
                 <Route path="/settings" element={<Settings />} />

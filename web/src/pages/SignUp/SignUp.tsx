@@ -82,7 +82,6 @@ export default function SignUp() {
 
     useEffect(() => {
         localStorage.setItem('user_info', JSON.stringify(state));
-        localStorage.setItem('pwd', JSON.stringify(state.password));
     }, [state]);
 
     const submit = async () => {
