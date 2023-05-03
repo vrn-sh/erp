@@ -16,6 +16,7 @@ import MissionDetail from './pages/MissionDetail/MissionDetail';
 import Team from './pages/Team/Team';
 import CreateTeam from './pages/Team/CreateTeam';
 import EditTeam from './pages/Team/EditTeam';
+import ConfirmEmail from './pages/SignUp/ConfirmEmail';
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />
+                <Route path="/confirm" element={<ConfirmEmail />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/vuln/add" element={<AddVulnerability />} />
                 <Route path="/settings" element={<Settings />} />
