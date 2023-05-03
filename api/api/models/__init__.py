@@ -21,6 +21,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.core.cache import cache
+from services import sendgrid_mail
 
 MAX_TITLE_LENGTH = 256
 MAX_NOTE_LENGTH = 8186
@@ -83,19 +84,15 @@ class Auth(AbstractUser):
             info(f'Passing send_confirm_email() to {self.email}')
             return 1
 
-        mail = EmailMultiAlternatives(
-            subject=f'Welcome {self.first_name} !',
-            body=f'Hello and welcome!\nPlease click on the following link to confirm your account: %url%',
-            from_email=os.environ['SENDGRID_SENDER'],
-            to=[self.email],
-            headers={"Reply-To": os.environ('SENDGRID_SENDER')}
-        )
+        mail = sendgrid_mail.SendgridClient([self.email])
+        mail.set_template_data({
+            'username': self.first_name,
+            'email': self.email,
+            'url': f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
+        })
+        mail.set_template_id(os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID'))
 
-        mail.template_id = 'd-6ad1bd16e88e4358951fbfac3a2914c5'
         tmp_token = uuid.uuid4()
-        url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
-        mail.substitutions = {'%username': self.first_name, '%email%': self.email, '%url%': url}
-
         cache.set(f'{self.email};CONFIRM', tmp_token, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
         info(f'Sending confirmation email to {self.email}')
@@ -108,17 +105,15 @@ class Auth(AbstractUser):
             info(f'Passing send_reset_password_email() to {self.email}')
             return 1
 
-        mail = EmailMultiAlternatives(
-            subject=f'{self.first_name}, reset your password',
-            body=f'Hello {self.first_name}!\nPlease click on the following link to reset your password: %url%',
-            from_email=os.environ['SENDGRID_SENDER'],
-            to=[self.email],
-            headers={"Reply-To": os.environ('SENDGRID_SENDER')}
-        )
-        mail.template_id = 'd-6ad1bd16e88e4358951fbfac3a2914c5'
+        mail = sendgrid_mail.SendgridClient([self.email])
+        mail.set_template_data({
+            'username': self.first_name,
+            'email': self.email,
+            'url': f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
+        })
+        mail.set_template_id(os.environ.get('SENDGRID_RESET_TEMPLATE_ID'))
+
         tmp_token = uuid.uuid4()
-        url = f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
-        mail.substitutions = {'%username': self.first_name, '%email%': self.email, '%url%': url}
         cache.set(f'{self.email};RESETPW', tmp_token, RESETPW_TOKEN_TIMEOUT_SECONDS)
 
         info(f'Sending reset password email to {self.email}')
