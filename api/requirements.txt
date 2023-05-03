@@ -15,6 +15,8 @@ minio==7.1.14
 django-storages==1.13.2
 boto3==1.26.114
 sendgrid==6.10.0
+pymemcache==4.0.0
+
 
 pylint
 prospector

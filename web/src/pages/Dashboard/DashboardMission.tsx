@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import './Dashboard.scss';
-import { useNavigate } from 'react-router-dom';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
-import Notes from './SubDashboards/Notes';
+import Notes from './SubDashboards/Notes/Notes';
 
 function DashboardMission() {
     const [active, setActive] = useState('main');
-    const navigate = useNavigate();
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
@@ -25,14 +23,6 @@ function DashboardMission() {
         }
         return null;
     };
-
-    const addMission = () => {
-        navigate('/mission/create');
-    };
-
-    // const updatePercent = (n: number) => {
-    //     setFinish(n);
-    // }; // need to add setFinish on line 12
 
     return (
         <div className="dashboard-table">
@@ -77,13 +67,6 @@ function DashboardMission() {
                             Dork Engine
                         </button>
                     </div>
-                    <button
-                        type="button"
-                        className="mission_create"
-                        onClick={addMission}
-                    >
-                        Add mission
-                    </button>
                 </div>
                 {getSubDashboard()}
             </div>

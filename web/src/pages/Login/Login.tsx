@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
+import Cookies from 'js-cookie';
 import config from '../../config';
 
 export default function Login() {
@@ -60,8 +61,14 @@ export default function Login() {
                             },
                         }
                     )
-                    .then(() => {
+                    .then((e) => {
                         navigate('/dashboard');
+                        Cookies.set('Token', e.data.token, {
+                            expires: Date.parse(e.data.expiry),
+                        });
+                        Cookies.set('Role', e.data.role, {
+                            expires: Date.parse(e.data.expiry),
+                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');

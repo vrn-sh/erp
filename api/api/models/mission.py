@@ -11,6 +11,7 @@ from api.models.utils import NmapPortField
 from api.services.s3 import create_bucket
 
 
+
 class Recon(models.Model):
     """
         Recon model
@@ -27,6 +28,20 @@ class Recon(models.Model):
     REQUIRED_FIELDS = []
 
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
+
+
+class CrtSh(models.Model):
+    """
+        Model responsible for reading crt.sh API results
+    """
+
+    class Meta:
+        verbose_name = 'crt.sh'
+
+    REQUIRED_FIELDS = ['dump', 'recon']
+
+    dump = models.TextField()
+    recon = models.ForeignKey(Recon, on_delete=models.CASCADE)
 
 
 class NmapScan(models.Model):

@@ -41,7 +41,7 @@ class AuthSerializer(serializers.ModelSerializer):
         model = Auth
         fields = [
             'username', 'email', 'first_name', 'last_name',
-            'last_login', 'date_joined', 'password', 'phone_number'
+            'last_login', 'date_joined', 'password', 'phone_number', 'role'
         ]
 
     def update(self, instance, validated_data) -> Auth:
@@ -113,14 +113,13 @@ class ManagerSerializer(serializers.ModelSerializer):
 class TeamSerializer(serializers.ModelSerializer):
     """nested serializer for a Team (which allows Pentester creation)"""
 
+    class Meta:
+        model = Team
+        fields = ['id', 'leader', 'members', 'name']
+
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['members'] = PentesterSerializer(instance.members, many=True).data
         ret['leader'] = ManagerSerializer(instance.leader).data
         return ret
 
-    class Meta:
-        model = Team
-        fields = [
-            'id', 'leader', 'members',
-        ]
