@@ -88,7 +88,6 @@ export default function SignUp() {
         const { username, email, role, password } = state;
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
-                console.log('here?');
                 await axios
                     .post(`${config.apiUrl}/register`, {
                         auth: {
@@ -130,14 +129,11 @@ export default function SignUp() {
                     email: state.email,
                 })
                 .then(() => {
-                    console.log('success');
                     toast.success('Email verification sent');
                 })
-                .catch(() => {
-                    console.log(`${state.email}?`);
-                });
+                .catch(() => {});
         } catch (e) {
-            console.log(`${state.email}?`);
+            console.log(e);
         }
     };
 
