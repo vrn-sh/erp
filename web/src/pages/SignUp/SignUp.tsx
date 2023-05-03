@@ -82,12 +82,14 @@ export default function SignUp() {
 
     useEffect(() => {
         localStorage.setItem('user_info', JSON.stringify(state));
+        localStorage.setItem('pwd', JSON.stringify(state.password));
     }, [state]);
 
     const submit = async () => {
         const { username, email, role, password } = state;
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
+                console.log("here?");
                 await axios
                     .post(`${config.apiUrl}/register`, {
                         auth: {
@@ -99,6 +101,7 @@ export default function SignUp() {
                     })
                     .then(() => {
                         toast.success('Email verification sent');
+                        setPopUp(true);
                     })
                     .catch(() => {
                         setState({
@@ -120,6 +123,24 @@ export default function SignUp() {
             }
         }
     };
+
+    const confirmUpdate = async() => {
+        try {
+            await axios
+                .put(`${config.apiUrl}/confirm`, {
+                    email: state.email
+                })
+                .then(() => {
+                    console.log("success")
+                    toast.success("Email verification sent")
+                })
+                .catch(() => {
+                    console.log(`${state.email}?`);
+                })
+        } catch(e) {
+            console.log(`${state.email}?`);
+        }
+    }
 
     const handleShowPassword = () => {
         if (pwdType === 'password') {
@@ -307,7 +328,7 @@ export default function SignUp() {
                         <button
                             type="button"
                             className="sendBtn"
-                            onClick={submit}
+                            onClick={confirmUpdate}
                         >
                             Didn't receive, send again
                         </button>
