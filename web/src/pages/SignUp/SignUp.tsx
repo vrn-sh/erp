@@ -89,7 +89,7 @@ export default function SignUp() {
         const { username, email, role, password } = state;
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
-                console.log("here?");
+                console.log('here?');
                 await axios
                     .post(`${config.apiUrl}/register`, {
                         auth: {
@@ -124,23 +124,23 @@ export default function SignUp() {
         }
     };
 
-    const confirmUpdate = async() => {
+    const confirmUpdate = async () => {
         try {
             await axios
                 .put(`${config.apiUrl}/confirm`, {
-                    email: state.email
+                    email: state.email,
                 })
                 .then(() => {
-                    console.log("success")
-                    toast.success("Email verification sent")
+                    console.log('success');
+                    toast.success('Email verification sent');
                 })
                 .catch(() => {
                     console.log(`${state.email}?`);
-                })
-        } catch(e) {
+                });
+        } catch (e) {
             console.log(`${state.email}?`);
         }
-    }
+    };
 
     const handleShowPassword = () => {
         if (pwdType === 'password') {
