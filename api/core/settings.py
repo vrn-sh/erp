@@ -145,11 +145,7 @@ if os.environ.get('PRODUCTION', '0') == '1':
     }
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
     DEBUG = False
-    ALLOWED_HOSTS = [
-            'server',
-            'localhost',
-            os.environ["DOMAIN_NAME",
-            ]
+    ALLOWED_HOSTS = ['server', 'localhost', os.environ["DOMAIN_NAME"]]
     CORS_ALLOWED_ORIGIN_REGEXES = [
         f'{os.environ.get("DOMAIN_NAME")}',
     ]
