@@ -47,6 +47,7 @@ class TeamTestCase(TransactionTestCase):
                 'start': '2022-01-01',
                 'end': '2024-01-01',
                 'team': team_id,
+                'scope': ["*.djnn.sh", "10.10.0.1/24"],
             }
         )
         self.assertEqual(response.status_code, 201)
