@@ -58,7 +58,7 @@ class SendgridClient:
             return
 
         try:
-            response = self.sendgrid_client.send(self.mail)
+            return self.sendgrid_client.send(self.mail)
         except Exception as error:
             self.logger.exception(error)
             raise error

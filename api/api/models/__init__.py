@@ -19,10 +19,10 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.core.cache import cache
 
-from api.services.sendgrid_mail import *
+from api.services.sendgrid_mail import SendgridClient, SendgridParameters
 
 MAX_TITLE_LENGTH = 256
 MAX_NOTE_LENGTH = 8186
@@ -89,17 +89,27 @@ class Auth(AbstractUser):
         url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
         cache.set(tmp_token, self.email, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
+        warning(f'Sending confirmation email to {self.email}')
+        return send_mail(
+            f'Welcome {self.first_name} !',
+            f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
+            os.environ['SENDGRID_SENDER'],
+            [self.email],
+            fail_silently=False,
+        )
 
-        mail = sendgrid_mail.SendgridClient([self.email])
+        """
+        mail = SendgridClient([self.email])
         mail.set_template_data({
             'username': self.first_name,
             'email': self.email,
-            'url': f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
+            'url': url
         })
         mail.set_template_id(os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID'))
 
         info(f'Sending confirmation email to {self.email}')
         return mail.send()
+        """
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
@@ -112,17 +122,27 @@ class Auth(AbstractUser):
         url = f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
         cache.set(tmp_token, self.email, RESETPW_TOKEN_TIMEOUT_SECONDS)
 
+        warning(f'Sending password-reset email to {self.email}')
+        return send_mail(
+            f'{self.first_name}, reset your password',
+            f'Hello there\nPlease click on this link to reset your password: {url}',
+            os.environ['SENDGRID_SENDER'],
+            [self.email],
+            fail_silently=False,
+        )
 
-        mail = sendgrid_mail.SendgridClient([self.email])
+        """
+        mail = SendgridClient([self.email])
         mail.set_template_data({
             'username': self.first_name,
             'email': self.email,
-            'url': f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
+            'url': url,
         })
         mail.set_template_id(os.environ.get('SENDGRID_RESET_TEMPLATE_ID'))
 
         info(f'Sending reset password email to {self.email}')
         return mail.send()
+        """
 
 
     def save(self, *args, **kwargs) -> None:
