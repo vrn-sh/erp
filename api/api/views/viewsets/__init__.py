@@ -126,8 +126,15 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
     permission_classes = [PostOnly]
     authentication_classes: List[type[TokenAuthentication]] = []
 
+    def get_queryset(self):
+        auth = self.request.data.get('auth')
+        if auth and auth.get('role', 'manager') == 'manager':
+            return Manager.objects.all()
+        return Pentester.objects.all()
+
     def get_serializer_class(self):
-        if self.request.data.get('role', 'manager') == 'manager':
+        auth = self.request.data.get('auth')
+        if auth and auth.get('role', 'manager') == 'manager':
             return ManagerSerializer
         return PentesterSerializer
 

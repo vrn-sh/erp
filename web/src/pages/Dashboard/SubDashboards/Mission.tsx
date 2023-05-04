@@ -4,99 +4,10 @@ import * as IoIcons from 'react-icons/io';
 import '../Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { AlertColor, Chip, Stack } from '@mui/material';
+import { AlertColor, Chip } from '@mui/material';
 import dayjs from 'dayjs';
-import { PrimaryButton, SecondaryButton } from '../../../component/Button';
-import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
-
-interface DeleteProps {
-    func: any;
-    item: { id: number; title: string };
-}
-
-function DeleteConfirm({ func, item }: DeleteProps) {
-    const [open, setOpen] = useState(false);
-    const [message, setMess] = useState<{ mess: string; color: string }>({
-        mess: '',
-        color: 'success',
-    });
-
-    const setMessage = (mess: string, color: string) => {
-        setMess({ mess, color });
-    };
-
-    const handleClose = (
-        event?: React.SyntheticEvent | Event,
-        reason?: string
-    ) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    const handleDelete = async () => {
-        await axios
-            .delete(`${config.apiUrl}/mission/${item.id}`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then(() => {
-                setMessage('Deleted !', 'success');
-                func();
-            })
-            .catch((e) => {
-                setMessage(e.message, 'error');
-            });
-    };
-
-    return (
-        <div className="modal-wrapper">
-            <div className="modal-card">
-                <div className="modal">
-                    <div className="modal-header">
-                        <h2 className="centered">{item.title}</h2>
-                    </div>
-                    <p className="centered">
-                        Are you sure you want to delete this mission ?
-                    </p>
-                    <Stack
-                        direction="row"
-                        justifyContent="center"
-                        mt={3}
-                        spacing={4}
-                    >
-                        <SecondaryButton variant="outlined" onClick={func}>
-                            Cancel
-                        </SecondaryButton>
-                        <PrimaryButton
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                handleDelete();
-                                setOpen(true);
-                            }}
-                        >
-                            Delete
-                        </PrimaryButton>
-                    </Stack>
-                </div>
-            </div>
-            {open && (
-                <Feedbacks
-                    mess={message.mess}
-                    color={message.color}
-                    open={open}
-                    close={handleClose}
-                />
-            )}
-        </div>
-    );
-}
+import DeleteConfirm from '../../../component/DeleteConfirm';
 
 export default function Mission() {
     const [list, setList] = useState<
@@ -109,7 +20,11 @@ export default function Mission() {
     >([]);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [item, setItem] = useState<{ id: number; title: string }>();
+    const [item, setItem] = useState<{
+        id: number;
+        title: string;
+        type: string;
+    }>();
     const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
         { id: 0, name: '' },
     ]);
@@ -239,6 +154,10 @@ export default function Mission() {
         navigate('/mission/create');
     };
 
+    const NavMissionDetail = () => {
+        navigate('/mission/detail');
+    };
+
     return (
         <>
             {!list.length ? (
@@ -279,6 +198,9 @@ export default function Mission() {
                                                 type="button"
                                                 value="Open"
                                                 className="openBtn"
+                                                onClick={() =>
+                                                    NavMissionDetail()
+                                                }
                                             />
                                             {!isPentester && (
                                                 <>
@@ -299,6 +221,7 @@ export default function Mission() {
                                                             setItem({
                                                                 id: mission.id,
                                                                 title: mission.name,
+                                                                type: 'mission',
                                                             });
                                                             setOpen(true);
                                                         }}

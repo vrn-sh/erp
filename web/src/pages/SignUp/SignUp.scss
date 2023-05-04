@@ -88,6 +88,23 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    & h1, h5 {
+        font-family: "Poppins-Bold";
+    }
+    & h1 {
+        font-size: 1.5rem;
+    }
+    & h5 {
+        font-size: 1rem;
+        & a {
+            text-decoration: none;
+            color: var(--primary-btn);
+        }
+
+        & a:hover {
+            color: var(--primary-hover-btn);
+        }
+    }
 }
 
 .form-wrapper-log {
@@ -149,24 +166,25 @@ label {
     position: relative;
     width: 100%;
     margin: 20px;
+
+    & input {
+        padding: 10px 10px;
+        border-radius: 5px;
+        width: 100%;
+        height: 50px;
+
+        font-size: 14px;
+        font-family: 'Poppins-Regular';
+        border-radius: 5px;
+        outline: none;
+        border: 1px solid #9a9a9a;
+    }
 }
+
 .form-signup {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.input-block input {
-    padding: 10px 10px;
-    border-radius: 5px;
-
-    width: 100%;
-    height: 50px;
-
-    font-size: 14px;
-    font-family: 'Poppins-Regular';
-    border-radius: 5px;
-    outline: none;
-    border: 1px solid #9a9a9a;
 }
 
 .placeholder {
@@ -239,9 +257,36 @@ label {
     margin: 0 10px;
     padding: 0;
 }
-#pentester, #manager {
 
+.signup_popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
 }
+
+.signup_popup-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--hover-effect);
+    width: 40%;
+    height: 50%;
+    opacity: 1;
+    border-radius: 10px;
+
+    & button {
+        font-size: 14px;
+    }
+}
+
 @media screen and (max-width: 1270px) {
     .signup-text {
         display: none;
