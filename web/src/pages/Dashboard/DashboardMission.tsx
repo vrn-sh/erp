@@ -24,6 +24,10 @@ function DashboardMission() {
         return null;
     };
 
+    // const updatePercent = (n: number) => {
+    //     setFinish(n);
+    // }; // need to add setFinish on line 12
+
     return (
         <div className="dashboard-table">
             <h1>Assigned missions</h1>

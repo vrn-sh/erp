@@ -11,6 +11,7 @@ from api.models.utils import NmapPortField
 from api.services.s3 import create_bucket
 
 
+SCOPE_LENGTH = 128
 
 class Recon(models.Model):
     """
@@ -73,7 +74,7 @@ class Mission(models.Model):
         verbose_name_plural = "Missions"
         ordering = ['start']
 
-    REQUIRED_FIELDS = ['start', 'end', 'team', 'created_by']
+    REQUIRED_FIELDS = ['start', 'end', 'team', 'created_by', 'scope']
 
     start = models.DateField()
     end = models.DateField()
@@ -87,6 +88,8 @@ class Mission(models.Model):
 
     team: Team = models.ForeignKey(Team, on_delete=models.CASCADE)
     recon: Optional[Recon] = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
+
+    scope: Optional[models.CharField] = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64)
 
     @staticmethod
     def get_delta(start: datetime, end: datetime) -> timedelta:

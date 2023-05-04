@@ -14,6 +14,8 @@ from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
 from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
 
+from api.services.crtsh import fetch_certificates_from_crtsh
+
 
 class NmapViewset(viewsets.ModelViewSet):
     """
@@ -185,16 +187,28 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         operation_description="Creates a mission. Must be done by a Manager.",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['start', 'end', 'team'],
+            required=['start', 'end', 'team', 'scope'],
             properties={
-                'start': openapi.Schema(type=openapi.FORMAT_DATE,
-                                        description="date of mission start"),
-                'end': openapi.Schema(type=openapi.FORMAT_DATE,
-                                      description="date of mission ends"),
-                'title': openapi.Schema(type=openapi.TYPE_STRING,
-                                        description="Title of the mission"),
-                'team': openapi.Schema(type=openapi.TYPE_INTEGER,
-                                       description="Id of the team")
+                'start': openapi.Schema(
+                    type=openapi.FORMAT_DATE,
+                    description="date of mission start",
+                ),
+                'end': openapi.Schema(
+                    type=openapi.FORMAT_DATE,
+                    description="date of mission ends",
+                ),
+                'title': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="Title of the mission",
+                ),
+                'team': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="Id of the team",
+                ),
+                'scope': openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    description="list of IP addresses or domain names",
+                )
             },
         ),
         responses={
@@ -206,6 +220,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                     "start": "2020-06-03",
                     "end": "2022-06-03",
                     "team": 1,
+                    "scopes": ["*.djnn.sh", "10.10.0.1/24"],
                     "recon": {
                         "nmap": []
                     }
