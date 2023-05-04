@@ -148,11 +148,10 @@ if os.environ.get('PRODUCTION', '0') == '1':
     ALLOWED_HOSTS = [
             'server',
             'localhost',
-            f'https://{os.environ["DOMAIN_NAME"]}',
-            f'http://{os.environ["DOMAIN_NAME"]}'
+            {os.environ["DOMAIN_NAME",
             ]
     CORS_ALLOWED_ORIGIN_REGEXES = [
-        f'https://{os.environ.get("DOMAIN_NAME")}',
+        f'{os.environ.get("DOMAIN_NAME")}',
     ]
     CORS_ORIGIN_ALLOW_ALL = False
     CORS_ALLOW_CREDENTIALS = False
