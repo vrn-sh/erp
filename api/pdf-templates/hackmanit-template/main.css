@@ -1,0 +1,42 @@
+        .cover-page {
+            padding: 2em 6.5em;
+            margin: 30px;
+            display: block;
+            justify-content: space-around;
+        }
+        .cover-page img {
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .cover-page h1 {
+            padding: 6rem;
+            text-align: center;
+            font-weight: 300;
+            font-size: 3em;
+        }
+        .cover-page h1 span {
+            font-style: italic;
+        }
+        .report-info {
+            text-align: center;
+            color: gray;
+            font-weight: 400;
+            font-size: 1.5em;
+        }
+
+                footer {
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                }
+                footer p {
+                                     font-style: italic;
+                    text-align: center;
+                    color: gray;
+                    font-weight: 300;
+                    font-size: 1em;
+                }
+                .leader-name {
+                    color: red;
+                }
