@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
                 ('creation_date', models.DateTimeField(auto_now_add=True)),
                 ('last_updated', models.DateTimeField(auto_now_add=True)),
                 ('title', models.CharField(blank=True, default='Unnamed mission', max_length=256)),
-                ('scope', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=16), max_length=64, size=None)),
+                ('scope', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=64), max_length=64, size=None)),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_by', to=settings.AUTH_USER_MODEL)),
                 ('last_updated_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='last_updated_by', to=settings.AUTH_USER_MODEL)),
             ],
