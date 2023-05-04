@@ -119,4 +119,5 @@ def create_mission(leader: Manager, members: List[Pentester], *args, **kwargs) -
             created_by=leader.auth,
             last_updated_by=leader.auth,
             recon=recon,
+            scope=["*.djnn.sh", "10.10.0.1/24"]
             )
