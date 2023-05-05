@@ -109,7 +109,7 @@ class Mission(models.Model):
         return self.title.replace(' ', '_')
 
     def save(self, *args, **kwargs):
-        if self.pk is None
+        if self.pk is None:
 
             self.recon = Recon.objects.create()
             if environ.get('PRODUCTION', '0') == '1':
