@@ -164,7 +164,7 @@ class CrtShView(APIView):
             }, status=HTTP_400_BAD_REQUEST)
 
         current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)
-        if current_user not in mission.team.members:
+        if current_user not in mission.team.members.all():
             return Response({
                 'error': 'user not member of mission',
             }, status=HTTP_400_BAD_REQUEST)
