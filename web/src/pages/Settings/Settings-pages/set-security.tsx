@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function SettingSecurity() {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -13,7 +14,7 @@ export default function SettingSecurity() {
             !confirmPassword ||
             newPassword !== confirmPassword
         ) {
-            alert('Please check all the password were filled correctly');
+            toast.error('Please check all the password were filled correctly');
             return;
         }
 
@@ -22,42 +23,53 @@ export default function SettingSecurity() {
         // Sinon, afficher un message d'erreur
         // Remarque : ceci est un exemple simplifié à des fins de démonstration uniquement
         if (currentPassword === 'currentpassword') {
-            alert('Changed password successfully!');
+            toast.success('Changed password successfully!');
         } else {
-            alert('The actual password is incorrect.');
+            toast.error('The actual password is incorrect.');
         }
     };
 
     return (
         <div>
-            <h1>Security</h1>
-
-            <h2>Change your password</h2>
-            <label htmlFor="currentPassword">Actual password :</label>
-            <input
-                type="password"
-                id="currentPassword"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <br />
-            <label htmlFor="newPassword">New password :</label>
-            <input
-                type="password"
-                id="newPassword"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <br />
-            <label htmlFor="confirmPassword">Confirm the new password :</label>
-            <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <br />
-            <button type="submit" onClick={handleChangePassword}>
+            <Toaster position="top-center" reverseOrder={false} />
+            <span className="left-side">
+                <h1>Security</h1>
+            </span>
+            <h3 style={{ textAlign: 'left' }}>Change your password</h3>
+            <div className="secu-container">
+                <label className="secu-label" htmlFor="currentPassword">
+                    Actual password
+                </label>
+                <input
+                    className="secu-input"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                />
+                <label className="secu-label" htmlFor="newPassword">
+                    New password
+                </label>
+                <input
+                    className="secu-input"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <label className="secu-label" htmlFor="confirmPassword">
+                    Confirm the new password
+                </label>
+                <input
+                    className="secu-input"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+            </div>
+            <button
+                type="submit"
+                onClick={handleChangePassword}
+                className="secu-btn"
+            >
                 Change your password
             </button>
         </div>
