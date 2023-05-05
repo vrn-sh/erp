@@ -109,6 +109,11 @@ class Mission(models.Model):
         return self.title.replace(' ', '_')
 
     def save(self, *args, **kwargs):
-        if self.pk is None and environ.get('PRODUCTION', '0') == '1':
-            create_bucket(self.bucket_name)
+        if self.pk is None
+
+            self.recon = Recon.objects.create()
+            if environ.get('PRODUCTION', '0') == '1':
+                create_bucket(self.bucket_name)
+
         super().save(*args, **kwargs)
+

@@ -243,9 +243,6 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def create(self, request, *args, **kwargs):
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
-
-        recon = Recon.objects.create()
-        request.data['recon_id'] = recon.id
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
