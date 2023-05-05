@@ -34,7 +34,7 @@ services:
 
   api:
     env_file:
-      - api/.env
+      - ./api/.env
     build:
       context: ./api
     ports:
@@ -64,8 +64,9 @@ services:
     ports:
       - "3000"
     environment:
-      - NODE_ENV=production
       - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - ./web/.env
     depends_on:
       - api
     networks:
