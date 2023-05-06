@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
-import scope_list from '../../assets/strings/en/mission_scope.json';
+import { useLocation, useNavigate } from 'react-router-dom';
+// import scope_list from '../../assets/strings/en/mission_scope.json';
 
 export default function Scope(/* need to add list as a param here */) {
     const [keyword, setKeyword] = useState('');
+    const [scope, setScope] = useState([]);
 
-    const recordsPerPage = 3;
+    const recordsPerPage = 4;
     const [currentPage, setCurrentPage] = useState(1);
+    const [record, setRecord] = useState([]);
+    const [npage, setNPage] = useState(0);
+    const [nums, setNums] = useState<any[]>([]);
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
-    const records = scope_list.scope.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(scope_list.scope.length / recordsPerPage);
-    const nums = [...Array(npage + 1).keys()].slice(1);
+
     const navigate = useNavigate();
+    const location = useLocation();
 
     const nextPage = () => {
         if (currentPage !== npage) {
@@ -34,33 +37,43 @@ export default function Scope(/* need to add list as a param here */) {
         setCurrentPage(n);
     };
 
-    const searchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        setKeyword(event.target.value);
-    };
+    // const searchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     event.preventDefault();
+    //     setKeyword(event.target.value);
+    // };
 
-    const searchScope = () => {
-        let find = false;
-        for (let i = 0; i < scope_list.scope.length; i += 1) {
-            if (scope_list.scope[i].name.toLowerCase().includes(keyword)) {
-                const p =
-                    Math.floor(scope_list.scope[i].id / recordsPerPage) + 1;
-                if (scope_list.scope[i].id % 3 === 0) changePage(p - 1);
-                else changePage(p);
-                find = true;
-            }
-            if (find === true) break;
-        }
-    };
+    // const searchScope = () => {
+    //     let find = false;
+    //     for (let i = 0; i < scope.length; i += 1) {
+    //         if (scope[i].toLowerCase().includes(keyword)) {
+    //             const p = Math.floor(scope[i].id / recordsPerPage) + 1;
+    //             if (scope[i].id % 3 === 0) changePage(p - 1);
+    //             else changePage(p);
+    //             find = true;
+    //         }
+    //         if (find === true) break;
+    //     }
+    // };
 
     const NavAddVul = () => {
         navigate('/vuln/add');
     };
 
+    useEffect(() => {
+        setScope(location.state.scopeList);
+    }, []);
+
+    useEffect(() => {
+        setRecord(scope.slice(firstIndex, lastIndex));
+        setNPage(Math.ceil(scope.length / recordsPerPage));
+        const n = [...Array(npage + 1).keys()].slice(1);
+        setNums(n);
+        // searchScope();
+    }, [scope]);
     return (
         <>
             <div className="mission-tool-line">
-                <div className="search-name">
+                {/* <div className="search-name">
                     <div className="mission-input-block">
                         <label
                             className="placeholder"
@@ -81,7 +94,7 @@ export default function Scope(/* need to add list as a param here */) {
                     >
                         Search
                     </button>
-                </div>
+                </div> */}
 
                 <button type="button" className="input_btn mission-borderBtn">
                     GET REPORT
@@ -95,9 +108,9 @@ export default function Scope(/* need to add list as a param here */) {
                         <th className="md-3">Badges</th>
                         <th className="md-2">Actions</th>
                     </tr>
-                    {records.map((s_list) => {
+                    {record.map((s_list) => {
                         return (
-                            <tr key={s_list.id}>
+                            <tr>
                                 {/* <td style={{ fontSize: '18px' }}>
                                     {s_list.status ? (
                                         <AiIcons.AiOutlineCheckCircle />
@@ -105,16 +118,16 @@ export default function Scope(/* need to add list as a param here */) {
                                         <AiIcons.AiOutlineCloseCircle />
                                     )}
                                 </td> */}
-                                <td id="name">{s_list.name}</td>
+                                <td id="name">{s_list}</td>
                                 <td>
                                     {/* utiliser les types de vulnérability */}
-                                    {s_list.bages.map((badge: string) => {
+                                    {/* {s_list.bages.map((badge: string) => {
                                         return (
                                             <label className="scope-badges">
                                                 {badge}
                                             </label>
                                         );
-                                    })}
+                                    })} */}
                                 </td>
                                 <td className="scope-table-action">
                                     <input

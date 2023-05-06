@@ -16,6 +16,7 @@ export default function Mission() {
             id: number;
             team: string;
             status: { color: string; text: string };
+            scope: any;
         }[]
     >([]);
     const [open, setOpen] = useState(false);
@@ -100,7 +101,7 @@ export default function Mission() {
 
     const getMission = async () => {
         await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
+            .get(`${config.apiUrl}/mission?page=2`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
@@ -117,10 +118,12 @@ export default function Mission() {
                             data.data.results[i].end,
                             data.data.results[i].start
                         ) || { color: 'info', text: 'Not Started' },
+                        scope: data.data.results[i].scope,
                     });
                 }
                 tab.reverse();
                 setList(tab);
+                console.log(tab);
             })
             .catch((e) => {
                 throw e.message;
@@ -131,6 +134,14 @@ export default function Mission() {
         navigate('/mission/edit', {
             state: {
                 missionId: id,
+            },
+        });
+    };
+
+    const NavMissionDetail = (scope: any) => {
+        navigate('/mission/detail', {
+            state: {
+                scopeList: scope,
             },
         });
     };
@@ -154,10 +165,6 @@ export default function Mission() {
         navigate('/mission/create');
     };
 
-    const NavMissionDetail = () => {
-        navigate('/mission/detail');
-    };
-
     return (
         <>
             {!list.length ? (
@@ -177,11 +184,21 @@ export default function Mission() {
                         style={{ marginTop: '10px' }}
                         className="no_center_container"
                     >
+                        <thead>
+                            <tr>
+                                <th>Mission name</th>
+                                <th>Team</th>
+                                <th>State</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
                         {records.map((mission) => {
                             return (
                                 <tbody key={mission.id}>
                                     <tr key={mission.id}>
-                                        <td>{mission.name}</td>
+                                        <td>
+                                            {mission.id}-{mission.name}
+                                        </td>
                                         <td>{mission.team}</td>
                                         <td>
                                             <Chip
@@ -199,7 +216,9 @@ export default function Mission() {
                                                 value="Open"
                                                 className="openBtn"
                                                 onClick={() =>
-                                                    NavMissionDetail()
+                                                    NavMissionDetail(
+                                                        mission.scope
+                                                    )
                                                 }
                                             />
                                             {!isPentester && (
