@@ -161,16 +161,24 @@ export default function Mission() {
     return (
         <>
             {!list.length ? (
-                <button
-                    type="button"
-                    style={{
-                        width: 'fit-content',
-                    }}
-                    className="mission_create centered"
-                    onClick={addMission}
-                >
-                    Create a mission
-                </button>
+                <>
+                    {isPentester ? (
+                        <h3 style={{ fontFamily: 'Poppins-Regular' }}>
+                            Nothing to show
+                        </h3>
+                    ) : (
+                        <button
+                            type="button"
+                            style={{
+                                width: 'fit-content',
+                            }}
+                            className="mission_create centered"
+                            onClick={addMission}
+                        >
+                            Create a mission
+                        </button>
+                    )}{' '}
+                </>
             ) : (
                 <>
                     <table
