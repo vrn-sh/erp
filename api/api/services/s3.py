@@ -10,7 +10,7 @@ from minio.versioningconfig import ENABLED
 class S3Bucket:
     def __init__(self) -> None:
         self.client = Minio(
-            "s3:9000",
+            "localhost:9000", #TOFIX
             os.getenv("MINIO_ROOT_USER"),
             os.getenv("MINIO_ROOT_PASSWORD"),
             secure=False
