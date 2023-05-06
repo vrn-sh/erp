@@ -24,7 +24,6 @@ class S3Bucket:
         return self.client.get_object(bucket, object_name)
 
     def upload_file(self, bucket: str, file_path: str, file_name: str) -> None:
-        # what is the difference between these two?
         # self.client.presigned_put_object(bucket, file_name)
         self.client.fput_object(bucket, file_name, file_path)
 
