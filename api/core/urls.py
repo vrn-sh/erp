@@ -19,7 +19,7 @@ from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset
 SchemaView = get_schema_view(
    openapi.Info(
       title="voron API",
-      default_version='0.13',
+      default_version='0.14',
       description="API storing and managing notes, users, and stuff",
       terms_of_service="https://github.com/vrn-sh/erp/blob/current/LICENSE",
       contact=openapi.Contact(email="voron@djnn.sh"),
