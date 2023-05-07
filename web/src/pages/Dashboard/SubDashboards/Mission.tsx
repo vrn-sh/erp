@@ -138,9 +138,10 @@ export default function Mission() {
         });
     };
 
-    const NavMissionDetail = (scope: any) => {
+    const NavMissionDetail = (id: number, scope: any) => {
         navigate('/mission/detail', {
             state: {
+                missionId: id,
                 scopeList: scope,
             },
         });
@@ -217,6 +218,7 @@ export default function Mission() {
                                                 className="openBtn"
                                                 onClick={() =>
                                                     NavMissionDetail(
+                                                        mission.id,
                                                         mission.scope
                                                     )
                                                 }

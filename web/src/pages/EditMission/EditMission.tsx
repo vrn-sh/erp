@@ -147,6 +147,7 @@ export default function EditMission() {
             )
             .then(() => {
                 setMessage('Saved !', 'success');
+                navigate('/dashboard');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');

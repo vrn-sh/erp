@@ -4,11 +4,24 @@ import './MissionDetail.scss';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
 import { useLocation, useNavigate } from 'react-router-dom';
-// import scope_list from '../../assets/strings/en/mission_scope.json';
+import dayjs, { Dayjs } from 'dayjs';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import toast, { Toaster } from 'react-hot-toast';
+import config from '../../config';
 
 export default function Scope(/* need to add list as a param here */) {
     const [keyword, setKeyword] = useState('');
     const [scope, setScope] = useState([]);
+    const [missionId, setMissionId] = useState();
+    const [Title, setTitle] = useState('');
+    const [Team, setTeam] = useState(0);
+    const [createBy, setCreateBy] = useState();
+    const [lastEdit, setLastEdit] = useState();
+    const [start, setStart] = useState<Dayjs>(dayjs());
+    const [end, setEnd] = useState<Dayjs>(dayjs());
+
+    const isPentester = Cookies.get('Role') === '1';
 
     const recordsPerPage = 4;
     const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +50,57 @@ export default function Scope(/* need to add list as a param here */) {
         setCurrentPage(n);
     };
 
+    const delScope = async (index: number) => {
+        const newScope = scope.filter((s, i) => i !== index);
+        setScope(newScope);
+        await axios
+            .patch(
+                `${config.apiUrl}/mission/${missionId}`,
+                {
+                    title: Title,
+                    end: end.format('YYYY-MM-DD'),
+                    start: start.format('YYYY-MM-DD'),
+                    team: Team,
+                    scope: newScope,
+                    created_by: createBy,
+                    last_updated_by: lastEdit,
+                },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then(() => {
+                toast.success('Scope deleted!');
+            })
+            .catch((e) => {
+                toast.error(e.message);
+            });
+    };
+
+    const getMission = async () => {
+        await axios
+            .get(`${config.apiUrl}/mission/${missionId}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setTitle(data.data.title);
+                setEnd(dayjs(data.data.end));
+                setStart(dayjs(data.data.start));
+                setTeam(data.data.team);
+                setCreateBy(data.data.created_by);
+                setLastEdit(data.data.last_updated_by);
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
     // const searchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
     //     event.preventDefault();
     //     setKeyword(event.target.value);
@@ -60,18 +124,24 @@ export default function Scope(/* need to add list as a param here */) {
     };
 
     useEffect(() => {
+        setMissionId(location.state.missionId);
         setScope(location.state.scopeList);
     }, []);
 
     useEffect(() => {
+        getMission();
         setRecord(scope.slice(firstIndex, lastIndex));
         setNPage(Math.ceil(scope.length / recordsPerPage));
         const n = [...Array(npage + 1).keys()].slice(1);
         setNums(n);
         // searchScope();
-    }, [scope]);
+    }, [missionId, scope]);
+
     return (
         <>
+            <div>
+                <Toaster position="top-center" reverseOrder={false} />
+            </div>
             <div className="mission-tool-line">
                 {/* <div className="search-name">
                     <div className="mission-input-block">
@@ -106,9 +176,11 @@ export default function Scope(/* need to add list as a param here */) {
                         {/* <th>Status</th> */}
                         <th className="md-5">Name</th>
                         <th className="md-3">Badges</th>
+                        {/* {isPentester && ( */}
                         <th className="md-2">Actions</th>
+                        {/* )} */}
                     </tr>
-                    {record.map((s_list) => {
+                    {record.map((s_list, index) => {
                         return (
                             <tr>
                                 {/* <td style={{ fontSize: '18px' }}>
@@ -129,6 +201,7 @@ export default function Scope(/* need to add list as a param here */) {
                                         );
                                     })} */}
                                 </td>
+                                {/* {isPentester && ( */}
                                 <td className="scope-table-action">
                                     <input
                                         type="button"
@@ -139,9 +212,11 @@ export default function Scope(/* need to add list as a param here */) {
                                     <AiIcons.AiFillDelete
                                         className="scope-action-icons"
                                         style={{ color: 'red' }}
+                                        onClick={() => delScope(index)}
                                     />
                                     <AiIcons.AiFillEdit className="scope-action-icons" />
                                 </td>
+                                {/* )} */}
                             </tr>
                         );
                     })}
