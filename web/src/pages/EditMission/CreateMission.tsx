@@ -80,7 +80,7 @@ export default function CreateMission() {
         navigate('/dashboard');
     };
 
-    const setScopes = (event : any) => {
+    const setScopes = (event: any) => {
         if (event.keyCode === 13) {
             const tab = scope;
             tab.push(event.target.value);
