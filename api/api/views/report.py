@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from typing import Type, List
 import pdfkit
+from django.db.models import CharField
 from django.http import HttpResponseRedirect
 from shutil import rmtree
 
@@ -72,17 +73,21 @@ class GenerateReportView(APIView):
     def dump_report(self, mission: Mission, dir_path) -> str:
         path_cover_page = f'{dir_path}/coverpage.html'
         path_project_info = f'{dir_path}/projectinfo.html'
+        path_general_conditions_and_scope = f'{dir_path}/generalconditionsandscope.html'
 
         os.mkdir(dir_path, dir_fd=None)
         with open(path_cover_page, 'w+') as fd:
             fd.write(self.generate_cover(mission, mission.team.leader))
         with open(path_project_info, 'w+') as fd:
             fd.write(self.generate_project_info(mission, mission.team))
+        with open(path_general_conditions_and_scope, 'w+') as fd:
+            fd.write(self.generate_condition_and_scope(mission.scope))
 
         path_to_file = f'{dir_path}/report.pdf'
 
         pages = [
-            path_project_info
+            path_project_info,
+            path_general_conditions_and_scope
         ]
         toc = {
             "toc-header-text": "Table of Contents",
@@ -91,12 +96,12 @@ class GenerateReportView(APIView):
         # TODO: css stylesheet
         pdfkit.from_file(pages,
                          options={
-                             "enable-local-file-access": True,
+                             "enable-local-file-access": None,
                          },
                          output_path=path_to_file,
                          toc=toc,
                          cover=path_cover_page,
-                         cover_first=True, )
+                         cover_first=True,)
         return path_to_file
 
     def generate_cover(self, mission: Mission, leader: Manager):
@@ -149,9 +154,13 @@ class GenerateReportView(APIView):
 </head>
 
 <body>
+
     <header>
-        <img alt="logo-company"
-            src="#{logo_path_2}" />
+        <div class="inline-title-logo">
+            <img alt="logo-company" id="logo"
+                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+            <p>Project Information</p>
+        </div>
         <div class="divider-x"></div>
     </header>
     <div class="page">
@@ -221,5 +230,45 @@ class GenerateReportView(APIView):
                    logo_path_2=f"data:image/png;base64,{get_image_file_as_base64_data(ABSOLUTE_DIR_STYLE + '/hackmanit-logo-2.png')}",
                    stylesheet_path=ABSOLUTE_CSS_PATH)
 
-    def generate_condition_and_scope(self, scope):
+    def generate_condition_and_scope(self, scope: CharField):
+        scope_html = ""
+        for s in scope:
+            scope_html += f"<li><code>{s}</code></li>" if "*" in s or "$" in s else f"<li>{s}</li>"
+
+        return '''
+        <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Conditions and Scope</title>
+    <link rel="stylesheet" type="text/css" href="{stylesheet_path}" />
+</head>
+
+<body>
+    <header>
+        <div class="inline-title-logo">
+            <img alt="logo-company" id="logo"
+                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+            <p>General Conditions and Scope</p>
+        </div>
+        <div class="divider-x"></div>
+    </header>
+    <main class="scopes">
+        <h1>General Condition and Scope</h1>
+        <div class="section-text">
+            <p>The scope allowed was the following:</p>
+            <ul>{scopes}</ul>
+        </div>
+    </main>
+</body>
+
+</html>
+        '''.format(scopes=scope_html,
+                   stylesheet_path=ABSOLUTE_CSS_PATH)
+
+    def generate_weaknesses(self, vulnerabilities):
+        pass
 

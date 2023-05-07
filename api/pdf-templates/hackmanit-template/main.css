@@ -40,3 +40,108 @@
                 .leader-name {
                     color: red;
                 }
+
+        .divider-x {
+            border-bottom: 2px solid black;
+            width: 100%;
+            margin: 0;
+            padding-top: 2.5em;
+            left: 0;
+        }
+
+        .page h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.5em;
+        }
+
+            header {
+                display: block;
+            }
+
+            header img {
+                float: right;
+                object-fit: cover;
+                height: 20px;
+            }
+
+            .project-info-table {
+                display: block;
+            }
+
+            .project-info-table .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            .project-info-table .col-left {
+                float: left;
+                width: 25%;
+                padding: 10px;
+            }
+
+            .project-info-table .col-right {
+                float: left;
+                padding: 10px;
+            }
+
+            .project-info-table .sub-col-left {
+                float: left;
+                width: 25%;
+                padding: 0 0 0 10px;
+            }
+
+            .project-info-table .sub-col-right {
+                float: left;
+                width: 60%;
+                padding: 0 0 0 10px;
+            }
+
+        .scope {
+            letter-spacing: 1.2px;
+        }
+
+        .divider-x {
+            border-bottom: 2px solid black;
+            width: 100%;
+            margin: 0;
+            padding-top: 1em;
+            left: 0;
+        }
+
+        main h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.5em;
+        }
+
+
+            .inline-title-logo {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .inline-title-logo p {
+                font-variant: small-caps;
+                color: red;
+                font-weight: 400;
+                letter-spacing: 1.5px;
+                margin: 0;
+            }
+
+            .section-text p {
+                text-align: justify;
+            }
+
+            .section-text p span {
+                font-weight: bold;
+                padding-right: 3px;
+            }
+            .section-text ul li {
+                margin-bottom: 6px;
+                margin-top: 1.5rem;
+            }
+            .section-text ul li code {
+                border: 1px solid rgb(109, 108, 108);
+                background-color: rgb(224, 224, 224);
+                font-family: 'Courier New', Courier, monospace;
+            }

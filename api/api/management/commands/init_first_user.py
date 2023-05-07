@@ -11,6 +11,7 @@ class Command(BaseCommand):
             auth = Auth(
                     role=2,
                     email='admin@voron.sh',
+                    phone_number="0600000000",
                     is_superuser=True,
                     username='admin',
                     first_name='admin',

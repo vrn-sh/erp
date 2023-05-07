@@ -66,7 +66,7 @@ class Vulnerability(models.Model):
 
     title = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(max_length=MAX_NOTE_LENGTH, blank=True)
-    serverity = models.FloatField()
+    severity = models.FloatField()
 
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
