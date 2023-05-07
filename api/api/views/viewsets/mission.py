@@ -5,15 +5,16 @@ from warnings import warn
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 from knox.auth import TokenAuthentication
-from rest_framework.routers import Response
+from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from api.models.mission import Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
 from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
-
+from crtsh import fetch_certificates_from_crtsh
 
 class NmapViewset(viewsets.ModelViewSet):
     """
@@ -116,6 +117,7 @@ class CrtShViewSet(viewsets.ModelViewSet):
     serializer_class = CrtShSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
+
     @swagger_auto_schema(
         operation_description="Fetches certificates for a given domain and saves them to a mission.",
         manual_parameters=[
@@ -145,6 +147,24 @@ class CrtShViewSet(viewsets.ModelViewSet):
         security=['Bearer'],
         tags=['CrtSh'],
     )
+    @action(detail=True, methods=['patch'])
+    def update_certificates(self, request, pk=None):
+        crtsh_instance = self.get_object()
+        recon_instance = crtsh_instance.recon
+        mission_instance = Mission.objects.filter(recon=recon_instance).first()
+
+        if not mission_instance:
+            return Response({"error": "Mission not found."}, status=HTTP_400_BAD_REQUEST)
+
+        domain = mission_instance.title
+        certificates = fetch_certificates_from_crtsh(domain)
+        cert_dump = dumps(certificates)
+
+        crtsh_instance.dump = cert_dump
+        crtsh_instance.save()
+
+        return Response(loads(crtsh_instance.dump), status=HTTP_201_CREATED)
+
     def create(self, request, *args, **kwargs):
         mission_id = request.query_params.get('mission_id')
         domain = request.query_params.get('domain')
@@ -167,6 +187,7 @@ class CrtShViewSet(viewsets.ModelViewSet):
 
         # return json parsed data
         return Response(loads(crt_object.dump), status=HTTP_201_CREATED)
+    
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
