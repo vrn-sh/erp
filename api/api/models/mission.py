@@ -8,7 +8,7 @@ from django.contrib.postgres.fields import ArrayField
 
 from api.models import Auth, MAX_TITLE_LENGTH, Team
 from api.models.utils import NmapPortField
-from api.services.s3 import create_bucket
+from api.services.s3 import S3Bucket
 
 
 SCOPE_LENGTH = 128
@@ -110,10 +110,11 @@ class Mission(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-
             self.recon = Recon.objects.create()
+            
             if environ.get('PRODUCTION', '0') == '1':
-                create_bucket(self.bucket_name)
-
+                s3 = S3Bucket()
+                s3.create_bucket(self.bucket_name)
+                
         super().save(*args, **kwargs)
 
