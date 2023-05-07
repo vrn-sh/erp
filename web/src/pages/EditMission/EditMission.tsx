@@ -132,7 +132,7 @@ export default function EditMission() {
         deleted.push(index);
     };
 
-    const removeElement = (array, arr) => {
+    const removeElement = (array : any, arr : any) => {
         const newArray = [];
         let i = 0;
 
