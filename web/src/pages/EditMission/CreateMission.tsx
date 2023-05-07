@@ -7,6 +7,8 @@ import {
     Select,
     MenuItem,
     SelectChangeEvent,
+    Chip,
+    Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -34,6 +36,8 @@ export default function CreateMission() {
     const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
         { id: 0, name: '' },
     ]);
+    const [label, setLabel] = useState('');
+    const [scope, setScope] = useState<string[]>([]);
 
     const navigate = useNavigate();
 
@@ -76,6 +80,20 @@ export default function CreateMission() {
         navigate('/dashboard');
     };
 
+    const setScopes = (event) => {
+        if (event.keyCode === 13) {
+            const tab = scope;
+            tab.push(event.target.value);
+            setScope(tab);
+            setLabel('');
+        }
+    };
+
+    const deleteScope = (id: number) => {
+        const newValue = scope.filter((_, index) => index !== id);
+        setScope(newValue);
+    };
+
     const handleSubmit = async () => {
         if (Team === 0) {
             setMessage('Please choose a team', 'error');
@@ -96,6 +114,7 @@ export default function CreateMission() {
                     start: start.format('YYYY-MM-DD'),
                     end: end.format('YYYY-MM-DD'),
                     team: Team,
+                    scope,
                 },
                 {
                     headers: {
@@ -152,8 +171,53 @@ export default function CreateMission() {
                             setLabel={setTitle}
                             size="medium"
                         />
+                        <div
+                            style={{ marginBottom: '8px' }}
+                            className="input input-medium"
+                        >
+                            <label
+                                htmlFor="input-scope"
+                                className="input-label"
+                            >
+                                Scopes
+                            </label>
+                            <input
+                                id="input-scope"
+                                type="text"
+                                required
+                                value={label}
+                                onChange={(e) => setLabel(e.target.value)}
+                                onKeyDown={setScopes}
+                            />
+                        </div>
+                        <Grid
+                            container
+                            spacing={{ xs: 2, md: 3 }}
+                            columns={{ xs: 4, sm: 8, md: 12 }}
+                        >
+                            {scope.map((item, index) => {
+                                return (
+                                    <Grid item xs="auto">
+                                        <Chip
+                                            sx={{
+                                                fontFamily: 'Poppins-Regular',
+                                                fontSize: '14px',
+                                            }}
+                                            label={item}
+                                            onDelete={() => {
+                                                deleteScope(index);
+                                            }}
+                                        />
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
                         <FormControl
-                            sx={{ paddingY: 2, width: '100%' }}
+                            sx={{
+                                paddingY: 2,
+                                width: '100%',
+                                marginTop: '10px',
+                            }}
                             size="small"
                         >
                             <InputLabel
