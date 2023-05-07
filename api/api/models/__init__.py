@@ -105,7 +105,7 @@ class Auth(AbstractUser):
             'username': self.first_name,
             'url': url
         })
-        mail.set_template_id(os.environ['SENDGRID_CONFIRM_TEMPLATE_ID'])
+        mail.set_template_id(template_id)
         return mail.send()
 
     def send_reset_password_email(self) -> int:
