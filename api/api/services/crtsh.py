@@ -9,7 +9,7 @@ from dateutil.parser import parse
 from requests.exceptions import ConnectTimeout, ReadTimeout
 
 
-CRTSH_API_BASE_URL = "http://crt.sh/?q="
+CRTSH_API_BASE_URL = "https://crt.sh?q="
 
 
 def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
