@@ -90,26 +90,23 @@ class Auth(AbstractUser):
         cache.set(tmp_token, self.email, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
         warning(f'Sending confirmation email to {self.email}')
-        return send_mail(
-            f'Welcome {self.first_name} !',
-            f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
-            os.environ['SENDGRID_SENDER'],
-            [self.email],
-            fail_silently=False,
-        )
+        template_id = os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID')
+        if not template_id:
+            return send_mail(
+                f'Welcome {self.first_name} !',
+                f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
+                os.environ['SENDGRID_SENDER'],
+                [self.email],
+                fail_silently=False,
+            )
 
-        """
         mail = SendgridClient([self.email])
         mail.set_template_data({
             'username': self.first_name,
-            'email': self.email,
             'url': url
         })
-        mail.set_template_id(os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID'))
-
-        info(f'Sending confirmation email to {self.email}')
+        mail.set_template_id(os.environ['SENDGRID_CONFIRM_TEMPLATE_ID'])
         return mail.send()
-        """
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
@@ -123,26 +120,24 @@ class Auth(AbstractUser):
         cache.set(tmp_token, self.email, RESETPW_TOKEN_TIMEOUT_SECONDS)
 
         warning(f'Sending password-reset email to {self.email}')
-        return send_mail(
-            f'{self.first_name}, reset your password',
-            f'Hello there\nPlease click on this link to reset your password: {url}',
-            os.environ['SENDGRID_SENDER'],
-            [self.email],
-            fail_silently=False,
-        )
+        template_id = os.environ.get('SENDGRID_RESET_TEMPLATE_ID')
+        if not template_id:
+            return send_mail(
+                f'{self.first_name}, reset your password',
+                f'Hello there\nPlease click on this link to reset your password: {url}',
+                os.environ['SENDGRID_SENDER'],
+                [self.email],
+                fail_silently=False,
+            )
 
-        """
         mail = SendgridClient([self.email])
         mail.set_template_data({
             'username': self.first_name,
             'email': self.email,
             'url': url,
         })
-        mail.set_template_id(os.environ.get('SENDGRID_RESET_TEMPLATE_ID'))
-
-        info(f'Sending reset password email to {self.email}')
+        mail.set_template_id(template_id)
         return mail.send()
-        """
 
 
     def save(self, *args, **kwargs) -> None:
