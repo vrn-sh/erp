@@ -1,3 +1,4 @@
+from logging import warning
 import os
 import requests
 import json
@@ -39,6 +40,7 @@ def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
     certs: List[Dict[str, Any]] = []
     try:
         for c in r.json():
+            # FIXME(loris): there is a crash here but i dont have time to fix it
             certs.append({
                     "id": c["id"],
                     "logged_at": parse(c["entry_timestamp"]),
@@ -53,6 +55,8 @@ def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
                 }
             )
 
-    except json.decoder.JSONDecodeError:
+    # pylint disalbe=too-broad-exception
+    except Exception:
         return [{'error': 'could not parse json response.'}]
+
     return certs

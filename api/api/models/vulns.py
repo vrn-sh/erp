@@ -66,7 +66,7 @@ class Vulnerability(models.Model):
 
     title = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(max_length=MAX_NOTE_LENGTH, blank=True)
-    serverity = models.FloatField()
+    severity = models.FloatField()
 
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
@@ -74,7 +74,7 @@ class Vulnerability(models.Model):
     author: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='author')
     last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
-    vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
+    vuln_type: VulnType = models.ForeignKey(VulnType, on_delete=models.CASCADE)
     images: Optional[List[ImageField]] = ArrayField(ImageField(), blank=True, null=True)
 
     mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)

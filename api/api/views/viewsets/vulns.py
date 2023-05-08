@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from warnings import warn
 
 from drf_yasg import openapi
@@ -137,7 +137,14 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         request.data['vuln_type'] = vuln_obj.id
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
+
+
+        # FIXME(djnn): add image upload here (figure out how this should work)
+
         return super().create(request, *args, **kwargs)
+
+    def upload_images(self, vuln: Vulnerability, images: List[str]) -> Optional[List[str]]:
+        """returns true if successful"""
 
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:

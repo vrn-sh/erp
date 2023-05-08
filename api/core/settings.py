@@ -40,6 +40,13 @@ REST_KNOX = {
   'TOKEN_TTL': timedelta(hours=12),
 }
 
+# django-storages configuration
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Storage",
+    },
+}
+
 
 # openapi generator config
 SWAGGER_SETTINGS = {
@@ -76,7 +83,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'api.management.middlewares.set_secure_headers',
     'corsheaders.middleware.CorsMiddleware',
 ]
 
@@ -127,13 +133,6 @@ if os.environ.get('PRODUCTION', '0') == '1':
     }
 
 
-    # django-storages configuration
-    STORAGES = {
-        "staticfiles": {
-            "BACKEND": "storages.backends.s3boto3.S3Storage",
-        },
-    }
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -146,14 +145,9 @@ if os.environ.get('PRODUCTION', '0') == '1':
     }
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
     DEBUG = False
-    ALLOWED_HOSTS = [
-            'server',
-            'localhost',
-            f'https://{os.environ["DOMAIN_NAME"]}',
-            f'http://{os.environ["DOMAIN_NAME"]}'
-            ]
+    ALLOWED_HOSTS = ['server', 'localhost', os.environ["DOMAIN_NAME"]]
     CORS_ALLOWED_ORIGIN_REGEXES = [
-        f'https://{os.environ.get("DOMAIN_NAME")}',
+        f'{os.environ.get("DOMAIN_NAME")}',
     ]
     CORS_ORIGIN_ALLOW_ALL = False
     CORS_ALLOW_CREDENTIALS = False

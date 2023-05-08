@@ -1,10 +1,20 @@
 from json import loads
-from warnings import warn
 from rest_framework import serializers
 
 from api.models.mission import Mission, Recon, NmapScan, CrtSh
-from api.models.utils import NmapPort, NmapPortField, parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
-from api.serializers import TeamSerializer
+from api.models.utils import NmapPort, parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
+
+
+class StringArrayField(serializers.ListField):
+    """Serializing a list of fields"""
+
+    def to_representation(self, data):
+        data = super().to_representation(data)
+        return ",".join([str(element) for element in data])
+
+    def to_internal_value(self, data):
+        data = data.split(",")
+        return super().to_internal_value(data)
 
 
 class NmapPortSerializer(serializers.Field):
@@ -43,8 +53,8 @@ class CrtShSerializer(serializers.ModelSerializer):
 
 
 class ReconSerializer(serializers.ModelSerializer):
-    nmap = NmapSerializer(many=True, read_only=True)
-    crtsh = CrtShSerializer(many=False, read_only=True)
+    nmap_runs = NmapSerializer(many=True, read_only=True)
+    crtsh_runs = CrtShSerializer(many=False, read_only=True, source='')
 
     class Meta:
         fields = '__all__'
