@@ -1,87 +1,128 @@
-import React, { useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
-
-type InputSizes = 'small' | 'medium' | 'large';
-
-type InputProps = {
-    label: string;
-    size: InputSizes;
-};
-
-function Input({ label, size }: InputProps) {
-    const [value, setValue] = useState('');
-
-    return (
-        <div className={`input input-${size}`}>
-            <label htmlFor={`input-${label}`}>{label}</label>
-            <input
-                id={`input-${label}`}
-                type="text"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
-        </div>
-    );
-}
+import React, { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import config from '../../../config';
 
 export default function SettingAccount() {
-    const [photoUrl, setPhotoUrl] = useState('');
+    const [userInfos, setUserInfos] = useState({
+        username: '',
+        email: '',
+        first_name: '',
+        last_name: '',
+    });
 
-    const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) {
-            return;
-        }
+    const token = Cookies.get('token');
+    const role = Cookies.get('role');
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            setPhotoUrl(reader.result as string);
-        };
+    const getUserInfos = async () => {
+        let url = `${config.apiUrl}/`;
+        if (role === 'manager') url += 'manager';
+        else url += 'user';
+        await axios
+            .get(`${config.apiUrl}/`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => setUserInfos(data.data))
+            .catch((e) => {
+                throw e;
+            });
     };
+
+    useEffect(() => {
+        getUserInfos();
+    }, []);
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        userInfos.email = e.target.value;
+    };
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        userInfos.username = e.target.value;
+    };
+
+    const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        userInfos.first_name = e.target.value;
+    };
+
+    const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        userInfos.last_name = e.target.value;
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        let url = `${config.apiUrl}/`;
+        if (role === 'manager') url += 'manager';
+        else url += 'user';
+        await axios
+            .put(`${config.apiUrl}/`, userInfos, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${token}`,
+                },
+            })
+            .then((data) => setUserInfos(data.data))
+            .catch((error) => {
+                throw error;
+            });
+    };
+
     return (
         <div className="setting-container">
-            <div>
-                <p>Avatar </p>
-                {photoUrl ? (
-                    <img
-                        src={photoUrl}
-                        alt="User profile"
-                        style={{
-                            width: '50px',
-                            height: '50px',
-                            borderRadius: '50%',
-                        }}
-                    />
-                ) : (
-                    <FaUserCircle
-                        style={{ width: '50px', height: '50px' }}
-                        onClick={() =>
-                            document.getElementById('fileInput')?.click()
-                        }
-                    />
-                )}
-                <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: 'none' }}
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                />
-            </div>
             <div className="input-group">
-                <Input label="Full name" size="medium" />
-                <Input label="Email address" size="medium" />
+                <div className="input input-medium">
+                    <label htmlFor="input-username">username</label>
+                    <input
+                        id="input-username"
+                        type="text"
+                        value={userInfos.username}
+                        onChange={(e) => handleUsernameChange(e)}
+                    />
+                </div>
+
+                <div className="input input-medium">
+                    <label htmlFor="input-email">email</label>
+                    <input
+                        id="input-email"
+                        type="text"
+                        value={userInfos.email}
+                        onChange={(e) => handleEmailChange(e)}
+                    />
+                </div>
+
+                <div className="input input-medium">
+                    <label htmlFor="input-first_name">first_name</label>
+                    <input
+                        id="input-first_name"
+                        type="text"
+                        value={userInfos.first_name}
+                        onChange={(e) => handleFirstNameChange(e)}
+                    />
+                </div>
+
+                <div className="input input-medium">
+                    <label htmlFor="input-last_name">last_name</label>
+                    <input
+                        id="input-last_name"
+                        type="text"
+                        value={userInfos.last_name}
+                        onChange={(e) => handleLastNameChange(e)}
+                    />
+                </div>
             </div>
-            <Input label="Bio" size="large" />
-            <Input label="Customized link" size="medium" />
 
             <div className="buttons-container">
-                <button type="submit" className="submit-button">
+                <button
+                    type="submit"
+                    className="submit-button"
+                    onSubmit={handleSubmit}
+                >
                     Save Changes
                 </button>
                 <button type="button" className="cancel-button">
-                    CANCEL
+                    Cancel
                 </button>
             </div>
         </div>
