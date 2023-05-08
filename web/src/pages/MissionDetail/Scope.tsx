@@ -52,7 +52,6 @@ export default function Scope(/* need to add list as a param here */) {
 
     const delScope = async (index: number) => {
         const newScope = scope.filter((s, i) => i !== index);
-        setScope(newScope);
         await axios
             .patch(
                 `${config.apiUrl}/mission/${missionId}`,
@@ -74,6 +73,7 @@ export default function Scope(/* need to add list as a param here */) {
             )
             .then(() => {
                 toast.success('Scope deleted!');
+                setScope(newScope);
             })
             .catch((e) => {
                 toast.error(e.message);
@@ -176,9 +176,7 @@ export default function Scope(/* need to add list as a param here */) {
                         {/* <th>Status</th> */}
                         <th className="md-5">Name</th>
                         <th className="md-3">Badges</th>
-                        {/* {isPentester && ( */}
                         <th className="md-2">Actions</th>
-                        {/* )} */}
                     </tr>
                     {record.map((s_list, index) => {
                         return (
@@ -201,7 +199,6 @@ export default function Scope(/* need to add list as a param here */) {
                                         );
                                     })} */}
                                 </td>
-                                {/* {isPentester && ( */}
                                 <td className="scope-table-action">
                                     <input
                                         type="button"
@@ -209,14 +206,17 @@ export default function Scope(/* need to add list as a param here */) {
                                         className="borderBtn"
                                         onClick={NavAddVul}
                                     />
-                                    <AiIcons.AiFillDelete
-                                        className="scope-action-icons"
-                                        style={{ color: 'red' }}
-                                        onClick={() => delScope(index)}
-                                    />
-                                    <AiIcons.AiFillEdit className="scope-action-icons" />
+                                    {!isPentester && (
+                                        <>
+                                            <AiIcons.AiFillDelete
+                                                className="scope-action-icons"
+                                                style={{ color: 'red' }}
+                                                onClick={() => delScope(index)}
+                                            />
+                                            <AiIcons.AiFillEdit className="scope-action-icons" />
+                                        </>
+                                    )}
                                 </td>
-                                {/* )} */}
                             </tr>
                         );
                     })}
