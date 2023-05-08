@@ -3,6 +3,7 @@ import './Dashboard.scss';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
 import Notes from './SubDashboards/Notes/Notes';
+import Vulnerability from './SubDashboards/Vulnerability';
 
 function DashboardMission() {
     const [active, setActive] = useState('main');
@@ -20,6 +21,9 @@ function DashboardMission() {
         }
         if (active === 'note') {
             return <Notes />;
+        }
+        if (active === 'vuln') {
+            return <Vulnerability />;
         }
         return null;
     };
