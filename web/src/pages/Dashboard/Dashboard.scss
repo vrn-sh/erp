@@ -284,12 +284,16 @@ table input {
     text-align: left !important;
 }
 
-.crt_table {
-    margin-top: 1rem;
+.searchBtn {
+    min-width: 1px;
+    padding: 3px 3px;
+    margin: 0;
 }
-.crt_tr {
-    font-family: "Poppins-Regular";
-    font-size: 15px;
+
+//crtsh
+.crt-pagination {
+    width: 2rem;
+    overflow: hidden;
 }
 //Notes
 
