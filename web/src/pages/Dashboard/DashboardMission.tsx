@@ -4,6 +4,7 @@ import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
 import CrtSh from './SubDashboards/CrtSh';
 import Notes from './SubDashboards/Notes/Notes';
+import Vulnerability from './SubDashboards/Vulnerability';
 
 function MissionSubMenu(props: any) {
     const tmp = props;
@@ -40,6 +41,9 @@ function DashboardMission() {
         }
         if (active === 'crt') {
             return <CrtSh />;
+        }
+        if (active === 'vuln') {
+            return <Vulnerability />;
         }
         return null;
     };

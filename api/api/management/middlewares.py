@@ -1,4 +1,11 @@
-"""middleware to set OWASP secure headers in any response from the API"""
+"""
+    middleware to set OWASP secure headers in any response from the API
+
+    04/05/2023: temporarily dropped support before investigation regarding
+    API calls which are sometimes unavailable with these headers
+
+    FIXME(djnn): investigate this when i have 5 minutes
+"""
 
 
 import os
