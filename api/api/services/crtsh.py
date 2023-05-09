@@ -32,9 +32,7 @@ def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
         )
         nameparser = re.compile('([a-zA-Z]+)=("[^"]+"|[^,]+)')
         certs: List[Dict[str, Any]] = []
-        
-        warning(f'{r.status_code} -- {r.text}')
-        
+
         for c in r.json():
             certs.append(
                 {
@@ -49,7 +47,7 @@ def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
                         "parsed_name": dict(nameparser.findall(c["issuer_name"])),
                     },
                 }
-            )     
+            )
 
     except ConnectTimeout:
         return [{'error': "could not connect to crt.sh API. Service is down."}]
@@ -62,4 +60,4 @@ def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
         return [{'error': 'could not parse json response.'}]
 
     return certs
-    
+

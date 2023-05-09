@@ -1,5 +1,6 @@
 from datetime import datetime
 from json import dumps, loads
+from typing import Any, Dict, List
 from warnings import warn
 
 from drf_yasg import openapi
@@ -7,7 +8,7 @@ from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
 from rest_framework.routers import Response
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 from api.models import Auth, Pentester
 
 from api.models.mission import Mission, NmapScan, Recon, CrtSh
@@ -118,6 +119,11 @@ class CrtShView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsPentester]
 
+    @staticmethod
+    def has_crtsh_error(response: List[Dict[str, Any]]) -> bool:
+        """checks if there is an error returned from crtsh.py"""
+        return len(response) == 1 and 'error' in response[1]
+
     @swagger_auto_schema(
         operation_description="Fetches certificates for a given domain and saves them to a mission.",
         manual_parameters=[
@@ -176,10 +182,18 @@ class CrtShView(APIView):
             crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
             crt_object.save()
 
-            # return json parsed data
-            return Response({'dump': certificates}, status=HTTP_201_CREATED)
+            status = HTTP_201_CREATED
+            if self.has_crtsh_error(certificates):
+                status = HTTP_500_INTERNAL_SERVER_ERROR
 
-        return Response({'dump': loads(crt_object.dump)}, HTTP_201_CREATED)
+            # return json parsed data
+            return Response({'dump': certificates}, status=status)
+
+            status = HTTP_201_CREATED
+            if self.has_crtsh_error(certificates):
+                status = HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Response({'dump': loads(crt_object.dump)}, status)
 
 
     @swagger_auto_schema(
@@ -241,13 +255,21 @@ class CrtShView(APIView):
             crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
             crt_object.save()
 
+            status = HTTP_200_OK
+            if self.has_crtsh_error(certificates):
+                status = HTTP_500_INTERNAL_SERVER_ERROR
+
             # return json parsed data
-            return Response({'dump': certificates}, status=HTTP_200_OK)
+            return Response({'dump': certificates}, status=status)
 
         crt_object.dump = dumps(certificates, default=str)
         crt_object.save()
 
-        return Response({'dump': certificates}, HTTP_200_OK)
+        status = HTTP_200_OK
+        if self.has_crtsh_error(certificates):
+            status = HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Response({'dump': certificates}, status)
 
 
 
