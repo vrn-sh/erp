@@ -153,11 +153,6 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
-        if 'images' in request.data and len(request.data['images']) > 4:
-            return Response({
-                'error': 'cannot upload more than 4 images',
-            }, status=HTTP_400_BAD_REQUEST)
-
         return super().create(request, *args, **kwargs)
 
 
@@ -175,11 +170,5 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             request.data['vuln_type'] = vuln_obj.id
             if not 'description' in request.data:
                 request.data['description'] = vuln_obj.description
-
-        # FIXME(djnn): also need to count the number of images already present
-        if 'images' in request.data and len(request.data.images) > 4:
-            return Response({
-                'error': 'cannot upload more than 4 images',
-            }, status=HTTP_400_BAD_REQUEST)
 
         return super().update(request, *args, **kwargs)

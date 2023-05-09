@@ -8,6 +8,7 @@ from io import BytesIO
 import uuid
 import re
 import base64
+from api.models.mission import Mission
 
 from api.services.s3 import S3Bucket
 from api.models.vulns import Notes, VulnType, Vulnerability
@@ -26,11 +27,21 @@ class VulnTypeSerializer(serializers.ModelSerializer):
 
 
 class VulnerabilitySerializer(serializers.ModelSerializer):
-    images = serializers.ListField(child=serializers.ImageField(), required=False)
+    images = serializers.ListField(child=serializers.CharField(), required=False)
 
     class Meta:
         model = Vulnerability
         fields = '__all__'
+
+    def get_image_data(self, content: str) -> Optional[bytes]:
+        """Strips the MIME type information from image data"""
+        as_base64 = content.split('base64,')
+        if len(as_base64) != 2:
+            return None
+
+        as_base64 = as_base64[1]
+        from_base64 = base64.b64decode(as_base64)
+        return from_base64
 
     def get_mime_type(self, content: str) -> Optional[str]:
         """Get MIME type from the start of an image file"""
@@ -59,7 +70,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
         images: List[str] = []
         for image in instance.images:
-            images.append(s3_client.get_object_url(instance.bucket_name, image))
+            images.append(s3_client.get_object_url('rootbucket', image))
 
         representation['images'] = images
         return representation
@@ -74,13 +85,14 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
             # silenlty passing erronous images
             # TODO(djnn): add error message (probably do the checks in viewset)
             mime_type = self.get_mime_type(image_data)
-            if not mime_type:
+            image_data = self.get_image_data(image_data)
+            if not mime_type or not image_data:
                 continue
 
             image_name =  f'{uuid.uuid4().hex}.{mime_type}'
-            iostream = BytesIO(image_data.decode('base64').encode('utf-8'))
+            iostream = BytesIO(image_data)
             s3_client.upload_stream(
-                internal_value.bucket_name,
+                'rootbucket',
                 image_name,
                 iostream,
                 f'image/{mime_type}',
