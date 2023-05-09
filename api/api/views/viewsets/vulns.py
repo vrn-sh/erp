@@ -155,7 +155,6 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
 
         return super().create(request, *args, **kwargs)
 
-
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
             request.data.pop('author')

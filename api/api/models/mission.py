@@ -110,8 +110,8 @@ class Mission(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-
             self.recon = Recon.objects.create()
+
             if environ.get('PRODUCTION', '0') == '1':
                 s3 = S3Bucket()
                 s3.create_bucket(self.bucket_name)
