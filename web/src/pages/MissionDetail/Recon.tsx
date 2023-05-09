@@ -41,6 +41,7 @@ export default function Recon(idMission: any) {
     const nums = [...Array(npage + 1).keys()].slice(1);
     const [modal, setModal] = useState(false);
     const { id } = idMission;
+    const isPentester = Cookies.get('Role') === '1';
     const [expanded, setExpanded] = React.useState<string | false>(false);
 
     const handleChange =
@@ -101,13 +102,15 @@ export default function Recon(idMission: any) {
                     }}
                     className="search-name"
                 >
-                    <button
-                        type="button"
-                        className="input_btn mission-borderBtn"
-                        onClick={modalClick}
-                    >
-                        ADD NMAP
-                    </button>
+                    {isPentester && (
+                        <button
+                            type="button"
+                            className="input_btn mission-borderBtn"
+                            onClick={modalClick}
+                        >
+                            ADD NMAP
+                        </button>
+                    )}
                 </div>
             </div>
             <table className="no_center_container">
