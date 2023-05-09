@@ -42,7 +42,7 @@ class CrtSh(models.Model):
     REQUIRED_FIELDS = ['dump', 'recon']
 
     dump = models.TextField()
-    recon = models.ForeignKey(Recon, on_delete=models.CASCADE)
+    recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='crtsh_runs')
 
 
 class NmapScan(models.Model):
@@ -59,7 +59,7 @@ class NmapScan(models.Model):
 
     REQUIRED_FIELDS = ['recon', 'ips', 'ports']
 
-    recon: Recon = models.ForeignKey(Recon, on_delete=models.CASCADE)
+    recon: Recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='nmap_runs')
     creation_timestamp: models.DateTimeField = models.DateTimeField(editable=False, auto_now=True)
 
     ips: List[models.CharField] = ArrayField(models.CharField(max_length=32))
@@ -110,8 +110,8 @@ class Mission(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-
             self.recon = Recon.objects.create()
+
             if environ.get('PRODUCTION', '0') == '1':
                 s3 = S3Bucket()
                 s3.create_bucket(self.bucket_name)

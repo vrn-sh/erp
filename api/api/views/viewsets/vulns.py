@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from warnings import warn
 
 from drf_yasg import openapi
@@ -138,6 +138,9 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
         return super().create(request, *args, **kwargs)
+
+    def upload_images(self, vuln: Vulnerability, images: List[str]) -> Optional[List[str]]:
+        """returns true if successful"""
 
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
