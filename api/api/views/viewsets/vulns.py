@@ -96,12 +96,26 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             type=openapi.TYPE_OBJECT,
             required=['title', 'severity', 'vuln_type'],
             properties={
-                'title': openapi.Schema(type=openapi.TYPE_STRING,
-                                        description="Vulnerability name. Should be a complement of its type."),
-                'severity': openapi.Schema(type=openapi.TYPE_NUMBER,
-                                           description="Severity"),
-                'vuln_type': openapi.Schema(type=openapi.TYPE_INTEGER,
-                                            description="Id of the vulnerability type?"),
+                'title': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="Vulnerability name. Should be a complement of its type."
+                ),
+                'severity': openapi.Schema(
+                    type=openapi.TYPE_NUMBER,
+                    description="Severity (0.0 == low, 10.0 == critical)",
+                ),
+                'vuln_type': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="Id of the vulnerability type?",
+                ),
+                'images': openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_FILE,
+                        description="image as base64",
+                    ),
+                    description="array of screenshots (max 4)"
+                )
             },
         ),
         responses={
@@ -111,7 +125,8 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                     "id": 1,
                     "title": "Stack Overflow",
                     "severity": 0.99,
-                    "vuln_type": 1
+                    "vuln_type": 1,
+                    "images": [],
                 }
             )
         },
@@ -138,13 +153,13 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
-
-        # FIXME(djnn): add image upload here (figure out how this should work)
+        if 'images' in request.data and len(request.data.images) > 4:
+            return Response({
+                'error': 'cannot upload more than 4 images',
+            }, status=HTTP_400_BAD_REQUEST)
 
         return super().create(request, *args, **kwargs)
 
-    def upload_images(self, vuln: Vulnerability, images: List[str]) -> Optional[List[str]]:
-        """returns true if successful"""
 
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
@@ -160,5 +175,11 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             request.data['vuln_type'] = vuln_obj.id
             if not 'description' in request.data:
                 request.data['description'] = vuln_obj.description
+
+        # FIXME(djnn): also need to count the number of images already present
+        if 'images' in request.data and len(request.data.images) > 4:
+            return Response({
+                'error': 'cannot upload more than 4 images',
+            }, status=HTTP_400_BAD_REQUEST)
 
         return super().update(request, *args, **kwargs)
