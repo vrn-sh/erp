@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import * as IoIcons from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
 import {
     Accordion,
     AccordionDetails,
@@ -28,7 +27,6 @@ export interface IRecon {
     }[];
 }
 export default function Recon(idMission: any) {
-    const [keyword, setKeyword] = useState('');
     const [recon, setRecon] = useState<IRecon>({
         id: 0,
         updated_at: '2023-05-08T14:29:15.580559Z',
@@ -65,11 +63,6 @@ export default function Recon(idMission: any) {
 
     const changePage = (n: number) => {
         setCurrentPage(n);
-    };
-
-    const searchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        setKeyword(event.target.value);
     };
 
     const getMission = async () => {
@@ -136,7 +129,7 @@ export default function Recon(idMission: any) {
                                     <Stack
                                         direction="row"
                                         spacing={22}
-                                        alignItems={'center'}
+                                        alignItems="center"
                                         justifyContent="space-between"
                                     >
                                         <p>{s_list.id}</p>
