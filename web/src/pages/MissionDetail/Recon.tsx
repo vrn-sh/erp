@@ -136,6 +136,7 @@ export default function Recon(idMission: any) {
                                     <Stack
                                         direction="row"
                                         spacing={22}
+                                        alignItems={'center'}
                                         justifyContent="space-between"
                                     >
                                         <p>{s_list.id}</p>
@@ -145,6 +146,8 @@ export default function Recon(idMission: any) {
                                                 10
                                             )}
                                         </p>
+                                        <p>IPS : {s_list.ips.length}</p>
+                                        <p>Ports : {s_list.ports.length}</p>
                                     </Stack>
                                 </AccordionSummary>
                                 <AccordionDetails>
