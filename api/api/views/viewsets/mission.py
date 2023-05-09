@@ -173,7 +173,7 @@ class CrtShView(APIView):
         crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
         if not crt_object:
             certificates = fetch_certificates_from_crtsh(domain)
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
             crt_object.save()
 
             # return json parsed data
@@ -238,13 +238,13 @@ class CrtShView(APIView):
         # if CrtSh already exists, no need to recreate it
         crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
         if not crt_object:
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
             crt_object.save()
 
             # return json parsed data
             return Response({'dump': certificates}, status=HTTP_200_OK)
 
-        crt_object.dump = dumps(certificates)
+        crt_object.dump = dumps(certificates, default=str)
         crt_object.save()
 
         return Response({'dump': certificates}, HTTP_200_OK)
