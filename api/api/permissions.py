@@ -4,10 +4,11 @@
 """
 
 import logging
-from typing import List
+from typing import Any, List
 from warnings import warn
 
 from rest_framework import permissions
+from rest_framework.request import Request
 
 from api.models import Auth, Pentester, Manager, Team
 from api.models.mission import Mission, NmapScan, Recon
@@ -44,6 +45,58 @@ class PostOnly(MethodOnly):
     SAFE_METHODS = ['POST']
 
 
+def is_allowed_to_see(request: Request, obj: Any) -> bool:
+    """
+        check if request user has read rights for an object
+    """
+    if isinstance(obj, Auth):
+        return obj.id == request.user.id # type: ignore
+
+    if isinstance(obj, (Pentester, Manager)):
+        return obj.auth.id == request.user.id # type: ignore
+
+    if isinstance(obj, (Notes, Vulnerability)):
+        return obj.author.id == request.user.id
+
+    if isinstance(obj, Team):
+        for m in obj.members.all():
+            if m.id == request.user.id:
+                return True
+        return obj.leader.auth.id == request.user.id
+
+    if isinstance(obj, Mission):
+        for m in obj.team.members.all():
+            if m.auth.id == request.user.id:
+                return True
+        return obj.team.leader.auth.id == request.user.id
+
+    if isinstance(obj, Recon):
+        mission_obj = Mission.objects.filter(recon_id=obj.id).first()
+        if not mission_obj:
+            logging.warning('Recon <%d> has no team', obj.id)
+            return False
+
+        for m in mission_obj.team.members.all():
+            if m.auth.id == request.user.id:
+                return True
+        return mission_obj.leader.auth.id == request.user.id
+
+    if isinstance(obj, NmapScan):
+        mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()
+        if not mission_obj:
+            logging.warning('NmapScan <%d> has no team', obj.id)
+            return False
+
+        for m in mission_obj.team.members.all():
+            if m.auth.id == request.user.id:
+                return True
+        return mission_obj.leader.auth.id == request.user.id
+
+    logging.warning('permissions: Object <%s> has not reached anything',
+            str({type(obj)}))
+    return False
+
+
 class IsLinkedToData(permissions.BasePermission):
     """
         IsLinkedToData
@@ -56,53 +109,7 @@ class IsLinkedToData(permissions.BasePermission):
         return True
 
     def has_object_permission(self, request, _, obj):
-        if isinstance(obj, Auth):
-            return obj.id == request.user.id # type: ignore
-
-        if isinstance(obj, (Pentester, Manager)):
-            return obj.auth.id == request.user.id # type: ignore
-
-        if isinstance(obj, (Notes, Vulnerability)):
-            return obj.author.id == request.user.id
-
-        if isinstance(obj, Team):
-            for m in obj.members.all():
-                if m.id == request.user.id:
-                    return True
-            return obj.leader.auth.id == request.user.id
-
-        if isinstance(obj, Mission):
-            for m in obj.team.members.all():
-                if m.auth.id == request.user.id:
-                    return True
-            return obj.team.leader.auth.id == request.user.id
-
-        if isinstance(obj, Recon):
-            mission_obj = Mission.objects.filter(recon_id=obj.id).first()
-            if not mission_obj:
-                logging.warning('Recon <%d> has no team', obj.id)
-                return False
-
-            for m in mission_obj.team.members.all():
-                if m.auth.id == request.user.id:
-                    return True
-            return mission_obj.leader.auth.id == request.user.id
-
-        if isinstance(obj, NmapScan):
-            mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()
-            if not mission_obj:
-                logging.warning('NmapScan <%d> has no team', obj.id)
-                return False
-
-            for m in mission_obj.team.members.all():
-                if m.auth.id == request.user.id:
-                    return True
-            return mission_obj.leader.auth.id == request.user.id
-
-        logging.warning('permissions: Object <%s> has not reached anything',
-                str({type(obj)}))
-        return False
-
+        return is_allowed_to_see(request, obj)
 
 def user_has_role(request, role: str) -> bool:
     """checks if a user has the appropriate role (being 1 or 2)"""

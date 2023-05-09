@@ -45,7 +45,7 @@ class VulnTestCase(TransactionTestCase):
                 'mission': mission.id,
                 'title': 'String Error Terminatoin', # Typo made on purpose
                 'vuln_type': 'Cross-Site Scripting (XSS)',
-                'serverity': 6.5,
+                'severity': 6.5,
                 'screenshots': []
             }
         )

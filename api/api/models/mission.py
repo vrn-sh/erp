@@ -117,4 +117,3 @@ class Mission(models.Model):
                 s3.create_bucket(self.bucket_name)
 
         super().save(*args, **kwargs)
-

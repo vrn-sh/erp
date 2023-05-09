@@ -45,7 +45,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         for image_data in data.get('images', []):
             decoded_image = image_data.decode('base64')
             content_file = ContentFile(decoded_image)
-            image_name = s3_client.upload_file(internal_value.bucket_name, content_file.name, content_file)
+            s3_client.upload_file(internal_value.bucket_name, content_file.name, content_file)
             images.append(image_name)
         internal_value['images'] = images
         return internal_value
