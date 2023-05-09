@@ -153,7 +153,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
-        if 'images' in request.data and len(request.data.images) > 4:
+        if 'images' in request.data and len(request.data['images']) > 4:
             return Response({
                 'error': 'cannot upload more than 4 images',
             }, status=HTTP_400_BAD_REQUEST)
