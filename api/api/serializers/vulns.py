@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from typing import List, Optional
 from warnings import warn
 from django.core.files.base import ContentFile
@@ -70,6 +71,11 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
         images: List[str] = []
         for image in instance.images:
+
+            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
+                continue
+
+            s3_client = S3Bucket()
             images.append(s3_client.get_object_url('rootbucket', image))
 
         representation['images'] = images
@@ -77,7 +83,6 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         internal_value = super().to_internal_value(data)
-        s3_client = S3Bucket()
         images = []
 
         for image_data in data.get('images', []):
@@ -89,6 +94,10 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
             if not mime_type or not image_data:
                 continue
 
+            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
+                continue
+
+            s3_client = S3Bucket()
             image_name =  f'{uuid.uuid4().hex}.{mime_type}'
             iostream = BytesIO(image_data)
             s3_client.upload_stream(
