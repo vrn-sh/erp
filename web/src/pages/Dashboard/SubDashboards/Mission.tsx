@@ -17,6 +17,14 @@ export default function Mission() {
             team: string;
             status: { color: string; text: string };
             scope: any;
+            vuln: string[];
+        }[]
+    >([]);
+    const [vulnType, setVulnType] = useState<
+        {
+            id: number;
+            name: string;
+            description: string;
         }[]
     >([]);
     const [open, setOpen] = useState(false);
@@ -99,7 +107,24 @@ export default function Mission() {
         return { color: 'secondary', text: 'In Progress' };
     };
 
+    const getVulType = async () => {
+        await axios
+            .get(`${config.apiUrl}/vuln-type?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setVulnType(data.data.results);
+            })
+            .catch((e) => {
+                throw e.message;
+            });
+    };
+
     const getMission = async () => {
+        let vulnty: string[] = [];
         await axios
             .get(`${config.apiUrl}/mission?page=2`, {
                 headers: {
@@ -107,9 +132,35 @@ export default function Mission() {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then((data) => {
+            .then(async (data) => {
                 const tab = [];
                 for (let i = 0; i < data.data.results.length; i += 1) {
+                    vulnty = [];
+                    await axios
+                        .get(
+                            `${config.apiUrl}/vulnerability?page=1&mission=${data.data.results[i].id}`,
+                            {
+                                headers: {
+                                    'Content-type': 'application/json',
+                                    Authorization: `Token ${Cookies.get(
+                                        'Token'
+                                    )}`,
+                                },
+                            }
+                        )
+                        .then((res) => {
+                            for (let a = 0; a < res.data.length; a += 1) {
+                                console.log(res.data[a].vuln_type);
+                                const tmp = vulnType.find((obj) => {
+                                    return obj.id === res.data[a].vuln_type;
+                                });
+                                if (tmp && vulnty.indexOf(tmp.name) === -1)
+                                    vulnty.push(tmp.name);
+                            }
+                        })
+                        .catch((e) => {
+                            throw e.message;
+                        });
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].title,
@@ -119,9 +170,11 @@ export default function Mission() {
                             data.data.results[i].start
                         ) || { color: 'info', text: 'Not Started' },
                         scope: data.data.results[i].scope,
+                        vuln: vulnty,
                     });
                 }
                 tab.reverse();
+                console.log(tab);
                 setList(tab);
             })
             .catch((e) => {
@@ -156,9 +209,13 @@ export default function Mission() {
     };
 
     useEffect(() => {
+        getVulType();
         getTeam();
-        getMission();
     }, []);
+
+    useEffect(() => {
+        getMission();
+    }, [vulnType]);
 
     useEffect(() => {
         getTeam();
@@ -205,6 +262,7 @@ export default function Mission() {
                             <tr>
                                 <th>Mission name</th>
                                 <th>Team</th>
+                                <th>Badges</th>
                                 <th>State</th>
                                 <th>Actions</th>
                             </tr>
@@ -215,6 +273,11 @@ export default function Mission() {
                                     <tr key={mission.id}>
                                         <td>{mission.name}</td>
                                         <td>{mission.team}</td>
+                                        <td>
+                                            {mission.vuln.map((m) => {
+                                                return <p>{m} </p>;
+                                            })}
+                                        </td>
                                         <td>
                                             <Chip
                                                 label={mission.status.text}
@@ -239,7 +302,7 @@ export default function Mission() {
                                             />
                                             <input
                                                 type="button"
-                                                value="Add"
+                                                value="Add vuln"
                                                 className="borderBtn"
                                                 onClick={() =>
                                                     NavAddVul(

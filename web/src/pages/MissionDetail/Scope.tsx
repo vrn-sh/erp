@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import toast, { Toaster } from 'react-hot-toast';
+import Feedbacks from '../../component/Feedback';
 import config from '../../config';
 
 export default function Scope(/* need to add list as a param here */) {
@@ -20,6 +20,26 @@ export default function Scope(/* need to add list as a param here */) {
     const [lastEdit, setLastEdit] = useState();
     const [start, setStart] = useState<Dayjs>(dayjs());
     const [end, setEnd] = useState<Dayjs>(dayjs());
+    const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
 
     const isPentester = Cookies.get('Role') === '1';
 
@@ -71,11 +91,12 @@ export default function Scope(/* need to add list as a param here */) {
                 }
             )
             .then(() => {
-                toast.success('Scope deleted!');
+                setOpen(true);
+                setMessage('Deleted !', 'success');
                 setScope(newScope);
             })
             .catch((e) => {
-                toast.error(e.message);
+                setMessage(e.message, 'error');
             });
     };
 
@@ -110,8 +131,7 @@ export default function Scope(/* need to add list as a param here */) {
         for (let i = 0; i < scope.length; i += 1) {
             if (scope[i] === keyword) {
                 const p = Math.floor(i / recordsPerPage) + 1;
-                if (i % 5 === 0) 
-                    setCurrentPage(p - 1);
+                if (i % 5 === 0) setCurrentPage(p - 1);
                 else setCurrentPage(p);
                 find = true;
             }
@@ -143,9 +163,14 @@ export default function Scope(/* need to add list as a param here */) {
 
     return (
         <>
-            <div>
-                <Toaster position="top-center" reverseOrder={false} />
-            </div>
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    color={message.color}
+                    open={open}
+                    close={handleClose}
+                />
+            )}
             <div className="mission-tool-line">
                 <div className="search-name">
                     <div className="mission-input-block">
@@ -199,7 +224,6 @@ export default function Scope(/* need to add list as a param here */) {
                                             style={{ color: 'red' }}
                                             onClick={() => delScope(index)}
                                         />
-                                        <AiIcons.AiFillEdit className="scope-action-icons" />
                                     </td>
                                 )}
                             </tr>
