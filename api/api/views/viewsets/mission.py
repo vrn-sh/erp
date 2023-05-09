@@ -7,7 +7,7 @@ from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
 from rest_framework.routers import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from api.models import Auth, Pentester
 
 from api.models.mission import Mission, NmapScan, Recon, CrtSh
@@ -180,6 +180,76 @@ class CrtShView(APIView):
             return Response({'dump': certificates}, status=HTTP_201_CREATED)
 
         return Response({'dump': loads(crt_object.dump)}, HTTP_201_CREATED)
+
+
+    @swagger_auto_schema(
+        operation_description="Fetches certificates for a given domain and updates the mission data.",
+        manual_parameters=[
+            openapi.Parameter(
+                name="mission_id",
+                in_=openapi.IN_QUERY,
+                description="ID of the mission to save the certificates.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+            ),
+            openapi.Parameter(
+                name="domain",
+                in_=openapi.IN_QUERY,
+                description="domain name to check.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+            )
+        ],
+        responses={
+            "200": openapi.Response(
+                description="200 OK",
+            ),
+            "400": openapi.Response(
+                description="400 Bad Request",
+            )
+        },
+        security=['Bearer'],
+        tags=['crt.sh'],
+    )
+    def patch(self, request, *args, **kwargs):
+        mission_id = request.query_params.get('mission_id')
+        domain = request.query_params.get('domain')
+
+        if not mission_id or not domain:
+            return Response({
+                "error": "Domain and mission_id parameters are required.",
+            }, status=HTTP_400_BAD_REQUEST)
+
+        # getting related mission
+        mission = Mission.objects.filter(id=mission_id).first()
+        if not mission:
+            return Response({
+                "error": "Mission not found",
+            }, status=HTTP_400_BAD_REQUEST)
+
+        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)
+        if current_user not in mission.team.members.all():
+            return Response({
+                'error': 'user not member of mission',
+            }, status=HTTP_400_BAD_REQUEST)
+
+        certificates = fetch_certificates_from_crtsh(domain)
+
+        # if CrtSh already exists, no need to recreate it
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        if not crt_object:
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates))
+            crt_object.save()
+
+            # return json parsed data
+            return Response({'dump': certificates}, status=HTTP_200_OK)
+
+        crt_object.dump = dumps(certificates)
+        crt_object.save()
+
+        return Response({'dump': certificates}, HTTP_200_OK)
+
+
 
 
 
