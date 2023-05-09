@@ -1,39 +1,164 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import * as IoIcons from 'react-icons/io';
-import Crt from '../../../assets/strings/en/crt.json';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import config from '../../../config';
 
 export default function CrtSh() {
     const [tmpIdentity, setTmpIdentity] = useState('');
     const [inputIdentity, setInputIdentity] = useState('');
-
-    // const getLink = (path: string) => {
-    //     const res = path.replace('{{ID}}', inputIdentity);
-    //     return res;
-    // };
-
+    const [missionId, setMissionId] = useState(-1);
+    const [success, setSuccess] = useState(false);
+    const [crtData, setCrtData] = useState<
+        {
+            id: number;
+            logged_at: string;
+            not_before: string;
+            not_after: string;
+            name: string;
+            ca: {
+                caid: number;
+                name: string;
+                parsed_name: {
+                    C: string;
+                    O: string;
+                    CN: string;
+                };
+            };
+        }[]
+    >([
+        {
+            id: 0,
+            logged_at: '',
+            not_before: '',
+            not_after: '',
+            name: '',
+            ca: {
+                caid: 0,
+                name: '',
+                parsed_name: {
+                    C: '',
+                    O: '',
+                    CN: '',
+                },
+            },
+        },
+    ]);
+    const [list, setList] = useState<
+        {
+            value: number;
+            label: string;
+        }[]
+    >([]);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTmpIdentity(inputIdentity);
         setTmpIdentity(e.target.value);
     };
-
     const handleKeyDown = (event: { key: string }) => {
         if (event.key === 'Enter') {
             setInputIdentity(tmpIdentity);
         }
     };
 
-    const searchIdentity = () => {
-        setTmpIdentity(tmpIdentity);
-        toast.success('Searching domain');
+    const searchIdentity = async () => {
+        if (missionId === -1) {
+            toast.error('please select a mission');
+            return;
+        }
+        toast('loading...');
+        axios(
+            `http://127.0.0.1:8000/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            }
+        )
+            .then((data) => {
+                setCrtData(data.data.dump);
+                setSuccess(true);
+                toast.success('Succeed to load!');
+            })
+            .catch((e) => {
+                console.log(e);
+                setSuccess(false);
+                toast.error(e.response.data.dump[0].error);
+            });
     };
+    const updateIdentity = async () => {
+        if (missionId === -1) {
+            toast.error('please select a mission');
+            return;
+        }
+        toast('loading...');
+        axios(
+            `http://127.0.0.1:8000/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            }
+        )
+            .then((data) => {
+                setCrtData(data.data.dump);
+                setSuccess(true);
+                toast.success('Succeed to load!');
+            })
+            .catch((e) => {
+                console.log(e);
+                setSuccess(false);
+                toast.error(e.response.data.dump[0].error);
+            });
+    };
+
+    const getMission = async () => {
+        await axios
+            .get(`${config.apiUrl}/mission?page=2`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    const res = data.data.results[i];
+                    tab.push({
+                        value: res.id,
+                        label: res.title,
+                    });
+                }
+                tab.reverse();
+                setList(tab);
+            })
+            .catch((e) => {
+                throw e.message;
+            });
+    };
+    useEffect(() => {
+        getMission();
+    }, []);
 
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 4;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
-    const records = Crt.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(Crt.length / recordsPerPage);
+    let records = crtData.slice(firstIndex, lastIndex);
+    let npage = Math.ceil(crtData.length / recordsPerPage);
+
+    useEffect(() => {
+        records = crtData.slice(firstIndex, lastIndex);
+        npage = Math.ceil(crtData.length / recordsPerPage);
+    }, [crtData, success]);
 
     const nextPage = () => {
         if (currentPage !== npage) {
@@ -50,28 +175,66 @@ export default function CrtSh() {
     const changePage = (e: string) => {
         setCurrentPage(parseInt(e, 10));
     };
+    const handleMissionSelect = (event: SelectChangeEvent) => {
+        setMissionId(parseInt(event.target.value, 10));
+    };
 
     return (
         <>
-            <div className="dork_input">
+            <div className="crt_input">
                 <div>
                     <Toaster position="top-center" reverseOrder={false} />
                 </div>
-                <label>Target Identity</label>
+                <FormControl
+                    variant="standard"
+                    sx={{
+                        m: 1,
+                        minWidth: 100,
+                        fontSize: '12px',
+                        margin: '0 1rem',
+                    }}
+                >
+                    <InputLabel id="demo-simple-select-standard-label">
+                        Choose a mission
+                    </InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={JSON.stringify(missionId)}
+                        label="mission"
+                        onChange={handleMissionSelect}
+                    >
+                        {list.map((elem) => {
+                            return (
+                                <MenuItem value={elem.value}>
+                                    {elem.label}
+                                </MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
                 <input
                     type="text"
                     placeholder="Enter an Identity"
                     name="identity"
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className="sub_input_field"
+                    className="crt_input_field"
                 />
+
                 <button
                     type="button"
                     onClick={searchIdentity}
                     className="searchBtn"
                 >
                     Search
+                </button>
+                <button
+                    type="button"
+                    onClick={updateIdentity}
+                    className="searchBtn"
+                >
+                    Update crt result
                 </button>
             </div>
             <table
@@ -86,25 +249,24 @@ export default function CrtSh() {
                             <th className="md-1">Not Before</th>
                             <th className="md-1">Not After</th>
                             <th className="md-1">Name</th>
-                            <th className="md-1">CA ID</th>
-                            <th className="md-3">CA Name</th>
+                            <th className="md-3">Issuer Name</th>
                         </tr>
                     </thead>
-                    {records.map((crt) => {
-                        return (
-                            <tbody>
-                                <tr>
-                                    <td>{crt.id}</td>
-                                    <td>{crt.logged_at}</td>
-                                    <td>{crt.not_before}</td>
-                                    <td>{crt.not_after}</td>
-                                    <td>{crt.name}</td>
-                                    <td>{crt.ca.caid}</td>
-                                    <td>{crt.ca.name}</td>
-                                </tr>
-                            </tbody>
-                        );
-                    })}
+                    {success &&
+                        records?.map((crt) => {
+                            return (
+                                <tbody>
+                                    <tr>
+                                        <td>{crt.id}</td>
+                                        <td>{crt.logged_at}</td>
+                                        <td>{crt.not_before}</td>
+                                        <td>{crt.not_after}</td>
+                                        <td>{crt.name}</td>
+                                        <td>{crt.ca?.name}</td>
+                                    </tr>
+                                </tbody>
+                            );
+                        })}
                 </tbody>
             </table>
             <nav>

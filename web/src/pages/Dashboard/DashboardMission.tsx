@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Dashboard.scss';
+import Cookies from 'js-cookie';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
 import CrtSh from './SubDashboards/CrtSh';
@@ -24,6 +25,7 @@ function MissionSubMenu(props: any) {
 
 function DashboardMission() {
     const [active, setActive] = useState('main');
+    const isPentester = Cookies.get('Role') === '1';
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
@@ -86,13 +88,15 @@ function DashboardMission() {
                             handleClick={handleClick}
                             title="Dork Engine"
                         />
-                        <MissionSubMenu
-                            key_p="5"
-                            id_p="crt"
-                            active={active}
-                            handleClick={handleClick}
-                            title="crt.sh"
-                        />
+                        {isPentester && (
+                            <MissionSubMenu
+                                key_p="5"
+                                id_p="crt"
+                                active={active}
+                                handleClick={handleClick}
+                                title="crt.sh"
+                            />
+                        )}
                     </div>
                 </div>
                 {getSubDashboard()}

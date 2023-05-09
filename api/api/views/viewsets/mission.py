@@ -122,7 +122,7 @@ class CrtShView(APIView):
     @staticmethod
     def has_crtsh_error(response: List[Dict[str, Any]]) -> bool:
         """checks if there is an error returned from crtsh.py"""
-        return len(response) == 1 and 'error' in response[1]
+        return len(response) == 1 and 'error' in response[0]
 
     @swagger_auto_schema(
         operation_description="Fetches certificates for a given domain and saves them to a mission.",
@@ -188,10 +188,10 @@ class CrtShView(APIView):
 
             # return json parsed data
             return Response({'dump': certificates}, status=status)
-
-            status = HTTP_201_CREATED
-            if self.has_crtsh_error(certificates):
-                status = HTTP_500_INTERNAL_SERVER_ERROR
+        
+        status = HTTP_201_CREATED
+        if self.has_crtsh_error(loads(crt_object.dump)):
+            status = HTTP_500_INTERNAL_SERVER_ERROR
 
         return Response({'dump': loads(crt_object.dump)}, status)
 
