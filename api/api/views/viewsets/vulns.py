@@ -137,10 +137,6 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         request.data['vuln_type'] = vuln_obj.id
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
-
-
-        # FIXME(djnn): add image upload here (figure out how this should work)
-
         return super().create(request, *args, **kwargs)
 
     def upload_images(self, vuln: Vulnerability, images: List[str]) -> Optional[List[str]]:
