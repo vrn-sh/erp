@@ -123,7 +123,6 @@ export default function Mission() {
                 }
                 tab.reverse();
                 setList(tab);
-                console.log(tab);
             })
             .catch((e) => {
                 throw e.message;
@@ -143,6 +142,15 @@ export default function Mission() {
             state: {
                 missionId: id,
                 scopeList: scope,
+            },
+        });
+    };
+
+    const NavAddVul = (id: number, name: string) => {
+        navigate('/vuln/add', {
+            state: {
+                missionId: id,
+                missionName: name,
             },
         });
     };
@@ -205,9 +213,7 @@ export default function Mission() {
                             return (
                                 <tbody key={mission.id}>
                                     <tr key={mission.id}>
-                                        <td>
-                                            {mission.id}-{mission.name}
-                                        </td>
+                                        <td>{mission.name}</td>
                                         <td>{mission.team}</td>
                                         <td>
                                             <Chip
@@ -228,6 +234,17 @@ export default function Mission() {
                                                     NavMissionDetail(
                                                         mission.id,
                                                         mission.scope
+                                                    )
+                                                }
+                                            />
+                                            <input
+                                                type="button"
+                                                value="Add"
+                                                className="borderBtn"
+                                                onClick={() =>
+                                                    NavAddVul(
+                                                        mission.id,
+                                                        mission.name
                                                     )
                                                 }
                                             />

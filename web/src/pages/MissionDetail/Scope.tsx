@@ -3,7 +3,7 @@ import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -13,7 +13,7 @@ import config from '../../config';
 export default function Scope(/* need to add list as a param here */) {
     const [keyword, setKeyword] = useState('');
     const [scope, setScope] = useState([]);
-    const [missionId, setMissionId] = useState();
+    const [missionId, setMissionId] = useState(0);
     const [Title, setTitle] = useState('');
     const [Team, setTeam] = useState(0);
     const [createBy, setCreateBy] = useState();
@@ -23,15 +23,13 @@ export default function Scope(/* need to add list as a param here */) {
 
     const isPentester = Cookies.get('Role') === '1';
 
-    const recordsPerPage = 4;
+    const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
     const [record, setRecord] = useState([]);
     const [npage, setNPage] = useState(0);
     const [nums, setNums] = useState<any[]>([]);
-    const lastIndex = currentPage * recordsPerPage;
-    const firstIndex = lastIndex - recordsPerPage;
-
-    const navigate = useNavigate();
+    let lastIndex = currentPage * recordsPerPage;
+    let firstIndex = lastIndex - recordsPerPage;
     const location = useLocation();
 
     const nextPage = () => {
@@ -48,6 +46,7 @@ export default function Scope(/* need to add list as a param here */) {
 
     const changePage = (n: number) => {
         setCurrentPage(n);
+        console.log(currentPage);
     };
 
     const delScope = async (index: number) => {
@@ -101,26 +100,23 @@ export default function Scope(/* need to add list as a param here */) {
             });
     };
 
-    // const searchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     event.preventDefault();
-    //     setKeyword(event.target.value);
-    // };
+    const searchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        setKeyword(event.target.value);
+    };
 
-    // const searchScope = () => {
-    //     let find = false;
-    //     for (let i = 0; i < scope.length; i += 1) {
-    //         if (scope[i].toLowerCase().includes(keyword)) {
-    //             const p = Math.floor(scope[i].id / recordsPerPage) + 1;
-    //             if (scope[i].id % 3 === 0) changePage(p - 1);
-    //             else changePage(p);
-    //             find = true;
-    //         }
-    //         if (find === true) break;
-    //     }
-    // };
-
-    const NavAddVul = () => {
-        navigate('/vuln/add');
+    const searchScope = () => {
+        let find = false;
+        for (let i = 0; i < scope.length; i += 1) {
+            if (scope[i] === keyword) {
+                const p = Math.floor(i / recordsPerPage) + 1;
+                if (i % 5 === 0) 
+                    setCurrentPage(p - 1);
+                else setCurrentPage(p);
+                find = true;
+            }
+            if (find === true) break;
+        }
     };
 
     useEffect(() => {
@@ -131,11 +127,19 @@ export default function Scope(/* need to add list as a param here */) {
     useEffect(() => {
         getMission();
         setRecord(scope.slice(firstIndex, lastIndex));
+    }, [missionId, scope]);
+
+    useEffect(() => {
         setNPage(Math.ceil(scope.length / recordsPerPage));
         const n = [...Array(npage + 1).keys()].slice(1);
         setNums(n);
-        // searchScope();
-    }, [missionId, scope]);
+    }, [record]);
+
+    useEffect(() => {
+        lastIndex = currentPage * recordsPerPage;
+        firstIndex = lastIndex - recordsPerPage;
+        setRecord(scope.slice(firstIndex, lastIndex));
+    }, [currentPage]);
 
     return (
         <>
@@ -143,7 +147,7 @@ export default function Scope(/* need to add list as a param here */) {
                 <Toaster position="top-center" reverseOrder={false} />
             </div>
             <div className="mission-tool-line">
-                {/* <div className="search-name">
+                <div className="search-name">
                     <div className="mission-input-block">
                         <label
                             className="placeholder"
@@ -164,7 +168,7 @@ export default function Scope(/* need to add list as a param here */) {
                     >
                         Search
                     </button>
-                </div> */}
+                </div>
 
                 <button type="button" className="input_btn mission-borderBtn">
                     GET REPORT
@@ -175,8 +179,7 @@ export default function Scope(/* need to add list as a param here */) {
                     <tr>
                         {/* <th>Status</th> */}
                         <th className="md-5">Name</th>
-                        <th className="md-3">Badges</th>
-                        <th className="md-2">Actions</th>
+                        {!isPentester && <th className="md-2">Actions</th>}
                     </tr>
                     {record.map((s_list, index) => {
                         return (
@@ -189,34 +192,16 @@ export default function Scope(/* need to add list as a param here */) {
                                     )}
                                 </td> */}
                                 <td id="name">{s_list}</td>
-                                <td>
-                                    {/* utiliser les types de vulnérability */}
-                                    {/* {s_list.bages.map((badge: string) => {
-                                        return (
-                                            <label className="scope-badges">
-                                                {badge}
-                                            </label>
-                                        );
-                                    })} */}
-                                </td>
-                                <td className="scope-table-action">
-                                    <input
-                                        type="button"
-                                        value="Add"
-                                        className="borderBtn"
-                                        onClick={NavAddVul}
-                                    />
-                                    {!isPentester && (
-                                        <>
-                                            <AiIcons.AiFillDelete
-                                                className="scope-action-icons"
-                                                style={{ color: 'red' }}
-                                                onClick={() => delScope(index)}
-                                            />
-                                            <AiIcons.AiFillEdit className="scope-action-icons" />
-                                        </>
-                                    )}
-                                </td>
+                                {!isPentester && (
+                                    <td className="scope-table-action">
+                                        <AiIcons.AiFillDelete
+                                            className="scope-action-icons"
+                                            style={{ color: 'red' }}
+                                            onClick={() => delScope(index)}
+                                        />
+                                        <AiIcons.AiFillEdit className="scope-action-icons" />
+                                    </td>
+                                )}
                             </tr>
                         );
                     })}
