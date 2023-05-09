@@ -25,23 +25,19 @@ def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
     if os.environ.get('TEST', '0') == '1' or os.environ.get('CI', '0') == '1':
         return [{'testing': 'dummy data'}]
 
+
     try:
         r = requests.get(
-            f"{CRTSH_API_BASE_URL}{domain}&output=json",
-            timeout=(1, 5),
+            "https://crt.sh/", params={"q": domain, "output": "json"}, timeout=15.0
         )
-    except ConnectTimeout:
-        return [{'error': "could not connect to crt.sh API. Service is down."}]
-
-    except ReadTimeout:
-        return [{'error': "could not read from crt.sh API. Service is overloaded."}]
-
-    nameparser = re.compile('([a-zA-Z]+)=("[^"]+"|[^,]+)')
-    certs: List[Dict[str, Any]] = []
-    try:
+        nameparser = re.compile('([a-zA-Z]+)=("[^"]+"|[^,]+)')
+        certs: List[Dict[str, Any]] = []
+        
+        warning(f'{r.status_code} -- {r.text}')
+        
         for c in r.json():
-            # FIXME(loris): there is a crash here but i dont have time to fix it
-            certs.append({
+            certs.append(
+                {
                     "id": c["id"],
                     "logged_at": parse(c["entry_timestamp"]),
                     "not_before": parse(c["not_before"]),
@@ -53,10 +49,17 @@ def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
                         "parsed_name": dict(nameparser.findall(c["issuer_name"])),
                     },
                 }
-            )
+            )     
 
-    # pylint disalbe=too-broad-exception
-    except Exception:
+    except ConnectTimeout:
+        return [{'error': "could not connect to crt.sh API. Service is down."}]
+
+    except ReadTimeout:
+        return [{'error': "could not read from crt.sh API. Service is overloaded."}]
+
+    except Exception as ex:
+        warning(f'{ex}')
         return [{'error': 'could not parse json response.'}]
 
     return certs
+    
