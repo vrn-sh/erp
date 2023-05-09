@@ -106,7 +106,8 @@ class Mission(models.Model):
 
     @property
     def bucket_name(self) -> str:
-        return self.title.replace(' ', '_')
+        return "".join((map(lambda a: '-' if not a.isalpha() else a.lower(), self.title)))\
+             + str(self.id)
 
     def save(self, *args, **kwargs):
         if self.pk is None and environ.get('PRODUCTION', '0') == '1':
