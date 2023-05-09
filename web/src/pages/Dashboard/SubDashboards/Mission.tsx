@@ -154,8 +154,12 @@ export default function Mission() {
         navigate('/mission/create');
     };
 
-    const NavMissionDetail = () => {
-        navigate('/mission/detail');
+    const NavMissionDetail = (id: number) => {
+        navigate('/mission/detail', {
+            state: {
+                missionId: id,
+            },
+        });
     };
 
     return (
@@ -207,7 +211,7 @@ export default function Mission() {
                                                 value="Open"
                                                 className="openBtn"
                                                 onClick={() =>
-                                                    NavMissionDetail()
+                                                    NavMissionDetail(mission.id)
                                                 }
                                             />
                                             {!isPentester && (

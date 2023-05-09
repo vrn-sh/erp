@@ -14,34 +14,35 @@ import {
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
+import AddNMAP from './AddNMAP';
 
 export interface IRecon {
     id: number;
     updated_at: string;
-    nmap?: INMAP[];
-}
-
-export interface INMAP {
-    nmap: {
+    nmap_runs: {
         id: number;
         ips: string[];
         ports: string[];
         creation_timestamp: string;
         recon: number;
-    };
+    }[];
 }
-
-export default function Recon() {
+export default function Recon(idMission: any) {
     const [keyword, setKeyword] = useState('');
-    const [recon, setRecon] = useState<IRecon[]>([]);
+    const [recon, setRecon] = useState<IRecon>({
+        id: 0,
+        updated_at: '2023-05-08T14:29:15.580559Z',
+        nmap_runs: [],
+    });
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
-    const records = recon!.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(recon!.length / recordsPerPage);
+    const records = recon!.nmap_runs.slice(firstIndex, lastIndex);
+    const npage = Math.ceil(recon!.nmap_runs.length / recordsPerPage);
     const nums = [...Array(npage + 1).keys()].slice(1);
-    const navigate = useNavigate();
+    const [modal, setModal] = useState(false);
+    const { id } = idMission;
     const [expanded, setExpanded] = React.useState<string | false>(false);
 
     const handleChange =
@@ -71,24 +72,29 @@ export default function Recon() {
         setKeyword(event.target.value);
     };
 
-    const getReconList = async () => {
+    const getMission = async () => {
         await axios
-            .get(`${config.apiUrl}/recon`, {
+            .get(`${config.apiUrl}/mission/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
             .then((data) => {
-                setRecon(data.data.results);
+                setRecon(data.data.recon);
             })
             .catch((e) => {
-                throw e.message;
+                throw e;
             });
     };
 
+    const modalClick = () => {
+        if (modal) getMission();
+        setModal(!modal);
+    };
+
     useEffect(() => {
-        getReconList();
+        getMission();
     }, []);
 
     return (
@@ -105,8 +111,9 @@ export default function Recon() {
                     <button
                         type="button"
                         className="input_btn mission-borderBtn"
+                        onClick={modalClick}
                     >
-                        ADD RECON
+                        ADD NMAP
                     </button>
                 </div>
             </div>
@@ -132,12 +139,17 @@ export default function Recon() {
                                         justifyContent="space-between"
                                     >
                                         <p>{s_list.id}</p>
-                                        <p>{s_list.updated_at}</p>
-                                        <p>{s_list.nmap?.length}</p>
+                                        <p>
+                                            {s_list.creation_timestamp.slice(
+                                                0,
+                                                10
+                                            )}
+                                        </p>
                                     </Stack>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {!s_list.nmap?.length ? (
+                                    <p>Ports</p>
+                                    {!s_list!.ports.length ? (
                                         <h3
                                             style={{
                                                 fontFamily: 'Poppins-Regular',
@@ -148,8 +160,7 @@ export default function Recon() {
                                         </h3>
                                     ) : (
                                         <>
-                                            (
-                                            {s_list!.nmap.map((nmap) => {
+                                            {s_list!.ports.map((nmap) => {
                                                 return (
                                                     <Tooltip
                                                         title="See more"
@@ -159,21 +170,47 @@ export default function Recon() {
                                                             sx={{
                                                                 margin: '8px',
                                                             }}
-                                                            label={
-                                                                nmap.nmap
-                                                                    .creation_timestamp
-                                                            }
+                                                            label={nmap}
                                                         />
                                                     </Tooltip>
                                                 );
                                             })}
-                                            )
+                                        </>
+                                    )}
+                                    <p>IPS</p>
+                                    {!s_list!.ips.length ? (
+                                        <h3
+                                            style={{
+                                                fontFamily: 'Poppins-Regular',
+                                            }}
+                                            className="centered"
+                                        >
+                                            Nothing to show
+                                        </h3>
+                                    ) : (
+                                        <>
+                                            {s_list!.ips.map((nmap) => {
+                                                return (
+                                                    <Tooltip
+                                                        title="See more"
+                                                        arrow
+                                                    >
+                                                        <Chip
+                                                            sx={{
+                                                                margin: '8px',
+                                                            }}
+                                                            label={nmap}
+                                                        />
+                                                    </Tooltip>
+                                                );
+                                            })}
                                         </>
                                     )}
                                 </AccordionDetails>
                             </Accordion>
                         );
                     })}
+                    {modal && <AddNMAP func={modalClick} idRecon={recon.id} />}
                 </tbody>
             </table>
             <nav>

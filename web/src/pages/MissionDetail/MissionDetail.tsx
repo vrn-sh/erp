@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import '../Dashboard/Dashboard.scss';
@@ -8,17 +9,23 @@ import Recon from './Recon';
 
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
+    const [id, setId] = useState(0);
+    const location = useLocation();
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
     };
+
+    useEffect(() => {
+        setId(location.state.missionId);
+    }, []);
 
     const getSubMissionDetail = () => {
         if (active === 'scope') {
             return <Scope />;
         }
         if (active === 'recon') {
-            return <Recon />;
+            return <Recon id={id} />;
         }
         return null;
     };
