@@ -131,7 +131,7 @@ export default function Scope(/* need to add list as a param here */) {
             .post(
                 `${config.apiUrl}/download-report`,
                 {
-                    mission : missionId,
+                    mission: missionId,
                 },
                 {
                     headers: {
