@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
 
@@ -325,10 +326,10 @@ export default function SignUp() {
                                     Resend confirm mail
                                 </button>
                             </div>
-                            <div className="log-box">
+                            <Link to="/login" className="log-box">
                                 <span>Already have an account? </span>
                                 <span className="txt-color">Log in here!</span>
-                            </div>
+                            </Link>
                         </form>
                     </div>
                 </div>

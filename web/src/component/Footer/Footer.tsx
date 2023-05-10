@@ -1,7 +1,7 @@
 import React from 'react';
 import './Footer.scss';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/voron-logo.png';
+import logo from '../../assets/voron-logo.svg';
 
 function CustomLink({
     to,

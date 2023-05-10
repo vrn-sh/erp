@@ -213,10 +213,17 @@ label {
     background: #fff;
 }
 .log-box {
+    text-decoration: none;
     margin-top: 1rem;
     font-family: 'Roboto-Light';
     font-size: 13px;
 }
+
+.log-box:hover {
+    color: var(--primary-hover-btn);
+    transition: 0.5s ease-in-out;
+}
+
 .txt-color {
     color: var(--primary-btn);
 }
