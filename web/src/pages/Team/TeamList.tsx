@@ -182,7 +182,7 @@ export default function TeamList() {
                                                             <td>
                                                                 {team.nbMission}
                                                             </td>
-                                                            <td>
+                                                            <td className="scope-table-action">
                                                                 {!isPentester && (
                                                                     <>
                                                                         <input

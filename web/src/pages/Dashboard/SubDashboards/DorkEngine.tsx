@@ -68,7 +68,7 @@ export default function DorkEngine() {
                     name="domain"
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className="dork_input_field"
+                    className="sub_input_field"
                 />
                 <button
                     type="button"

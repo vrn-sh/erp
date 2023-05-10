@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
 import axios from 'axios';
 import config from '../../config';
+import Feedbacks from '../../component/Feedback';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
@@ -24,6 +24,7 @@ interface SignUpState {
 
 export default function SignUp() {
     const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
+    const [popUp, setPopUp] = useState(false);
     const [conPwdIcon, setConPwdIcon] = useState(
         <AiIcons.AiOutlineEyeInvisible />
     );
@@ -43,8 +44,26 @@ export default function SignUp() {
             confirmpassword: '',
         },
     });
-    const navigate = useNavigate();
     const { errors } = state;
+    const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -86,6 +105,7 @@ export default function SignUp() {
 
     const submit = async () => {
         const { username, email, role, password } = state;
+        setOpen(true);
         if (email !== '' && password.length > 7 && username.length > 4) {
             try {
                 await axios
@@ -98,7 +118,8 @@ export default function SignUp() {
                         },
                     })
                     .then(() => {
-                        navigate('/dashboard');
+                        setMessage('Email verification sent', 'success');
+                        setPopUp(true);
                     })
                     .catch(() => {
                         setState({
@@ -118,6 +139,22 @@ export default function SignUp() {
                     },
                 });
             }
+        }
+    };
+
+    const confirmUpdate = async () => {
+        try {
+            setOpen(true);
+            await axios
+                .put(`${config.apiUrl}/confirm`, {
+                    email: state.email,
+                })
+                .then(() => {
+                    setMessage('Email verification sent', 'success');
+                })
+                .catch(() => {});
+        } catch (e) {
+            console.log(e);
         }
     };
 
@@ -295,6 +332,37 @@ export default function SignUp() {
                     </div>
                 </div>
             </div>
+
+            {popUp && (
+                <div className="signup_popup">
+                    {open && (
+                        <Feedbacks
+                            mess={message.mess}
+                            color={message.color}
+                            open={open}
+                            close={handleClose}
+                        />
+                    )}
+                    <div className="signup_popup-overlay">
+                        <AiIcons.AiOutlineMail />
+                        <h1>Please check your mail to finish the sign up.</h1>
+                        <button
+                            type="button"
+                            className="sendBtn"
+                            onClick={confirmUpdate}
+                        >
+                            Didn't receive, send again
+                        </button>
+                        <button
+                            type="button"
+                            className="cancelBtn"
+                            onClick={() => setPopUp(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }
