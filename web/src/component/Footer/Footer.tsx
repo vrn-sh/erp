@@ -1,5 +1,7 @@
 import React from 'react';
 import './Footer.scss';
+import { Link } from 'react-router-dom';
+import logo from '../../assets/voron-logo.svg';
 
 function CustomLink({
     to,
@@ -21,14 +23,20 @@ function CustomLink({
 export default function Footer() {
     return (
         <div className="footer">
-            <h2 className="site-title">voron</h2>
+            <img
+                src={logo}
+                alt="logo"
+                style={{ width: '2rem', height: '2rem' }}
+            />
+            <Link to="/#home" className="site-title">
+                voron
+            </Link>
             <p>Copyright ©2023 VORON, Inc.</p>
             <p>Contact voron@djnn.sh</p>
             <div className="policy-link">
                 <ul>
-                    <CustomLink to="/">Legal Stuff</CustomLink>
-                    <CustomLink to="/">Privacy Policy</CustomLink>
-                    <CustomLink to="/">Security</CustomLink>
+                    <CustomLink to="/termofuse">Term of use</CustomLink>
+                    <CustomLink to="/privacypolicy">Privacy Policy</CustomLink>
                 </ul>
             </div>
         </div>
