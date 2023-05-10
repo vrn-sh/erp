@@ -69,6 +69,7 @@ export default function Login() {
                         Cookies.set('Role', e.data.role, {
                             expires: Date.parse(e.data.expiry),
                         });
+                        Cookies.set('Id', e.data.id)
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
