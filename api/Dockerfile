@@ -10,7 +10,8 @@ RUN apt-get update \
     libssl-dev \
     libffi-dev \
     python3-dev \
-    python-dev
+    python-dev \
+    wkhtmltopdf
 
 WORKDIR /api
 

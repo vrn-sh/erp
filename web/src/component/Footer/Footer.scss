@@ -25,6 +25,12 @@
 }
 
 .footer a {
-    text-decoration: underline;
-    color: --black;
+    text-decoration: none;
+    color: var(--primary-btn);
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+        color: var(--primary-hover-btn);
+        transition: 0.3s ease-in-out;
+    }
 }

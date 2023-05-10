@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendation</title>
+</head>
+
+<body>
+    <style>
+        body {
+            padding: 2em 6.5em;
+            margin: 30px;
+            letter-spacing: 1.2px;
+        }
+
+        .divider-x {
+            border-bottom: 2px solid black;
+            width: 100%;
+            margin: 0;
+            padding-top: 1em;
+            left: 0;
+        }
+
+        main h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.5em;
+        }
+    </style>
+    <header>
+        <style>
+            header {
+                display: block;
+            }
+
+            img {
+                float: right;
+                height: 10%;
+                width: 15%;
+                object-fit: cover;
+            }
+
+            .inline-title-logo {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .inline-title-logo p {
+                font-variant: small-caps;
+                color: red;
+                font-weight: 400;
+                letter-spacing: 1.5px;
+                margin: 0;
+            }
+
+            .m-wkns {
+                background-color: orange;
+            }
+
+            .l-wkns {
+                background-color: yellow;
+            }
+
+            .r {
+                background-color: rgb(74, 207, 74);
+            }
+
+            code {
+                border: 1px solid rgb(109, 108, 108);
+                background-color: rgb(224, 224, 224);
+                font-family: 'Courier New', Courier, monospace;
+            }
+
+            .section-text p {
+                text-align: justify;
+            }
+
+            .section-text p span {
+                font-weight: bold;
+                padding-right: 3px;
+            }
+
+
+        </style>
+        <div class="inline-title-logo">
+            <img alt="logo-company" id="logo"
+                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+            <p>Recommendation</p>
+        </div>
+        <div class="divider-x"></div>
+    </header>
+    <main>
+        <h1>Recommendation</h1>
+        <div class="section-text">
+            <p>In the following sections, we list the identied weaknesses. Every weakness has an identication name
+                which can be used as a reference in the event of questions, or during the
+                patching phase.</p>
+        </div>
+        <h2><span class="r">R01</span> Valid OpenID Connect Flow with a Missing <code>state</code> Parameter</h2>
+        <div class="section-text">
+            <p><span>General Description.</span> The OpenID Connect standard suggests to use the nonce parameter to
+                associate a Client session with an ID token, and to mitigate replay attacks [8].
+                The relying party randomly chooses a value for the nonce parameter and sends it to the
+                identity authority in the authentication request. The identity authority later adds this
+                value to the issued ID token. The relying party must verify that the nonce parameter
+                is present when it receives the ID token, and contains the same value which was chosen
+                earlier for this specic protocol ow.
+            </p>
+            <p><span>Recommendation.</span> We recommend to further increase the security of the relying party
+                and the protection against well-known attacks, such as CSRF and replay attacks, by
+                adding a binding between the authentication request and the ID token. This is achieved
+                using the OpenID Connect parameter nonce in the way described above.</p>
+        </div>
+    </main>
+</body>
+
+</html>

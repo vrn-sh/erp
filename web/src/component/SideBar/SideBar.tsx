@@ -73,7 +73,7 @@ export default function SideBar() {
     return (
         <div className="sidebar">
             <Link to="/dashboard">
-                <h1 className="site-title">voron</h1>
+                <h1 className="sidebar-site-title">voron</h1>
             </Link>
             <div>
                 {SideBarData.map((item) => {

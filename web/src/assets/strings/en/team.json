@@ -17,11 +17,32 @@
             "github": "https://github.com/lambdina"
         },
         {
+            "name": "Alvarwow69",
+            "avatar": "https://avatars.githubusercontent.com/u/27078429?v=4",
+            "description": "back-end engineer",
+            "timezone": "UTC+9",
+            "github": "https://github.com/Alvarwow69"
+        },
+        {
             "name": "Blacky",
             "avatar": "https://avatars.githubusercontent.com/u/49866160?v=4",
             "description": "back-end engineer",
             "timezone": "GMT+1",
             "github": "https://github.com/TheOrionsB"
+        },
+        {
+            "name": "Risloss",
+            "avatar": "https://avatars.githubusercontent.com/u/71264335?v=4",
+            "description": "back-end engineer",
+            "timezone": "GMT+1",
+            "github": "https://github.com/Loris-Reggiani"
+        },
+        {
+            "name": "Ananane",
+            "avatar": "https://avatars.githubusercontent.com/u/74144283?v=4",
+            "description": "front-end engineer",
+            "timezone": "GMT+1",
+            "github": "https://github.com/Ananane"
         },
         {
             "name": "Clara",
