@@ -126,6 +126,28 @@ export default function Scope(/* need to add list as a param here */) {
         setKeyword(event.target.value);
     };
 
+    const getReport = async () => {
+        await axios
+            .post(
+                `${config.apiUrl}/download-report`,
+                {
+                    mission : missionId,
+                },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then(() => {
+                setMessage('Created!', 'success');
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
     const searchScope = () => {
         let find = false;
         for (let i = 0; i < scope.length; i += 1) {
@@ -191,7 +213,11 @@ export default function Scope(/* need to add list as a param here */) {
                     </button>
                 </div>
 
-                <button type="button" className="input_btn mission-borderBtn">
+                <button
+                    type="button"
+                    onClick={getReport}
+                    className="input_btn mission-borderBtn"
+                >
                     GET REPORT
                 </button>
             </div>
