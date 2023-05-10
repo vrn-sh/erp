@@ -98,7 +98,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
                 continue
 
             s3_client = S3Bucket()
-            image_name =  f'{uuid.uuid4().hex}.{mime_type}'
+            image_name = f'{uuid.uuid4().hex}'
             iostream = BytesIO(image_data)
             s3_client.upload_stream(
                 'rootbucket',
