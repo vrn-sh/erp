@@ -433,5 +433,5 @@ class GenerateReportView(APIView):
             <p>{description}</p>
         </div>
             '''.format(img_path=s3_client.get_object_url('rootbucket', image),
-                       description=f"Figure {i}")
+                       description=f"Figure {i + 1}")  # well, Figure 0 is a bit weird..
         return figure_html
