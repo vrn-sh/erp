@@ -37,6 +37,7 @@ export default function Mission() {
     const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
         { id: 0, name: '' },
     ]);
+    const [vulSuccess, setVulSuccess] = useState(false);
     const isPentester = Cookies.get('Role') === '1';
     const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
@@ -71,9 +72,10 @@ export default function Mission() {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then((data) => {
+            .then(async (data) => {
                 const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
+                const newData = await data.data;
+                for (let i = 0; i < newData.results.length; i += 1) {
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].name,
@@ -115,10 +117,13 @@ export default function Mission() {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then((data) => {
-                setVulnType(data.data.results);
+            .then(async (data) => {
+                const newData = await data.data;
+                setVulnType(newData.results);
+                setVulSuccess(true);
             })
             .catch((e) => {
+                setVulSuccess(false);
                 throw e.message;
             });
     };
@@ -126,7 +131,7 @@ export default function Mission() {
     const getMission = async () => {
         let vulnty: string[] = [];
         await axios
-            .get(`${config.apiUrl}/mission?page=2`, {
+            .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
@@ -148,11 +153,11 @@ export default function Mission() {
                                 },
                             }
                         )
-                        .then((res) => {
-                            for (let a = 0; a < res.data.length; a += 1) {
-                                console.log(res.data[a].vuln_type);
+                        .then(async (res) => {
+                            const newData = await res.data;
+                            for (let a = 0; a < newData.length; a += 1) {
                                 const tmp = vulnType.find((obj) => {
-                                    return obj.id === res.data[a].vuln_type;
+                                    return obj.id === newData[a].vuln_type;
                                 });
                                 if (tmp && vulnty.indexOf(tmp.name) === -1)
                                     vulnty.push(tmp.name);
@@ -174,7 +179,6 @@ export default function Mission() {
                     });
                 }
                 tab.reverse();
-                console.log(tab);
                 setList(tab);
             })
             .catch((e) => {
@@ -215,7 +219,7 @@ export default function Mission() {
 
     useEffect(() => {
         getMission();
-    }, [vulnType]);
+    }, [teamList, vulnType]);
 
     useEffect(() => {
         getTeam();
@@ -233,7 +237,7 @@ export default function Mission() {
 
     return (
         <>
-            {!list.length ? (
+            {!list.length && vulSuccess ? (
                 <>
                     {isPentester ? (
                         <h3 style={{ fontFamily: 'Poppins-Regular' }}>
@@ -260,11 +264,11 @@ export default function Mission() {
                     >
                         <thead>
                             <tr>
-                                <th>Mission name</th>
-                                <th>Team</th>
-                                <th>Badges</th>
-                                <th>State</th>
-                                <th>Actions</th>
+                                <th className="md-2">Mission name</th>
+                                <th className="md-1">Team</th>
+                                <th className="md-4">Badges</th>
+                                <th className="md-1">State</th>
+                                <th className="md-2">Actions</th>
                             </tr>
                         </thead>
                         {records.map((mission) => {
@@ -275,7 +279,12 @@ export default function Mission() {
                                         <td>{mission.team}</td>
                                         <td>
                                             {mission.vuln.map((m) => {
-                                                return <p>{m} </p>;
+                                                return (
+                                                    <span className="mission-badge">
+                                                        {' '}
+                                                        {m}{' '}
+                                                    </span>
+                                                );
                                             })}
                                         </td>
                                         <td>

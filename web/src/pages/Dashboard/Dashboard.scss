@@ -122,6 +122,15 @@ $opacity-transition: opacity;
     transition: 0.5s ease-in-out;
 }
 
+.mission-badge {
+    display: inline-block;
+    background-color: var(--colorful-yellow);
+    border-radius: 15px;
+    padding: 2px 5px;
+    margin-right: 0.5rem;
+    margin-bottom: 10px;
+}
+
 table {
     width: 100%;
     max-height: 100px;
@@ -456,4 +465,20 @@ footer {
     border-color: var(--primary-btn);
     color: var(--primary-btn);
     background-color: white;
+}
+
+.md-1 {
+    width: 10%;
+}
+
+.md-2 {
+    width: 20%;
+}
+
+.md-3 {
+    width: 30%;
+}
+
+.md-4 {
+    width: 40%;
 }
