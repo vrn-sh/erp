@@ -129,7 +129,7 @@ table {
 }
 
 td {
-    border-bottom: 1px solid var(--gray-btn);
+    border-bottom: 1px solid var(--light-gray);
     padding: .7rem;
     font-family: 'Poppins-Light';
     font-size: 14px;
@@ -287,10 +287,9 @@ table input {
 .searchBtn {
     min-width: 1px;
     height: 2.5rem;
-    padding: 5px 20px;
+    padding: 5px 10px;
     margin: 0 1rem;
 }
-
 
 //crtsh
 .crt_input_field {

@@ -11,19 +11,26 @@
             "id": 2,
             "title": "Step 1",
             "description": "Build some basic fonctions of our applications, for example the landing page, management of authentification and develop a dashboard to aggregate notes and findings between pentesters",
-            "date": "Februry 2023 - Present",
+            "date": "Februry - May 2023",
             "icon": ""
         },
         {
             "id": 3,
             "title": "Step 2",
-            "description": "Add legal form, identify scan automation and versioned log storage for traceability",
-            "date": "Future planning",
+            "description": "Beta test period",
+            "date": "May 2023 - present",
             "icon": ""
         },
         {
             "id": 4,
             "title": "Step 3",
+            "description": "Add legal form, identify scan automation and versioned log storage for traceability",
+            "date": "Future planning",
+            "icon": ""
+        },
+        {
+            "id": 5,
+            "title": "Step 4",
             "description": "Develop a tool to log pentester scans, and actions during the tests, also build a C2",
             "date": "Future planning",
             "icon": ""

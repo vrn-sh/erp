@@ -55,8 +55,6 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
 
 function SettingTeam({ userId, userRole }: UserGroupsProps) {
     const [groups, setGroups] = useState<Group[]>([]);
-    const [maClasse, setMaClasse] = useState('action-ctn');
-    const [width, setWidth] = useState('');
 
     // const [showPopup, setShowPopup] = useState(false);
     // const [email, setEmail] = useState('');
@@ -79,22 +77,8 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
         fetchGroups();
     }, [userId]);
 
-    useEffect(() => {
-        if (userRole === 'Manager') {
-            setMaClasse('action-ctn-plus');
-            setWidth('95px');
-        } else {
-            setMaClasse('action-ctn');
-            setWidth('');
-        }
-    }, [userRole]);
-
     const handleDeleteGroup = () => {
         // appel de l'API pour supprimer le groupe
-    };
-
-    const handleResetGroup = () => {
-        // appel de l'API pour réinitialiser le groupe
     };
 
     return (
@@ -117,28 +101,26 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                                 <td>{group.name}</td>
                                 <td>{group.userRole}</td>
                                 <td>
-                                    <div className={maClasse} style={{ width }}>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                // group.id as param
-                                                handleResetGroup()
-                                            }
-                                        >
-                                            Reset
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="dlt-btn"
-                                            onClick={() =>
-                                                // group.id as param
-                                                handleDeleteGroup()
-                                            }
-                                        >
-                                            Delete
-                                        </button>
+                                    <div className="action-ctn">
                                         {userRole === 'Manager' && (
-                                            <button type="button">Add</button>
+                                            <button
+                                                type="button"
+                                                className="dlt-btn"
+                                                onClick={() =>
+                                                    // group.id as param
+                                                    handleDeleteGroup()
+                                                }
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
+                                        {userRole === 'Pentester' && (
+                                            <button
+                                                type="button"
+                                                className="dlt-btn"
+                                            >
+                                                Leave
+                                            </button>
                                         )}
                                     </div>
                                 </td>
@@ -161,20 +143,25 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                                 <td>Group 1</td>
                                 <td>{userRole}</td>
                                 <td>
-                                    <div className={maClasse} style={{ width }}>
-                                        <button type="button" disabled>
-                                            Reset
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="dlt-btn"
-                                            disabled
-                                        >
-                                            Delete
-                                        </button>
+                                    <div className="action-ctn">
                                         {userRole === 'Manager' && (
-                                            <button type="button" disabled>
-                                                Add
+                                            <button
+                                                type="button"
+                                                className="dlt-btn"
+                                                onClick={() =>
+                                                    // group.id as param
+                                                    handleDeleteGroup()
+                                                }
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
+                                        {userRole === 'Pentester' && (
+                                            <button
+                                                type="button"
+                                                className="dlt-btn"
+                                            >
+                                                Leave
                                             </button>
                                         )}
                                     </div>
@@ -184,23 +171,25 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                                 <td>Test Group 2</td>
                                 <td>{userRole}</td>
                                 <td>
-                                    <div className={maClasse} style={{ width }}>
-                                        <button type="button" disabled>
-                                            Reset
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="dlt-btn"
-                                            disabled
-                                        >
-                                            Delete
-                                        </button>
+                                    <div className="action-ctn">
                                         {userRole === 'Manager' && (
                                             <button
                                                 type="button"
-                                                onClick={handleButtonClick}
+                                                className="dlt-btn"
+                                                onClick={() =>
+                                                    // group.id as param
+                                                    handleDeleteGroup()
+                                                }
                                             >
-                                                Add
+                                                Delete
+                                            </button>
+                                        )}
+                                        {userRole === 'Pentester' && (
+                                            <button
+                                                type="button"
+                                                className="dlt-btn"
+                                            >
+                                                Leave
                                             </button>
                                         )}
                                         <InvitePopup

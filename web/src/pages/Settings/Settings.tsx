@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { RiTeamLine } from 'react-icons/ri';
-import { IoIosNotifications } from 'react-icons/io';
-import { BsCreditCard, BsFillShieldLockFill } from 'react-icons/bs';
+// import { IoIosNotifications } from 'react-icons/io';
+// import { BsCreditCard } from 'react-icons/bs';
+import { BsFillShieldLockFill } from 'react-icons/bs';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import './Settings.scss';
 import SettingAccount from './Settings-pages/setting-account';
-import SettingNotification from './Settings-pages/set-notif';
+// import SettingNotification from './Settings-pages/set-notif';
 import SettingSecurity from './Settings-pages/set-security';
-import SettingBilling from './Settings-pages/set-billing';
+// import SettingBilling from './Settings-pages/set-billing';
 import SettingTeam from './Settings-pages/set-team';
 
 // Interface pour les données de sous-pages
@@ -28,29 +29,29 @@ const subPagesData: SubPage[] = [
         icon: <FaUser style={{ fontSize: '20px' }} />,
         key: 0,
     },
-    {
-        title: 'Notification',
-        content: <SettingNotification />,
-        icon: <IoIosNotifications style={{ fontSize: '22px' }} />,
-        key: 1,
-    },
+    // {
+    //     title: 'Notification',
+    //     content: <SettingNotification />,
+    //     icon: <IoIosNotifications style={{ fontSize: '22px' }} />,
+    //     key: 1,
+    // },
     {
         title: 'Security',
         content: <SettingSecurity />,
         icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
-        key: 2,
+        key: 1,
     },
-    {
-        title: 'Billing',
-        content: <SettingBilling />,
-        icon: <BsCreditCard style={{ fontSize: '22px' }} />,
-        key: 3,
-    },
+    // {
+    //     title: 'Billing',
+    //     content: <SettingBilling />,
+    //     icon: <BsCreditCard style={{ fontSize: '22px' }} />,
+    //     key: 3,
+    // },
     {
         title: 'Team',
         content: <SettingTeam userId={0} userRole="Manager" />, // TOFIX, Idk what role to put
         icon: <RiTeamLine style={{ fontSize: '22px' }} />,
-        key: 4,
+        key: 2,
     },
 ];
 
@@ -111,7 +112,7 @@ function SettingsMenu({
 // Définition du composant de sous-pages
 function SettingsSubPages({ selectedSubPage }: { selectedSubPage: number }) {
     return (
-        <div>
+        <div style={{ fontFamily: 'Poppins-Light' }}>
             {/* Afficher le contenu de la sous-page sélectionnée */}
             {subPagesData[selectedSubPage].content}
         </div>
@@ -126,7 +127,6 @@ export default function Settings() {
             <SideBar />
             <div className="dashboard_container">
                 <TopBar />
-
                 <div className="setting-container">
                     <div className="page-info">
                         <h1>Settings</h1>

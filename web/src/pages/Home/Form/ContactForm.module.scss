@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  width: 100%;
 }
 
 .formWrapper {
@@ -10,17 +11,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 500px;
+  width: 70%;
   height: auto;
   padding: 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
 }
 
 .title {
+  font-family: "Poppins-Bold";
   text-align: center;
+  color: var(--primary-btn);
+  font-size: 2rem;
   margin-bottom: 1rem;
-  color: #333333;
 }
 
 .inputGroup {
@@ -31,8 +32,10 @@
 .label {
   display: block;
   font-weight: 600;
+  text-align: left;
   margin-bottom: 0.5rem;
-  color: #333333;
+  font-family: "Poppins-Regular";
+  color: var(--);
   background-color: transparent;
 }
 
@@ -40,11 +43,11 @@
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--gray-btn);
   border-radius: 5px;
   &:focus {
     outline: none;
-    border-color: #495057;
+    border-color: var(--primary-btn);
   }
 }
 
@@ -52,12 +55,12 @@
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--gray-btn);
   border-radius: 5px;
   resize: vertical;
   &:focus {
     outline: none;
-    border-color: #495057;
+    border-color: var(--primary-btn);
   }
 }
 
@@ -72,6 +75,7 @@
   border-radius: 5px;
   cursor: pointer;
   margin-top: 1rem;
+
   &:hover {
     background-color: var(--primary-hover-btn);
   }
