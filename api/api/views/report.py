@@ -7,6 +7,7 @@ from django.db.models import CharField
 from django.http import HttpResponseRedirect
 from shutil import rmtree
 
+from rest_framework import permissions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
