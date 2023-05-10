@@ -59,6 +59,10 @@ jobs:
           SENDGRID_CONFIRM_TEMPLATE_ID: d-1234567890
           SENDGRID_RESET_TEMPLATE_ID: d-1234567890
 
+          MINIO_HOST: s3
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+
         run: |
             cd api
             pip install -r requirements.txt
