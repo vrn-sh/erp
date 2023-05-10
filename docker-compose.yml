@@ -64,6 +64,7 @@ services:
     ports:
       - "127.0.0.1:3000:3000"
     environment:
+      - VITE_REACT_APP_NODE_ENV=production
       - CHOKIDAR_USEPOLLING=true
     env_file:
       - ./web/.env

@@ -14,13 +14,13 @@ from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.report import GenerateReportView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
-from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShViewSet
+from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
    openapi.Info(
       title="voron API",
-      default_version='0.13',
+      default_version='0.14',
       description="API storing and managing notes, users, and stuff",
       terms_of_service="https://github.com/vrn-sh/erp/blob/current/LICENSE",
       contact=openapi.Contact(email="voron@djnn.sh"),
@@ -40,9 +40,9 @@ router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)
 router.register(r'recon', ReconViewset)
 router.register(r'nmap', NmapViewset)
-router.register(r'crtsh', CrtShViewSet)
 
 urlpatterns = [
+    path(r'crtsh', CrtShView.as_view()),
     path(r'login', LoginView.as_view(), name='knox_login'),
     path('logout', LogoutView.as_view(), name='knox_logout'),
     path('ping', PingView.as_view()),

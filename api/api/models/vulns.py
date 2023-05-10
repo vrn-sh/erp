@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from typing import List, Optional
 from django.db import models
 from django.db.models import FloatField, ImageField, TextField
+from rest_framework.serializers import CharField
 
 from api.models import Auth, NAME_LENGTH, MAX_NOTE_LENGTH
 from api.models.mission import Mission
@@ -74,7 +75,7 @@ class Vulnerability(models.Model):
     author: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='author')
     last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
 
-    vuln_type: VulnType = models.OneToOneField(VulnType, on_delete=models.CASCADE)
-    images: Optional[List[ImageField]] = ArrayField(ImageField(), blank=True, null=True)
+    vuln_type: VulnType = models.ForeignKey(VulnType, on_delete=models.CASCADE)
+    images: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)
 
     mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)

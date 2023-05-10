@@ -40,6 +40,13 @@ REST_KNOX = {
   'TOKEN_TTL': timedelta(hours=12),
 }
 
+# django-storages configuration
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Storage",
+    },
+}
+
 
 # openapi generator config
 SWAGGER_SETTINGS = {
@@ -125,13 +132,6 @@ if os.environ.get('PRODUCTION', '0') == '1':
         }
     }
 
-
-    # django-storages configuration
-    STORAGES = {
-        "staticfiles": {
-            "BACKEND": "storages.backends.s3boto3.S3Storage",
-        },
-    }
 
     DATABASES = {
         'default': {
