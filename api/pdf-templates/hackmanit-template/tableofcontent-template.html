@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table of Content</title>
+</head>
+
+<body>
+    <style>
+        body {
+            padding: 2em 6.5em;
+            margin: 30px;
+        }
+
+        .divider-x {
+            border-bottom: 2px solid black;
+            width: 100%;
+            margin: 0;
+            padding-top: 1em;
+            left: 0;
+        }
+
+        main h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.5em;
+        }
+
+        .visually-hidden {
+            clip: rect(0 0 0 0);
+            clip-path: inset(100%);
+            height: 1px;
+            overflow: hidden;
+            position: absolute;
+            width: 1px;
+            white-space: nowrap;
+        }
+
+        .toc-list,
+        .toc-list ol {
+            list-style-type: none;
+        }
+
+        .toc-list {
+            padding: 0;
+            letter-spacing: 1px;
+        }
+
+        .toc-list li {
+            margin-bottom: 6px;
+            margin-top: 1.5rem;
+        }
+
+        .toc-list ol {
+            padding-inline-start: 4ch;
+        }
+
+        .toc-list>li>a {
+            font-weight: bold;
+            margin-block-start: 1em;
+            color: black;
+
+        }
+
+        .toc-list li>a {
+            text-decoration: none;
+            display: grid;
+            grid-template-columns: auto max-content;
+            align-items: end;
+            color: black;
+        }
+
+        .toc-list li>a>.title {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toc-list li>a .leaders::after {
+            position: absolute;
+            padding-inline-start: .25ch;
+            content: " . . . . . . . . . . . . . . . . . . . "
+                ". . . . . . . . . . . . . . . . . . . . . . . "
+                ". . . . . . . . . . . . . . . . . . . . . . . "
+                ". . . . . . . . . . . . . . . . . . . . . . . "
+                ". . . . . . . . . . . . . . . . . . . . . . . "
+                ". . . . . . . . . . . . . . . . . . . . . . . "
+                ". . . . . . . . . . . . . . . . . . . . . . . ";
+            text-align: right;
+        }
+
+        .toc-list li>a>.page {
+            min-width: 2ch;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+        }
+
+        span .m-wkns {
+            background-color: orange;
+        }
+
+        span .l-wkns {
+            background-color: yellow;
+        }
+
+        span .r {
+            background-color: rgb(74, 207, 74);
+        }
+
+        code {
+            border: 1px solid rgb(109, 108, 108);
+            background-color: rgb(224, 224, 224);
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+    <header>
+        <style>
+            header {
+                display: block;
+            }
+
+            img {
+                float: right;
+                height: 10%;
+                width: 15%;
+                object-fit: cover;
+            }
+
+            .inline-title-logo {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .inline-title-logo p {
+                font-variant: small-caps;
+                color: red;
+                font-weight: 400;
+                letter-spacing: 1.5px;
+                margin: 0;
+            }
+        </style>
+        <div class="inline-title-logo">
+            <img alt="logo-company" id="logo"
+                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+            <p>Contents</p>
+        </div>
+        <div class="divider-x"></div>
+    </header>
+    <main>
+        <h1>Contents</h1>
+        <ol class="toc-list" role="list">
+            <li>
+                <a href="#Summary">
+                    <span class="title">Summary</span>
+                </a>
+            </li>
+            <li>
+                <a href="#Project-Timeline">
+                    <span class="title">Project Timeline</span>
+                </a>
+            </li>
+            <li>
+                <a href="#Methodology">
+                    <span class="title">Methodology</span>
+                </a>
+            </li>
+            <li>
+                <a href="#General-Conditions-and-Scope">
+                    <span class="title">General Conditions and Scope</span>
+                </a>
+            </li>
+            <li>
+                <a href="#Overview-of-Weaknesses-and-Recommendations">
+                    <span class="title">Overview of Weaknesses and Recommendations</span>
+                </a>
+            </li>
+            <li>
+                <a href="#Weaknesses">
+                    <span class="title">Weaknesses</span>
+                </a>
+                <ol role="list">
+                    <li>
+                        <a href="#M01-Valid-OpenID-Connect-Flow-with-a-Missing-state-Parameter">
+                            <span class="title"><span class="m-wkns">M01</span> Valid OpenID Connect Flow with a
+                                Missing <code>state</code> Parameter
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#L01-Valid-OpenID-Connect-Flow-with-a-Replayed-state-Parameter">
+                            <span class="title"><span class="l-wkns">L01</span> Valid OpenID Connect Flow with a
+                                Replay <code>state</code> Parameter</span>
+                        </a>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <a href="#Recommendations">
+                    <span class="title">Recommendations</span>
+                </a>
+                <ol role="list">
+                    <li>
+                        <a href="#R01-Use-the-OpenID-Connect-Parameter-nonce">
+                            <span class="title"><span class="r">R01</span> Use the OpenID Connect Parameter
+                                <code>nonce</code></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#R02-Repeating-Values-in-Ephemeral-TLS-ECDH-Keys">
+                            <span class="title"><span class="r">R02</span> Repeating Values in Ephemeral TLS-ECDH
+                                Keys</span>
+                        </a>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <a href="#Further-Evaluations">
+                    <span class="title">Further Evaluations</span>
+                </a>
+                <ol role="list">
+                    <li>
+                        <a href="#Binding-Between-Cookies-and-the-state-Parameter">
+                            <span class="title">Binding Between Cookies and the <code>state</code> Parameter</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#Changing-the-OpenID-Connect-Flow">
+                            <span class="title">Changing the OpenID Connect Flow</span>
+                        </a>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <a href="#References">
+                    <span class="title">References</span>
+                </a>
+            </li>
+        </ol>
+    </main>
+</body>
+
+</html>

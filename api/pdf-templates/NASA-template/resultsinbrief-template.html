@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 2</title>
+</head>
+
+<body>
+    <style>
+        body {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 2em 5em;
+            margin: 30px;
+        }
+
+        .divider-x {
+            border-bottom: 6px solid rgb(241, 47, 73);
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+
+        .divider-x-half {
+            border-bottom: 4px solid rgb(241, 47, 73);
+            width: 60%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+        .spacer-x {
+            width: 10px;
+        }
+    </style>
+    <header>
+        <style>
+            header .info {
+                background-color: #bebebe;
+                width: 80%;
+                padding: 0px 15px 0 15px;
+            }
+
+            header h1 {
+                font-variant: small-caps;
+                font-size: 3em;
+                margin: 15px 0;
+            }
+
+            header .identity {
+                display: flex;
+                justify-content: space-between;
+
+            }
+
+            header .identity img {
+                object-fit: cover;
+                width: 50%;
+            }
+
+            header .identity .info .company-info p:first-child {
+                font-size: 1.65em;
+            }
+
+            header .identity .info .company-info p {
+                font-size: 1.5em;
+                margin: 15px 0px;
+            }
+
+            .info .report-info {
+                display: flex;
+                justify-content: space-between;
+                font-size: 1em;
+            }
+        </style>
+        <div class="identity">
+            <img class="logo"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAEN65TxlSnQM7q0XFcfdpqZkxhnIWs4BUqg&usqp=CAU"
+                alt="logo" />
+            <div class="spacer-x"></div>
+            <div class="info">
+                <h1><span>R</span>esults in <span>B</span>rief</h1>
+                <div class="divider-x"></div>
+                <div class="company-info">
+                    <p>Office of Inspector General</p>
+                    <p>Office of Audits</p>
+                </div>
+                <div class="report-info">
+                    <p>June 18, 2019</p>
+                    <p>IG-019-22</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="section">
+        <style>
+            .section {
+                margin-top: 8rem;
+            }
+
+            .section h2 {
+                margin-left: 45px;
+                font-variant: small-caps;
+                font-weight: 600;
+                font-size: 2.5rem;
+                color: rgb(241, 47, 73);
+                margin-bottom: 6px;
+            }
+
+            .section h2 span {
+                font-weight: 700;
+            }
+
+            .section-text {
+                margin-left: 45px;
+                font-weight: 300;
+                margin-top: 1em;
+                font-family: 'Times New Roman', Times, serif;
+            }
+        </style>
+        <h2><span>W</span>hy <span>w</span>e <span>p</span>erformed <span>t</span>his <span>a</span>udit</h2>
+        <div class="divider-x-half"></div>
+        <div class="section-text">
+            <p>
+                NASA’s Jet Propulsion Laboratory (JPL) is a federally funded research and development center in
+                Pasadena,
+                California.
+                Since 1959, the California Institute of Technology (Caltech) has been under contract with NASA to manage
+                JPL, most
+                prominently its research and development activities, but also its network security controls. Under the
+                contract, NASA
+                retains responsibility for ensuring Agency data and systems at JPL are secure from hackers or other
+                forms of
+                unauthorized access.</p>
+            <p>
+                JPL’s information technology (IT) systems maintain a wide public internet presence while supporting
+                missions
+                and
+                networks that control spacecraft, collect and process scientific data, and perform critical operations.
+                Over
+                the past
+                10 years, JPL has experienced several notable cybersecurity incidents that have compromised major
+                segments
+                of its
+                IT network. For example, in 2011 cyber intruders gained full access to 18 servers supporting key JPL
+                missions and stole
+                87 gigabytes of data. More recently, in April 2018 JPL discovered an account belonging to an external
+                user
+                had been
+                compromised and used to steal approximately 500 megabytes of data from one of its major mission systems.
+            </p>
+            <p>
+                In this audit, we assessed the effectiveness of JPL’s network security controls for externally facing
+                applications and
+                systems. We also examined elements of JPL’s Cybersecurity Program and NASA’s interaction with and
+                oversight
+                of
+                the IT security control responsibilities assigned to Caltech under its contract to manage JPL. To
+                complete
+                this work,
+                we interviewed NASA and JPL IT officials and reviewed JPL’s IT network mapping, system inventory, and
+                security
+                management tools. We also reviewed federal, NASA, JPL, and Caltech criteria, policies, procedures,
+                supporting
+                documentation, agreements, prior audit reports, external reviews, and other documents related to
+                cybersecurity.
+            </p>
+        </div>
+        <h2><span>W</span>hat <span>w</span>e <span>f</span>ound</h2>
+        <div class="divider-x-half"></div>
+        <div class="section-text">
+            <p>
+                Multiple IT security control weaknesses reduce JPL’s ability to prevent, detect, and mitigate attacks
+                targeting its systems
+                and networks, thereby exposing NASA systems and data to exploitation by cyber criminals. JPL uses its
+                Information
+                Technology Security Database (ITSDB) to track and manage physical assets and applications on its
+                network; however,
+                we found the database inventory incomplete and inaccurate, placing at risk JPL’s ability to effectively
+                monitor, report,
+                and respond to security incidents. Moreover, reduced visibility into devices connected to its networks
+                hinders JPL’s
+                ability to properly secure those networks. Further, we found that JPL’s network gateway that controls
+                partner access to
+                a shared IT environment for specific missions and data had not been properly segmented to limit users
+                only to those
+                systems and applications for which they had approved access. This shortcoming enabled an attacker to
+                gain unauthorized
+                access to JPL’s mission network through a compromised external user system. Additionally, NASA failed to
+                establish
+                Interconnection Security Agreements (ISA) to document the requirements partners must meet to connect to
+                NASA’s
+                IT systems and describe the security controls that will be used to protect the systems and data.
+                We also found that security problem log tickets, created in the ITSDB when a potential or actual IT
+                system security
+                vulnerability is identified, were not resolved for extended periods of time—sometimes longer than 180
+                days. While
+                system administrators may request a waiver when they cannot resolve such tickets within 6 months, we
+                found waivers
+                were not reviewed annually as required, resulting in unnecessary waivers and potentially outdated
+                compensating security controls that expose the JPL network to exploitation by cyberattacks. Further, JPL
+                system administrators
+                misunderstood their responsibilities regarding management and review of logs for identifying malicious
+                activity
+                occurring on a particular system or network. We also found that while cybersecurity monitoring tools
+                employed by JPL
+                defend against routine intrusions and misuse of computer assets, JPL had not implemented a threat
+                hunting program
+                recommended by IT security experts to aggressively pursue abnormal activity on its systems for signs of
+                compromise,
+                and instead rely on an ad hoc process to search for intruders. In addition, JPL had not provided
+                role-based security
+                training or funded IT security certifications for its system administrators. </p>
+            <p>
+                Further, we found that multiple JPL incident management and response practices deviate from NASA and
+                recommended
+                industry practices. For example, unlike NASA’s Security Operations Center (SOC), JPL’s SOC does not
+                maintain
+                round-the-clock availability of IT security incident responders and JPL’s incident response plan does
+                not include all
+                federally-recommended elements. In addition, team coordination issues delayed completion of incident
+                containment
+                and eradication steps for the April 2018 incident. Moreover, while documenting and sharing cyber threat
+                information
+                across JPL to help prevent future incidents is a critical component of an effective incident response
+                program, we found
+                JPL’s current initiatives fall short.
+            </p>
+            <p>
+                Finally, while the contract between NASA and Caltech requires JPL to report certain types of IT security
+                incidents to the
+                Agency through the NASA SOC incident management system, no controls were in place to ensure JPL
+                compliance with
+                this requirement nor did NASA officials have access to JPL’s incident management system. Collectively,
+                these
+                weaknesses leave NASA data and systems at risk
+            </p>
+            <p>
+                Despite these significant concerns, the contract NASA signed with Caltech in October 2018 to manage JPL
+                for at least the
+                next 5 years left important IT security requirements unresolved and instead both sides agreed to
+                continue negotiating
+                these issues. As of March 2019, the Agency had not approved JPL’s plans to implement new IT security
+                policies and
+                requirements NASA included in its October 2018 contract.
+            </p>
+        </div>
+        <h2><span>W</span>hat <span>w</span>e <span>r</span>ecommend</h3>
+        <div class="divider-x-half"></div>
+        <div class="section-text">
+            <p>
+                To improve JPL network security controls, we recommended the Director of the NASA Management Office
+                instruct the
+                JPL Chief Information Officer (CIO) to: (1) require system administrators to review and update the ITSDB
+                and ensure
+                system components are properly registered and the JPL Cybersecurity/Identity Technologies and Operations
+                Group
+                (CITO) periodically review compliance with this requirement; (2) segregate shared environments connected
+                to the
+                network gateway and monitor partners accessing the JPL network; (3) review and update ISAs for all
+                partners connected
+                to the gateway; (4) require the JPL CITO to identify and remediate weaknesses in the security problem
+                log ticket process
+                and provide periodic aging reports to the JPL CIO; (5) require the JPL CITO to validate, update, and
+                perform annual
+                reviews of all open waivers; (6) clarify the division of responsibility between the JPL Office of the
+                Chief Information
+                Officer and system administrators for conducting routine log reviews and monitor compliance on a more
+                frequent basis;
+                (7) implement the planned role-based training program by July 2019; (8) establish a formal, documented
+                threat-hunting
+                process; and (9) develop and implement a comprehensive strategy for institutional IT knowledge and
+                incident management
+                that includes dissemination of lessons learned. We also recommended the NASA CIO include requirements in
+                the pending
+                IT Transition Plan that provide the NASA SOC with sufficient control and visibility into JPL network
+                security practices.. </p>
+            <p>
+                We provided a draft of this report to NASA management who concurred with 9 of our 10 recommendations and
+                described corrective actions it has taken or will take. We consider management’s comments to those
+                recommendations
+                responsive and therefore the recommendations are resolved and will be closed upon completion and
+                verification of the
+                proposed corrective actions. Management did not concur with Recommendation 8 related to establishing a
+                cybersecurity threat-hunting capability and this recommendation will
+                remain unresolved pending further discussion with the Agency.
+            </p>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
