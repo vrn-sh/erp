@@ -93,7 +93,7 @@ class Mission(models.Model):
 
     scope: Optional[models.CharField] = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64)
 
-    bucket_name: Optional[models.CharField] = models.CharField(max_length=16, null=True, blank=True)
+    bucket_name: Optional[models.CharField] = models.CharField(max_length=48, null=True, blank=True)
 
     @staticmethod
     def get_delta(start: datetime, end: datetime) -> timedelta:
