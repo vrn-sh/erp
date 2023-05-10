@@ -143,19 +143,17 @@ export default function SignUp() {
     };
 
     const confirmUpdate = async () => {
-        try {
-            setOpen(true);
-            await axios
-                .put(`${config.apiUrl}/confirm`, {
-                    email: state.email,
-                })
-                .then(() => {
-                    setMessage('Email verification sent', 'success');
-                })
-                .catch(() => {});
-        } catch (e) {
-            console.log(e);
-        }
+        setOpen(true);
+        await axios
+            .put(`${config.apiUrl}/confirm`, {
+                email: state.email,
+            })
+            .then(() => {
+                setMessage('Email verification sent', 'success');
+            })
+            .catch((e) => {
+                setMessage(e.response.data.error, 'error');
+            });
     };
 
     const handleShowPassword = () => {
@@ -323,6 +321,9 @@ export default function SignUp() {
                                 <button type="button" onClick={submit}>
                                     SIGN UP
                                 </button>
+                                <button type="button" onClick={confirmUpdate}>
+                                    Resend confirm mail
+                                </button>
                             </div>
                             <div className="log-box">
                                 <span>Already have an account? </span>
@@ -344,7 +345,7 @@ export default function SignUp() {
                         />
                     )}
                     <div className="signup_popup-overlay">
-                        <AiIcons.AiOutlineMail />
+                        <AiIcons.AiOutlineMail style={{ fontSize: '2rem' }} />
                         <h1>Please check your mail to finish the sign up.</h1>
                         <button
                             type="button"
