@@ -8,10 +8,12 @@ from django.http import HttpResponseRedirect
 from shutil import rmtree
 
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
+from drf_yasg.utils import APIView, swagger_auto_schema
+from drf_yasg import openapi
 
 from api.models import Team, Manager
 from api.models.mission import Mission
@@ -24,12 +26,12 @@ ABSOLUTE_DIR_STYLE = os.path.abspath(DIR_STYLE if os.getenv("PRODUCTION", 0) els
 ABSOLUTE_CSS_PATH = f"{ABSOLUTE_DIR_STYLE}/main.css"
 
 
-def get_image_file_as_base64_data(path):
+def get_image_file_as_base64_data(path: str) -> bytes:
     with open(path, 'rb') as image_file:
         return base64.b64encode(image_file.read())
 
 
-def generate_members(team: Team):
+def generate_members(team: Team) -> str:
     members_html = ""
     for member in team.members.all():
         members_html += f"<p>{member.auth.first_name} {member.auth.last_name}</p>"
@@ -37,9 +39,27 @@ def generate_members(team: Team):
 
 
 class GenerateReportView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes: List[Type[TokenAuthentication]] = []
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
 
+    @swagger_auto_schema(
+        operation_description="Get the mission report generated with the mission' data.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['mission'],
+            properties={
+                'mission': openapi.Schema(type=openapi.TYPE_INTEGER,
+                                           description="Id of mission"),
+            },
+        ),
+        responses={
+            "302": openapi.Response(
+                description="Redirection to the minio storage of the pdf file.",
+            )
+        },
+        security=['Bearer'],
+        tags=['Report'],
+    )
     def get(self, request):
         mission_id = request.data.get("mission")
         if not mission_id:
@@ -59,11 +79,6 @@ class GenerateReportView(APIView):
         s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
         rmtree(dir_path)
 
-        print(s3.client.presigned_get_object(
-            bucket_name=mission.bucket_name,
-            object_name=object_name,
-        ))
-
         return HttpResponseRedirect(
             redirect_to=s3.client.presigned_get_object(
                 bucket_name=mission.bucket_name,
@@ -77,8 +92,6 @@ class GenerateReportView(APIView):
             (f'{dir_path}/generalconditionsandscope.html', self.generate_condition_and_scope(mission.scope)),
             (f'{dir_path}/weaknesses.html', self.generate_weaknesses(mission))
         ]
-
-        print(pages[3][1])
 
         os.mkdir(dir_path, dir_fd=None)
         for path_page, html_content in pages:
@@ -105,7 +118,7 @@ class GenerateReportView(APIView):
                          cover_first=True,)
         return path_to_file
 
-    def generate_cover(self, mission: Mission, leader: Manager):
+    def generate_cover(self, mission: Mission, leader: Manager) -> str:
         return '''
         <!DOCTYPE html>
 <html lang="en">
@@ -231,7 +244,7 @@ class GenerateReportView(APIView):
                    logo_path_2=f"data:image/png;base64,{get_image_file_as_base64_data(ABSOLUTE_DIR_STYLE + '/hackmanit-logo-2.png')}",
                    stylesheet_path=ABSOLUTE_CSS_PATH)
 
-    def generate_condition_and_scope(self, scope: CharField):
+    def generate_condition_and_scope(self, scope: CharField) -> str:
         scope_html = ""
         for s in scope:
             scope_html += f"<li><code>{s}</code></li>" if "*" in s or "$" in s else f"<li>{s}</li>"
@@ -270,7 +283,7 @@ class GenerateReportView(APIView):
         '''.format(scopes=scope_html,
                    stylesheet_path=ABSOLUTE_CSS_PATH)
 
-    def generate_weaknesses(self, mission):
+    def generate_weaknesses(self, mission: Mission) -> str:
         return '''
         <!DOCTYPE html>
 <html lang="en">
@@ -307,7 +320,7 @@ class GenerateReportView(APIView):
         '''.format(vulnerabilities=self.generate_vulns_detail(mission),
                    stylesheet_path=ABSOLUTE_CSS_PATH)
     
-    def generate_vulns_detail(self, mission):
+    def generate_vulns_detail(self, mission: Mission) -> str:
         html = ""
         severity_counter = {"l": 0, "m": 0, "h": 0, "c": 0}
         severity_key = 'l'
