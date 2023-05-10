@@ -61,14 +61,13 @@ export default function DorkEngine() {
                 <div>
                     <Toaster position="top-center" reverseOrder={false} />
                 </div>
-                <label>Target domain</label>
                 <input
                     type="text"
                     placeholder="Enter domain"
                     name="domain"
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className="sub_input_field"
+                    className="crt_input_field"
                 />
                 <button
                     type="button"
