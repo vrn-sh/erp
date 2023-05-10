@@ -32,7 +32,6 @@ export default function SettingAccount() {
             })
             .then((data) => {
                 setUserInfos(data.data.auth);
-                console.log(data.data)
             })
             .catch((e) => {
                 throw e;
@@ -49,10 +48,6 @@ export default function SettingAccount() {
 
     const setMessage = (mess: string, color: string) => {
         setMess({ mess, color });
-    };
-
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserInfos({...userInfos, email: e.target.value});
     };
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,43 +68,22 @@ export default function SettingAccount() {
         if (role === 'manager') url += 'manager';
         else url += 'pentester';
         await axios
-            .put(`${url}/${Cookies.get('Id')}`, {auth : userInfos}, {
+            .patch(`${url}/${Cookies.get('Id')}`, {auth : {"fist_name" : userInfos.first_name, "last_name" : userInfos.last_name}}, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then(() => setMessage('Created!', 'success'))
+            .then(() => { setMessage('Updated !', 'success');  getUserInfos();})
             .catch((error) => {
                 setMessage(error.message, 'error');
             });
     };
 
     return (
-        <div className="setting-container">
-            <div className="input-group">
-                <Stack direction={'row'} spacing={'space-between'}>
-                <div className="input input-medium">
-                    <label>username</label>
-                    <input
-                        id="input-username"
-                        type="text"
-                        value={userInfos.username}
-                        onChange={(e) => handleUsernameChange(e)}
-                    />
-                </div>
-
-                <div className="input input-medium">
-                    <label>email</label>
-                    <input
-                        id="input-email"
-                        type="text"
-                        value={userInfos.email}
-                        onChange={(e) => handleEmailChange(e)}
-                    />
-                </div>
-                </Stack>
-                <Stack direction={'row'} spacing={'space-between'}>
+        <div className="container">
+            <div style={{width : 'full'}}>
+            <Stack direction={'row'} spacing={'space-between'}>
                 <div className="input input-medium">
                     <label>first_name</label>
                     <input
@@ -130,18 +104,42 @@ export default function SettingAccount() {
                     />
                 </div>
                 </Stack>
+                <Stack direction={'row'} width='full' spacing={'space-between'}>
+                <div className="input input-medium">
+                    <label>username</label>
+                    <input
+                        id="input-username"
+                        type="text"
+                        readOnly
+                        value={userInfos.username}
+                        onChange={(e) => handleUsernameChange(e)}
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>email</label>
+                    <input
+                        id="input-email"
+                        type="text"
+                        readOnly
+                        value={userInfos.email}
+                    />
+                </div>
+                </Stack>
             </div>
 
             <div className="buttons-container">
+                <button type="button" className="cancel-button">
+                    Cancel
+                </button>
                 <button
                     type="submit"
                     className="submit-button"
-                    onClick={handleSubmit}
+                    onClick={(e) => {
+                        setOpen(true);
+                        handleSubmit(e);
+                    }}
                 >
                     Save Changes
-                </button>
-                <button type="button" className="cancel-button">
-                    Cancel
                 </button>
                 {open && (
                     <Feedbacks
