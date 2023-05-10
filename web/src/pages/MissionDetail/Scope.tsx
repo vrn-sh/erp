@@ -66,7 +66,6 @@ export default function Scope(/* need to add list as a param here */) {
 
     const changePage = (n: number) => {
         setCurrentPage(n);
-        console.log(currentPage);
     };
 
     const delScope = async (index: number) => {
@@ -128,18 +127,12 @@ export default function Scope(/* need to add list as a param here */) {
 
     const getReport = async () => {
         await axios
-            .post(
-                `${config.apiUrl}/download-report`,
-                {
-                    mission: missionId,
+            .get(`${config.apiUrl}/download-report?mission=${missionId}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
                 },
-                {
-                    headers: {
-                        'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
-                    },
-                }
-            )
+            })
             .then(() => {
                 setMessage('Created!', 'success');
             })

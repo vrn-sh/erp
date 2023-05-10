@@ -1,4 +1,5 @@
 import base64
+from logging import warning
 import os
 from datetime import datetime
 from typing import Type, List
@@ -22,16 +23,20 @@ from api.services.s3 import S3Bucket
 
 DIR_STYLE = "./api/pdf-templates/hackmanit-template"
 CSS_PATH = f'{DIR_STYLE}/main.css'
-ABSOLUTE_DIR_STYLE = os.path.abspath(DIR_STYLE if os.getenv("PRODUCTION", 0) else DIR_STYLE.replace("api/", ""))
+ABSOLUTE_DIR_STYLE = os.path.abspath(DIR_STYLE if os.getenv("PRODUCTION", '0') == '1' else DIR_STYLE.replace("api/", ""))
 ABSOLUTE_CSS_PATH = f"{ABSOLUTE_DIR_STYLE}/main.css"
 
 
 def get_image_file_as_base64_data(path: str) -> bytes:
+    """read an image and get its content as base64"""
+
     with open(path, 'rb') as image_file:
         return base64.b64encode(image_file.read())
 
 
 def generate_members(team: Team) -> str:
+    """generate members page"""
+
     members_html = ""
     for member in team.members.all():
         members_html += f"<p>{member.auth.first_name} {member.auth.last_name}</p>"
@@ -44,14 +49,14 @@ class GenerateReportView(APIView):
 
     @swagger_auto_schema(
         operation_description="Get the mission report generated with the mission' data.",
-        request_body=openapi.Schema(
+        manual_parameters=[openapi.Schema(
             type=openapi.TYPE_OBJECT,
             required=['mission'],
             properties={
                 'mission': openapi.Schema(type=openapi.TYPE_INTEGER,
                                           description="Id of mission"),
             },
-        ),
+        )],
         responses={
             "302": openapi.Response(
                 description="Redirection to the minio storage of the pdf file.",
@@ -61,30 +66,40 @@ class GenerateReportView(APIView):
         tags=['Report'],
     )
     def get(self, request):
-        mission_id = request.data.get("mission")
+
+        mission_id = request.GET.get("mission")
         if not mission_id:
             return Response({
                 'error': 'No mission id provided. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
+
         mission = Mission.objects.filter(pk=mission_id).first()
         if not mission:
             return Response({
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
+
+        warning(f'Creating bucket {mission.bucket_name}')
+
         s3 = S3Bucket()
         s3.create_bucket(mission.bucket_name)
+
         dir_path = f'/tmp/{mission.bucket_name}'
         filepath = self.dump_report(mission, dir_path)
         object_name = f'report-{mission.title}.pdf'
+
         s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
         rmtree(dir_path)
+
         return HttpResponseRedirect(
             redirect_to=s3.client.presigned_get_object(
                 bucket_name=mission.bucket_name,
                 object_name=object_name,
             ))
 
-    def dump_report(self, mission: Mission, dir_path) -> str:
+    def dump_report(self, mission: Mission, dir_path: str) -> str:
+        """compile pages together to generate a report"""
+
         pages = [
             (f'{dir_path}/coverpage.html', self.generate_cover(mission, mission.team.leader)),
             (f'{dir_path}/projectinfo.html', self.generate_project_info(mission, mission.team)),
@@ -105,19 +120,26 @@ class GenerateReportView(APIView):
         }
 
         cover_page = pages.pop(0)
+        pdfkit.from_file(
+            list(
+                map(
+                    lambda a: a[0], pages
+                    )
+                ),
+                options={
+                    "enable-local-file-access": None,
+                },
+                output_path=path_to_file,
+                toc=toc,
+                cover=cover_page[0],
+                cover_first=True,
+        )
 
-        pdfkit.from_file(list(map(lambda a: a[0], pages)),
-                         options={
-                             "enable-local-file-access": None,
-                             # 'footer-right': '[page] of [topage]',
-                         },
-                         output_path=path_to_file,
-                         toc=toc,
-                         cover=cover_page[0],
-                         cover_first=True, )
         return path_to_file
 
     def generate_cover(self, mission: Mission, leader: Manager) -> str:
+        """generate main cover of the report"""
+
         return '''
         <!DOCTYPE html>
 <html lang="en">
@@ -130,8 +152,8 @@ class GenerateReportView(APIView):
 </head>
 <body>
     <div class="cover-page">
-    
-       <img alt="logo-company" id="logo" src="{logo_path_1}" /> 
+
+       <img alt="logo-company" id="logo" src="{logo_path_1}" />
         <h1 id="mission-title">Penetration Test Report: <span>{mission_title}</span></h1>
         <div class="report-info">
             <p id="version">Version: 0.1</p>
@@ -404,7 +426,7 @@ class GenerateReportView(APIView):
             </tfoot>
         </table>
         <div class="section-text">
-            <p><span>General Description.</span>{vuln_type_description} 
+            <p><span>General Description.</span>{vuln_type_description}
             </p>
             <p><span>Weaknessess.</span>{vuln_description}</p>
         </div>

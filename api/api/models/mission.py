@@ -111,9 +111,9 @@ class Mission(models.Model):
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.recon = Recon.objects.create()
+            self.bucket_name = uuid.uuid4().hex
 
             if environ.get('PRODUCTION', '0') == '1':
-                self.bucket_name = uuid.uuid4().hex
                 S3Bucket().create_bucket(self.bucket_name)
 
         super().save(*args, **kwargs)
