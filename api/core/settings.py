@@ -209,7 +209,7 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'voron',
-            'USER': os.environ.get('USER'),,
+            'USER': os.environ.get('USER'),
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
             'PORT': '',
