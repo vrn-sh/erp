@@ -10,6 +10,8 @@ from api.models import Auth, MAX_TITLE_LENGTH, Team
 from api.models.utils import NmapPortField
 from api.services.s3 import S3Bucket
 
+import uuid
+
 
 SCOPE_LENGTH = 128
 
@@ -91,6 +93,8 @@ class Mission(models.Model):
 
     scope: Optional[models.CharField] = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64)
 
+    bucket_name: Optional[models.CharField] = models.CharField(max_length=16, null=True, blank=True)
+
     @staticmethod
     def get_delta(start: datetime, end: datetime) -> timedelta:
         return end - start
@@ -104,18 +108,13 @@ class Mission(models.Model):
         """get number of days left in this mission"""
         return self.get_delta(datetime.today(), self.end).days
 
-    @property
-    def bucket_name(self) -> str:
-        return "".join((map(lambda a: '-' if not a.isalpha() else a.lower(), self.title)))\
-             + str(self.id)
-
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.recon = Recon.objects.create()
 
             if environ.get('PRODUCTION', '0') == '1':
-                s3 = S3Bucket()
-                s3.create_bucket(self.bucket_name)
+                self.bucket_name = uuid.uuid4().hex
+                S3Bucket().create_bucket(self.bucket_name)
 
         super().save(*args, **kwargs)
 
