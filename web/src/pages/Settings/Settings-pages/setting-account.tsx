@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import config from '../../../config';
 import { Stack } from '@mui/material';
+import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
 
 export default function SettingAccount() {
@@ -51,15 +51,15 @@ export default function SettingAccount() {
     };
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserInfos({...userInfos, username: e.target.value});
+        setUserInfos({ ...userInfos, username: e.target.value });
     };
 
     const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserInfos({...userInfos, first_name: e.target.value});
+        setUserInfos({ ...userInfos, first_name: e.target.value });
     };
 
     const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserInfos({...userInfos, last_name: e.target.value});
+        setUserInfos({ ...userInfos, last_name: e.target.value });
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
@@ -68,13 +68,25 @@ export default function SettingAccount() {
         if (role === 'manager') url += 'manager';
         else url += 'pentester';
         await axios
-            .patch(`${url}/${Cookies.get('Id')}`, {auth : {"fist_name" : userInfos.first_name, "last_name" : userInfos.last_name}}, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+            .patch(
+                `${url}/${Cookies.get('Id')}`,
+                {
+                    auth: {
+                        fist_name: userInfos.first_name,
+                        last_name: userInfos.last_name,
+                    },
                 },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then(() => {
+                setMessage('Updated !', 'success');
+                getUserInfos();
             })
-            .then(() => { setMessage('Updated !', 'success');  getUserInfos();})
             .catch((error) => {
                 setMessage(error.message, 'error');
             });
@@ -82,48 +94,48 @@ export default function SettingAccount() {
 
     return (
         <div className="container">
-            <div style={{width : 'full'}}>
-            <Stack direction={'row'} spacing={'space-between'}>
-                <div className="input input-medium">
-                    <label>first_name</label>
-                    <input
-                        id="input-first_name"
-                        type="text"
-                        value={userInfos.first_name}
-                        onChange={(e) => handleFirstNameChange(e)}
-                    />
-                </div>
+            <div style={{ width: 'full' }}>
+                <Stack direction="row" spacing="space-between">
+                    <div className="input input-medium">
+                        <label>first_name</label>
+                        <input
+                            id="input-first_name"
+                            type="text"
+                            value={userInfos.first_name}
+                            onChange={(e) => handleFirstNameChange(e)}
+                        />
+                    </div>
 
-                <div className="input input-medium">
-                    <label>last_name</label>
-                    <input
-                        id="input-last_name"
-                        type="text"
-                        value={userInfos.last_name}
-                        onChange={(e) => handleLastNameChange(e)}
-                    />
-                </div>
+                    <div className="input input-medium">
+                        <label>last_name</label>
+                        <input
+                            id="input-last_name"
+                            type="text"
+                            value={userInfos.last_name}
+                            onChange={(e) => handleLastNameChange(e)}
+                        />
+                    </div>
                 </Stack>
-                <Stack direction={'row'} width='full' spacing={'space-between'}>
-                <div className="input input-medium">
-                    <label>username</label>
-                    <input
-                        id="input-username"
-                        type="text"
-                        readOnly
-                        value={userInfos.username}
-                        onChange={(e) => handleUsernameChange(e)}
-                    />
-                </div>
-                <div className="input input-medium">
-                    <label>email</label>
-                    <input
-                        id="input-email"
-                        type="text"
-                        readOnly
-                        value={userInfos.email}
-                    />
-                </div>
+                <Stack direction="row" width="full" spacing="space-between">
+                    <div className="input input-medium">
+                        <label>username</label>
+                        <input
+                            id="input-username"
+                            type="text"
+                            readOnly
+                            value={userInfos.username}
+                            onChange={(e) => handleUsernameChange(e)}
+                        />
+                    </div>
+                    <div className="input input-medium">
+                        <label>email</label>
+                        <input
+                            id="input-email"
+                            type="text"
+                            readOnly
+                            value={userInfos.email}
+                        />
+                    </div>
                 </Stack>
             </div>
 
