@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -8,8 +7,14 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import config from '../../../config';
+import Feedbacks from '../../../component/Feedback';
 
 export default function CrtSh() {
+    const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
     const [tmpIdentity, setTmpIdentity] = useState('');
     const [inputIdentity, setInputIdentity] = useState('');
     const [missionId, setMissionId] = useState(-1);
@@ -55,10 +60,26 @@ export default function CrtSh() {
             label: string;
         }[]
     >([]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTmpIdentity(inputIdentity);
         setTmpIdentity(e.target.value);
     };
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
     const handleKeyDown = (event: { key: string }) => {
         if (event.key === 'Enter') {
             setInputIdentity(tmpIdentity);
@@ -66,11 +87,12 @@ export default function CrtSh() {
     };
 
     const searchIdentity = async () => {
-        if (missionId === -1) {
-            toast.error('please select a mission');
+        setOpen(true);
+        if (missionId === -1 || tmpIdentity.length === 0) {
+            setMessage('please select a mission', 'error');
             return;
         }
-        toast('loading...');
+        setMessage('Loading...', 'info');
         axios(
             `http://127.0.0.1:8000/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
@@ -82,22 +104,26 @@ export default function CrtSh() {
             }
         )
             .then((data) => {
+                setOpen(true);
                 setCrtData(data.data.dump);
                 setSuccess(true);
-                toast.success('Succeed to load!');
+                setMessage('Succeed to load!', 'success');
             })
             .catch((e) => {
+                setOpen(true);
                 console.log(e);
                 setSuccess(false);
-                toast.error(e.response.data.dump[0].error);
+                setMessage(e.response.data.dump[0].error, 'error');
             });
     };
     const updateIdentity = async () => {
-        if (missionId === -1) {
-            toast.error('please select a mission');
+        setOpen(true);
+        if (missionId === -1 || tmpIdentity.length === 0) {
+            setMessage('please select a mission', 'error');
             return;
         }
-        toast('loading...');
+        setMessage('Loading...', 'info');
+        setOpen(true);
         axios(
             `http://127.0.0.1:8000/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
@@ -111,12 +137,12 @@ export default function CrtSh() {
             .then((data) => {
                 setCrtData(data.data.dump);
                 setSuccess(true);
-                toast.success('Succeed to load!');
+                setMessage('Succeed to load!', 'success');
             })
             .catch((e) => {
                 console.log(e);
                 setSuccess(false);
-                toast.error(e.response.data.dump[0].error);
+                setMessage(e.response.data.dump[0].error, 'error');
             });
     };
 
@@ -182,9 +208,6 @@ export default function CrtSh() {
     return (
         <>
             <div className="crt_input">
-                <div>
-                    <Toaster position="top-center" reverseOrder={false} />
-                </div>
                 <FormControl
                     variant="standard"
                     sx={{
@@ -296,6 +319,14 @@ export default function CrtSh() {
                     </li>
                 </ul>
             </nav>
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    color={message.color}
+                    open={open}
+                    close={handleClose}
+                />
+            )}
         </>
     );
 }
