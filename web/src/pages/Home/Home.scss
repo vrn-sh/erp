@@ -49,7 +49,7 @@ section {
     left: 0px;
     right: 0px;
     bottom: 0px;
-    background: linear-gradient(5deg, transparent, transparent 40%, #7c44f3);
+    background: linear-gradient(5deg, transparent, transparent 40%, var(--primary-btn));
     border-radius: 50%;
     z-index: 1;
     filter: blur(50px);

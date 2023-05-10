@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.scss';
+import logo from '../../assets/voron-logo.svg';
 
 function CustomLink({
     to,
@@ -22,6 +23,7 @@ export default function NavBar() {
     return (
         <nav className="nav">
             <Link to="#home" className="site-title">
+                <img src={logo} alt="logo" className="nav-logo" />
                 voron
             </Link>
             <ul>

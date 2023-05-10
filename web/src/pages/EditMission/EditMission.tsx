@@ -57,12 +57,7 @@ export default function EditMission() {
     const [open, setOpen] = useState(false);
     const [id, setId] = useState(0);
     const location = useLocation();
-    const [scope, setScope] = useState<string[]>([
-        'lol',
-        'dodododo',
-        'ldoedeodez',
-        'dezdslqxs',
-    ]);
+    const [scope, setScope] = useState<string[]>([]);
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',
         color: 'success',

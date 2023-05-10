@@ -1,28 +1,28 @@
 .action-ctn{
     display: flex;
-    width: 50%;
-}
-.action-ctn-plus{
-    display: flex;
+    justify-content: center;
 }
 
 .left-side{
     text-align: left;
-    font-style: 'Poppins-regular';
+    font-style: 'Poppins-Light';
 }
+
 .left-side h1{
-    border-bottom: 2px solid #dadce0;
+    font-size: 2rem;
+    border-bottom: 1px solid var(--secondary-bg);
 }
 
 .team-container{
     margin: 5px;
-    font-style: 'Poppins-regular';
+    font-style: 'Poppins-Light';
 }
 
 .dlt-btn{
+    min-width: 20px;
     background-color: white;
-    border: 1px solid #7C44F3;
-    color: #7C44F3;
+    border: 1px solid var(--primary-btn);
+    color: var(--primary-btn);
 }
 
 .team-popup{
@@ -82,4 +82,31 @@
     height: 20%;
     margin: 0;
 
+}
+
+.secu-container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
+
+.secu-label {
+    text-align: left;
+    margin: 1rem 0;
+    padding: 0;
+}
+
+.secu-input {
+    height: 2rem;
+    border-radius: 6px;
+    border: 1px solid var(--light-gray);
+}
+
+.secu-input:focus {
+    border: 1px solid var(--primary-btn);
+    outline: none;
+}
+
+.secu-btn {
+    min-width: 10px;
 }

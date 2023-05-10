@@ -81,6 +81,10 @@
     width: 20%;
 }
 
+.md-1 {
+    width: 10%;
+}
+
 .input_btn {
     min-width: 10px;
 }
@@ -96,8 +100,8 @@
 }
 
 .scope-badges {
-    padding: 2px 8px;
+    padding: 4px 10px;
     margin: .3rem;
-    border-radius: 10px;
+    border-radius: 15px;
     background-color: var(--colorful-yellow);
 }

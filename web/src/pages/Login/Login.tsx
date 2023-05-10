@@ -69,6 +69,9 @@ export default function Login() {
                         Cookies.set('Role', e.data.role, {
                             expires: Date.parse(e.data.expiry),
                         });
+                        Cookies.set('Id', e.data.id, {
+                            expires: Date.parse(e.data.expiry),
+                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
@@ -119,7 +122,7 @@ export default function Login() {
                                 {errorPwd} {errorEmail}
                             </p>
                             <div className="login-submit">
-                                <p>Forgot password ? </p>
+                                {/* <p>Forgot password ? </p> */}
                                 <button type="button" onClick={submit}>
                                     LOGIN
                                 </button>

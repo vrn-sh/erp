@@ -1,18 +1,16 @@
-from logging import warning
-from typing import List
+from typing import List, Optional
 from warnings import warn
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.views import Response
 from api.models import Auth
-from api.models.mission import Mission
 
 from api.models.vulns import Notes, VulnType, Vulnerability
-from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly, is_allowed_to_see
+from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
 
@@ -94,7 +92,6 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
 
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
-
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             required=['title', 'severity', 'vuln_type'],
@@ -105,12 +102,20 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                 ),
                 'severity': openapi.Schema(
                     type=openapi.TYPE_NUMBER,
-                    description="Severity"
+                    description="Severity (0.0 == low, 10.0 == critical)",
                 ),
                 'vuln_type': openapi.Schema(
                     type=openapi.TYPE_INTEGER,
-                    description="Id of the vulnerability type?"
+                    description="Id of the vulnerability type?",
                 ),
+                'images': openapi.Schema(
+                    type=openapi.TYPE_ARRAY,
+                    items=openapi.Schema(
+                        type=openapi.TYPE_FILE,
+                        description="image as base64",
+                    ),
+                    description="array of screenshots (max 4)"
+                )
             },
         ),
         responses={
@@ -120,7 +125,8 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                     "id": 1,
                     "title": "Stack Overflow",
                     "severity": 0.99,
-                    "vuln_type": 1
+                    "vuln_type": 1,
+                    "images": [],
                 }
             )
         },
@@ -146,6 +152,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         request.data['vuln_type'] = vuln_obj.id
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
+
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
@@ -164,18 +171,3 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                 request.data['description'] = vuln_obj.description
 
         return super().update(request, *args, **kwargs)
-
-    def list(self, request, *args, **kwargs):
-        mission_id = request.GET.get('mission')
-        if not mission_id:
-            return super().list(request, *args, **kwargs)
-
-        m = Mission.objects.filter(id=mission_id).first()
-        if not is_allowed_to_see(request, m):
-            return Response({
-                'error': 'not allowed to see this mission',
-            }, status=HTTP_403_FORBIDDEN)
-
-        vulns = Vulnerability.objects.filter(mission_id=m.id)
-        serializer = self.get_serializer_class()
-        return Response(serializer(vulns, many=True, read_only=True).data)

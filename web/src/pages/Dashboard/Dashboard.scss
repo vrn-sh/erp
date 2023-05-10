@@ -138,7 +138,7 @@ table {
 }
 
 td {
-    border-bottom: 1px solid var(--gray-btn);
+    border-bottom: 1px solid var(--light-gray);
     padding: .7rem;
     font-family: 'Poppins-Light';
     font-size: 14px;
@@ -293,6 +293,57 @@ table input {
     text-align: left !important;
 }
 
+.searchBtn {
+    min-width: 1px;
+    height: 2.5rem;
+    padding: 5px 10px;
+    margin: 0 1rem;
+}
+
+//crtsh
+.crt_input_field {
+    height: 2.5rem;
+    padding: 5px 5px;
+    margin: 0 1rem;
+    border-radius: 10px;
+    outline-style: none ;
+    border: none;
+    border: 1px solid var(--gradient-primary-btn);
+}
+
+.crt_input_field:focus {
+    border: 1px solid var(--primary-btn);
+}
+
+.crt_input {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.crt_input label {
+    @include non-margin-padding();
+    background: transparent;
+    margin-right: 1rem;
+}
+
+.crt-pagination {
+    width: 2rem;
+    overflow: hidden;
+}
+
+.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input {
+    font-size: 12px !important;
+}
+
+.crt_search {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 //Notes
 
 .container-note {

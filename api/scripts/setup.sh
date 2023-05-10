@@ -32,7 +32,8 @@ install_postgresql () {
 ############
 
 # necessary know dependencies
-sudo apt-get install build-essential libssl-dev libffi-dev python3-dev python-dev
+sudo apt-get install build-essential libssl-dev libffi-dev python3-dev wkhtmltopdf python-dev
+
 
 
 install_postgresql
