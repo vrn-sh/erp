@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
-// import axios from 'axios';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import SideBarData from './SideBarData';
 import { ICardItem } from './SideBarMenu.type';
 import config from '../../config';
@@ -50,22 +51,24 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
 
 export default function SideBar() {
     const navigate = useNavigate();
-    const t = localStorage.getItem('token');
-    const headers = { Authorization: `Token ${t}` };
-    // const logout = async () => {
-    //     try {
-    //         await axios
-    //             .get(`${config.apiUrl}/logout`, { headers })
-    //             .then(() => {
-    //                 localStorage.removeItem('token');
-    //                 navigate('/');
-    //                 console.log('ok');
-    //             })
-    //             .catch(() => {});
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // };
+
+    const logout = async () => {
+        await axios(`${config.apiUrl}/logout`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Token ${Cookies.get('Token')}`,
+            },
+        })
+            .then(() => {
+                Cookies.remove('Token', { path: '/dashboard' });
+                Cookies.remove('Role', { path: '/dashboard' });
+                navigate('/');
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
 
     return (
         <div className="sidebar">
@@ -88,7 +91,13 @@ export default function SideBar() {
                 <div className="sidebar-link-bottom">
                     <div className="sidebar-item">
                         <FiIcons.FiLogOut />
-                        <span className="menu-txt">Disconnect</span>
+                        <span
+                            role="presentation"
+                            className="menu-txt"
+                            onClick={logout}
+                        >
+                            Disconnect
+                        </span>
                     </div>
                 </div>
             </div>
