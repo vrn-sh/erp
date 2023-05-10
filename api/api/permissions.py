@@ -86,7 +86,7 @@ class IsLinkedToData(permissions.BasePermission):
             for m in mission_obj.team.members.all():
                 if m.auth.id == request.user.id:
                     return True
-            return mission_obj.leader.auth.id == request.user.id
+            return mission_obj.team.leader.auth.id == request.user.id
 
         if isinstance(obj, NmapScan):
             mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()

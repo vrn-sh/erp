@@ -53,8 +53,8 @@ class CrtShSerializer(serializers.ModelSerializer):
 
 
 class ReconSerializer(serializers.ModelSerializer):
-    nmap = NmapSerializer(many=True, read_only=True)
-    crtsh = CrtShSerializer(many=False, read_only=True)
+    nmap_runs = NmapSerializer(many=True, read_only=True)
+    crtsh_runs = CrtShSerializer(many=False, read_only=True, source='')
 
     class Meta:
         fields = '__all__'

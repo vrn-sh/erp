@@ -122,7 +122,7 @@ export default function Login() {
                                 {errorPwd} {errorEmail}
                             </p>
                             <div className="login-submit">
-                                <p>Forgot password ? </p>
+                                {/* <p>Forgot password ? </p> */}
                                 <button type="button" onClick={submit}>
                                     LOGIN
                                 </button>

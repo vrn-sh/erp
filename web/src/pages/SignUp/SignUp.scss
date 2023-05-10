@@ -137,7 +137,7 @@ label {
     padding: 0.938em;
     border: none;
     border-radius: 4px;
-    background-color: #7c44f3;
+    background-color: var(--primary-btn);
     color: #fefefe;
 }
 .button:hover {
@@ -213,12 +213,19 @@ label {
     background: #fff;
 }
 .log-box {
+    text-decoration: none;
     margin-top: 1rem;
     font-family: 'Roboto-Light';
     font-size: 13px;
 }
+
+.log-box:hover {
+    color: var(--primary-hover-btn);
+    transition: 0.5s ease-in-out;
+}
+
 .txt-color {
-    color: #7c44f3;
+    color: var(--primary-btn);
 }
 
 .i {

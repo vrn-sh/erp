@@ -62,14 +62,10 @@ export default function Scope(/* need to add list as a param here */) {
             <div className="mission-tool-line">
                 <div className="search-name">
                     <div className="mission-input-block">
-                        <label
-                            className="placeholder"
-                            htmlFor="Confirmpassword"
-                        >
-                            Search by name
-                        </label>
                         <input
                             type="text"
+                            placeholder="Search by name"
+                            className="popup-input"
                             name="confirmpassword"
                             onChange={searchKeyword}
                         />
