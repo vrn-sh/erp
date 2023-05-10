@@ -280,10 +280,15 @@ export default function Mission() {
                                         <td>
                                             {mission.vuln.map((m) => {
                                                 return (
-                                                    <span className="mission-badge">
-                                                        {' '}
-                                                        {m}{' '}
-                                                    </span>
+                                                    <Chip
+                                                        label={m}
+                                                        color="warning"
+                                                        variant="filled"
+                                                        style={{
+                                                            marginRight:
+                                                                '0.5rem',
+                                                        }}
+                                                    />
                                                 );
                                             })}
                                         </td>
