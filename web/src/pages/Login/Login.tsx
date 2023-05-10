@@ -70,7 +70,8 @@ export default function Login() {
                             expires: Date.parse(e.data.expiry),
                         });
                         Cookies.set('Id', e.data.id, {
-                            expires: Date.parse(e.data.expiry)});
+                            expires: Date.parse(e.data.expiry),
+                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
