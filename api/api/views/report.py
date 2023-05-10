@@ -23,7 +23,7 @@ from api.services.s3 import S3Bucket
 
 DIR_STYLE = "./api/pdf-templates/hackmanit-template"
 CSS_PATH = f'{DIR_STYLE}/main.css'
-ABSOLUTE_DIR_STYLE = os.path.abspath(DIR_STYLE if os.getenv("PRODUCTION", '0') == '1' else DIR_STYLE.replace("api/", ""))
+ABSOLUTE_DIR_STYLE = os.path.abspath(DIR_STYLE.replace("api/", ""))
 ABSOLUTE_CSS_PATH = f"{ABSOLUTE_DIR_STYLE}/main.css"
 
 
@@ -262,7 +262,7 @@ class GenerateReportView(APIView):
                    members=generate_members(team),
                    mission_start=mission.start,
                    mission_end=mission.end,
-                   logo_path_2=f"data:image/png;base64,{get_image_file_as_base64_data(ABSOLUTE_DIR_STYLE + '/hackmanit-logo-2.png')}",
+                   logo_path_2="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png",
                    stylesheet_path=ABSOLUTE_CSS_PATH)
 
     def generate_condition_and_scope(self, scope: CharField) -> str:
