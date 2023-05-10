@@ -3,7 +3,10 @@ import './Mission.scss';
 import '../Settings/Settings.scss';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+    Checkbox,
     FormControl,
+    FormControlLabel,
+    Grid,
     InputLabel,
     MenuItem,
     Select,
@@ -14,6 +17,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import * as AiIcons from 'react-icons/ai';
 import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
@@ -53,6 +57,7 @@ export default function EditMission() {
     const [open, setOpen] = useState(false);
     const [id, setId] = useState(0);
     const location = useLocation();
+    const [scope, setScope] = useState<string[]>([]);
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',
         color: 'success',
@@ -60,7 +65,7 @@ export default function EditMission() {
     const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
         { id: 0, name: '' },
     ]);
-
+    const [deleted, setDeleted] = useState<number[]>([]);
     const navigate = useNavigate();
 
     const getTeam = async () => {
@@ -99,6 +104,7 @@ export default function EditMission() {
                 setEnd(dayjs(data.data.end));
                 setStart(dayjs(data.data.start));
                 setTeam(data.data.team);
+                setScope(data.data.scope);
             })
             .catch((e) => {
                 throw e;
@@ -115,6 +121,30 @@ export default function EditMission() {
 
     const close = () => {
         setOpen(false);
+    };
+
+    const editScope = (index: number) => {
+        deleted.push(index);
+    };
+
+    const removeElement = (array: any, arr: any) => {
+        const newArray = [];
+        let i = 0;
+
+        for (let y = 0; i < array.length || y < arr.length; i += 1) {
+            if (arr[y] !== i) {
+                newArray.push(array[i]);
+            } else {
+                y += 1;
+            }
+        }
+        return newArray;
+    };
+
+    const deleteScope = () => {
+        const newValue = removeElement(scope, deleted);
+        setScope(newValue);
+        setDeleted([]);
     };
 
     const UpdateMission = async () => {
@@ -137,6 +167,7 @@ export default function EditMission() {
                     end: end.format('YYYY-MM-DD'),
                     start: start.format('YYYY-MM-DD'),
                     team: Team,
+                    scope,
                 },
                 {
                     headers: {
@@ -202,6 +233,43 @@ export default function EditMission() {
                             setLabel={setTitle}
                             size="medium"
                         />
+                        <div
+                            style={{
+                                display: 'flex',
+                                width: '100%',
+                                justifyContent: 'space-evenly',
+                            }}
+                        >
+                            <p style={{ fontSize: '14px' }}>Select</p>
+                            <AiIcons.AiFillDelete
+                                onClick={deleteScope}
+                                className="scope-action-icons"
+                                style={{
+                                    color: 'purple',
+                                    marginTop: '8px',
+                                    height: '30px',
+                                }}
+                            />
+                        </div>
+                        <Grid
+                            container
+                            spacing={1}
+                            columns={{ xs: 4, sm: 6, md: 10 }}
+                        >
+                            {scope.map((item, index) => {
+                                return (
+                                    <Grid item xs="auto">
+                                        <FormControlLabel
+                                            value="end"
+                                            control={<Checkbox size="small" />}
+                                            label={item}
+                                            onChange={() => editScope(index)}
+                                            labelPlacement="end"
+                                        />
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
                         <FormControl
                             sx={{ paddingY: 2, width: '100%' }}
                             size="small"

@@ -1,11 +1,31 @@
 import React, { useState } from 'react';
 import './Dashboard.scss';
+import Cookies from 'js-cookie';
 import DorkEngine from './SubDashboards/DorkEngine';
 import Mission from './SubDashboards/Mission';
+import CrtSh from './SubDashboards/CrtSh';
 import Notes from './SubDashboards/Notes/Notes';
+import Vulnerability from './SubDashboards/Vulnerability';
+
+function MissionSubMenu(props: any) {
+    const tmp = props;
+
+    return (
+        <button
+            key={tmp.key_p}
+            id={tmp.id_p}
+            type="button"
+            className={tmp.active === tmp.id_p ? 'active' : undefined}
+            onClick={tmp.handleClick}
+        >
+            {tmp.title}
+        </button>
+    );
+}
 
 function DashboardMission() {
     const [active, setActive] = useState('main');
+    const isPentester = Cookies.get('Role') === '1';
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
@@ -21,6 +41,12 @@ function DashboardMission() {
         if (active === 'note') {
             return <Notes />;
         }
+        if (active === 'crt') {
+            return <CrtSh />;
+        }
+        if (active === 'vuln') {
+            return <Vulnerability />;
+        }
         return null;
     };
 
@@ -34,42 +60,43 @@ function DashboardMission() {
             <div className="dashboard-content">
                 <div className="subHeader">
                     <div className="submenu-mission">
-                        <button
-                            key={1}
-                            id="main"
-                            type="button"
-                            className={active === 'main' ? 'active' : undefined}
-                            onClick={handleClick}
-                        >
-                            Main
-                        </button>
-                        <button
-                            key={2}
-                            id="note"
-                            type="button"
-                            className={active === 'note' ? 'active' : undefined}
-                            onClick={handleClick}
-                        >
-                            Note
-                        </button>
-                        <button
-                            key={3}
-                            id="vuln"
-                            type="button"
-                            className={active === 'vuln' ? 'active' : undefined}
-                            onClick={handleClick}
-                        >
-                            Vulnerability
-                        </button>
-                        <button
-                            key={4}
-                            id="dork"
-                            type="button"
-                            className={active === 'dork' ? 'active' : undefined}
-                            onClick={handleClick}
-                        >
-                            Dork Engine
-                        </button>
+                        <MissionSubMenu
+                            key_p="1"
+                            id_p="main"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Main"
+                        />
+                        <MissionSubMenu
+                            key_p="2"
+                            id_p="note"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Note"
+                        />
+                        <MissionSubMenu
+                            key_p="3"
+                            id_p="vuln"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Vulnerability"
+                        />
+                        <MissionSubMenu
+                            key_p="4"
+                            id_p="dork"
+                            active={active}
+                            handleClick={handleClick}
+                            title="Dork Engine"
+                        />
+                        {isPentester && (
+                            <MissionSubMenu
+                                key_p="5"
+                                id_p="crt"
+                                active={active}
+                                handleClick={handleClick}
+                                title="crt.sh"
+                            />
+                        )}
                     </div>
                 </div>
                 {getSubDashboard()}
