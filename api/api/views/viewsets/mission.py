@@ -26,7 +26,7 @@ class NmapViewset(viewsets.ModelViewSet):
     queryset = NmapScan.objects.all()
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
+    permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
     @swagger_auto_schema(
         operation_description="Creates and parses an NMAP output object.",
