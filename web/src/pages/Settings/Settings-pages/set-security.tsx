@@ -1,10 +1,29 @@
 import React, { useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import Feedbacks from '../../../component/Feedback';
 
 export default function SettingSecurity() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     const handleChangePassword = () => {
         // Vérifier que les champs de mot de passe ne sont pas vides et que le nouveau mot de passe correspond à la confirmation
@@ -14,7 +33,11 @@ export default function SettingSecurity() {
             !confirmPassword ||
             newPassword !== confirmPassword
         ) {
-            toast.error('Please check all the password were filled correctly');
+            setOpen(true);
+            setMessage(
+                'Please check all the password were filled correctly',
+                'error'
+            );
             return;
         }
 
@@ -22,16 +45,24 @@ export default function SettingSecurity() {
         // Si oui, modifier le mot de passe et afficher un message de succès
         // Sinon, afficher un message d'erreur
         // Remarque : ceci est un exemple simplifié à des fins de démonstration uniquement
+        setOpen(true);
         if (currentPassword === 'currentpassword') {
-            toast.success('Changed password successfully!');
+            setMessage('Changed password successfully!', 'success');
         } else {
-            toast.error('The actual password is incorrect.');
+            setMessage('The actual password is incorrect.', 'error');
         }
     };
 
     return (
         <div>
-            <Toaster position="top-center" reverseOrder={false} />
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    color={message.color}
+                    open={open}
+                    close={handleClose}
+                />
+            )}
             <span className="left-side">
                 <h1>Security</h1>
             </span>

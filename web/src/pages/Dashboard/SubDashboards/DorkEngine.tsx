@@ -1,11 +1,30 @@
 import React, { useState } from 'react';
 import * as IoIcons from 'react-icons/io';
-import toast, { Toaster } from 'react-hot-toast';
 import DorkList from '../../../assets/strings/en/dorks.json';
+import Feedbacks from '../../../component/Feedback';
 
 export default function DorkEngine() {
     const [tmpDomain, setTmpDomain] = useState('');
     const [inputDomain, setInputDomain] = useState('');
+    const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     const getLink = (path: string) => {
         const res = path.replace('{{DOMAIN}}', inputDomain);
@@ -17,15 +36,17 @@ export default function DorkEngine() {
     };
 
     const handleKeyDown = (event: { key: string }) => {
+        setOpen(true);
         if (event.key === 'Enter') {
             setInputDomain(tmpDomain);
-            toast.success('Searching domain');
+            setMessage('Searching domain', 'success');
         }
     };
 
     const searchDomain = () => {
+        setOpen(true);
         setInputDomain(tmpDomain);
-        toast.success('Searching domain');
+        setMessage('Searching domain', 'success');
     };
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -58,9 +79,14 @@ export default function DorkEngine() {
                 style={{ marginTop: '4px', justifyContent: 'center' }}
                 className="dork_input"
             >
-                <div>
-                    <Toaster position="top-center" reverseOrder={false} />
-                </div>
+                {open && (
+                    <Feedbacks
+                        mess={message.mess}
+                        color={message.color}
+                        open={open}
+                        close={handleClose}
+                    />
+                )}
                 <input
                     type="text"
                     placeholder="Enter domain"
