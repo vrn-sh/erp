@@ -148,7 +148,7 @@ export default function CrtSh() {
 
     const getMission = async () => {
         await axios
-            .get(`${config.apiUrl}/mission?page=2`, {
+            .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
