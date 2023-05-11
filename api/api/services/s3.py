@@ -7,16 +7,10 @@ from minio import Minio
 from minio.api import VersioningConfig
 from minio.versioningconfig import ENABLED
 
-if os.environ.get('PRODUCTION', '0') != '1':
-    MINIO_URL = f'{os.environ["MINIO_HOST"]}:9000'
-else:
-    MINIO_URL = os.environ['DOMAIN_NAME']
-
-
 class S3Bucket:
     def __init__(self) -> None:
         self.client = Minio(
-            MINIO_URL,
+            f'{os.environ["MINIO_HOST"]}:9000',
             os.environ['MINIO_ROOT_USER'],
             os.environ['MINIO_ROOT_PASSWORD'],
             secure=False
@@ -45,11 +39,31 @@ class S3Bucket:
         )
 
     def get_object_url(self, bucket: str, object_name: str) -> str:
-        presigned_url = self.client.presigned_get_object(bucket, object_name)
+
+
+        if os.environ.get('PRODUCTION', '0') != '1':
+            public_endpoint = f'{os.environ["MINIO_HOST"]}:9000'
+        else:
+            public_endpoint = os.environ['DOMAIN_NAME']
+
+        # in order to properly generate url, endpoint should
+        # be different from typical client config
+        client = Minio(
+            public_endpoint,
+            os.environ['MINIO_ROOT_USER'],
+            os.environ['MINIO_ROOT_PASSWORD'],
+            secure=False
+        )
+
+        presigned_url = client.presigned_get_object(bucket, object_name)
 
         warning(f'original pre-signed url: {presigned_url}')
 
         if os.environ.get('PRODUCTION', '0') == '1':
+
+            # dumbass s3 prevents us from sending path in endpoint value,
+            # so we do this stupid thing instead
+
             domain = os.environ['DOMAIN_NAME']
             presigned_url = presigned_url.replace(f'http://{domain}', f'https://{domain}/buckets')
             warning(f'post update: {presigned_url}')
