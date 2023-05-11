@@ -319,17 +319,19 @@ export default function Mission() {
                                                     )
                                                 }
                                             />
-                                            <input
-                                                type="button"
-                                                value="Add vuln"
-                                                className="borderBtn"
-                                                onClick={() =>
-                                                    NavAddVul(
-                                                        mission.id,
-                                                        mission.name
-                                                    )
-                                                }
-                                            />
+                                            {isPentester && (
+                                                <input
+                                                    type="button"
+                                                    value="Add vuln"
+                                                    className="borderBtn"
+                                                    onClick={() =>
+                                                        NavAddVul(
+                                                            mission.id,
+                                                            mission.name
+                                                        )
+                                                    }
+                                                />
+                                            )}
                                             {!isPentester && (
                                                 <>
                                                     <input
