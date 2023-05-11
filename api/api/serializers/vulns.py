@@ -92,7 +92,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
             mime_type = self.get_mime_type(image_data)
             image_data = self.get_image_data(image_data)
 
-            warning(f'mime_type: {mime_type} -> data: {data}')
+            warn(f'mime_type: {mime_type} -> data: {data}')
 
             if not mime_type or not image_data:
                 continue
@@ -103,7 +103,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
             s3_client = S3Bucket()
             image_name = f'{uuid.uuid4().hex}'
 
-            warning(f'image name: {image_name}')
+            warn(f'image name: {image_name}')
 
             iostream = BytesIO(image_data)
             resp = s3_client.upload_stream(
@@ -113,7 +113,7 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
                 f'image/{mime_type}',
             )
 
-            warning(f'response status: {resp}')
+            warn(f'response status: {resp}')
 
             images.append(image_name)
         internal_value['images'] = images
