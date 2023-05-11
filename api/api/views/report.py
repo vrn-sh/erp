@@ -79,12 +79,8 @@ class GenerateReportView(APIView):
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
 
-        warning(f'Creating bucket {mission.bucket_name}')
-
         s3 = S3Bucket()
         s3.create_bucket(mission.bucket_name)
-
-        warning(f'Creating bucket OK')
 
         dir_path = f'/tmp/{mission.bucket_name}'
         filepath = self.dump_report(mission, dir_path)
@@ -93,11 +89,7 @@ class GenerateReportView(APIView):
         s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
         rmtree(dir_path)
 
-        warning(f'UPLOAD OK')
-
         object_url = s3.get_object_url(mission.bucket_name, object_name)
-        warning(f'GET OBJECT URL')
-
         return HttpResponseRedirect(redirect_to=object_url)
 
     def dump_report(self, mission: Mission, dir_path: str) -> str:
