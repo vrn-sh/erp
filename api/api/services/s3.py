@@ -44,7 +44,7 @@ class S3Bucket:
     def get_object_url(self, bucket: str, object_name: str) -> str:
         presigned_url = self.client.presigned_get_object(bucket, object_name)
         if os.environ.get('PRODUCTION', '0') == '1':
-            return presigned_url.replace(f'{MINIO_URL}', f'{os.environ["DOMAIN_NAME"]}/buckets')
+            return presigned_url.replace(f'{MINIO_URL}', f'{os.environ["DOMAIN_NAME"]}/buckets').replace('http', 'https')
         return presigned_url
 
     def upload_file(self, bucket: str, file_path: str, file_name: str) -> None:
