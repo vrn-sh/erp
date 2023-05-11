@@ -197,6 +197,28 @@ export default function SignUp() {
                             noValidate
                             className="form-signup"
                         >
+                            <div className="role-choose">
+                                <div className="radio-container">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="pentester"
+                                        checked={state.role === 'pentester'}
+                                        onChange={handleChange}
+                                    />
+                                    <label>Pentester</label>
+                                </div>
+                                <div className="radio-container">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="manager"
+                                        checked={state.role === 'manager'}
+                                        onChange={handleChange}
+                                    />
+                                    <label>Manager</label>
+                                </div>
+                            </div>
                             <div className="input-block">
                                 <label
                                     className="placeholder"
@@ -219,28 +241,6 @@ export default function SignUp() {
                                     name="email"
                                     onChange={handleChange}
                                 />
-                            </div>
-                            <div className="role-choose">
-                                <div className="radio-container">
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="pentester"
-                                        checked={state.role === 'pentester'}
-                                        onChange={handleChange}
-                                    />
-                                    <label>Pentester</label>
-                                </div>
-                                <div className="radio-container">
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="manager"
-                                        checked={state.role === 'manager'}
-                                        onChange={handleChange}
-                                    />
-                                    <label>Manager</label>
-                                </div>
                             </div>
                             <div className="input-block">
                                 <label
