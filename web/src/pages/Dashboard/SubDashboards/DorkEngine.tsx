@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import * as IoIcons from 'react-icons/io';
-import toast, { Toaster } from 'react-hot-toast';
 import DorkList from '../../../assets/strings/en/dorks.json';
 import Feedbacks from '../../../component/Feedback';
 

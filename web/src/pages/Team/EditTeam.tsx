@@ -174,7 +174,7 @@ export default function CreateTeam() {
             .patch(
                 `${config.apiUrl}/team/${id}`,
                 {
-                    title: Title,
+                    name: Title,
                     team: personName,
                 },
                 {

@@ -146,10 +146,6 @@ export default function CreateMission() {
                             Create new mission
                         </h2>
                     </div>
-                    <div className="page-searcher">
-                        <label>Search on page</label>
-                        <input type="text" placeholder="Search..." />
-                    </div>
                 </div>
                 <div className="edit-container">
                     <div

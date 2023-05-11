@@ -67,20 +67,11 @@ export default function TeamList() {
                     );
                     tab.push(find);
                 }
-                console.log(tab);
                 setMission(tab.length);
             })
             .catch((e) => {
                 throw e.message;
             });
-    };
-
-    const NavEditTeam = (id: number) => {
-        navigate('/team/edit', {
-            state: {
-                teamId: id,
-            },
-        });
     };
 
     const addTeam = () => {
@@ -109,10 +100,20 @@ export default function TeamList() {
                 }
                 tab.reverse();
                 setList(tab);
+                console.log(tab);
             })
             .catch((e) => {
                 throw e.message;
             });
+    };
+
+    const NavEditTeam = (id: number) => {
+        navigate('/team/edit', {
+            state: {
+                teamId: id,
+            },
+        });
+        getTeamList();
     };
 
     useEffect(() => {
