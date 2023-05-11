@@ -47,9 +47,12 @@ class S3Bucket:
     def get_object_url(self, bucket: str, object_name: str) -> str:
         presigned_url = self.client.presigned_get_object(bucket, object_name)
 
+        warning(f'original pre-signed url: {presigned_url}')
+
         if os.environ.get('PRODUCTION', '0') == '1':
             domain = os.environ['DOMAIN_NAME']
-            return presigned_url.replace(f'http://{domain}', f'https://{domain}/buckets')
+            presigned_url = presigned_url.replace(f'http://{domain}', f'https://{domain}/buckets')
+            warning(f'post update: {presigned_url}')
 
         return presigned_url
 
