@@ -94,10 +94,10 @@ export default function SettingAccount() {
 
     return (
         <div className="container">
-            <div style={{ width: 'full' }}>
-                <Stack direction="row" spacing="space-between">
+            <div style={{ width: '100%' }}>
+                <Stack direction="row" spacing={2}>
                     <div className="input input-medium">
-                        <label>first_name</label>
+                        <label>First name</label>
                         <input
                             id="input-first_name"
                             type="text"
@@ -107,7 +107,7 @@ export default function SettingAccount() {
                     </div>
 
                     <div className="input input-medium">
-                        <label>last_name</label>
+                        <label>Last name</label>
                         <input
                             id="input-last_name"
                             type="text"
@@ -116,9 +116,10 @@ export default function SettingAccount() {
                         />
                     </div>
                 </Stack>
-                <Stack direction="row" width="full" spacing="space-between">
+                <br />
+                <Stack direction="row" width="full" spacing={2}>
                     <div className="input input-medium">
-                        <label>username</label>
+                        <label>Username</label>
                         <input
                             id="input-username"
                             type="text"
@@ -128,7 +129,7 @@ export default function SettingAccount() {
                         />
                     </div>
                     <div className="input input-medium">
-                        <label>email</label>
+                        <label>Email</label>
                         <input
                             id="input-email"
                             type="text"
@@ -138,6 +139,7 @@ export default function SettingAccount() {
                     </div>
                 </Stack>
             </div>
+            <br />
 
             <div className="buttons-container">
                 <button type="button" className="cancel-button">

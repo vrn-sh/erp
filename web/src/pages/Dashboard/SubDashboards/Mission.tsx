@@ -291,6 +291,7 @@ export default function Mission() {
                                                         style={{
                                                             marginRight:
                                                                 '0.5rem',
+                                                            marginBottom: '2px',
                                                         }}
                                                     />
                                                 );

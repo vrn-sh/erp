@@ -139,150 +139,126 @@ export default function TeamList() {
             <div className="assigned-missions">
                 <div className="dashboard-table">
                     <h1>Exist team</h1>
-                    <div className="dashboard-content">
-                        <div className="subHeader">
-                            <div className="submenu-mission">
-                                {!list.length ? (
-                                    <button
-                                        type="button"
-                                        style={{
-                                            width: 'fit-content',
-                                        }}
-                                        className="mission_create centered"
-                                        onClick={addTeam}
-                                    >
-                                        Create a Team
-                                    </button>
-                                ) : (
-                                    <>
-                                        <table
-                                            style={{ marginTop: '10px' }}
-                                            className="no_center_container"
-                                        >
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Manager</th>
-                                                    <th>Members</th>
-                                                    <th>Missions</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            {records.map((team) => {
-                                                return (
-                                                    <tbody key={team.id}>
-                                                        <tr key={team.id}>
-                                                            <td>{team.name}</td>
-                                                            <td>
-                                                                {team.manager}
-                                                            </td>
-                                                            <td>
-                                                                {team.nbMember}
-                                                            </td>
-                                                            <td>
-                                                                {team.nbMission}
-                                                            </td>
-                                                            <td className="scope-table-action">
-                                                                {!isPentester && (
-                                                                    <>
-                                                                        <input
-                                                                            type="button"
-                                                                            value="Edit"
-                                                                            className="borderBtn"
-                                                                            onClick={() =>
-                                                                                NavEditTeam(
-                                                                                    team.id
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                        <a
-                                                                            href="#"
-                                                                            className="borderBtnError"
-                                                                            onClick={() => {
-                                                                                setItem(
-                                                                                    {
-                                                                                        id: team.id,
-                                                                                        title: team.name,
-                                                                                        type: 'team',
-                                                                                    }
-                                                                                );
-                                                                                setOpen(
-                                                                                    true
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            <IoIcons.IoIosTrash
-                                                                                size={
-                                                                                    20
-                                                                                }
-                                                                            />
-                                                                        </a>
-                                                                    </>
-                                                                )}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                );
-                                            })}
-                                        </table>
-                                        <nav>
-                                            <ul className="pagination">
-                                                <li className="page-item">
-                                                    <a
-                                                        href="#"
-                                                        className="page-link"
-                                                        onClick={prePage}
-                                                    >
-                                                        <IoIcons.IoIosArrowBack />
-                                                    </a>
-                                                </li>
-                                                {nums.map((n) => {
-                                                    return (
-                                                        <li
-                                                            key={n}
-                                                            className={`page-item ${
-                                                                currentPage ===
-                                                                n
-                                                                    ? 'active'
-                                                                    : ''
-                                                            }`}
-                                                        >
-                                                            <a
-                                                                href="#"
-                                                                className="page-link"
+                    {!list.length ? (
+                        <button
+                            type="button"
+                            style={{
+                                width: 'fit-content',
+                            }}
+                            className="mission_create centered"
+                            onClick={addTeam}
+                        >
+                            Create a Team
+                        </button>
+                    ) : (
+                        <>
+                            <table
+                                style={{ marginTop: '10px' }}
+                                className="no_center_container"
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Manager</th>
+                                        <th>Members</th>
+                                        <th>Missions</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                {records.map((team) => {
+                                    return (
+                                        <tbody key={team.id}>
+                                            <tr key={team.id}>
+                                                <td>{team.name}</td>
+                                                <td>{team.manager}</td>
+                                                <td>{team.nbMember}</td>
+                                                <td>{team.nbMission}</td>
+                                                <td className="scope-table-action">
+                                                    {!isPentester && (
+                                                        <>
+                                                            <input
+                                                                type="button"
+                                                                value="Edit"
+                                                                className="borderBtn"
                                                                 onClick={() =>
-                                                                    changePage(
-                                                                        n
+                                                                    NavEditTeam(
+                                                                        team.id
                                                                     )
                                                                 }
+                                                            />
+                                                            <a
+                                                                href="#"
+                                                                className="borderBtnError"
+                                                                onClick={() => {
+                                                                    setItem({
+                                                                        id: team.id,
+                                                                        title: team.name,
+                                                                        type: 'team',
+                                                                    });
+                                                                    setOpen(
+                                                                        true
+                                                                    );
+                                                                }}
                                                             >
-                                                                {n}
+                                                                <IoIcons.IoIosTrash
+                                                                    size={20}
+                                                                />
                                                             </a>
-                                                        </li>
-                                                    );
-                                                })}
-                                                <li className="page-item">
-                                                    <a
-                                                        href="#"
-                                                        className="page-link"
-                                                        onClick={nextPage}
-                                                    >
-                                                        <IoIcons.IoIosArrowForward />
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </nav>
-                                    </>
-                                )}
-                                {open && (
-                                    <DeleteConfirm
-                                        item={item!}
-                                        func={modalClick}
-                                    />
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    );
+                                })}
+                            </table>
+                            <nav>
+                                <ul className="pagination">
+                                    <li className="page-item">
+                                        <a
+                                            href="#"
+                                            className="page-link"
+                                            onClick={prePage}
+                                        >
+                                            <IoIcons.IoIosArrowBack />
+                                        </a>
+                                    </li>
+                                    {nums.map((n) => {
+                                        return (
+                                            <li
+                                                key={n}
+                                                className={`page-item ${
+                                                    currentPage === n
+                                                        ? 'active'
+                                                        : ''
+                                                }`}
+                                            >
+                                                <a
+                                                    href="#"
+                                                    className="page-link"
+                                                    onClick={() =>
+                                                        changePage(n)
+                                                    }
+                                                >
+                                                    {n}
+                                                </a>
+                                            </li>
+                                        );
+                                    })}
+                                    <li className="page-item">
+                                        <a
+                                            href="#"
+                                            className="page-link"
+                                            onClick={nextPage}
+                                        >
+                                            <IoIcons.IoIosArrowForward />
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </>
+                    )}
+                    {open && <DeleteConfirm item={item!} func={modalClick} />}
                 </div>
             </div>
         </div>
