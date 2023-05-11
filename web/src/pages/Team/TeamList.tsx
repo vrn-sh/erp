@@ -186,8 +186,9 @@ export default function TeamList() {
                                                                     )
                                                                 }
                                                             />
-                                                            <a
-                                                                href="#"
+                                                            <input
+                                                                type="button"
+                                                                value="Delete"
                                                                 className="borderBtnError"
                                                                 onClick={() => {
                                                                     setItem({
@@ -199,11 +200,7 @@ export default function TeamList() {
                                                                         true
                                                                     );
                                                                 }}
-                                                            >
-                                                                <IoIcons.IoIosTrash
-                                                                    size={20}
-                                                                />
-                                                            </a>
+                                                            />
                                                         </>
                                                     )}
                                                 </td>

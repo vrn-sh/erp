@@ -270,9 +270,9 @@ export default function Mission() {
                             <tr>
                                 <th className="md-2">Mission name</th>
                                 <th className="md-1">Team</th>
-                                <th className="md-4">Badges</th>
+                                <th className="md-3">Badges</th>
                                 <th className="md-1">State</th>
-                                <th className="md-2">Actions</th>
+                                <th className="md-3">Actions</th>
                             </tr>
                         </thead>
                         {records.map((mission) => {
@@ -342,8 +342,9 @@ export default function Mission() {
                                                             )
                                                         }
                                                     />
-                                                    <a
-                                                        href="#"
+                                                    <input
+                                                        type="button"
+                                                        value="Delete"
                                                         className="borderBtnError"
                                                         onClick={() => {
                                                             setItem({
@@ -353,11 +354,7 @@ export default function Mission() {
                                                             });
                                                             setOpen(true);
                                                         }}
-                                                    >
-                                                        <IoIcons.IoIosTrash
-                                                            size={20}
-                                                        />
-                                                    </a>
+                                                    />
                                                 </>
                                             )}
                                         </td>

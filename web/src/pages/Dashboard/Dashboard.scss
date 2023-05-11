@@ -173,13 +173,9 @@ table input {
 }
 
 .borderBtnError {
-    border: 1px #aa3434 solid;
-    color: #da3e3e;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    margin: 0 0.5rem;
+    @extend .borderBtn;
+    border-color: red;
+    color: red;
 }
 
 .borderBtnError:hover {
