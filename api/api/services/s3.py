@@ -46,27 +46,9 @@ class S3Bucket:
         else:
             public_endpoint = os.environ['DOMAIN_NAME']
 
-        # in order to properly generate url, endpoint should
-        # be different from typical client config
-        client = Minio(
-            public_endpoint,
-            os.environ['MINIO_ROOT_USER'],
-            os.environ['MINIO_ROOT_PASSWORD'],
-            secure=.os.os.environ.get('PRODUCTION', '0') == '1'
-        )
-
-        presigned_url = client.presigned_get_object(bucket, object_name)
-
-        warning(f'original pre-signed url: {presigned_url}')
-
+        presigned_url = self.client.presigned_get_object(bucket, object_name)
         if os.environ.get('PRODUCTION', '0') == '1':
-
-            # dumbass s3 prevents us from sending path in endpoint value,
-            # so we do this stupid thing instead
-
-            domain = os.environ['DOMAIN_NAME']
-            presigned_url = presigned_url.replace(f'http://{domain}', f'https://{domain}/buckets')
-            warning(f'post update: {presigned_url}')
+            presigned_url = presigned_url.replace(f'http://', f'https://')
 
         return presigned_url
 
