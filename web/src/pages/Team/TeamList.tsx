@@ -65,9 +65,10 @@ export default function TeamList() {
                     const find = missions.filter(
                         (elem: any) => elem.team === idTeam
                     );
-                    tab.concat(find);
+                    tab.push(find);
                 }
-                setMission(!tab.length ? 0 : tab.length);
+                console.log(tab)
+                setMission(tab.length);
             })
             .catch((e) => {
                 throw e.message;
@@ -131,10 +132,6 @@ export default function TeamList() {
         <div className="dashboard-pages">
             <div className="page-info">
                 <h1>Team</h1>
-                <div className="page-searcher">
-                    <label>Search on page</label>
-                    <input type="text" placeholder="Search..." />
-                </div>
             </div>
             <div className="assigned-missions">
                 <div className="dashboard-table">
@@ -156,21 +153,20 @@ export default function TeamList() {
                                 ) : (
                                     <>
                                         <table
-                                            style={{ marginTop: '10px' }}
+                                            // style={{ marginTop: '10px' }}
                                             className="no_center_container"
                                         >
-                                            <thead>
+                                            <tbody>
                                                 <tr>
-                                                    <th>Name</th>
-                                                    <th>Manager</th>
-                                                    <th>Members</th>
-                                                    <th>Missions</th>
-                                                    <th>Action</th>
+                                                    <th className="md-3">Name</th>
+                                                    <th className="md-3">Manager</th>
+                                                    <th className="md-5">Members</th>
+                                                    <th className="md-5">Missions</th>
+                                                    <th className="md-3">Action</th>
                                                 </tr>
-                                            </thead>
                                             {records.map((team) => {
                                                 return (
-                                                    <tbody key={team.id}>
+                                                    
                                                         <tr key={team.id}>
                                                             <td>{team.name}</td>
                                                             <td>
@@ -221,9 +217,10 @@ export default function TeamList() {
                                                                 )}
                                                             </td>
                                                         </tr>
-                                                    </tbody>
+                                                    
                                                 );
                                             })}
+                                            </tbody>
                                         </table>
                                         <nav>
                                             <ul className="pagination">
