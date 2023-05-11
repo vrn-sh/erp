@@ -61,6 +61,13 @@
     flex-wrap: wrap;
 }
 
+.log-box {
+    text-decoration: none;
+    margin-top: 1rem;
+    font-family: 'Roboto-Light';
+    font-size: 13px;
+}
+
 label {
     color: var(--gray-btn);
     margin-top: 1rem;
