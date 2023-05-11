@@ -29,8 +29,8 @@ class S3Bucket:
             object_name: str,
             iostream: BytesIO,
             mime_type: str
-    ) -> None:
-        self.client.put_object(
+    ):
+        return self.client.put_object(
             bucket,
             object_name,
             iostream,
