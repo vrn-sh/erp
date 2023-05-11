@@ -23,6 +23,7 @@ const SideBarData = [
         icon: <AiIcons.AiOutlineStar />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
+        isForManager: true,
         subNav: [],
     },
     {
@@ -31,6 +32,7 @@ const SideBarData = [
         icon: <BsIcons.BsPeople />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
+        isForManager: true,
         subNav: [],
     },
     {
@@ -39,6 +41,7 @@ const SideBarData = [
         icon: <BsIcons.BsJournals />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
+        isForManager: false,
         subNav: [],
     },
     {
@@ -47,6 +50,7 @@ const SideBarData = [
         icon: <BsIcons.BsJournals />,
         iconClosed: <IoIcons.IoIosArrowForward />,
         iconOpened: <IoIcons.IoIosArrowDown />,
+        isForManager: false,
         subNav: [],
     },
 ];

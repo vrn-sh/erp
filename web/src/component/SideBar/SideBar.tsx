@@ -51,6 +51,7 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
 
 export default function SideBar() {
     const navigate = useNavigate();
+    const isPentester = Cookies.get('Role') === '1';
 
     const logout = async () => {
         await axios(`${config.apiUrl}/logout`, {
@@ -76,8 +77,13 @@ export default function SideBar() {
                 <h1 className="sidebar-site-title">voron</h1>
             </Link>
             <div>
-                {SideBarData.map((item) => {
-                    return <SubMenuItem key={item.title} item={item} />;
+                {SideBarData.map((item, index) => {
+                    if (isPentester) {
+                        if (index > 1) {
+                            return <SubMenuItem key={item.title} item={item} />;
+                        }
+                    } else return <SubMenuItem key={item.title} item={item} />;
+                    return null;
                 })}
             </div>
 

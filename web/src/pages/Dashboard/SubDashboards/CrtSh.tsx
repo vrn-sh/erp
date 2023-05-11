@@ -111,7 +111,6 @@ export default function CrtSh() {
             })
             .catch((e) => {
                 setOpen(true);
-                console.log(e);
                 setSuccess(false);
                 setMessage(e.response.data.dump[0].error, 'error');
             });
@@ -140,7 +139,6 @@ export default function CrtSh() {
                 setMessage('Succeed to load!', 'success');
             })
             .catch((e) => {
-                console.log(e);
                 setSuccess(false);
                 setMessage(e.response.data.dump[0].error, 'error');
             });

@@ -7,10 +7,6 @@ export default function SubDashboard() {
         <div className="dashboard-pages">
             <div className="page-info">
                 <h1>Welcome to your dashboard</h1>
-                <div className="page-searcher">
-                    <label>Search on page</label>
-                    <input type="text" placeholder="Search..." />
-                </div>
             </div>
 
             <div className="assigned-missions">
