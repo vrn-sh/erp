@@ -39,7 +39,7 @@ class S3Bucket:
         )
 
     def get_object_url(self, bucket: str, object_name: str) -> str:
-
+        """returns url for a file to expose to the front-end"""
 
         if os.environ.get('PRODUCTION', '0') != '1':
             public_endpoint = f'{os.environ["MINIO_HOST"]}:9000'
@@ -52,7 +52,7 @@ class S3Bucket:
             public_endpoint,
             os.environ['MINIO_ROOT_USER'],
             os.environ['MINIO_ROOT_PASSWORD'],
-            secure=False
+            secure=.os.os.environ.get('PRODUCTION', '0') == '1'
         )
 
         presigned_url = client.presigned_get_object(bucket, object_name)
