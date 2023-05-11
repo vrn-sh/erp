@@ -10,7 +10,7 @@ from minio.versioningconfig import ENABLED
 if os.environ.get('PRODUCTION', '0') != '1':
     MINIO_URL = f'{os.environ["MINIO_HOST"]}:9000'
 else:
-    MINIO_URL = os.environ['DOMAIN_NAME'] + '/buckets'
+    MINIO_URL = os.environ['DOMAIN_NAME']
 
 
 class S3Bucket:
@@ -47,7 +47,8 @@ class S3Bucket:
     def get_object_url(self, bucket: str, object_name: str) -> str:
         presigned_url = self.client.presigned_get_object(bucket, object_name)
         if os.environ.get('PRODUCTION', '0') == '1':
-            return presigned_url.replace('http', 'https')
+            domain = os.environ['DOMAIN_NAME']
+            return presigned_url.replace('http', 'https').replace(domain, f'{domain}/buckets')
         return presigned_url
 
     def upload_file(self, bucket: str, file_path: str, file_name: str) -> None:
