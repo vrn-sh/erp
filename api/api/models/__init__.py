@@ -100,6 +100,10 @@ class Auth(AbstractUser):
                 fail_silently=False,
             )
 
+        # set here temporarily
+        self.is_enabled = True
+        self.save()
+
         mail = SendgridClient([self.email])
         mail.set_template_data({
             'username': self.first_name,
