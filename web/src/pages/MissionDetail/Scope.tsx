@@ -133,7 +133,9 @@ export default function Scope(/* need to add list as a param here */) {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then(() => {
+            .then((data) => {
+                // here to open a link in new tab, replace google link by our url
+                window.open('https://google.fr', '_blank', 'noreferrer');
                 setMessage('Created!', 'success');
             })
             .catch((e) => {

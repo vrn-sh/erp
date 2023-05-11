@@ -128,8 +128,19 @@ export default function Mission() {
             });
     };
 
+    const getVulData = (newData: any) => {
+        const vulnty: string[] = [];
+
+        for (let a = 0; a < newData.length; a += 1) {
+            const tmp = vulnType.find((obj) => {
+                return obj.id === newData[a].vuln_type;
+            });
+            if (tmp && vulnty.indexOf(tmp.name) === -1) vulnty.push(tmp.name);
+        }
+        return vulnty;
+    };
+
     const getMission = async () => {
-        let vulnty: string[] = [];
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
@@ -140,7 +151,7 @@ export default function Mission() {
             .then(async (data) => {
                 const tab = [];
                 for (let i = 0; i < data.data.results.length; i += 1) {
-                    vulnty = [];
+                    let VulnData: string[] = [];
                     await axios
                         .get(
                             `${config.apiUrl}/vulnerability?page=1&mission=${data.data.results[i].id}`,
@@ -154,14 +165,7 @@ export default function Mission() {
                             }
                         )
                         .then(async (res) => {
-                            const newData = await res.data;
-                            for (let a = 0; a < newData.length; a += 1) {
-                                const tmp = vulnType.find((obj) => {
-                                    return obj.id === newData[a].vuln_type;
-                                });
-                                if (tmp && vulnty.indexOf(tmp.name) === -1)
-                                    vulnty.push(tmp.name);
-                            }
+                            VulnData = await res.data.results;
                         })
                         .catch((e) => {
                             throw e.message;
@@ -175,7 +179,7 @@ export default function Mission() {
                             data.data.results[i].start
                         ) || { color: 'info', text: 'Not Started' },
                         scope: data.data.results[i].scope,
-                        vuln: vulnty,
+                        vuln: getVulData(VulnData),
                     });
                 }
                 tab.reverse();
