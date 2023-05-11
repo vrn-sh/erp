@@ -7,101 +7,52 @@ import Cookies from 'js-cookie';
 
 export default function TopBar() {
     const [popup, setPopup] = useState(false);
-    const [email, setEmail] = useState('');
-    const [errorEmail, setErrorEmail] = useState('');
     const navigate = useNavigate();
     const isPentester = Cookies.get('Role') === '1';
-
-    const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-
-        if (!/^\S+@\S+\.\S+$/.test(email)) {
-            setErrorEmail('Please enter valid email address.');
-        } else if (/^\S+@\S+\.\S+$/.test(email)) {
-            setErrorEmail('');
-        }
-    };
 
     const popupClick = () => {
         setPopup(!popup);
     };
 
     const handleKeydown = () => {};
-    const sendInvitation = () => {
-        if (email !== '' && errorEmail === '') {
-            // send API here
-            popupClick();
-        }
-    };
 
     const goProfile = () => {
         navigate('/profile');
     };
 
     return (
-        <>
-            <div className="top-bar">
-                <div className="topBar-wrapper">
-                    <div className="topBar-searchIcon">
-                        <BiIcons.BiSearch color="#8A8A8A" />
-                    </div>
-                    <input
-                        className="topBar-input"
-                        type="text"
-                        placeholder="Search"
-                    />
+        <div className="top-bar">
+            <div className="topBar-wrapper">
+                <div className="topBar-searchIcon">
+                    <BiIcons.BiSearch color="#8A8A8A" />
                 </div>
-                <div className="btn-left">
-                    {!isPentester && (
-                        <input
-                            type="button"
-                            value="Add pentester"
-                            className="borderBtn"
-                            onClick={popupClick}
-                        />
-                    )}
-                    <span className="btn">
-                        <FaIcons.FaBell size="22px" color="#8A8A8A" />
-                    </span>
-                    <span
-                        className="btn-profile"
-                        onClick={goProfile}
-                        onKeyDown={handleKeydown}
-                        role="presentation"
-                    >
-                        <FaIcons.FaUserCircle size="22px" color="#8A8A8A" />
-                    </span>
-                </div>
+                <input
+                    className="topBar-input"
+                    type="text"
+                    placeholder="Search"
+                />
             </div>
-
-            {popup && (
-                <div className="popup">
-                    <div className="popup-overlay">
-                        <h1>Invite a pentester</h1>
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            className="popup-input"
-                            onChange={checkEmail}
-                        />
-                        <p className="error">{errorEmail}</p>
-                        <button
-                            type="button"
-                            className="sendBtn"
-                            onClick={sendInvitation}
-                        >
-                            Send invitation
-                        </button>
-                        <button
-                            type="button"
-                            className="cancelBtn"
-                            onClick={popupClick}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            )}
-        </>
+            <div className="btn-left">
+                {!isPentester && (
+                    <input
+                        type="button"
+                        value="Add pentester"
+                        className="borderBtn"
+                        onClick={popupClick}
+                    />
+                )}
+                <span className="btn">
+                    <FaIcons.FaBell size="22px" color="#8A8A8A" />
+                </span>
+                <span
+                    className="btn-profile"
+                    onClick={goProfile}
+                    onKeyDown={handleKeydown}
+                    role="presentation"
+                >
+                    <FaIcons.FaUserCircle size="22px" color="#8A8A8A" />
+                </span>
+            </div>
+        </div>
     );
 }

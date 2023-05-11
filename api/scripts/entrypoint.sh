@@ -49,5 +49,7 @@ echo "$(date) - Running database migrations"
 python manage.py makemigrations
 python manage.py migrate
 
+python manage.py init_builtin_vuln_types
+
 echo "$(date) - Starting task"
 exec gunicorn core.wsgi --config gunicorn.conf.py

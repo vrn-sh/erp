@@ -1,7 +1,7 @@
 """module to handle sendgrid integration"""
 
 import os
-from typing import Optional
+from typing import Optional, List
 import logging
 from sendgrid import SendGridAPIClient, Mail
 from sendgrid.helpers.mail import *
@@ -15,7 +15,7 @@ class SendgridParameters:
 class SendgridClient:
     """Sendgrid integration API"""
 
-    def __init__(self, recipients: list[str],
+    def __init__(self, recipients: List[str],
                  sender: Optional[str] = SendgridParameters.DEFAULT_SENDER):
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
