@@ -40,12 +40,7 @@ class S3Bucket:
 
     def get_object_url(self, bucket: str, object_name: str) -> str:
         """returns url for a file to expose to the front-end"""
-
-        presigned_url = self.client.presigned_get_object(bucket, object_name)
-        if os.environ.get('PRODUCTION', '0') == '1':
-            presigned_url = presigned_url.replace(f'http://', f'https://')
-
-        return presigned_url
+        return self.client.presigned_get_object(bucket, object_name)
 
     def upload_file(self, bucket: str, file_path: str, file_name: str) -> None:
         self.client.fput_object(bucket, file_name, file_path)
