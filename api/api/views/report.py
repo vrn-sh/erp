@@ -91,11 +91,8 @@ class GenerateReportView(APIView):
         s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
         rmtree(dir_path)
 
-        return HttpResponseRedirect(
-            redirect_to=s3.client.presigned_get_object(
-                bucket_name=mission.bucket_name,
-                object_name=object_name,
-            ))
+        object_url = s3.get_object_url(mission.bucket_name, object_name)
+        return HttpResponseRedirect(redirect_to=object_url)
 
     def dump_report(self, mission: Mission, dir_path: str) -> str:
         """compile pages together to generate a report"""
