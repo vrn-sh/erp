@@ -78,13 +78,12 @@ export default function SideBar() {
             </Link>
             <div>
                 {SideBarData.map((item, index) => {
-                    console.log(isPentester)
                     if (isPentester) {
-                    if (index > 1) {
-                        return <SubMenuItem key={item.title} item={item} />;
-                    }
-                    return;
-                } else return <SubMenuItem key={item.title} item={item} />;
+                        if (index > 1) {
+                            return <SubMenuItem key={item.title} item={item} />;
+                        }
+                    } else return <SubMenuItem key={item.title} item={item} />;
+                    return null;
                 })}
             </div>
 

@@ -67,7 +67,7 @@ export default function TeamList() {
                     );
                     tab.push(find);
                 }
-                console.log(tab)
+                console.log(tab);
                 setMission(tab.length);
             })
             .catch((e) => {
@@ -158,15 +158,24 @@ export default function TeamList() {
                                         >
                                             <tbody>
                                                 <tr>
-                                                    <th className="md-3">Name</th>
-                                                    <th className="md-3">Manager</th>
-                                                    <th className="md-5">Members</th>
-                                                    <th className="md-5">Missions</th>
-                                                    <th className="md-3">Action</th>
+                                                    <th className="md-3">
+                                                        Name
+                                                    </th>
+                                                    <th className="md-3">
+                                                        Manager
+                                                    </th>
+                                                    <th className="md-5">
+                                                        Members
+                                                    </th>
+                                                    <th className="md-5">
+                                                        Missions
+                                                    </th>
+                                                    <th className="md-3">
+                                                        Action
+                                                    </th>
                                                 </tr>
-                                            {records.map((team) => {
-                                                return (
-                                                    
+                                                {records.map((team) => {
+                                                    return (
                                                         <tr key={team.id}>
                                                             <td>{team.name}</td>
                                                             <td>
@@ -217,9 +226,8 @@ export default function TeamList() {
                                                                 )}
                                                             </td>
                                                         </tr>
-                                                    
-                                                );
-                                            })}
+                                                    );
+                                                })}
                                             </tbody>
                                         </table>
                                         <nav>
