@@ -10,10 +10,10 @@ from minio.versioningconfig import ENABLED
 class S3Bucket:
     def __init__(self) -> None:
         self.client = Minio(
-            f'{os.environ["MINIO_HOST"]}',
+            os.environ["MINIO_HOST"],
             os.environ['MINIO_ROOT_USER'],
             os.environ['MINIO_ROOT_PASSWORD'],
-            secure=os.environ.get('PRODUCTION', '0') == '1'
+            secure=os.environ.get('PRODUCTION', '0') == '1',
         )
 
     def create_bucket(self, bucket: str) -> None:
