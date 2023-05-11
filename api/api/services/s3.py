@@ -7,7 +7,7 @@ from minio import Minio
 from minio.api import VersioningConfig
 from minio.versioningconfig import ENABLED
 
-if os.environ.get('PRODUCTION', '0'):
+if os.environ.get('PRODUCTION', '0') == '1':
     MINIO_URL = f'{os.environ["MINIO_HOST"]}:9000'
 else:
     MINIO_URL = os.environ['DOMAIN_NAME'] + '/buckets'
