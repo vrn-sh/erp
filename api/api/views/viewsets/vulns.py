@@ -91,10 +91,10 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     serializer_class = VulnerabilitySerializer
 
     def list(self, request, *args, **kwargs):
-        if id := self.request.GET.get('mission_id'):
-            vulns = self.questions.filter(mission__id=id)
-            sr = self.get_serializer_class()
-            return Response(sr(vulns).data)
+        if mission_id := self.request.GET.get('mission_id'):
+            vulns = self.get_queryset().filter(mission__id=mission_id)
+            serializer = self.get_serializer(vulns, many=True, read_only=True)
+            return Response(serializer.data)
         return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
