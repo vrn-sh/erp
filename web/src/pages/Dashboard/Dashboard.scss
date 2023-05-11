@@ -330,6 +330,11 @@ table input {
     overflow: hidden;
     border-radius: 6px;
     border: 1px solid var(--primary-btn);
+    font-size: 0.8rem;
+}
+
+.crt-pagination::-webkit-inner-spin-button {
+    appearance: none;
 }
 
 .css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input {
