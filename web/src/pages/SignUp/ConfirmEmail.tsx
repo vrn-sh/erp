@@ -21,7 +21,7 @@ export default function ConfirmEmail() {
                 .then(() => {
                     setConfirmed(true);
                 })
-                .catch((e) => {});
+                .catch(() => {});
         } catch (e) {
             console.log(e);
         }

@@ -38,7 +38,6 @@ router.register(r'team', TeamViewset)
 router.register(r'vulnerability', VulnerabilityViewset)
 router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)
-router.register(r'recon', ReconViewset)
 router.register(r'nmap', NmapViewset)
 
 urlpatterns = [
