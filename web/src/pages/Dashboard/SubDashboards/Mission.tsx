@@ -154,7 +154,7 @@ export default function Mission() {
                     let VulnData: string[] = [];
                     await axios
                         .get(
-                            `${config.apiUrl}/vulnerability?page=1&mission=${data.data.results[i].id}`,
+                            `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
                             {
                                 headers: {
                                     'Content-type': 'application/json',
@@ -165,7 +165,8 @@ export default function Mission() {
                             }
                         )
                         .then(async (res) => {
-                            VulnData = await res.data.results;
+                            VulnData = await res.data;
+                            console.log(data.data.results[i].id, res.data);
                         })
                         .catch((e) => {
                             throw e.message;
