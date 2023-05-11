@@ -10,10 +10,10 @@ from minio.versioningconfig import ENABLED
 class S3Bucket:
     def __init__(self) -> None:
         self.client = Minio(
-            f'{os.environ["MINIO_HOST"]}:9000',
+            f'{os.environ["MINIO_HOST"]}',
             os.environ['MINIO_ROOT_USER'],
             os.environ['MINIO_ROOT_PASSWORD'],
-            secure=False
+            secure=os.environ.get('PRODUCTION', '0') == '1'
         )
 
     def create_bucket(self, bucket: str) -> None:
@@ -40,11 +40,6 @@ class S3Bucket:
 
     def get_object_url(self, bucket: str, object_name: str) -> str:
         """returns url for a file to expose to the front-end"""
-
-        if os.environ.get('PRODUCTION', '0') != '1':
-            public_endpoint = f'{os.environ["MINIO_HOST"]}:9000'
-        else:
-            public_endpoint = os.environ['DOMAIN_NAME']
 
         presigned_url = self.client.presigned_get_object(bucket, object_name)
         if os.environ.get('PRODUCTION', '0') == '1':
