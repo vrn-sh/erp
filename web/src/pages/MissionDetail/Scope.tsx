@@ -194,14 +194,14 @@ export default function Scope(/* need to add list as a param here */) {
                         <input
                             type="text"
                             placeholder="Search by name"
-                            className="popup-input"
-                            name="confirmpassword"
+                            className="scope-form-control"
+                            name="searchword"
                             onChange={searchKeyword}
                         />
                     </div>
                     <button
                         type="button"
-                        className="input_btn"
+                        className="searchBtn"
                         onClick={searchScope}
                     >
                         Search

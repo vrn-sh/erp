@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import './team.scss';
+import Cookies from 'js-cookie';
 
 interface Group {
     id: number;
@@ -55,6 +56,7 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
 
 function SettingTeam({ userId, userRole }: UserGroupsProps) {
     const [groups, setGroups] = useState<Group[]>([]);
+    const isPentester = Cookies.get('Role') === '1';
 
     // const [showPopup, setShowPopup] = useState(false);
     // const [email, setEmail] = useState('');
@@ -69,13 +71,13 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
         setIsOpen(false);
     };
 
-    useEffect(() => {
-        const fetchGroups = async () => {
-            const response = await axios.get(`/api/users/${userId}/groups`);
-            setGroups(response.data);
-        };
-        fetchGroups();
-    }, [userId]);
+    // useEffect(() => {
+    //     const fetchGroups = async () => {
+    //         const response = await axios.get(`/api/users/${userId}/groups`);
+    //         setGroups(response.data);
+    //     };
+    //     fetchGroups();
+    // }, [userId]);
 
     const handleDeleteGroup = () => {
         // appel de l'API pour supprimer le groupe
@@ -102,7 +104,7 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                                 <td>{group.userRole}</td>
                                 <td>
                                     <div className="action-ctn">
-                                        {userRole === 'Manager' && (
+                                        {!isPentester && (
                                             <button
                                                 type="button"
                                                 className="dlt-btn"
@@ -114,7 +116,7 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
                                                 Delete
                                             </button>
                                         )}
-                                        {userRole === 'Pentester' && (
+                                        {isPentester && (
                                             <button
                                                 type="button"
                                                 className="dlt-btn"

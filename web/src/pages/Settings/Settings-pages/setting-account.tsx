@@ -17,11 +17,11 @@ export default function SettingAccount() {
         color: 'success',
     });
     const [open, setOpen] = useState(false);
-    const role = Cookies.get('role');
+    const role = Cookies.get('Role');
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === 'manager') url += 'manager';
+        if (role === '2') url += 'manager';
         else url += 'pentester';
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
@@ -65,14 +65,14 @@ export default function SettingAccount() {
     const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         let url = `${config.apiUrl}/`;
-        if (role === 'manager') url += 'manager';
+        if (role === '2') url += 'manager';
         else url += 'pentester';
         await axios
             .patch(
                 `${url}/${Cookies.get('Id')}`,
                 {
                     auth: {
-                        fist_name: userInfos.first_name,
+                        first_name: userInfos.first_name,
                         last_name: userInfos.last_name,
                     },
                 },
@@ -85,7 +85,7 @@ export default function SettingAccount() {
             )
             .then(() => {
                 setMessage('Updated !', 'success');
-                getUserInfos();
+                // getUserInfos();
             })
             .catch((error) => {
                 setMessage(error.message, 'error');
@@ -94,10 +94,10 @@ export default function SettingAccount() {
 
     return (
         <div className="container">
-            <div style={{ width: 'full' }}>
-                <Stack direction="row" spacing="space-between">
+            <div style={{ width: '100%' }}>
+                <Stack direction="row" spacing={2}>
                     <div className="input input-medium">
-                        <label>first_name</label>
+                        <label>First name</label>
                         <input
                             id="input-first_name"
                             type="text"
@@ -105,9 +105,8 @@ export default function SettingAccount() {
                             onChange={(e) => handleFirstNameChange(e)}
                         />
                     </div>
-
                     <div className="input input-medium">
-                        <label>last_name</label>
+                        <label>Last name</label>
                         <input
                             id="input-last_name"
                             type="text"
@@ -116,9 +115,10 @@ export default function SettingAccount() {
                         />
                     </div>
                 </Stack>
-                <Stack direction="row" width="full" spacing="space-between">
+                <br />
+                <Stack direction="row" width="full" spacing={2}>
                     <div className="input input-medium">
-                        <label>username</label>
+                        <label>Username</label>
                         <input
                             id="input-username"
                             type="text"
@@ -128,7 +128,7 @@ export default function SettingAccount() {
                         />
                     </div>
                     <div className="input input-medium">
-                        <label>email</label>
+                        <label>Email</label>
                         <input
                             id="input-email"
                             type="text"
@@ -138,6 +138,7 @@ export default function SettingAccount() {
                     </div>
                 </Stack>
             </div>
+            <br />
 
             <div className="buttons-container">
                 <button type="button" className="cancel-button">

@@ -146,10 +146,6 @@ export default function CreateMission() {
                             Create new mission
                         </h2>
                     </div>
-                    <div className="page-searcher">
-                        <label>Search on page</label>
-                        <input type="text" placeholder="Search..." />
-                    </div>
                 </div>
                 <div className="edit-container">
                     <div
@@ -165,29 +161,28 @@ export default function CreateMission() {
                         </p>
                     </div>
                     <div className="edit-form">
-                        <Input
-                            label="Title"
-                            labelState={Title}
-                            setLabel={setTitle}
-                            size="medium"
-                        />
+                        <div className="form-group">
+                            <label>Title</label>
+                            <input
+                                type="text"
+                                required
+                                className="form-control"
+                                onChange={(e) => setTitle(e.target.value)}
+                                value={Title}
+                            />
+                        </div>
                         <div
                             style={{ marginBottom: '8px' }}
-                            className="input input-medium"
+                            className="form-group"
                         >
-                            <label
-                                htmlFor="input-scope"
-                                className="input-label"
-                            >
-                                Scopes
-                            </label>
+                            <label>Scopes</label>
                             <input
                                 id="input-scope"
                                 type="text"
                                 required
+                                className="form-control"
                                 value={label}
                                 onChange={(e) => setLabel(e.target.value)}
-                                onKeyDown={setScopes}
                             />
                         </div>
                         <Grid

@@ -90,6 +90,13 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
 
+    def list(self, request, *args, **kwargs):
+        if mission_id := self.request.GET.get('mission_id'):
+            vulns = self.get_queryset().filter(mission__id=mission_id)
+            serializer = self.get_serializer(vulns, many=True, read_only=True)
+            return Response(serializer.data)
+        return super().list(request, *args, **kwargs)
+
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
         request_body=openapi.Schema(

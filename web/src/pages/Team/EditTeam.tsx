@@ -174,8 +174,7 @@ export default function CreateTeam() {
             .patch(
                 `${config.apiUrl}/team/${id}`,
                 {
-                    title: Title,
-                    leader: manager,
+                    name: Title,
                     team: personName,
                 },
                 {
@@ -186,7 +185,7 @@ export default function CreateTeam() {
                 }
             )
             .then(() => {
-                setMessage('Created!', 'success');
+                setMessage('Edited !', 'success');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -256,6 +255,7 @@ export default function CreateTeam() {
                                 id="select"
                                 value={manager}
                                 label="Manager"
+                                readOnly
                                 onChange={handleChangeMana}
                             >
                                 {managerList.map((name) => (

@@ -75,10 +75,7 @@ export default function DorkEngine() {
 
     return (
         <>
-            <div
-                style={{ marginTop: '4px', justifyContent: 'center' }}
-                className="dork_input"
-            >
+            <div className="dork_input">
                 {open && (
                     <Feedbacks
                         mess={message.mess}
@@ -90,10 +87,10 @@ export default function DorkEngine() {
                 <input
                     type="text"
                     placeholder="Enter domain"
+                    className="crt-form-control"
                     name="domain"
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className="crt_input_field"
                 />
                 <button
                     type="button"

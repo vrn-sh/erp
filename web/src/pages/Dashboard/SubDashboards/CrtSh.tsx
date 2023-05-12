@@ -234,13 +234,13 @@ export default function CrtSh() {
                         })}
                     </Select>
                 </FormControl>
+
                 <input
-                    type="text"
+                    className="crt-form-control"
                     placeholder="Enter an Identity"
+                    type="text"
                     name="identity"
                     onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    className="crt_input_field"
                 />
 
                 <button
@@ -303,6 +303,7 @@ export default function CrtSh() {
                         onChange={(e) => changePage(e.target.value)}
                         defaultValue={JSON.stringify(currentPage)}
                         min="1"
+                        max={npage}
                         className="crt-pagination"
                         onKeyDown={(event) => {
                             if (!/[0-9]|Backspace/.test(event.key))
