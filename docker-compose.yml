@@ -73,18 +73,6 @@ services:
     networks:
       - web-layer
 
-  createbuckets:
-    image: quay.io/minio/mc:latest
-    depends_on:
-      - s3
-    env_file:
-      - ./api/.env
-    volumes:
-      - ./services/mc:/tmp/seeds:ro
-    entrypoint: /tmp/seeds/entrypoint.sh
-    networks:
-      - s3-layer
-
   s3:
     image: quay.io/minio/minio:latest
     command: server --console-address ":9001" /data
