@@ -1,88 +1,168 @@
-import React, { useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
-
-type InputSizes = 'small' | 'medium' | 'large';
-
-type InputProps = {
-    label: string;
-    size: InputSizes;
-};
-
-function Input({ label, size }: InputProps) {
-    const [value, setValue] = useState('');
-
-    return (
-        <div className={`input input-${size}`}>
-            <label htmlFor={`input-${label}`}>{label}</label>
-            <input
-                id={`input-${label}`}
-                type="text"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
-        </div>
-    );
-}
+import React, { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { Stack } from '@mui/material';
+import config from '../../../config';
+import Feedbacks from '../../../component/Feedback';
 
 export default function SettingAccount() {
-    const [photoUrl, setPhotoUrl] = useState('');
+    const [userInfos, setUserInfos] = useState({
+        username: '',
+        email: '',
+        first_name: '',
+        last_name: '',
+    });
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+    const [open, setOpen] = useState(false);
+    const role = Cookies.get('role');
 
-    const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) {
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            setPhotoUrl(reader.result as string);
-        };
+    const getUserInfos = async () => {
+        let url = `${config.apiUrl}/`;
+        if (role === 'manager') url += 'manager';
+        else url += 'pentester';
+        await axios
+            .get(`${url}/${Cookies.get('Id')}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setUserInfos(data.data.auth);
+            })
+            .catch((e) => {
+                throw e;
+            });
     };
+
+    useEffect(() => {
+        getUserInfos();
+    }, []);
+
+    const close = () => {
+        setOpen(false);
+    };
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserInfos({ ...userInfos, username: e.target.value });
+    };
+
+    const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserInfos({ ...userInfos, first_name: e.target.value });
+    };
+
+    const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserInfos({ ...userInfos, last_name: e.target.value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        let url = `${config.apiUrl}/`;
+        if (role === 'manager') url += 'manager';
+        else url += 'pentester';
+        await axios
+            .patch(
+                `${url}/${Cookies.get('Id')}`,
+                {
+                    auth: {
+                        fist_name: userInfos.first_name,
+                        last_name: userInfos.last_name,
+                    },
+                },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then(() => {
+                setMessage('Updated !', 'success');
+                getUserInfos();
+            })
+            .catch((error) => {
+                setMessage(error.message, 'error');
+            });
+    };
+
     return (
-        <div className="setting-container">
-            <div>
-                <p>Avatar </p>
-                {photoUrl ? (
-                    <img
-                        src={photoUrl}
-                        alt="User profile"
-                        style={{
-                            width: '50px',
-                            height: '50px',
-                            borderRadius: '50%',
-                        }}
-                    />
-                ) : (
-                    <FaUserCircle
-                        style={{ width: '50px', height: '50px' }}
-                        onClick={() =>
-                            document.getElementById('fileInput')?.click()
-                        }
-                    />
-                )}
-                <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: 'none' }}
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                />
+        <div className="container">
+            <div style={{ width: '100%' }}>
+                <Stack direction="row" spacing={2}>
+                    <div className="input input-medium">
+                        <label>First name</label>
+                        <input
+                            id="input-first_name"
+                            type="text"
+                            value={userInfos.first_name}
+                            onChange={(e) => handleFirstNameChange(e)}
+                        />
+                    </div>
+
+                    <div className="input input-medium">
+                        <label>Last name</label>
+                        <input
+                            id="input-last_name"
+                            type="text"
+                            value={userInfos.last_name}
+                            onChange={(e) => handleLastNameChange(e)}
+                        />
+                    </div>
+                </Stack>
+                <br />
+                <Stack direction="row" width="full" spacing={2}>
+                    <div className="input input-medium">
+                        <label>Username</label>
+                        <input
+                            id="input-username"
+                            type="text"
+                            readOnly
+                            value={userInfos.username}
+                            onChange={(e) => handleUsernameChange(e)}
+                        />
+                    </div>
+                    <div className="input input-medium">
+                        <label>Email</label>
+                        <input
+                            id="input-email"
+                            type="text"
+                            readOnly
+                            value={userInfos.email}
+                        />
+                    </div>
+                </Stack>
             </div>
-            <div className="input-group">
-                <Input label="Full name" size="medium" />
-                <Input label="Email address" size="medium" />
-            </div>
-            <Input label="Bio" size="large" />
-            <Input label="Customized link" size="medium" />
+            <br />
 
             <div className="buttons-container">
-                <button type="submit" className="submit-button">
+                <button type="button" className="cancel-button">
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    className="submit-button"
+                    onClick={(e) => {
+                        setOpen(true);
+                        handleSubmit(e);
+                    }}
+                >
                     Save Changes
                 </button>
-                <button type="button" className="cancel-button">
-                    CANCEL
-                </button>
+                {open && (
+                    <Feedbacks
+                        mess={message.mess}
+                        color={message.color}
+                        close={close}
+                        open={open}
+                    />
+                )}
             </div>
         </div>
     );

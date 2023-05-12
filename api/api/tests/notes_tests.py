@@ -25,15 +25,6 @@ class ReconTestCase(TransactionTestCase):
         self.other_user.delete()
         self.mission.delete()
 
-    def test_get_recon_data(self) -> None:
-
-        id = self.mission.recon.id
-        resp = self.pentester_client.get(f'/recon/{id}')
-        self.assertEqual(resp.status_code, 200)
-
-        resp = self.pentester_client.get('/recon')
-        self.assertEqual(resp.status_code, 200)
-
     def test_submit_bad_nmap(self) -> None:
         badfile = "something dumb"
 
@@ -83,10 +74,6 @@ class ReconTestCase(TransactionTestCase):
             'recon_id': self.mission.recon.id,
             })
         self.assertEqual(response.status_code, 201)
-
-        id = self.mission.recon.id
-        resp = self.pentester_client.get(f'/recon/{id}')
-        self.assertEqual(resp.status_code, 200)
 
     def test_update_and_delete_nmap(self) -> None:
         nmap_file_content = """

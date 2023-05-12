@@ -122,6 +122,15 @@ $opacity-transition: opacity;
     transition: 0.5s ease-in-out;
 }
 
+.mission-badge {
+    display: inline-block;
+    background-color: var(--colorful-yellow);
+    border-radius: 15px;
+    padding: 2px 5px;
+    margin-right: 0.5rem;
+    margin-bottom: 10px;
+}
+
 table {
     width: 100%;
     max-height: 100px;
@@ -164,13 +173,9 @@ table input {
 }
 
 .borderBtnError {
-    border: 1px #aa3434 solid;
-    color: #da3e3e;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    margin: 0 0.5rem;
+    @extend .borderBtn;
+    border-color: red;
+    color: red;
 }
 
 .borderBtnError:hover {
@@ -321,8 +326,15 @@ table input {
 }
 
 .crt-pagination {
-    width: 2rem;
+    padding: 0.5rem 1rem;
     overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid var(--primary-btn);
+    font-size: 0.8rem;
+}
+
+.crt-pagination::-webkit-inner-spin-button {
+    appearance: none;
 }
 
 .css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input {
@@ -507,4 +519,20 @@ footer {
     border-color: var(--primary-btn);
     color: var(--primary-btn);
     background-color: white;
+}
+
+.md-1 {
+    width: 10%;
+}
+
+.md-2 {
+    width: 20%;
+}
+
+.md-3 {
+    width: 30%;
+}
+
+.md-4 {
+    width: 40%;
 }

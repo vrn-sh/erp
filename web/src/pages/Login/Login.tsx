@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
@@ -69,6 +69,9 @@ export default function Login() {
                         Cookies.set('Role', e.data.role, {
                             expires: Date.parse(e.data.expiry),
                         });
+                        Cookies.set('Id', e.data.id, {
+                            expires: Date.parse(e.data.expiry),
+                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
@@ -115,6 +118,7 @@ export default function Login() {
                                     {pwdIcon}
                                 </button>
                             </div>
+
                             <p className="error">
                                 {errorPwd} {errorEmail}
                             </p>
@@ -123,6 +127,12 @@ export default function Login() {
                                 <button type="button" onClick={submit}>
                                     LOGIN
                                 </button>
+                                <Link to="/sign_up" className="log-box">
+                                    <span>You don't have an account </span>
+                                    <span className="txt-color">
+                                        Sign up in here!
+                                    </span>
+                                </Link>
                             </div>
                         </div>
                     </div>

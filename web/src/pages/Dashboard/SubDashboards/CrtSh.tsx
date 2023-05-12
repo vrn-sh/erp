@@ -111,7 +111,6 @@ export default function CrtSh() {
             })
             .catch((e) => {
                 setOpen(true);
-                console.log(e);
                 setSuccess(false);
                 setMessage(e.response.data.dump[0].error, 'error');
             });
@@ -140,7 +139,6 @@ export default function CrtSh() {
                 setMessage('Succeed to load!', 'success');
             })
             .catch((e) => {
-                console.log(e);
                 setSuccess(false);
                 setMessage(e.response.data.dump[0].error, 'error');
             });
@@ -148,7 +146,7 @@ export default function CrtSh() {
 
     const getMission = async () => {
         await axios
-            .get(`${config.apiUrl}/mission?page=2`, {
+            .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
@@ -305,6 +303,7 @@ export default function CrtSh() {
                         onChange={(e) => changePage(e.target.value)}
                         defaultValue={JSON.stringify(currentPage)}
                         min="1"
+                        max={npage}
                         className="crt-pagination"
                         onKeyDown={(event) => {
                             if (!/[0-9]|Backspace/.test(event.key))

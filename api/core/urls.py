@@ -11,6 +11,7 @@ from drf_yasg import openapi
 from knox.views import LogoutView
 
 from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
+from api.views.report import GenerateReportView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView
@@ -19,7 +20,7 @@ from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset
 SchemaView = get_schema_view(
    openapi.Info(
       title="voron API",
-      default_version='0.14',
+      default_version='0.1.0',
       description="API storing and managing notes, users, and stuff",
       terms_of_service="https://github.com/vrn-sh/erp/blob/current/LICENSE",
       contact=openapi.Contact(email="voron@djnn.sh"),
@@ -37,7 +38,6 @@ router.register(r'team', TeamViewset)
 router.register(r'vulnerability', VulnerabilityViewset)
 router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)
-router.register(r'recon', ReconViewset)
 router.register(r'nmap', NmapViewset)
 
 urlpatterns = [
@@ -49,4 +49,5 @@ urlpatterns = [
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path(r'download-report', GenerateReportView.as_view())
 ] + router.urls

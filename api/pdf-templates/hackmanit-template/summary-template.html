@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary</title>
+</head>
+
+<body>
+    <style>
+        body {
+            padding: 2em 6.5em;
+            margin: 30px;
+            letter-spacing: 1.2px;
+        }
+
+        .divider-x {
+            border-bottom: 2px solid black;
+            width: 100%;
+            margin: 0;
+            padding-top: 1em;
+            left: 0;
+        }
+
+        main h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.5em;
+        }
+    </style>
+    <header>
+        <style>
+            header {
+                display: block;
+            }
+
+            img {
+                float: right;
+                height: 10%;
+                width: 15%;
+                object-fit: cover;
+            }
+
+            .inline-title-logo {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .inline-title-logo p {
+                font-variant: small-caps;
+                color: red;
+                font-weight: 400;
+                letter-spacing: 1.5px;
+                margin: 0;
+            }
+            .section-text p {
+                text-align: justify;
+            }
+            .section-text p span {
+                font-weight: bold;
+                padding-right: 3px;
+            }
+        </style>
+        <div class="inline-title-logo">
+            <img alt="logo-company" id="logo"
+                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+            <p>Summary</p>
+        </div>
+        <div class="divider-x"></div>
+    </header>
+    <main>
+        <h1>Summary</h1>
+        <div class="section-text">
+            <p>DENIC ID is the rst widely-deployed implementation of the ID4me protocol [1]. ID4me is
+                a novel protocol for federated identity management whose two main goals are to provide
+                (1) Authorization of a user for access to any third party accepting ID4me identiers
+                and (2) Controlled communication of the user's personal information to the third parties
+                accessed by the user [1]. ID4me is based on well-established standards such as OpenID
+                Connect [8] and the domain name system (DNS) [4].</p>
+            <p>Hackmanit GmbH was commissioned to perform a penetration test on a relying party in
+                the context of DENIC ID - the new DENIC Member Login page. The penetration test
+                was performed remotely with a total expense of 11 PT.</p>
+            <p><span>Weaknesses.</span> During the penetration test, three weaknesses classied as Medium were
+                identied. Two of these weaknesses relate to the insucient protection against cross-site
+                request forgery (CSRF) attacks. First, the login page does not contain CSRF protection
+                mechanisms like CSRF tokens, which allows an attacker to force a victim to start an
+                authentication ow without its consent. Second, the presence of the state parameter,
+                which is used to protect against CSRF attacks in the OpenID Connect protocol, is not
+                enforced by the relying party. This enables an attacker to log a victim into an account
+                controlled by the attacker which might result in the victim revealing personal information
+                or les to the attacker. The third weakness could allow an attacker to compromise the
+                account of a victim due to faulty session and cookie management when the victim logs in
+                again after a successful logout using the same browser. Some of the weaknesses identied
+                during the penetration test are weaknesses in the library OpenID-Connect-PHP1 which
+                the tested relying party is based on. We responsibly disclosed these weaknesses to the
+                library developers in June 2019 and supported them by implementing security xes.</p>
+            <p><span>Structure.</span> The report is structured as follows: In Section 2, the timeline of the penetration test is
+                listed. Section 3 introduces our methodology, and Section 4 explains the
+                general conditions and scope of the penetration test. In section 5, the scenario of the
+                penetration test is described in detail. Section 6 provides an overview of the identied
+                weaknesses and further recommendations. In Section 7, all identied weaknesses are discussed in detail
+                and specic countermeasures are described. Section 8 summarizes our
+                recommendations resulting from observations of the application. Finally, Section 9 lists
+                additional tests that did not reveal any weaknesses.</p>
+        </div>
+    </main>
+</body>
+
+</html>

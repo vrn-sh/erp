@@ -14,4 +14,5 @@ export interface ISideBarMenu {
     }[];
     iconOpened: ReactNode;
     iconClosed: ReactNode;
+    isForManager: boolean;
 }
