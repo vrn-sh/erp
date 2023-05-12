@@ -133,7 +133,7 @@ export default function Mission() {
 
         for (let a = 0; a < newData.length; a += 1) {
             const tmp = vulnType.find((obj) => {
-                return obj.id === newData[a].vuln_type;
+                return obj.id === newData[a];
             });
             if (tmp && vulnty.indexOf(tmp.name) === -1) vulnty.push(tmp.name);
         }
@@ -151,10 +151,10 @@ export default function Mission() {
             .then(async (data) => {
                 const tab = [];
                 for (let i = 0; i < data.data.results.length; i += 1) {
-                    let VulnData: string[] = [];
+                    let VulnData: any = [];
                     await axios
                         .get(
-                            `${config.apiUrl}/vulnerability?page=1&mission=${data.data.results[i].id}`,
+                            `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
                             {
                                 headers: {
                                     'Content-type': 'application/json',
@@ -165,11 +165,17 @@ export default function Mission() {
                             }
                         )
                         .then(async (res) => {
-                            VulnData = await res.data.results;
+                            VulnData = await res.data;
                         })
                         .catch((e) => {
                             throw e.message;
                         });
+                    const array = [];
+                    for (let j = 0; j < VulnData.length; j += 1) {
+                        if (VulnData[j].mission === data.data.results[i].id) {
+                            array.push(VulnData[j].vuln_type);
+                        }
+                    }
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].title,
@@ -179,7 +185,7 @@ export default function Mission() {
                             data.data.results[i].start
                         ) || { color: 'info', text: 'Not Started' },
                         scope: data.data.results[i].scope,
-                        vuln: getVulData(VulnData),
+                        vuln: getVulData(array),
                     });
                 }
                 tab.reverse();
@@ -270,9 +276,9 @@ export default function Mission() {
                             <tr>
                                 <th className="md-2">Mission name</th>
                                 <th className="md-1">Team</th>
-                                <th className="md-4">Badges</th>
+                                <th className="md-3">Badges</th>
                                 <th className="md-1">State</th>
-                                <th className="md-2">Actions</th>
+                                <th className="md-3">Actions</th>
                             </tr>
                         </thead>
                         {records.map((mission) => {
@@ -291,6 +297,7 @@ export default function Mission() {
                                                         style={{
                                                             marginRight:
                                                                 '0.5rem',
+                                                            marginBottom: '2px',
                                                         }}
                                                     />
                                                 );
@@ -318,17 +325,19 @@ export default function Mission() {
                                                     )
                                                 }
                                             />
-                                            <input
-                                                type="button"
-                                                value="Add vuln"
-                                                className="borderBtn"
-                                                onClick={() =>
-                                                    NavAddVul(
-                                                        mission.id,
-                                                        mission.name
-                                                    )
-                                                }
-                                            />
+                                            {isPentester && (
+                                                <input
+                                                    type="button"
+                                                    value="Add vuln"
+                                                    className="borderBtn"
+                                                    onClick={() =>
+                                                        NavAddVul(
+                                                            mission.id,
+                                                            mission.name
+                                                        )
+                                                    }
+                                                />
+                                            )}
                                             {!isPentester && (
                                                 <>
                                                     <input
@@ -341,8 +350,9 @@ export default function Mission() {
                                                             )
                                                         }
                                                     />
-                                                    <a
-                                                        href="#"
+                                                    <input
+                                                        type="button"
+                                                        value="Delete"
                                                         className="borderBtnError"
                                                         onClick={() => {
                                                             setItem({
@@ -352,11 +362,7 @@ export default function Mission() {
                                                             });
                                                             setOpen(true);
                                                         }}
-                                                    >
-                                                        <IoIcons.IoIosTrash
-                                                            size={20}
-                                                        />
-                                                    </a>
+                                                    />
                                                 </>
                                             )}
                                         </td>

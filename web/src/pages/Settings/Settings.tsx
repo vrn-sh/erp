@@ -35,24 +35,24 @@ const subPagesData: SubPage[] = [
     //     icon: <IoIosNotifications style={{ fontSize: '22px' }} />,
     //     key: 1,
     // },
-    {
-        title: 'Security',
-        content: <SettingSecurity />,
-        icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
-        key: 1,
-    },
+    // {
+    //     title: 'Security',
+    //     content: <SettingSecurity />,
+    //     icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
+    //     key: 1,
+    // },
     // {
     //     title: 'Billing',
     //     content: <SettingBilling />,
     //     icon: <BsCreditCard style={{ fontSize: '22px' }} />,
     //     key: 3,
     // },
-    {
-        title: 'Team',
-        content: <SettingTeam userId={0} userRole="Manager" />, // TOFIX, Idk what role to put
-        icon: <RiTeamLine style={{ fontSize: '22px' }} />,
-        key: 2,
-    },
+    // {
+    //     title: 'Team',
+    //     content: <SettingTeam userId={0} userRole="Manager" />, // TOFIX, Idk what role to put
+    //     icon: <RiTeamLine style={{ fontSize: '22px' }} />,
+    //     key: 2,
+    // },
 ];
 
 // Définition du composant de menu
@@ -130,10 +130,6 @@ export default function Settings() {
                 <div className="setting-container">
                     <div className="page-info">
                         <h1>Settings</h1>
-                        <div className="page-searcher">
-                            <label>Search on page</label>
-                            <input type="text" placeholder="Search..." />
-                        </div>
                     </div>
 
                     <div className="setting-feats">

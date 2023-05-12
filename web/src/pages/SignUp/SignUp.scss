@@ -156,8 +156,7 @@ label {
 
 .submit {
     background-color: transparent;
-    margin-left: 20px;
-    width: 94%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
 }
@@ -210,8 +209,9 @@ label {
     background: none;
     pointer-events: none;
     transform: scale(0.8) translateY(-30px);
-    background: #fff;
+    // background: #fff;
 }
+
 .log-box {
     text-decoration: none;
     margin-top: 1rem;
@@ -229,15 +229,19 @@ label {
 }
 
 .i {
-    position: absolute;
     background: transparent;
     min-width: 1.2em;
     margin: 0;
-    margin-left: -3rem;
+    padding: 0;
+    margin-left: -4rem;
     color: var(--gray-btn);
     font-size: 1.2rem;
     outline: none;
     cursor: pointer;
+}
+
+.i svg {
+    margin-left: 1rem !important;
 }
 
 .i:hover {

@@ -29,7 +29,7 @@ function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
                     <p className="card-content">{note.content}</p>
                 </div>
                 <footer>
-                    {note.author !== null ? note.author.toString() : 1}
+                    {/* {note.author !== null ? note.author.toString() : 1} */}
                     <a
                         role="button"
                         className="button__link"
@@ -157,6 +157,7 @@ function Notes() {
     const modalClick = () => {
         if (modal) getNotes();
         setModal(!modal);
+        getNotes();
     };
 
     const addMission = () => {
@@ -166,6 +167,7 @@ function Notes() {
     const viewClick = (idx: number) => {
         if (displayed === -1) {
             setDisplayed(idx);
+            getNotes();
         } else {
             setDisplayed(-1);
             getNotes();

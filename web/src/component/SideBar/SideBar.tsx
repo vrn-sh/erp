@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import SideBarData from './SideBarData';
 import { ICardItem } from './SideBarMenu.type';
 import config from '../../config';
+import icon from '../../assets/voron-logo.svg';
 
 const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
     const [subnav, setSubnav] = useState(false);
@@ -73,7 +74,8 @@ export default function SideBar() {
 
     return (
         <div className="sidebar">
-            <Link to="/dashboard">
+            <Link to="/dashboard" className="sidebar-logo">
+                <img src={icon} alt="icon" className="nav-logo" />
                 <h1 className="sidebar-site-title">voron</h1>
             </Link>
             <div>
