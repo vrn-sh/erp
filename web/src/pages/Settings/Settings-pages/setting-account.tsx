@@ -17,11 +17,11 @@ export default function SettingAccount() {
         color: 'success',
     });
     const [open, setOpen] = useState(false);
-    const role = Cookies.get('role');
+    const role = Cookies.get('Role');
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === 'manager') url += 'manager';
+        if (role === '2') url += 'manager';
         else url += 'pentester';
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
@@ -65,14 +65,14 @@ export default function SettingAccount() {
     const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         let url = `${config.apiUrl}/`;
-        if (role === 'manager') url += 'manager';
+        if (role === '2') url += 'manager';
         else url += 'pentester';
         await axios
             .patch(
                 `${url}/${Cookies.get('Id')}`,
                 {
                     auth: {
-                        fist_name: userInfos.first_name,
+                        first_name: userInfos.first_name,
                         last_name: userInfos.last_name,
                     },
                 },
@@ -85,7 +85,7 @@ export default function SettingAccount() {
             )
             .then(() => {
                 setMessage('Updated !', 'success');
-                getUserInfos();
+                // getUserInfos();
             })
             .catch((error) => {
                 setMessage(error.message, 'error');
@@ -105,7 +105,6 @@ export default function SettingAccount() {
                             onChange={(e) => handleFirstNameChange(e)}
                         />
                     </div>
-
                     <div className="input input-medium">
                         <label>Last name</label>
                         <input

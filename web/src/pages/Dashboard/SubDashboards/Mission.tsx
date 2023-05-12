@@ -133,7 +133,7 @@ export default function Mission() {
 
         for (let a = 0; a < newData.length; a += 1) {
             const tmp = vulnType.find((obj) => {
-                return obj.id === newData[a].vuln_type;
+                return obj.id === newData[a];
             });
             if (tmp && vulnty.indexOf(tmp.name) === -1) vulnty.push(tmp.name);
         }
@@ -151,7 +151,7 @@ export default function Mission() {
             .then(async (data) => {
                 const tab = [];
                 for (let i = 0; i < data.data.results.length; i += 1) {
-                    let VulnData: string[] = [];
+                    let VulnData: any = [];
                     await axios
                         .get(
                             `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
@@ -166,11 +166,16 @@ export default function Mission() {
                         )
                         .then(async (res) => {
                             VulnData = await res.data;
-                            console.log(data.data.results[i].id, res.data);
                         })
                         .catch((e) => {
                             throw e.message;
                         });
+                    const array = [];
+                    for (let j = 0; j < VulnData.length; j += 1) {
+                        if (VulnData[j].mission === data.data.results[i].id) {
+                            array.push(VulnData[j].vuln_type);
+                        }
+                    }
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].title,
@@ -180,7 +185,7 @@ export default function Mission() {
                             data.data.results[i].start
                         ) || { color: 'info', text: 'Not Started' },
                         scope: data.data.results[i].scope,
-                        vuln: getVulData(VulnData),
+                        vuln: getVulData(array),
                     });
                 }
                 tab.reverse();

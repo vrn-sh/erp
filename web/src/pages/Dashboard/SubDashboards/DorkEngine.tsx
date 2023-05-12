@@ -90,10 +90,10 @@ export default function DorkEngine() {
                 <input
                     type="text"
                     placeholder="Enter domain"
+                    className="form-control"
                     name="domain"
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-                    className="crt_input_field"
                 />
                 <button
                     type="button"

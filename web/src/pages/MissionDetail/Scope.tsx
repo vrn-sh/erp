@@ -189,7 +189,7 @@ export default function Scope(/* need to add list as a param here */) {
                 />
             )}
             <div className="mission-tool-line">
-                <div className="search-name">
+                {/* <div className="search-name">
                     <div className="mission-input-block">
                         <input
                             type="text"
@@ -206,7 +206,7 @@ export default function Scope(/* need to add list as a param here */) {
                     >
                         Search
                     </button>
-                </div>
+                </div> */}
 
                 <button
                     type="button"
@@ -221,7 +221,7 @@ export default function Scope(/* need to add list as a param here */) {
                     <tr>
                         {/* <th>Status</th> */}
                         <th className="md-5">Name</th>
-                        {!isPentester && <th className="md-2">Actions</th>}
+                        {/* {!isPentester && <th className="md-2">Actions</th>} */}
                     </tr>
                     {record.map((s_list, index) => {
                         return (
@@ -234,7 +234,7 @@ export default function Scope(/* need to add list as a param here */) {
                                     )}
                                 </td> */}
                                 <td id="name">{s_list}</td>
-                                {!isPentester && (
+                                {/* {!isPentester && (
                                     <td className="scope-table-action">
                                         <AiIcons.AiFillDelete
                                             className="scope-action-icons"
@@ -242,7 +242,7 @@ export default function Scope(/* need to add list as a param here */) {
                                             onClick={() => delScope(index)}
                                         />
                                     </td>
-                                )}
+                                )} */}
                             </tr>
                         );
                     })}

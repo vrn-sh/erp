@@ -234,14 +234,15 @@ export default function CrtSh() {
                         })}
                     </Select>
                 </FormControl>
-                <input
-                    type="text"
-                    placeholder="Enter an Identity"
-                    name="identity"
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    className="crt_input_field"
-                />
+                <div className="form-group">
+                    <label style={{ zIndex: 'unset' }}>Enter an Identity</label>
+                    <input
+                        className="form-control"
+                        type="text"
+                        name="identity"
+                        onChange={handleChange}
+                    />
+                </div>
 
                 <button
                     type="button"

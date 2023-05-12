@@ -3,8 +3,12 @@ import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { Stack } from '@mui/material';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
+import { PrimaryButton, SecondaryButton } from '../../component/Button';
+import '../Dashboard/Dashboard.scss';
+import { Input } from '../EditMission/EditMission';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
@@ -105,6 +109,7 @@ export default function SignUp() {
     }, [state]);
 
     const submit = async () => {
+        setPopUp(true);
         const { username, email, role, password } = state;
         setOpen(true);
         if (email !== '' && password.length > 7 && username.length > 4) {
@@ -206,7 +211,9 @@ export default function SignUp() {
                                         checked={state.role === 'pentester'}
                                         onChange={handleChange}
                                     />
-                                    <label>Pentester</label>
+                                    <label style={{ zIndex: 'unset' }}>
+                                        Pentester
+                                    </label>
                                 </div>
                                 <div className="radio-container">
                                     <input
@@ -216,43 +223,41 @@ export default function SignUp() {
                                         checked={state.role === 'manager'}
                                         onChange={handleChange}
                                     />
-                                    <label>Manager</label>
+                                    <label style={{ zIndex: 'unset' }}>
+                                        Manager
+                                    </label>
                                 </div>
                             </div>
-                            <div className="input-block">
-                                <label
-                                    className="placeholder"
-                                    htmlFor="username"
-                                >
+                            <div className="form-group">
+                                <label style={{ zIndex: 'unset' }}>
                                     Username
                                 </label>
                                 <input
+                                    className="form-control"
                                     type="text"
                                     name="username"
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="input-block">
-                                <label className="placeholder" htmlFor="email">
+                            <div className="form-group">
+                                <label style={{ zIndex: 'unset' }}>
                                     Email Address
                                 </label>
                                 <input
+                                    className="form-control"
                                     type="email"
                                     name="email"
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="input-block">
-                                <label
-                                    className="placeholder"
-                                    htmlFor="password"
-                                >
+                            <div className="form-group">
+                                <label style={{ zIndex: 'unset' }}>
                                     Password
                                 </label>
                                 <input
-                                    type={pwdType}
+                                    className="form-control"
+                                    type="password"
                                     name="password"
-                                    id="password"
                                     onChange={handleChange}
                                 />
                                 <button
@@ -263,14 +268,12 @@ export default function SignUp() {
                                     {pwdIcon}
                                 </button>
                             </div>
-                            <div className="input-block">
-                                <label
-                                    className="placeholder"
-                                    htmlFor="Confirmpassword"
-                                >
+                            <div className="form-group">
+                                <label style={{ zIndex: 'unset' }}>
                                     Confirm Password
                                 </label>
                                 <input
+                                    className="form-control"
                                     type={conPwdType}
                                     name="confirmpassword"
                                     onChange={handleChange}
@@ -334,34 +337,48 @@ export default function SignUp() {
                     </div>
                 </div>
             </div>
-
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    color={message.color}
+                    open={open}
+                    close={handleClose}
+                />
+            )}
             {popUp && (
-                <div className="signup_popup">
-                    {open && (
-                        <Feedbacks
-                            mess={message.mess}
-                            color={message.color}
-                            open={open}
-                            close={handleClose}
-                        />
-                    )}
-                    <div className="signup_popup-overlay">
-                        <AiIcons.AiOutlineMail style={{ fontSize: '2rem' }} />
-                        <h1>Please check your mail to finish the sign up.</h1>
-                        <button
-                            type="button"
-                            className="sendBtn"
-                            onClick={confirmUpdate}
-                        >
-                            Didn't receive, send again
-                        </button>
-                        <button
-                            type="button"
-                            className="cancelBtn"
-                            onClick={() => setPopUp(false)}
-                        >
-                            Cancel
-                        </button>
+                <div className="modal-wrapper">
+                    <div className="modal-card">
+                        <div className="modal">
+                            {/* <div className="modal-header"> */}
+                            <AiIcons.AiOutlineMail
+                                className="centered"
+                                style={{ fontSize: '2rem' }}
+                            />
+                            <h1 className="centered">
+                                Please check your mail to finish the sign up.
+                            </h1>
+                            {/* </div> */}
+                            <Stack
+                                direction="row"
+                                justifyContent="center"
+                                mt={3}
+                                spacing={4}
+                            >
+                                <SecondaryButton
+                                    variant="outlined"
+                                    onClick={() => setPopUp(false)}
+                                >
+                                    Cancel
+                                </SecondaryButton>
+                                <PrimaryButton
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={confirmUpdate}
+                                >
+                                    Didn't receive, send again
+                                </PrimaryButton>
+                            </Stack>
+                        </div>
                     </div>
                 </div>
             )}
