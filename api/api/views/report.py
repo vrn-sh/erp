@@ -67,7 +67,7 @@ class GenerateReportView(APIView):
     )
     def get(self, request):
 
-        mission_id = request.GET.get("mission")
+        mission_id = request.data.get("mission")
         if not mission_id:
             return Response({
                 'error': 'No mission id provided. Report couldn\'t be generated',
