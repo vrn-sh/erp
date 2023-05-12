@@ -207,14 +207,29 @@ export default function CreateMission() {
                                 );
                             })}
                         </Grid>
-                        <div className="form-group">
-                            <label>Team</label>
-                            <select
+                        <FormControl
+                            sx={{
+                                paddingY: 2,
+                                width: '100%',
+                                marginTop: '10px',
+                            }}
+                            size="small"
+                        >
+                            <InputLabel
+                                id="Team"
+                                sx={{
+                                    fontFamily: 'Poppins-Regular',
+                                    fontSize: '14px',
+                                }}
+                            >
+                                Team
+                            </InputLabel>
+                            <Select
+                                labelId="Team"
                                 id="Team-select"
                                 value={Team.toString()}
                                 required
                                 label="Team"
-                                className="form-control"
                                 onChange={handleChange}
                             >
                                 {teamList!.map((team) => {
@@ -230,8 +245,8 @@ export default function CreateMission() {
                                         </MenuItem>
                                     );
                                 })}
-                            </select>
-                        </div>
+                            </Select>
+                        </FormControl>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateField
                                 label="Start date"
