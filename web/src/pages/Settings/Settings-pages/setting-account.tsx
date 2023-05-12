@@ -141,9 +141,9 @@ export default function SettingAccount() {
             <br />
 
             <div className="buttons-container">
-                {/* <button type="button" className="cancel-button">
+                <button type="button" className="cancel-button">
                     Cancel
-                </button> */}
+                </button>
                 <button
                     type="submit"
                     className="submit-button"
