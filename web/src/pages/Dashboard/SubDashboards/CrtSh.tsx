@@ -235,18 +235,14 @@ export default function CrtSh() {
                     </Select>
                 </FormControl>
                 <div className="form-group">
-                                <label
-                                    style={{zIndex : 'unset'}}
-                                >
-                                    Enter an Identity
-                                </label>
-                                <input
-                                    className="form-control"
-                                    type='text'
-                                    name="identity"
-                                    onChange={handleChange}
-                                />
-                            </div>
+                    <label style={{ zIndex: 'unset' }}>Enter an Identity</label>
+                    <input
+                        className="form-control"
+                        type="text"
+                        name="identity"
+                        onChange={handleChange}
+                    />
+                </div>
 
                 <button
                     type="button"

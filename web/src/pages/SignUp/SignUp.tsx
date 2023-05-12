@@ -3,9 +3,9 @@ import * as AiIcons from 'react-icons/ai';
 import './SignUp.scss';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { Stack } from '@mui/material';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
-import { Stack } from '@mui/material';
 import { PrimaryButton, SecondaryButton } from '../../component/Button';
 import '../Dashboard/Dashboard.scss';
 import { Input } from '../EditMission/EditMission';
@@ -211,7 +211,9 @@ export default function SignUp() {
                                         checked={state.role === 'pentester'}
                                         onChange={handleChange}
                                     />
-                                    <label style={{zIndex : 'unset'}}>Pentester</label>
+                                    <label style={{ zIndex: 'unset' }}>
+                                        Pentester
+                                    </label>
                                 </div>
                                 <div className="radio-container">
                                     <input
@@ -221,13 +223,13 @@ export default function SignUp() {
                                         checked={state.role === 'manager'}
                                         onChange={handleChange}
                                     />
-                                    <label style={{zIndex : 'unset'}}>Manager</label>
+                                    <label style={{ zIndex: 'unset' }}>
+                                        Manager
+                                    </label>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label
-                                    style={{zIndex : 'unset'}}
-                                >
+                                <label style={{ zIndex: 'unset' }}>
                                     Username
                                 </label>
                                 <input
@@ -236,12 +238,9 @@ export default function SignUp() {
                                     name="username"
                                     onChange={handleChange}
                                 />
-                                
                             </div>
                             <div className="form-group">
-                                <label
-                                    style={{zIndex : 'unset'}}
-                                >
+                                <label style={{ zIndex: 'unset' }}>
                                     Email Address
                                 </label>
                                 <input
@@ -252,9 +251,7 @@ export default function SignUp() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label
-                                    style={{zIndex : 'unset'}}
-                                >
+                                <label style={{ zIndex: 'unset' }}>
                                     Password
                                 </label>
                                 <input
@@ -272,9 +269,7 @@ export default function SignUp() {
                                 </button>
                             </div>
                             <div className="form-group">
-                                <label
-                                    style={{zIndex : 'unset'}}
-                                >
+                                <label style={{ zIndex: 'unset' }}>
                                     Confirm Password
                                 </label>
                                 <input
@@ -356,7 +351,7 @@ export default function SignUp() {
                         <div className="modal">
                             {/* <div className="modal-header"> */}
                             <AiIcons.AiOutlineMail
-                            className="centered"
+                                className="centered"
                                 style={{ fontSize: '2rem' }}
                             />
                             <h1 className="centered">

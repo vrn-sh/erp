@@ -161,24 +161,21 @@ export default function CreateMission() {
                         </p>
                     </div>
                     <div className="edit-form">
-                    <div className="form-group">
-                        <label>Title</label>
-                        <input
-                            type="text"
-                            required
-                            className="form-control"
-                            onChange={(e) => setTitle(e.target.value)}
-                            value={Title}
-                        />
-                    </div>
+                        <div className="form-group">
+                            <label>Title</label>
+                            <input
+                                type="text"
+                                required
+                                className="form-control"
+                                onChange={(e) => setTitle(e.target.value)}
+                                value={Title}
+                            />
+                        </div>
                         <div
                             style={{ marginBottom: '8px' }}
                             className="form-group"
                         >
-                            <label
-                            >
-                                Scopes
-                            </label>
+                            <label>Scopes</label>
                             <input
                                 id="input-scope"
                                 type="text"
@@ -210,14 +207,9 @@ export default function CreateMission() {
                                 );
                             })}
                         </Grid>
-                        <div className="form-group"
-                        >
-                            <label
-                            >
-                                Team
-                            </label>
+                        <div className="form-group">
+                            <label>Team</label>
                             <select
-                                labelId="Team"
                                 id="Team-select"
                                 value={Team.toString()}
                                 required
@@ -238,8 +230,8 @@ export default function CreateMission() {
                                         </MenuItem>
                                     );
                                 })}
-                                </select>
-                          </div>
+                            </select>
+                        </div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateField
                                 label="Start date"
