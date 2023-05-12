@@ -126,13 +126,15 @@ export default function Scope(/* need to add list as a param here */) {
     };
 
     const getReport = async () => {
-        await axios
-            .get(`${config.apiUrl}/download-report?mission=${missionId}`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
+        await axios ({
+                    method: 'get',
+                    url : `${config.apiUrl}/download-report`,
+                    data : { mission: missionId },
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    }
+                })
             .then((data) => {
                 // here to open a link in new tab, replace google link by our url
                 window.open('https://google.fr', '_blank', 'noreferrer');
