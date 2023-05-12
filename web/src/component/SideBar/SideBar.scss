@@ -72,6 +72,11 @@
     cursor: pointer;
 }
 
+.btn-profile svg:hover {
+    color: var(--primary-btn) !important;
+    transition: .5s ease-in-out;
+}
+
 .btn-left {
     display: flex;
     flex-direction: row;

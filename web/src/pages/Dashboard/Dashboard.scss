@@ -266,6 +266,7 @@ table input {
     height: 2rem;
     justify-content: center;
     align-items: center;
+    margin: 1rem
 }
 
 .dork_input label {
@@ -290,13 +291,31 @@ table input {
 }
 
 .searchBtn {
-    min-width: 1px;
+    min-width: 10px;
     height: 2.5rem;
     padding: 5px 10px;
-    margin: 0 1rem;
+    margin: 0 .5rem;
 }
 
 //crtsh
+
+.crt-form-control {
+    width: 70%;
+    height: 2.7rem;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.15em;
+    font-size: 14px;
+    font-family: 'Poppins-Regular';
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid var(--gray-btn);
+}
+
+.crt-form-control::placeholder {
+    font-size: 1em;
+}
+
+
 .crt_input_field {
     height: 2.5rem;
     padding: 5px 5px;
@@ -316,7 +335,8 @@ table input {
     flex-direction: row;
     width: 100%;
     justify-content: center;
-    align-items: center;
+    align-items: end;
+    margin: 1rem
 }
 
 .crt_input label {

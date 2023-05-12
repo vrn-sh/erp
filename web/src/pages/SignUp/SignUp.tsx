@@ -8,7 +8,6 @@ import config from '../../config';
 import Feedbacks from '../../component/Feedback';
 import { PrimaryButton, SecondaryButton } from '../../component/Button';
 import '../Dashboard/Dashboard.scss';
-import { Input } from '../EditMission/EditMission';
 
 const Regex = /^\s?[A-Z0-9]+[A-Z0-9._+-]{0,}@[A-Z0-9._+-]+\.[A-Z0-9]{2,4}\s?$/i;
 
@@ -256,7 +255,7 @@ export default function SignUp() {
                                 </label>
                                 <input
                                     className="form-control"
-                                    type="password"
+                                    type={pwdType}
                                     name="password"
                                     onChange={handleChange}
                                 />

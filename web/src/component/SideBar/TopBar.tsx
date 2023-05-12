@@ -23,10 +23,10 @@ export default function TopBar() {
     return (
         <div className="top-bar">
             <div className="topBar-wrapper">
-                <div className="topBar-searchIcon">
+                {/* <div className="topBar-searchIcon">
                     <BiIcons.BiSearch color="#8A8A8A" />
                 </div>
-                {/* <input
+                <input
                     className="topBar-input"
                     type="text"
                     placeholder="Search"
@@ -41,17 +41,17 @@ export default function TopBar() {
                         onClick={popupClick}
                     />
                 )} */}
-                <span className="btn">
+                {/* <span className="btn">
                     <FaIcons.FaBell size="22px" color="#8A8A8A" />
-                </span>
-                {/* <span
+                </span> */}
+                <span
                     className="btn-profile"
                     onClick={goProfile}
                     onKeyDown={handleKeydown}
                     role="presentation"
                 >
                     <FaIcons.FaUserCircle size="22px" color="#8A8A8A" />
-                </span> */}
+                </span>
             </div>
         </div>
     );
