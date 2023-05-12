@@ -161,19 +161,21 @@ export default function CreateMission() {
                         </p>
                     </div>
                     <div className="edit-form">
-                        <Input
-                            label="Title"
-                            labelState={Title}
-                            setLabel={setTitle}
-                            size="medium"
+                    <div className="form-group">
+                        <label>Title</label>
+                        <input
+                            type="text"
+                            required
+                            className="form-control"
+                            onChange={(e) => setTitle(e.target.value)}
+                            value={Title}
                         />
+                    </div>
                         <div
                             style={{ marginBottom: '8px' }}
-                            className="input input-medium"
+                            className="form-group"
                         >
                             <label
-                                htmlFor="input-scope"
-                                className="input-label"
                             >
                                 Scopes
                             </label>
@@ -181,9 +183,9 @@ export default function CreateMission() {
                                 id="input-scope"
                                 type="text"
                                 required
+                                className="form-control"
                                 value={label}
                                 onChange={(e) => setLabel(e.target.value)}
-                                onKeyDown={setScopes}
                             />
                         </div>
                         <Grid
@@ -208,29 +210,19 @@ export default function CreateMission() {
                                 );
                             })}
                         </Grid>
-                        <FormControl
-                            sx={{
-                                paddingY: 2,
-                                width: '100%',
-                                marginTop: '10px',
-                            }}
-                            size="small"
+                        <div className="form-group"
                         >
-                            <InputLabel
-                                id="Team"
-                                sx={{
-                                    fontFamily: 'Poppins-Regular',
-                                    fontSize: '14px',
-                                }}
+                            <label
                             >
                                 Team
-                            </InputLabel>
-                            <Select
+                            </label>
+                            <select
                                 labelId="Team"
                                 id="Team-select"
                                 value={Team.toString()}
                                 required
                                 label="Team"
+                                className="form-control"
                                 onChange={handleChange}
                             >
                                 {teamList!.map((team) => {
@@ -246,8 +238,8 @@ export default function CreateMission() {
                                         </MenuItem>
                                     );
                                 })}
-                            </Select>
-                        </FormControl>
+                                </select>
+                          </div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateField
                                 label="Start date"
