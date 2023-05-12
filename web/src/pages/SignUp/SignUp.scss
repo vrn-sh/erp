@@ -137,7 +137,7 @@ label {
     padding: 0.938em;
     border: none;
     border-radius: 4px;
-    background-color: #7c44f3;
+    background-color: var(--primary-btn);
     color: #fefefe;
 }
 .button:hover {
@@ -156,8 +156,7 @@ label {
 
 .submit {
     background-color: transparent;
-    margin-left: 20px;
-    width: 94%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
 }
@@ -210,27 +209,39 @@ label {
     background: none;
     pointer-events: none;
     transform: scale(0.8) translateY(-30px);
-    background: #fff;
+    // background: #fff;
 }
+
 .log-box {
+    text-decoration: none;
     margin-top: 1rem;
     font-family: 'Roboto-Light';
     font-size: 13px;
 }
+
+.log-box:hover {
+    color: var(--primary-hover-btn);
+    transition: 0.5s ease-in-out;
+}
+
 .txt-color {
-    color: #7c44f3;
+    color: var(--primary-btn);
 }
 
 .i {
-    position: absolute;
     background: transparent;
     min-width: 1.2em;
     margin: 0;
-    margin-left: -3rem;
+    padding: 0;
+    margin-left: -4rem;
     color: var(--gray-btn);
     font-size: 1.2rem;
     outline: none;
     cursor: pointer;
+}
+
+.i svg {
+    margin-left: 1rem !important;
 }
 
 .i:hover {
@@ -239,8 +250,8 @@ label {
 }
 
 .role-choose {
-    width: 100%;
-    padding: 10px 0;
+    width: 50%;
+    padding: 10px;
     margin: 0 20px;
     display: flex;
     flex-direction: row;

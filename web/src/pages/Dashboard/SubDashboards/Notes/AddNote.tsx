@@ -70,29 +70,38 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
             <div className="modal-card ">
                 <div className="modal centered">
                     <h2 className="heading">Add a note</h2>
-                    <input
-                        type="text"
-                        required
-                        placeholder={idMission[count].title}
-                        className="popup-input"
-                        readOnly
-                    />
-                    <input
-                        type="text"
-                        required
-                        placeholder="Enter a title"
-                        className="popup-input"
-                        onChange={takeTitlee}
-                        value={title}
-                    />
-                    <textarea
-                        rows={8}
-                        required
-                        placeholder="Put your note here"
-                        className="popup-textarea"
-                        onChange={takeContent}
-                        value={content}
-                    />
+                    <div className="form-group">
+                        <label>Mission</label>
+                        <input
+                            type="text"
+                            required
+                            placeholder={idMission[count].title}
+                            className="form-control"
+                            readOnly
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Title</label>
+                        <input
+                            type="text"
+                            required
+                            placeholder={idMission[count].title}
+                            className="form-control"
+                            onChange={takeTitlee}
+                            value={title}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Content</label>
+                        <textarea
+                            rows={8}
+                            required
+                            placeholder="Put your note here"
+                            className="form-control"
+                            onChange={takeContent}
+                            value={content}
+                        />
+                    </div>
                     <Stack
                         direction="row"
                         justifyContent="start"

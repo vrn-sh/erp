@@ -7,6 +7,7 @@ install_postgresql () {
     brew install postgresql || true
 
     brew services start postgresql || true
+    brew install --cask wkhtmltopdf
     echo "setting up postgresql databases"
 
     export POSTGRES_USER="${USER}"

@@ -61,6 +61,13 @@
     flex-wrap: wrap;
 }
 
+.log-box {
+    text-decoration: none;
+    margin-top: 1rem;
+    font-family: 'Roboto-Light';
+    font-size: 13px;
+}
+
 label {
     color: var(--gray-btn);
     margin-top: 1rem;
@@ -86,7 +93,7 @@ label {
 }
 
 .form-control::placeholder {
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: lighter;
 }
 

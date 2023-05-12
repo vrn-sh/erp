@@ -59,7 +59,6 @@ class Vulnerability(models.Model):
     class Meta:
         verbose_name = 'Vulnerability Model'
         verbose_name_plural = 'Vulnerability models'
-        ordering = ['title']
 
     @property
     def bucket_name(self):

@@ -16,6 +16,15 @@ export default function Mission() {
             id: number;
             team: string;
             status: { color: string; text: string };
+            scope: any;
+            vuln: string[];
+        }[]
+    >([]);
+    const [vulnType, setVulnType] = useState<
+        {
+            id: number;
+            name: string;
+            description: string;
         }[]
     >([]);
     const [open, setOpen] = useState(false);
@@ -28,6 +37,7 @@ export default function Mission() {
     const [teamList, setTeamList] = useState<{ id: number; name: string }[]>([
         { id: 0, name: '' },
     ]);
+    const [vulSuccess, setVulSuccess] = useState(false);
     const isPentester = Cookies.get('Role') === '1';
     const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
@@ -62,9 +72,10 @@ export default function Mission() {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then((data) => {
+            .then(async (data) => {
                 const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
+                const newData = await data.data;
+                for (let i = 0; i < newData.results.length; i += 1) {
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].name,
@@ -98,6 +109,37 @@ export default function Mission() {
         return { color: 'secondary', text: 'In Progress' };
     };
 
+    const getVulType = async () => {
+        await axios
+            .get(`${config.apiUrl}/vuln-type?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then(async (data) => {
+                const newData = await data.data;
+                setVulnType(newData.results);
+                setVulSuccess(true);
+            })
+            .catch((e) => {
+                setVulSuccess(false);
+                throw e.message;
+            });
+    };
+
+    const getVulData = (newData: any) => {
+        const vulnty: string[] = [];
+
+        for (let a = 0; a < newData.length; a += 1) {
+            const tmp = vulnType.find((obj) => {
+                return obj.id === newData[a];
+            });
+            if (tmp && vulnty.indexOf(tmp.name) === -1) vulnty.push(tmp.name);
+        }
+        return vulnty;
+    };
+
     const getMission = async () => {
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
@@ -106,9 +148,34 @@ export default function Mission() {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then((data) => {
+            .then(async (data) => {
                 const tab = [];
                 for (let i = 0; i < data.data.results.length; i += 1) {
+                    let VulnData: any = [];
+                    await axios
+                        .get(
+                            `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
+                            {
+                                headers: {
+                                    'Content-type': 'application/json',
+                                    Authorization: `Token ${Cookies.get(
+                                        'Token'
+                                    )}`,
+                                },
+                            }
+                        )
+                        .then(async (res) => {
+                            VulnData = await res.data;
+                        })
+                        .catch((e) => {
+                            throw e.message;
+                        });
+                    const array = [];
+                    for (let j = 0; j < VulnData.length; j += 1) {
+                        if (VulnData[j].mission === data.data.results[i].id) {
+                            array.push(VulnData[j].vuln_type);
+                        }
+                    }
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].title,
@@ -117,6 +184,8 @@ export default function Mission() {
                             data.data.results[i].end,
                             data.data.results[i].start
                         ) || { color: 'info', text: 'Not Started' },
+                        scope: data.data.results[i].scope,
+                        vuln: getVulData(array),
                     });
                 }
                 tab.reverse();
@@ -135,10 +204,32 @@ export default function Mission() {
         });
     };
 
+    const NavMissionDetail = (id: number, scope: any) => {
+        navigate('/mission/detail', {
+            state: {
+                missionId: id,
+                scopeList: scope,
+            },
+        });
+    };
+
+    const NavAddVul = (id: number, name: string) => {
+        navigate('/vuln/add', {
+            state: {
+                missionId: id,
+                missionName: name,
+            },
+        });
+    };
+
     useEffect(() => {
+        getVulType();
         getTeam();
-        getMission();
     }, []);
+
+    useEffect(() => {
+        getMission();
+    }, [teamList, vulnType]);
 
     useEffect(() => {
         getTeam();
@@ -154,17 +245,9 @@ export default function Mission() {
         navigate('/mission/create');
     };
 
-    const NavMissionDetail = (id: number) => {
-        navigate('/mission/detail', {
-            state: {
-                missionId: id,
-            },
-        });
-    };
-
     return (
         <>
-            {!list.length ? (
+            {!list.length && vulSuccess ? (
                 <>
                     {isPentester ? (
                         <h3 style={{ fontFamily: 'Poppins-Regular' }}>
@@ -189,12 +272,37 @@ export default function Mission() {
                         style={{ marginTop: '10px' }}
                         className="no_center_container"
                     >
+                        <thead>
+                            <tr>
+                                <th className="md-2">Mission name</th>
+                                <th className="md-1">Team</th>
+                                <th className="md-3">Badges</th>
+                                <th className="md-1">State</th>
+                                <th className="md-3">Actions</th>
+                            </tr>
+                        </thead>
                         {records.map((mission) => {
                             return (
                                 <tbody key={mission.id}>
                                     <tr key={mission.id}>
                                         <td>{mission.name}</td>
                                         <td>{mission.team}</td>
+                                        <td>
+                                            {mission.vuln.map((m) => {
+                                                return (
+                                                    <Chip
+                                                        label={m}
+                                                        color="warning"
+                                                        variant="filled"
+                                                        style={{
+                                                            marginRight:
+                                                                '0.5rem',
+                                                            marginBottom: '2px',
+                                                        }}
+                                                    />
+                                                );
+                                            })}
+                                        </td>
                                         <td>
                                             <Chip
                                                 label={mission.status.text}
@@ -211,9 +319,25 @@ export default function Mission() {
                                                 value="Open"
                                                 className="openBtn"
                                                 onClick={() =>
-                                                    NavMissionDetail(mission.id)
+                                                    NavMissionDetail(
+                                                        mission.id,
+                                                        mission.scope
+                                                    )
                                                 }
                                             />
+                                            {isPentester && (
+                                                <input
+                                                    type="button"
+                                                    value="Add vuln"
+                                                    className="borderBtn"
+                                                    onClick={() =>
+                                                        NavAddVul(
+                                                            mission.id,
+                                                            mission.name
+                                                        )
+                                                    }
+                                                />
+                                            )}
                                             {!isPentester && (
                                                 <>
                                                     <input
@@ -226,8 +350,9 @@ export default function Mission() {
                                                             )
                                                         }
                                                     />
-                                                    <a
-                                                        href="#"
+                                                    <input
+                                                        type="button"
+                                                        value="Delete"
                                                         className="borderBtnError"
                                                         onClick={() => {
                                                             setItem({
@@ -237,11 +362,7 @@ export default function Mission() {
                                                             });
                                                             setOpen(true);
                                                         }}
-                                                    >
-                                                        <IoIcons.IoIosTrash
-                                                            size={20}
-                                                        />
-                                                    </a>
+                                                    />
                                                 </>
                                             )}
                                         </td>

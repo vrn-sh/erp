@@ -25,8 +25,8 @@
     background-color:transparent;
     color: black;
     font-weight: bold;
-    border: 1px solid #7C44F3;
-    color: #7C44F3;
+    border: 1px solid var(--primary-btn);
+    color: var(--primary-btn);
 }
 .page-info h2{
     font-style: 'Roboto';

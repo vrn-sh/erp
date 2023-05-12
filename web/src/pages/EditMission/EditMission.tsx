@@ -178,6 +178,7 @@ export default function EditMission() {
             )
             .then(() => {
                 setMessage('Saved !', 'success');
+                navigate('/dashboard');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -207,10 +208,6 @@ export default function EditMission() {
                         <h2 style={{ fontSize: '28px', fontFamily: 'Arial' }}>
                             Edit mission
                         </h2>
-                    </div>
-                    <div className="page-searcher">
-                        <label>Search on page</label>
-                        <input type="text" placeholder="Search..." />
                     </div>
                 </div>
                 <div className="edit-container">
