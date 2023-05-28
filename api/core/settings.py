@@ -99,58 +99,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'voron',
-        'USER': os.environ.get('USER'),
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
-SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
-CORS_ALLOWED_ORIGIN = [["*"]]
-CORS_ORIGIN_ALLOW_ALL = True
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME', 'localhost:8080')
 
-# cache configuration
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-    }
-}
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
+DEBUG = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
+ALLOWED_HOSTS = ['*' if 'localhost' in DOMAIN_NAME else DOMAIN_NAME]
+CORS_ALLOWED_ORIGIN = [["*" if 'localhost' in DOMAIN_NAME else DOMAIN_NAME]]
+CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
 
-if os.environ.get('PRODUCTION', '0') == '1':
-
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('POSTGRES_DB'),
-            'USER': os.environ.get('POSTGRES_USER'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-            'HOST': os.environ.get('POSTGRES_HOST'),
-            'PORT': os.environ.get('POSTGRES_PORT'),
-        }
-    }
-    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-    DEBUG = False
-    ALLOWED_HOSTS = [os.environ["DOMAIN_NAME"]]
-    CORS_ALLOWED_ORIGIN_REGEXES = [os.environ.get("DOMAIN_NAME")]
-    CORS_ALLOWED_ORIGIN = [os.environ["DOMAIN_NAME"]]
-    CORS_ORIGIN_ALLOW_ALL = False
-    CORS_ALLOW_CREDENTIALS = False
-
-    # production always runs on a container
-    os.environ['IN_CONTAINER'] = '1'
-
-if os.environ.get('IN_CONTAINER', '0') == '1':
+if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0') == '1':
 
     # S3 configuration
     AWS_ACCESS_KEY_ID = os.environ['MINIO_ROOT_USER']
     AWS_SECRET_ACCESS_KEY = os.environ['MINIO_ROOT_PASSWORD']
-    AWS_STORAGE_BUCKET_NAME = "rootbucket"
     AWS_S3_ENDPOINT_URL = "s3:9000"
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = True
@@ -165,8 +126,18 @@ if os.environ.get('IN_CONTAINER', '0') == '1':
         }
     }
 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('POSTGRES_DB'),
+            'USER': os.environ.get('POSTGRES_USER'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+            'HOST': os.environ.get('POSTGRES_HOST'),
+            'PORT': os.environ.get('POSTGRES_PORT'),
+        }
+    }
 
-if os.environ.get('TEST') and os.environ.get('TEST')  == '1':
+elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -175,6 +146,13 @@ if os.environ.get('TEST') and os.environ.get('TEST')  == '1':
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
             'PORT': '',
+        }
+    }
+
+    # cache configuration
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         }
     }
 
@@ -189,6 +167,34 @@ elif os.environ.get('CI') and os.environ.get('CI')  == '1':
             'PORT': '',
         }
     }
+
+    # cache configuration
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'voron',
+            'USER': os.environ.get('USER'),
+            'PASSWORD': 'postgres',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
+
+    # cache configuration
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

@@ -1,24 +1,6 @@
 version: '3.9'
 
 services:
-  nginx:
-    image: nginx:latest
-    ports:
-      - "127.0.0.1:8080:80"
-    env_file:
-      - api/.env
-    volumes:
-      - ./services/nginx/nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
-      - ./volumes/nginx/logs:/var/log/nginx:delegated
-    networks:
-      - api-layer
-      - web-layer
-      - s3-layer
-    depends_on:
-      - api
-      - web
-      - s3
-
   db:
     image: postgres:latest
     ports:
