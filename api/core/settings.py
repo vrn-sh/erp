@@ -103,7 +103,7 @@ DOMAIN_NAME = os.environ.get('DOMAIN_NAME', 'localhost:8080')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
 DEBUG = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
-ALLOWED_HOSTS = ['*' if 'localhost' in DOMAIN_NAME else DOMAIN_NAME]
+ALLOWED_HOSTS = ['localhost' if 'localhost' in DOMAIN_NAME else DOMAIN_NAME]
 CORS_ALLOWED_ORIGIN = [["*" if 'localhost' in DOMAIN_NAME else DOMAIN_NAME]]
 CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
 
