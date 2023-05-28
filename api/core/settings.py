@@ -99,12 +99,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+
+def is_localhost(host: str) -> bool:
+    return 'localhost' in host or '127.0.0.1' in host
+
+
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME', 'localhost:8080')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
 DEBUG = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
-ALLOWED_HOSTS = ['localhost' if 'localhost' in DOMAIN_NAME else DOMAIN_NAME]
-CORS_ALLOWED_ORIGIN = [["*" if 'localhost' in DOMAIN_NAME else DOMAIN_NAME]]
+ALLOWED_HOSTS = ['localhost' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
+CORS_ALLOWED_ORIGIN = [["*" if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]]
 CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
 
 if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0') == '1':
