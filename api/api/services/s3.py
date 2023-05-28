@@ -9,6 +9,7 @@ from minio.versioningconfig import ENABLED
 
 class S3Bucket:
     def __init__(self) -> None:
+        # containers can be ran locally and dont need ssl
         self.client = Minio(
             os.environ["MINIO_HOST"],
             os.environ['MINIO_ROOT_USER'],

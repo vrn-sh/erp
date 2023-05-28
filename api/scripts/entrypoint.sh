@@ -39,8 +39,9 @@ find / -name '*.pyc' -delete 2>/dev/null
 DJANGO_SECRET_KEY=$(generate_random_string)
 export DJANGO_SECRET_KEY
 
-PRODUCTION=1
-export PRODUCTION
+# force loading of in-container for settings.py
+IN_CONTAINER=1
+export IN_CONTAINER
 
 # wait for the database to boot up
 wait_for_it

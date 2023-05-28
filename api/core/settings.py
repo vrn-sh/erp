@@ -40,14 +40,6 @@ REST_KNOX = {
   'TOKEN_TTL': timedelta(hours=12),
 }
 
-# django-storages configuration
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3Storage",
-    },
-}
-
-
 # openapi generator config
 SWAGGER_SETTINGS = {
    'SECURITY_DEFINITIONS': {
@@ -84,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'api.management.middlewares.set_secure_headers',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -106,15 +99,55 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'voron',
+        'USER': os.environ.get('USER'),
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
+DEBUG = True
+ALLOWED_HOSTS = ['*']
+CORS_ALLOWED_ORIGIN = [["*"]]
+CORS_ORIGIN_ALLOW_ALL = True
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# cache configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
 
 if os.environ.get('PRODUCTION', '0') == '1':
 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('POSTGRES_DB'),
+            'USER': os.environ.get('POSTGRES_USER'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+            'HOST': os.environ.get('POSTGRES_HOST'),
+            'PORT': os.environ.get('POSTGRES_PORT'),
+        }
+    }
+    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+    DEBUG = False
+    ALLOWED_HOSTS = [os.environ["DOMAIN_NAME"]]
+    CORS_ALLOWED_ORIGIN_REGEXES = [os.environ.get("DOMAIN_NAME")]
+    CORS_ALLOWED_ORIGIN = [os.environ["DOMAIN_NAME"]]
+    CORS_ORIGIN_ALLOW_ALL = False
+    CORS_ALLOW_CREDENTIALS = False
+
+    # production always runs on a container
+    os.environ['IN_CONTAINER'] = '1'
+
+if os.environ.get('IN_CONTAINER', '0') == '1':
+
     # S3 configuration
-    # MinIO uses S3-compatible API, so django-storages uses
-    # the same field for both
     AWS_ACCESS_KEY_ID = os.environ['MINIO_ROOT_USER']
     AWS_SECRET_ACCESS_KEY = os.environ['MINIO_ROOT_PASSWORD']
     AWS_STORAGE_BUCKET_NAME = "rootbucket"
@@ -133,26 +166,7 @@ if os.environ.get('PRODUCTION', '0') == '1':
     }
 
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('POSTGRES_DB'),
-            'USER': os.environ.get('POSTGRES_USER'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-            'HOST': os.environ.get('POSTGRES_HOST'),
-            'PORT': os.environ.get('POSTGRES_PORT'),
-        }
-    }
-    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-    DEBUG = False
-    ALLOWED_HOSTS = ['server', 'localhost', os.environ["DOMAIN_NAME"]]
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        f'{os.environ.get("DOMAIN_NAME")}',
-    ]
-    CORS_ORIGIN_ALLOW_ALL = False
-    CORS_ALLOW_CREDENTIALS = False
-
-elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
+if os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -161,20 +175,6 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
             'PORT': '',
-        }
-    }
-    SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
-    DEBUG = True
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOWED_ORIGIN = [
-        ["*"]
-    ]
-    CORS_ORIGIN_ALLOW_ALL = True
-
-    # cache configuration
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         }
     }
 
@@ -189,48 +189,6 @@ elif os.environ.get('CI') and os.environ.get('CI')  == '1':
             'PORT': '',
         }
     }
-    SECRET_KEY = 'django-insecure-234kj23h4jkj2134ho20d109fu3f0943f03hg34g094318943f'
-    DEBUG = True
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOWED_ORIGIN = [
-        ["*"]
-    ]
-    CORS_ORIGIN_ALLOW_ALL = True
-
-    # cache configuration
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        }
-    }
-
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'voron',
-            'USER': os.environ.get('USER'),
-            'PASSWORD': 'postgres',
-            'HOST': 'localhost',
-            'PORT': '',
-        }
-    }
-    SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
-    DEBUG = True
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOWED_ORIGIN = [
-        ["*"]
-    ]
-    CORS_ORIGIN_ALLOW_ALL = True
-
-    # cache configuration
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        }
-    }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
