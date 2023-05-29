@@ -77,6 +77,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'api.management.middlewares.set_secure_headers',
     'corsheaders.middleware.CorsMiddleware',
+    'api.management.middlewares.set_secure_headers',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -112,6 +113,8 @@ ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 
 CORS_ALLOWED_ORIGIN = [DOMAIN_NAME]
 CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1'            # returns true if not in production
+
+
 
 if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0') == '1':
 
