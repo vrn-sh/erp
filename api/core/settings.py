@@ -75,8 +75,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'api.management.middlewares.set_secure_headers',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -107,10 +107,11 @@ def is_localhost(host: str) -> bool:
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME', 'localhost:8080')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
-DEBUG = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
-ALLOWED_HOSTS = ['localhost' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
-CORS_ALLOWED_ORIGIN = [["*" if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]]
-CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1' # returns true if not in production
+DEBUG = os.environ.get('PRODUCTION', '0') != '1'                            # returns true if not in production
+ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
+
+CORS_ALLOWED_ORIGIN = [DOMAIN_NAME]
+CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1'            # returns true if not in production
 
 if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0') == '1':
 
