@@ -77,7 +77,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'api.management.middlewares.set_secure_headers',
     'corsheaders.middleware.CorsMiddleware',
-    'api.management.middlewares.set_secure_headers',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -111,7 +110,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5ed
 DEBUG = os.environ.get('PRODUCTION', '0') != '1'                            # returns true if not in production
 ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 
-CORS_ALLOWED_ORIGIN = [DOMAIN_NAME]
+CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1'            # returns true if not in production
 
 
