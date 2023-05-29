@@ -122,7 +122,6 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
             Binding to pentesterSerializer in order to register new account
     """
 
-    queryset = Pentester.objects.all()
     permission_classes = [PostOnly]
     authentication_classes: List[type[TokenAuthentication]] = []
 
