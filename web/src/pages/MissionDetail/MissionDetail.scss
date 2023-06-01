@@ -36,21 +36,6 @@
     font-size: 1em;
 } 
 
-.mission-tool-line {
-    display: flex;
-    flex-direction: row;
-    margin-top: 1rem;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.mission-borderBtn {
-    border: 1px var(--primary-btn) solid;
-    color: var(--primary-btn);
-    background-color: transparent;
-    cursor: pointer;
-}
-
 .search-name {
     display: flex;
     flex-direction: row;

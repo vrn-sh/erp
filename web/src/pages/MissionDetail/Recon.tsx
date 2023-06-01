@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
+import './Recon.scss';
 import * as IoIcons from 'react-icons/io';
 import {
     Accordion,
@@ -14,6 +15,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import AddNMAP from './AddNMAP';
+// import R from "../../assets/strings/en/recon.json";
 
 export interface IRecon {
     id: number;
@@ -32,6 +34,7 @@ export default function Recon(idMission: any) {
         updated_at: '2023-05-08T14:29:15.580559Z',
         nmap_runs: [],
     });
+    const [wappDomain, setWappDomain] = useState('');
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
     const lastIndex = currentPage * recordsPerPage;
@@ -93,190 +96,221 @@ export default function Recon(idMission: any) {
 
     return (
         <>
-            <div className="mission-tool-line">
-                <div
-                    style={{
-                        justifyContent: 'flex-end',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}
-                    className="search-name"
-                >
-                    {isPentester && (
-                        <button
-                            type="button"
-                            className="input_btn mission-borderBtn"
-                            onClick={modalClick}
-                        >
-                            ADD NMAP
-                        </button>
-                    )}
-                </div>
-            </div>
             {modal && <AddNMAP func={modalClick} idRecon={recon.id} />}
-            {!records.length ? (
-                <h3 style={{ fontFamily: 'Poppins-Regular' }}>
-                    Nothing to show
-                </h3>
-            ) : (
-                <>
-                    <table className="no_center_container">
-                        <tbody>
-                            {records.map((s_list) => {
-                                return (
-                                    <Accordion
-                                        key={s_list.id}
-                                        expanded={
-                                            expanded === `panel${s_list.id}`
-                                        }
-                                        onChange={handleChange(
-                                            `panel${s_list.id}`
-                                        )}
-                                    >
-                                        <AccordionSummary
-                                            expandIcon={
-                                                <IoIcons.IoIosArrowDown />
-                                            }
-                                            aria-controls="panel1bh-content"
-                                            sx={{
-                                                backgroundColor:
-                                                    'rgba(0, 0, 0, .02)',
-                                            }}
-                                            id="panel1bh-header"
-                                        >
-                                            <Stack
-                                                direction="row"
-                                                spacing={22}
-                                                alignItems="center"
-                                                justifyContent="space-between"
+            <div className="recon_container">
+                <div className="recon_info">
+                    <div className="mission-tool-line">
+                        {isPentester && (
+                            <button
+                                type="button"
+                                className="input_btn mission-borderBtn"
+                                onClick={modalClick}
+                            >
+                                ADD NMAP
+                            </button>
+                        )}
+                    </div>
+                    {!records.length ? (
+                        <h3 style={{ fontFamily: 'Poppins-Regular' }}>
+                            Nothing to show
+                        </h3>
+                    ) : (
+                        <>
+                            <table className="no_center_container">
+                                <tbody>
+                                    {records.map((s_list) => {
+                                        return (
+                                            <Accordion
+                                                key={s_list.id}
+                                                expanded={
+                                                    expanded ===
+                                                    `panel${s_list.id}`
+                                                }
+                                                onChange={handleChange(
+                                                    `panel${s_list.id}`
+                                                )}
                                             >
-                                                <p>{s_list.id}</p>
-                                                <p>
-                                                    {s_list.creation_timestamp.slice(
-                                                        0,
-                                                        10
-                                                    )}
-                                                </p>
-                                                <p>IPS : {s_list.ips.length}</p>
-                                                <p>
-                                                    Ports :{' '}
-                                                    {s_list.ports.length}
-                                                </p>
-                                            </Stack>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            <p>Ports</p>
-                                            {!s_list!.ports.length ? (
-                                                <h3
-                                                    style={{
-                                                        fontFamily:
-                                                            'Poppins-Regular',
+                                                <AccordionSummary
+                                                    expandIcon={
+                                                        <IoIcons.IoIosArrowDown />
+                                                    }
+                                                    aria-controls="panel1bh-content"
+                                                    sx={{
+                                                        backgroundColor:
+                                                            'rgba(0, 0, 0, .02)',
                                                     }}
-                                                    className="centered"
+                                                    id="panel1bh-header"
                                                 >
-                                                    Nothing to show
-                                                </h3>
-                                            ) : (
-                                                <>
-                                                    {s_list!.ports.map(
-                                                        (nmap) => {
-                                                            return (
-                                                                <Tooltip
-                                                                    title="See more"
-                                                                    arrow
-                                                                >
-                                                                    <Chip
-                                                                        sx={{
-                                                                            margin: '8px',
-                                                                        }}
-                                                                        label={
-                                                                            nmap
-                                                                        }
-                                                                    />
-                                                                </Tooltip>
-                                                            );
-                                                        }
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={15}
+                                                        alignItems="center"
+                                                        justifyContent="space-between"
+                                                    >
+                                                        <p
+                                                            style={{
+                                                                margin: 0,
+                                                            }}
+                                                        >
+                                                            {s_list.id}
+                                                        </p>
+                                                        <p>
+                                                            {s_list.creation_timestamp.slice(
+                                                                0,
+                                                                10
+                                                            )}
+                                                        </p>
+                                                        <p>
+                                                            IPS :{' '}
+                                                            {s_list.ips.length}
+                                                        </p>
+                                                        <p>
+                                                            Ports :{' '}
+                                                            {
+                                                                s_list.ports
+                                                                    .length
+                                                            }
+                                                        </p>
+                                                    </Stack>
+                                                </AccordionSummary>
+                                                <AccordionDetails>
+                                                    <p>Ports</p>
+                                                    {!s_list!.ports.length ? (
+                                                        <h3
+                                                            style={{
+                                                                fontFamily:
+                                                                    'Poppins-Regular',
+                                                            }}
+                                                            className="centered"
+                                                        >
+                                                            Nothing to show
+                                                        </h3>
+                                                    ) : (
+                                                        <>
+                                                            {s_list!.ports.map(
+                                                                (nmap) => {
+                                                                    return (
+                                                                        <Tooltip
+                                                                            title="See more"
+                                                                            arrow
+                                                                        >
+                                                                            <Chip
+                                                                                sx={{
+                                                                                    margin: '8px',
+                                                                                }}
+                                                                                label={
+                                                                                    nmap
+                                                                                }
+                                                                            />
+                                                                        </Tooltip>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </>
                                                     )}
-                                                </>
-                                            )}
-                                            <p>IPS</p>
-                                            {!s_list!.ips.length ? (
-                                                <h3
-                                                    style={{
-                                                        fontFamily:
-                                                            'Poppins-Regular',
-                                                    }}
-                                                    className="centered"
-                                                >
-                                                    Nothing to show
-                                                </h3>
-                                            ) : (
-                                                <>
-                                                    {s_list!.ips.map((nmap) => {
-                                                        return (
-                                                            <Tooltip
-                                                                title="See more"
-                                                                arrow
-                                                            >
-                                                                <Chip
-                                                                    sx={{
-                                                                        margin: '8px',
-                                                                    }}
-                                                                    label={nmap}
-                                                                />
-                                                            </Tooltip>
-                                                        );
-                                                    })}
-                                                </>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                    <nav>
-                        <ul className="pagination">
-                            <li className="page-item">
-                                <a
-                                    href="#"
-                                    className="page-link"
-                                    onClick={prePage}
-                                >
-                                    <IoIcons.IoIosArrowBack />
-                                </a>
-                            </li>
-                            {nums.map((n) => {
-                                return (
-                                    <li
-                                        key={n}
-                                        className={`page-item ${
-                                            currentPage === n ? 'active' : ''
-                                        }`}
-                                    >
+                                                    <p>IPS</p>
+                                                    {!s_list!.ips.length ? (
+                                                        <h3
+                                                            style={{
+                                                                fontFamily:
+                                                                    'Poppins-Regular',
+                                                            }}
+                                                            className="centered"
+                                                        >
+                                                            Nothing to show
+                                                        </h3>
+                                                    ) : (
+                                                        <>
+                                                            {s_list!.ips.map(
+                                                                (nmap) => {
+                                                                    return (
+                                                                        <Tooltip
+                                                                            title="See more"
+                                                                            arrow
+                                                                        >
+                                                                            <Chip
+                                                                                sx={{
+                                                                                    margin: '8px',
+                                                                                }}
+                                                                                label={
+                                                                                    nmap
+                                                                                }
+                                                                            />
+                                                                        </Tooltip>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul className="pagination">
+                                    <li className="page-item">
                                         <a
                                             href="#"
                                             className="page-link"
-                                            onClick={() => changePage(n)}
+                                            onClick={prePage}
                                         >
-                                            {n}
+                                            <IoIcons.IoIosArrowBack />
                                         </a>
                                     </li>
-                                );
-                            })}
-                            <li className="page-item">
-                                <a
-                                    href="#"
-                                    className="page-link"
-                                    onClick={nextPage}
-                                >
-                                    <IoIcons.IoIosArrowForward />
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </>
-            )}
+                                    {nums.map((n) => {
+                                        return (
+                                            <li
+                                                key={n}
+                                                className={`page-item ${
+                                                    currentPage === n
+                                                        ? 'active'
+                                                        : ''
+                                                }`}
+                                            >
+                                                <a
+                                                    href="#"
+                                                    className="page-link"
+                                                    onClick={() =>
+                                                        changePage(n)
+                                                    }
+                                                >
+                                                    {n}
+                                                </a>
+                                            </li>
+                                        );
+                                    })}
+                                    <li className="page-item">
+                                        <a
+                                            href="#"
+                                            className="page-link"
+                                            onClick={nextPage}
+                                        >
+                                            <IoIcons.IoIosArrowForward />
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </>
+                    )}
+                </div>
+                <div className="recon_info">
+                    <div className="wappa_input_container">
+                        <input
+                            placeholder="Enter a domain name"
+                            onChange={(e) => setWappDomain(e.target.value)}
+                            className="wappa_input"
+                        />
+                        <button
+                            type="button"
+                            className="searchBtn wappa_search"
+                        >
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
         </>
     );
 }
