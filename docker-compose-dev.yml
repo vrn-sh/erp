@@ -14,6 +14,17 @@ services:
     volumes:
       - ./volumes/postgres:/var/lib/postgresql/data:delegated
 
+  wapp-api:
+    environment:
+      IN_CONTAINER: 1
+    build:
+      context: ./services/wapp-api/.
+    ports:
+      - "127.0.0.1:4000:4000"
+    networks:
+      - api-layer
+
+
   api:
     env_file:
       - ./api/.env

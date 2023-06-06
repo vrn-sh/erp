@@ -354,17 +354,12 @@ class WappalyzerRequestView(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        sets = 'security,meta,locale,events'
-        urls = request.GET.get('urls')
-
-        # TODO(djnn): add rate-limit per user per day
+        url = request.GET.get('url')
+        wapp_api_url = 'http://localhost:4000/run' if os.environ('IN_CONTAINER', '0') == '0' else 'http://wapp-api:4000/run'
 
         data = requests.get(
-            f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
+            f'{wapp_api_url}?url={url}',
             timeout=2.0,
-            headers={
-                "x-api-key": os.environ['WAPPALYZER_API_KEY'],
-            }
         )
 
         return Response(data.json(), status=HTTP_200_OK)
