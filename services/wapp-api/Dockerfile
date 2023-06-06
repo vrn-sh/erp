@@ -14,10 +14,9 @@ RUN yarn install
 WORKDIR /server
 
 COPY requirements.txt .
-COPY server.py .
-
 RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
+COPY server.py .
 
 ENTRYPOINT [ "uvicorn" ]
 CMD ["server:api", "--proxy-headers", "--host", "0.0.0.0", "--port", "4000"]
