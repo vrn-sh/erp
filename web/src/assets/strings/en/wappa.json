@@ -1,0 +1,1221 @@
+{
+    "url": "http://wordpress.com",
+    "technologies": [
+        {
+            "slug": "sectigo",
+            "name": "Sectigo",
+            "versions": [],
+            "trafficRank": 0,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 70,
+                    "slug": "ssl-tls-certificate-authorities",
+                    "name": "SSL/TLS certificate authorities"
+                }
+            ]
+        },
+        {
+            "slug": "sendgrid",
+            "name": "Sendgrid",
+            "versions": [],
+            "trafficRank": 0,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 75,
+                    "slug": "email",
+                    "name": "Email"
+                }
+            ]
+        },
+        {
+            "slug": "core-js",
+            "name": "core-js",
+            "versions": [
+                "3.19.1"
+            ],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "mysql",
+            "name": "MySQL",
+            "cpe": "cpe:2.3:a:mysql:mysql:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913216,
+            "categories": [
+                {
+                    "id": 34,
+                    "slug": "databases",
+                    "name": "Databases"
+                }
+            ]
+        },
+        {
+            "slug": "hsts",
+            "name": "HSTS",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 16,
+                    "slug": "security",
+                    "name": "Security"
+                }
+            ]
+        },
+        {
+            "slug": "google-analytics",
+            "name": "Google Analytics",
+            "versions": [
+                "GA4"
+            ],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 10,
+                    "slug": "analytics",
+                    "name": "Analytics"
+                }
+            ]
+        },
+        {
+            "slug": "typekit",
+            "name": "Typekit",
+            "versions": [
+                "1.21.0"
+            ],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 17,
+                    "slug": "font-scripts",
+                    "name": "Font scripts"
+                }
+            ]
+        },
+        {
+            "slug": "microsoft-advertising",
+            "name": "Microsoft Advertising",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 36,
+                    "slug": "advertising",
+                    "name": "Advertising"
+                }
+            ]
+        },
+        {
+            "slug": "facebook-pixel",
+            "name": "Facebook Pixel",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 10,
+                    "slug": "analytics",
+                    "name": "Analytics"
+                }
+            ]
+        },
+        {
+            "slug": "outbrain",
+            "name": "Outbrain",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 5,
+                    "slug": "widgets",
+                    "name": "Widgets"
+                },
+                {
+                    "id": 36,
+                    "slug": "advertising",
+                    "name": "Advertising"
+                }
+            ]
+        },
+        {
+            "slug": "php",
+            "name": "PHP",
+            "cpe": "cpe:2.3:a:php:php:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913216,
+            "categories": [
+                {
+                    "id": 27,
+                    "slug": "programming-languages",
+                    "name": "Programming languages"
+                }
+            ]
+        },
+        {
+            "slug": "wordpress",
+            "name": "WordPress",
+            "cpe": "cpe:2.3:a:wordpress:wordpress:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913216,
+            "categories": [
+                {
+                    "id": 1,
+                    "slug": "cms",
+                    "name": "CMS"
+                },
+                {
+                    "id": 11,
+                    "slug": "blogs",
+                    "name": "Blogs"
+                }
+            ]
+        },
+        {
+            "slug": "pinterest-conversion-tag",
+            "name": "Pinterest Conversion Tag",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 10,
+                    "slug": "analytics",
+                    "name": "Analytics"
+                }
+            ]
+        },
+        {
+            "slug": "nginx",
+            "name": "Nginx",
+            "cpe": "cpe:2.3:a:f5:nginx:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913216,
+            "categories": [
+                {
+                    "id": 22,
+                    "slug": "web-servers",
+                    "name": "Web servers"
+                },
+                {
+                    "id": 64,
+                    "slug": "reverse-proxies",
+                    "name": "Reverse proxies"
+                }
+            ]
+        },
+        {
+            "slug": "google-font-api",
+            "name": "Google Font API",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 17,
+                    "slug": "font-scripts",
+                    "name": "Font scripts"
+                }
+            ]
+        },
+        {
+            "slug": "open-graph",
+            "name": "Open Graph",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 19,
+                    "slug": "miscellaneous",
+                    "name": "Miscellaneous"
+                }
+            ]
+        },
+        {
+            "slug": "react",
+            "name": "React",
+            "cpe": "cpe:2.3:a:facebook:react:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913216,
+            "categories": [
+                {
+                    "id": 12,
+                    "slug": "javascript-frameworks",
+                    "name": "JavaScript frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "pwa",
+            "name": "PWA",
+            "versions": [],
+            "trafficRank": 2,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 19,
+                    "slug": "miscellaneous",
+                    "name": "Miscellaneous"
+                }
+            ]
+        },
+        {
+            "slug": "phoenix-framework",
+            "name": "Phoenix Framework",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1685618969,
+            "categories": [
+                {
+                    "id": 18,
+                    "slug": "web-frameworks",
+                    "name": "Web frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "elixir",
+            "name": "Elixir",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1685618967,
+            "categories": [
+                {
+                    "id": 27,
+                    "slug": "programming-languages",
+                    "name": "Programming languages"
+                }
+            ]
+        },
+        {
+            "slug": "erlang",
+            "name": "Erlang",
+            "cpe": "cpe:2.3:a:erlang:erlang%2fotp:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1685618967,
+            "categories": [
+                {
+                    "id": 27,
+                    "slug": "programming-languages",
+                    "name": "Programming languages"
+                }
+            ]
+        },
+        {
+            "slug": "godaddy-coblocks",
+            "name": "GoDaddy CoBlocks",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1683978343,
+            "categories": [
+                {
+                    "id": 87,
+                    "slug": "wordpress-plugins",
+                    "name": "WordPress plugins"
+                },
+                {
+                    "id": 51,
+                    "slug": "page-builders",
+                    "name": "Page builders"
+                }
+            ]
+        },
+        {
+            "slug": "custom-fonts",
+            "name": "Custom Fonts",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1683978343,
+            "categories": [
+                {
+                    "id": 87,
+                    "slug": "wordpress-plugins",
+                    "name": "WordPress plugins"
+                },
+                {
+                    "id": 17,
+                    "slug": "font-scripts",
+                    "name": "Font scripts"
+                }
+            ]
+        },
+        {
+            "slug": "recaptcha",
+            "name": "reCAPTCHA",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1683386460,
+            "categories": [
+                {
+                    "id": 16,
+                    "slug": "security",
+                    "name": "Security"
+                }
+            ]
+        },
+        {
+            "slug": "google-ads-conversion-tracking",
+            "name": "Google Ads Conversion Tracking",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 10,
+                    "slug": "analytics",
+                    "name": "Analytics"
+                }
+            ]
+        },
+        {
+            "slug": "google-ads",
+            "name": "Google Ads",
+            "versions": [],
+            "trafficRank": 6,
+            "confirmedAt": 1683913217,
+            "categories": [
+                {
+                    "id": 36,
+                    "slug": "advertising",
+                    "name": "Advertising"
+                }
+            ]
+        },
+        {
+            "slug": "tailwind-css",
+            "name": "Tailwind CSS",
+            "versions": [],
+            "trafficRank": 7,
+            "confirmedAt": 1683555672,
+            "categories": [
+                {
+                    "id": 66,
+                    "slug": "ui-frameworks",
+                    "name": "UI frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "tippy-js",
+            "name": "Tippy.js",
+            "versions": [],
+            "trafficRank": 8,
+            "confirmedAt": 1685873075,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "amazon-s3",
+            "name": "Amazon S3",
+            "versions": [],
+            "trafficRank": 8,
+            "confirmedAt": 1684860233,
+            "categories": [
+                {
+                    "id": 31,
+                    "slug": "cdn",
+                    "name": "CDN"
+                }
+            ]
+        },
+        {
+            "slug": "amazon-web-services",
+            "name": "Amazon Web Services",
+            "versions": [],
+            "trafficRank": 8,
+            "confirmedAt": 1684860233,
+            "categories": [
+                {
+                    "id": 62,
+                    "slug": "paas",
+                    "name": "PaaS"
+                }
+            ]
+        },
+        {
+            "slug": "scoop-it",
+            "name": "Scoop.it",
+            "versions": [],
+            "trafficRank": 8,
+            "confirmedAt": 1683319181,
+            "categories": [
+                {
+                    "id": 96,
+                    "slug": "content-curation",
+                    "name": "Content curation"
+                }
+            ]
+        },
+        {
+            "slug": "vue-js",
+            "name": "Vue.js",
+            "versions": [],
+            "trafficRank": 8,
+            "confirmedAt": 1682938062,
+            "categories": [
+                {
+                    "id": 12,
+                    "slug": "javascript-frameworks",
+                    "name": "JavaScript frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "apple-sign-in",
+            "name": "Apple Sign-in",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 69,
+                    "slug": "authentication",
+                    "name": "Authentication"
+                }
+            ]
+        },
+        {
+            "slug": "backbone-js",
+            "name": "Backbone.js",
+            "cpe": "cpe:2.3:a:backbone_project:backbone:*:*:*:*:*:*:*:*",
+            "versions": [
+                "1.4.1"
+            ],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 12,
+                    "slug": "javascript-frameworks",
+                    "name": "JavaScript frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "jquery-migrate",
+            "name": "jQuery Migrate",
+            "versions": [
+                "3.4.0"
+            ],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "jquery",
+            "name": "jQuery",
+            "cpe": "cpe:2.3:a:jquery:jquery:*:*:*:*:*:*:*:*",
+            "versions": [
+                "1.12.4"
+            ],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "facebook-login",
+            "name": "Facebook Login",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1683055787,
+            "categories": [
+                {
+                    "id": 69,
+                    "slug": "authentication",
+                    "name": "Authentication"
+                }
+            ]
+        },
+        {
+            "slug": "mediaelement-js",
+            "name": "MediaElement.js",
+            "versions": [
+                "4.2.17"
+            ],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 14,
+                    "slug": "video-players",
+                    "name": "Video players"
+                }
+            ]
+        },
+        {
+            "slug": "underscore-js",
+            "name": "Underscore.js",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "twitter",
+            "name": "Twitter",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1683055788,
+            "categories": [
+                {
+                    "id": 5,
+                    "slug": "widgets",
+                    "name": "Widgets"
+                }
+            ]
+        },
+        {
+            "slug": "mustache",
+            "name": "Mustache",
+            "versions": [
+                "0.5.0-dev"
+            ],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 12,
+                    "slug": "javascript-frameworks",
+                    "name": "JavaScript frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "lodash",
+            "name": "Lodash",
+            "cpe": "cpe:2.3:a:lodash:lodash:*:*:*:*:*:*:*:*",
+            "versions": [
+                "4.17.21"
+            ],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "jquery-ui",
+            "name": "jQuery UI",
+            "cpe": "cpe:2.3:a:jquery:jquery_ui:*:*:*:*:*:*:*:*",
+            "versions": [
+                "1.13.2"
+            ],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "rss",
+            "name": "RSS",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 19,
+                    "slug": "miscellaneous",
+                    "name": "Miscellaneous"
+                }
+            ]
+        },
+        {
+            "slug": "boomerang",
+            "name": "Boomerang",
+            "versions": [],
+            "trafficRank": 18,
+            "confirmedAt": 1685654503,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                },
+                {
+                    "id": 78,
+                    "slug": "rum",
+                    "name": "RUM"
+                }
+            ]
+        },
+        {
+            "slug": "gravatar",
+            "name": "Gravatar",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 19,
+                    "slug": "miscellaneous",
+                    "name": "Miscellaneous"
+                }
+            ]
+        },
+        {
+            "slug": "preact",
+            "name": "Preact",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "wordpress-com",
+            "name": "WordPress.com",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1683913216,
+            "categories": [
+                {
+                    "id": 62,
+                    "slug": "paas",
+                    "name": "PaaS"
+                }
+            ]
+        },
+        {
+            "slug": "google-sign-in",
+            "name": "Google Sign-in",
+            "versions": [],
+            "trafficRank": 9,
+            "confirmedAt": 1682908073,
+            "categories": [
+                {
+                    "id": 69,
+                    "slug": "authentication",
+                    "name": "Authentication"
+                }
+            ]
+        },
+        {
+            "slug": "http-2",
+            "name": "HTTP/2",
+            "versions": [],
+            "trafficRank": 16,
+            "confirmedAt": 1685587352,
+            "categories": [
+                {
+                    "id": 19,
+                    "slug": "miscellaneous",
+                    "name": "Miscellaneous"
+                }
+            ]
+        },
+        {
+            "slug": "google-maps",
+            "name": "Google Maps",
+            "versions": [],
+            "trafficRank": 10,
+            "confirmedAt": 1685754633,
+            "categories": [
+                {
+                    "id": 35,
+                    "slug": "maps",
+                    "name": "Maps"
+                }
+            ]
+        },
+        {
+            "slug": "moment-js",
+            "name": "Moment.js",
+            "cpe": "cpe:2.3:a:momentjs:moment:*:*:*:*:*:*:*:*",
+            "versions": [
+                "2.29.4"
+            ],
+            "trafficRank": 19,
+            "confirmedAt": 1685628207,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "parse-ly",
+            "name": "Parse.ly",
+            "versions": [],
+            "trafficRank": 19,
+            "confirmedAt": 1685587352,
+            "categories": [
+                {
+                    "id": 10,
+                    "slug": "analytics",
+                    "name": "Analytics"
+                }
+            ]
+        },
+        {
+            "slug": "tinymce",
+            "name": "TinyMCE",
+            "cpe": "cpe:2.3:a:tiny:tinymce:*:*:*:*:*:*:*:*",
+            "versions": [
+                "4"
+            ],
+            "trafficRank": 19,
+            "confirmedAt": 1685628207,
+            "categories": [
+                {
+                    "id": 24,
+                    "slug": "rich-text-editors",
+                    "name": "Rich text editors"
+                }
+            ]
+        },
+        {
+            "slug": "jsdelivr",
+            "name": "jsDelivr",
+            "versions": [],
+            "trafficRank": 10,
+            "confirmedAt": 1683992954,
+            "categories": [
+                {
+                    "id": 31,
+                    "slug": "cdn",
+                    "name": "CDN"
+                }
+            ]
+        },
+        {
+            "slug": "buy-me-a-coffee",
+            "name": "Buy me a coffee",
+            "versions": [],
+            "trafficRank": 10,
+            "confirmedAt": 1683508981,
+            "categories": [
+                {
+                    "id": 5,
+                    "slug": "widgets",
+                    "name": "Widgets"
+                },
+                {
+                    "id": 111,
+                    "slug": "fundraising-donations",
+                    "name": "Fundraising & donations"
+                }
+            ]
+        },
+        {
+            "slug": "sentry",
+            "name": "Sentry",
+            "versions": [],
+            "trafficRank": 20,
+            "confirmedAt": 1685585061,
+            "categories": [
+                {
+                    "id": 13,
+                    "slug": "issue-trackers",
+                    "name": "Issue trackers"
+                }
+            ]
+        },
+        {
+            "slug": "zendesk",
+            "name": "Zendesk",
+            "versions": [],
+            "trafficRank": 14,
+            "confirmedAt": 1685585061,
+            "categories": [
+                {
+                    "id": 4,
+                    "slug": "documentation",
+                    "name": "Documentation"
+                },
+                {
+                    "id": 13,
+                    "slug": "issue-trackers",
+                    "name": "Issue trackers"
+                },
+                {
+                    "id": 52,
+                    "slug": "live-chat",
+                    "name": "Live chat"
+                }
+            ]
+        },
+        {
+            "slug": "stripe",
+            "name": "Stripe",
+            "versions": [],
+            "trafficRank": 11,
+            "confirmedAt": 1685585061,
+            "categories": [
+                {
+                    "id": 41,
+                    "slug": "payment-processors",
+                    "name": "Payment processors"
+                }
+            ]
+        },
+        {
+            "slug": "prototype",
+            "name": "Prototype",
+            "cpe": "cpe:2.3:a:prototypejs:prototype:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 11,
+            "confirmedAt": 1683230330,
+            "categories": [
+                {
+                    "id": 12,
+                    "slug": "javascript-frameworks",
+                    "name": "JavaScript frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "correos",
+            "name": "Correos",
+            "versions": [],
+            "trafficRank": 11,
+            "confirmedAt": 1683238929,
+            "categories": [
+                {
+                    "id": 99,
+                    "slug": "shipping-carriers",
+                    "name": "Shipping carriers"
+                }
+            ]
+        },
+        {
+            "slug": "vimeo",
+            "name": "Vimeo",
+            "versions": [],
+            "trafficRank": 12,
+            "confirmedAt": 1685622526,
+            "categories": [
+                {
+                    "id": 14,
+                    "slug": "video-players",
+                    "name": "Video players"
+                }
+            ]
+        },
+        {
+            "slug": "marko",
+            "name": "Marko",
+            "versions": [],
+            "trafficRank": 13,
+            "confirmedAt": 1682948537,
+            "categories": [
+                {
+                    "id": 18,
+                    "slug": "web-frameworks",
+                    "name": "Web frameworks"
+                },
+                {
+                    "id": 66,
+                    "slug": "ui-frameworks",
+                    "name": "UI frameworks"
+                }
+            ]
+        },
+        {
+            "slug": "lottiefiles",
+            "name": "LottieFiles",
+            "versions": [],
+            "trafficRank": 23,
+            "confirmedAt": 1685601621,
+            "categories": [
+                {
+                    "id": 19,
+                    "slug": "miscellaneous",
+                    "name": "Miscellaneous"
+                }
+            ]
+        },
+        {
+            "slug": "node-js",
+            "name": "Node.js",
+            "cpe": "cpe:2.3:a:nodejs:node.js:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 13,
+            "confirmedAt": 1682948537,
+            "categories": [
+                {
+                    "id": 27,
+                    "slug": "programming-languages",
+                    "name": "Programming languages"
+                }
+            ]
+        },
+        {
+            "slug": "lever",
+            "name": "Lever",
+            "versions": [],
+            "trafficRank": 32,
+            "confirmedAt": 1685842732,
+            "categories": [
+                {
+                    "id": 101,
+                    "slug": "recruitment-staffing",
+                    "name": "Recruitment & staffing"
+                }
+            ]
+        },
+        {
+            "slug": "asana",
+            "name": "Asana",
+            "versions": [],
+            "trafficRank": 17,
+            "confirmedAt": 1685842732,
+            "categories": [
+                {
+                    "id": 13,
+                    "slug": "issue-trackers",
+                    "name": "Issue trackers"
+                }
+            ]
+        },
+        {
+            "slug": "google-tag-manager",
+            "name": "Google Tag Manager",
+            "versions": [],
+            "trafficRank": 19,
+            "confirmedAt": 1682915153,
+            "categories": [
+                {
+                    "id": 42,
+                    "slug": "tag-managers",
+                    "name": "Tag managers"
+                }
+            ]
+        },
+        {
+            "slug": "google-charts",
+            "name": "Google Charts",
+            "versions": [],
+            "trafficRank": 19,
+            "confirmedAt": 1682915153,
+            "categories": [
+                {
+                    "id": 25,
+                    "slug": "javascript-graphics",
+                    "name": "JavaScript graphics"
+                }
+            ]
+        },
+        {
+            "slug": "syntaxhighlighter",
+            "name": "SyntaxHighlighter",
+            "versions": [],
+            "trafficRank": 20,
+            "confirmedAt": 1682911277,
+            "categories": [
+                {
+                    "id": 19,
+                    "slug": "miscellaneous",
+                    "name": "Miscellaneous"
+                }
+            ]
+        },
+        {
+            "slug": "paypal",
+            "name": "PayPal",
+            "cpe": "cpe:2.3:a:paypal:paypal:*:*:*:*:*:*:*:*",
+            "versions": [],
+            "trafficRank": 20,
+            "confirmedAt": 1683089344,
+            "categories": [
+                {
+                    "id": 41,
+                    "slug": "payment-processors",
+                    "name": "Payment processors"
+                }
+            ]
+        },
+        {
+            "slug": "xregexp",
+            "name": "XRegExp",
+            "versions": [
+                "2.0.0"
+            ],
+            "trafficRank": 20,
+            "confirmedAt": 1682911277,
+            "categories": [
+                {
+                    "id": 59,
+                    "slug": "javascript-libraries",
+                    "name": "JavaScript libraries"
+                }
+            ]
+        },
+        {
+            "slug": "twitter-emoji-twemoji",
+            "name": "Twitter Emoji (Twemoji)",
+            "versions": [
+                "14.0.2"
+            ],
+            "trafficRank": 20,
+            "confirmedAt": 1682911277,
+            "categories": [
+                {
+                    "id": 17,
+                    "slug": "font-scripts",
+                    "name": "Font scripts"
+                }
+            ]
+        },
+        {
+            "slug": "hotjar",
+            "name": "Hotjar",
+            "versions": [],
+            "trafficRank": 20,
+            "confirmedAt": 1682911277,
+            "categories": [
+                {
+                    "id": 10,
+                    "slug": "analytics",
+                    "name": "Analytics"
+                }
+            ]
+        },
+        {
+            "slug": "ups",
+            "name": "UPS",
+            "versions": [],
+            "trafficRank": 23,
+            "confirmedAt": 1683061784,
+            "categories": [
+                {
+                    "id": 99,
+                    "slug": "shipping-carriers",
+                    "name": "Shipping carriers"
+                }
+            ]
+        },
+        {
+            "slug": "usps",
+            "name": "USPS",
+            "versions": [],
+            "trafficRank": 50,
+            "confirmedAt": 1685592033,
+            "categories": [
+                {
+                    "id": 99,
+                    "slug": "shipping-carriers",
+                    "name": "Shipping carriers"
+                }
+            ]
+        },
+        {
+            "slug": "sift",
+            "name": "Sift",
+            "versions": [],
+            "trafficRank": 30,
+            "confirmedAt": 1685592033,
+            "categories": [
+                {
+                    "id": 10,
+                    "slug": "analytics",
+                    "name": "Analytics"
+                },
+                {
+                    "id": 16,
+                    "slug": "security",
+                    "name": "Security"
+                }
+            ]
+        },
+        {
+            "slug": "youtube",
+            "name": "YouTube",
+            "versions": [],
+            "trafficRank": 36,
+            "confirmedAt": 1682931693,
+            "categories": [
+                {
+                    "id": 14,
+                    "slug": "video-players",
+                    "name": "Video players"
+                }
+            ]
+        }
+    ],
+    "ipCountry": "IN",
+    "language": "en",
+    "description": "Create a free website or build a blog with ease on WordPress.com. Dozens of free, customizable, mobile-ready designs and themes. Free hosting and support.",
+    "responsive": true,
+    "certInfo.issuer": "Sectigo ECC Domain Validation Secure Server CA",
+    "certInfo.protocol": "TLS 1.3",
+    "certInfo.validTo": 1703462399,
+    "dns.spf": true,
+    "dns.dmarc": true,
+    "https": true,
+    "createdAt": 1620174524,
+    "updatedAt": 1683913216,
+    "crawlAttemptedAt": 1683913216,
+    "languages": [
+        "en",
+        "fr_fr",
+        "fa_ir",
+        "en_us",
+        "en_gb",
+        "pt_br",
+        "es_mx",
+        "es_es"
+    ],
+    "ipCountries": [
+        "IN"
+    ]
+}
