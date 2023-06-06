@@ -1,5 +1,6 @@
 from datetime import datetime
 from json import dumps, loads
+import json
 from typing import Any, Dict, List
 from warnings import warn
 
@@ -355,11 +356,13 @@ class WappalyzerRequestView(APIView):
     def post(self, request, *args, **kwargs):
 
         url = request.GET.get('url')
-        wapp_api_url = 'http://localhost:4000/run' if os.environ.get('IN_CONTAINER', '0') == '0' else 'http://wapp-api:4000/run'
+        wapp_api_url = 'http://localhost:4000/run' \
+                if os.environ.get('IN_CONTAINER', '0') == '0' \
+                else 'http://wapp-api:4000/run'
 
-        data = requests.get(
+        scan_result = requests.get(
             f'{wapp_api_url}?url={url}',
             timeout=2.0,
         )
 
-        return Response(data, status=HTTP_200_OK)
+        return Response(json.loads(scan_result.text), status=HTTP_200_OK)

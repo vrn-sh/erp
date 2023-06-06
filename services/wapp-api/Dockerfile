@@ -9,10 +9,9 @@ WORKDIR /app
 
 COPY ./wappalyzer .
 
-RUN yarn install
+RUN yarn install && yarn run link
 
 WORKDIR /server
-
 COPY requirements.txt .
 RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
