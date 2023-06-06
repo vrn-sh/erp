@@ -13,7 +13,7 @@ def read_root():
     return {"ping": "pong"}
 
 
-@api.post("/run")
+@api.get("/run")
 def run_wappalyzer(
         url: str,
     ):
