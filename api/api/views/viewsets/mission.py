@@ -3,6 +3,9 @@ from json import dumps, loads
 from typing import Any, Dict, List
 from warnings import warn
 
+import os
+import requests
+
 from drf_yasg import openapi
 from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
@@ -188,7 +191,7 @@ class CrtShView(APIView):
 
             # return json parsed data
             return Response({'dump': certificates}, status=status)
-        
+
         status = HTTP_201_CREATED
         if self.has_crtsh_error(loads(crt_object.dump)):
             status = HTTP_500_INTERNAL_SERVER_ERROR
@@ -343,3 +346,25 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
 
         request.data["last_updated_by"] = request.user.id
         return super().update(request, *args, **kwargs)
+
+
+class WappalyzerRequestView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated, IsPentester]
+
+    def post(self, request, *args, **kwargs):
+
+        sets = 'security,meta,locale,events'
+        urls = request.GET.get('urls')
+
+        # TODO(djnn): add rate-limit per user per day
+
+        data = requests.get(
+            f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
+            timeout=2.0,
+            headers={
+                "x-api-key": os.environ['WAPPALYZER_API_KEY'],
+            }
+        )
+
+        return Response(data.json(), status=HTTP_200_OK)
