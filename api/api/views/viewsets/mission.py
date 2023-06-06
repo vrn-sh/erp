@@ -350,19 +350,15 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
 
 
 class WappalyzerRequestView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
 
         url = request.GET.get('url')
-        wapp_api_url = 'http://localhost:4000/run' \
+        wapp_api_url = 'http://0.0.0.0:4000/run' \
                 if os.environ.get('IN_CONTAINER', '0') == '0' \
                 else 'http://wapp-api:4000/run'
 
-        scan_result = requests.get(
-            f'{wapp_api_url}?url={url}',
-            timeout=2.0,
-        )
-
-        return Response(json.loads(scan_result.text), status=HTTP_200_OK)
+        result = requests.get(f'{wapp_api_url}?url={url}', timeout=20.0)
+        return Response(json.loads(result.text))
