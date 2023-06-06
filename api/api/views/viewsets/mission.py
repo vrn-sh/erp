@@ -354,9 +354,8 @@ class WappalyzerRequestView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
-
         url = request.GET.get('url')
-        wapp_api_url = 'http://0.0.0.0:4000/run' \
+        wapp_api_url = 'http://localhost:4000/run' \
                 if os.environ.get('IN_CONTAINER', '0') == '0' \
                 else 'http://wapp-api:4000/run'
 
