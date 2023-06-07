@@ -34,7 +34,7 @@ jobs:
 
           git pull origin current
 
-          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env down
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S rm -rf ./volumes && docker system prune -af
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env up -d
 
@@ -58,6 +58,6 @@ jobs:
           # FIXME(clara): main address should come from domain name, not this
           find . -type f -name "config.ts" -print0 | xargs -0 sed -i "s/voron/v0ron/g"
 
-          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env down
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S rm -rf ./volumes && docker system prune -af # will be removed once ready for production
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env up -d

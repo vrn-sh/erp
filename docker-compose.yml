@@ -75,7 +75,7 @@ services:
 
   s3:
     image: quay.io/minio/minio:latest
-    command: server --console-address ":${S3_CONSOLE_PORT}" /data
+    command: server --console-address ":9001" /data
     ports:
       - "127.0.0.1:${S3_PORT}:9000"
       - "127.0.0.1:${S3_CONSOLE_PORT}:9001"

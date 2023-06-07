@@ -111,7 +111,7 @@ DEBUG = is_localhost(DOMAIN_NAME)                                           # re
 ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 
 CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
-CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1'            # returns true if not in production
+CORS_ORIGIN_ALLOW_ALL = is_localhost(DOMAIN_NAME)                           # returns true if not in production
 
 
 
