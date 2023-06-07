@@ -22,7 +22,7 @@ services:
   db:
     image: postgres:latest
     ports:
-      - "127.0.0.1:${DATABASE_PORT}:5432"
+      - "127.0.0.1:${DATABASE_PORT}:${POSTGRES_PORT}"
     env_file:
       - ./api/.env
     environment:

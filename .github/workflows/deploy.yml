@@ -34,12 +34,9 @@ jobs:
 
           git pull origin current
 
-          set -a
-          source api/.env
-
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S rm -rf ./volumes && docker system prune -af
-          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose up -d
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env up -d
 
     - name: deploy to QA (if branch == next)
       uses: appleboy/ssh-action@master
@@ -61,9 +58,6 @@ jobs:
           # FIXME(clara): main address should come from domain name, not this
           find . -type f -name "config.ts" -print0 | xargs -0 sed -i "s/voron/v0ron/g"
 
-          set -a
-          source api/.env
-
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose down
           printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S rm -rf ./volumes && docker system prune -af # will be removed once ready for production
-          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose up -d
+          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env up -d

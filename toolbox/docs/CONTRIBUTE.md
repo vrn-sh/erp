@@ -19,6 +19,9 @@ depending on your OS.
 > If you're using `asdf` to manage your programs, you can go to the root repository folder
 > and type `asdf install` to install the correct language version automatically
 
+> You can now use docker-compose to run the application locally!
+>
+> To do so, just run `docker compose -f docker-compose-dev.yml up` !
 
 ### First install
 On your first install, you can run (assuming you have `bash` installed):
@@ -53,7 +56,8 @@ You can then run the application (assuming it is installed)
 
 ```bash
 # load .env variables
-export $(grep -v '^#' .env | xargs)
+set -a
+source .env
 
 # load virtual env
 . ~/.local/venv_core/bin/activate
@@ -66,6 +70,12 @@ python manage.py migrate
 # run the back-end on port 8000
 python manage.py runserver 8000
 ```
+
+### Running [min.io](https://min.io)
+
+You can either set the address of an S3 bucket, or use `minio` as we do.
+To do so, please have a look at the (very well made) docs for MinIO & follow the
+relevant guide.
 
 ### Footnotes
 
