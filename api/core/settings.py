@@ -104,10 +104,10 @@ def is_localhost(host: str) -> bool:
     return 'localhost' in host or '127.0.0.1' in host
 
 
-DOMAIN_NAME = os.environ.get('DOMAIN_NAME', 'localhost:8080')
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME', f'localhost:{os.environ["REVERSE_PROXY_PORT"]}')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
-DEBUG = os.environ.get('PRODUCTION', '0') != '1'                            # returns true if not in production
+DEBUG = is_localhost(DOMAIN_NAME)                                           # returns true if not in production
 ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 
 CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
