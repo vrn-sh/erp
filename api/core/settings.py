@@ -104,14 +104,14 @@ def is_localhost(host: str) -> bool:
     return 'localhost' in host or '127.0.0.1' in host
 
 
-DOMAIN_NAME = os.environ.get('DOMAIN_NAME', 'localhost:8080')
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME', f'localhost:{os.environ["REVERSE_PROXY_PORT"]}')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
-DEBUG = os.environ.get('PRODUCTION', '0') != '1'                            # returns true if not in production
+DEBUG = is_localhost(DOMAIN_NAME)                                           # returns true if not in production
 ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 
 CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
-CORS_ORIGIN_ALLOW_ALL = os.environ.get('PRODUCTION', '0') != '1'            # returns true if not in production
+CORS_ORIGIN_ALLOW_ALL = is_localhost(DOMAIN_NAME)                           # returns true if not in production
 
 
 
@@ -120,7 +120,7 @@ if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0
     # S3 configuration
     AWS_ACCESS_KEY_ID = os.environ['MINIO_ROOT_USER']
     AWS_SECRET_ACCESS_KEY = os.environ['MINIO_ROOT_PASSWORD']
-    AWS_S3_ENDPOINT_URL = "s3:9000"
+    AWS_S3_ENDPOINT_URL = os.environ['MINIO_HOST']
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_FILE_OVERWRITE = False
@@ -130,7 +130,7 @@ if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-            "LOCATION": "memcached:11211",
+            "LOCATION": f"memcached:{os.environ["CACHE_PORT"]}",
         }
     }
 
