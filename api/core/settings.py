@@ -130,7 +130,7 @@ if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-            "LOCATION": f"memcached:{os.environ["CACHE_PORT"]}",
+            "LOCATION": f"memcached:{os.environ.get('CACHE_PORT', '11211')}",
         }
     }
 

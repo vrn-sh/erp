@@ -2,7 +2,7 @@ name: deploy to prod or qa
 
 on:
   workflow_run:
-    workflows: ["frontend-lint", "api-unit-tests", "docker-compose-test"]
+    workflows: ["docker-compose-test"]
     branches: [current, next]
     types:
       - completed
