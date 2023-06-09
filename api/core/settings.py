@@ -40,14 +40,6 @@ REST_KNOX = {
   'TOKEN_TTL': timedelta(hours=12),
 }
 
-# django-storages configuration
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3Storage",
-    },
-}
-
-
 # openapi generator config
 SWAGGER_SETTINGS = {
    'SECURITY_DEFINITIONS': {
@@ -83,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'api.management.middlewares.set_secure_headers',
     'corsheaders.middleware.CorsMiddleware',
 ]
 
@@ -107,18 +100,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+def is_localhost(host: str) -> bool:
+    return 'localhost' in host or '127.0.0.1' in host
 
-if os.environ.get('PRODUCTION', '0') == '1':
+
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME', f'localhost:{os.environ["REVERSE_PROXY_PORT"]}')
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
+DEBUG = is_localhost(DOMAIN_NAME)                                           # returns true if not in production
+ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
+
+CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
+CORS_ORIGIN_ALLOW_ALL = is_localhost(DOMAIN_NAME)                           # returns true if not in production
+
+
+
+if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0') == '1':
 
     # S3 configuration
-    # MinIO uses S3-compatible API, so django-storages uses
-    # the same field for both
     AWS_ACCESS_KEY_ID = os.environ['MINIO_ROOT_USER']
     AWS_SECRET_ACCESS_KEY = os.environ['MINIO_ROOT_PASSWORD']
-    AWS_STORAGE_BUCKET_NAME = "rootbucket"
-    AWS_S3_ENDPOINT_URL = "s3:9000"
+    AWS_S3_ENDPOINT_URL = os.environ['MINIO_HOST']
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_FILE_OVERWRITE = False
@@ -128,10 +130,9 @@ if os.environ.get('PRODUCTION', '0') == '1':
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-            "LOCATION": "memcached:11211",
+            "LOCATION": f"memcached:{os.environ.get('CACHE_PORT', '11211')}",
         }
     }
-
 
     DATABASES = {
         'default': {
@@ -143,14 +144,6 @@ if os.environ.get('PRODUCTION', '0') == '1':
             'PORT': os.environ.get('POSTGRES_PORT'),
         }
     }
-    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-    DEBUG = False
-    ALLOWED_HOSTS = ['server', 'localhost', os.environ["DOMAIN_NAME"]]
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        f'{os.environ.get("DOMAIN_NAME")}',
-    ]
-    CORS_ORIGIN_ALLOW_ALL = False
-    CORS_ALLOW_CREDENTIALS = False
 
 elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
     DATABASES = {
@@ -163,13 +156,6 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
             'PORT': '',
         }
     }
-    SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
-    DEBUG = True
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOWED_ORIGIN = [
-        ["*"]
-    ]
-    CORS_ORIGIN_ALLOW_ALL = True
 
     # cache configuration
     CACHES = {
@@ -189,13 +175,6 @@ elif os.environ.get('CI') and os.environ.get('CI')  == '1':
             'PORT': '',
         }
     }
-    SECRET_KEY = 'django-insecure-234kj23h4jkj2134ho20d109fu3f0943f03hg34g094318943f'
-    DEBUG = True
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOWED_ORIGIN = [
-        ["*"]
-    ]
-    CORS_ORIGIN_ALLOW_ALL = True
 
     # cache configuration
     CACHES = {
@@ -215,13 +194,6 @@ else:
             'PORT': '',
         }
     }
-    SECRET_KEY = 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)'
-    DEBUG = True
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOWED_ORIGIN = [
-        ["*"]
-    ]
-    CORS_ORIGIN_ALLOW_ALL = True
 
     # cache configuration
     CACHES = {

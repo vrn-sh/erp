@@ -49,14 +49,15 @@ class GenerateReportView(APIView):
 
     @swagger_auto_schema(
         operation_description="Get the mission report generated with the mission' data.",
-        manual_parameters=[openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            required=['mission'],
-            properties={
-                'mission': openapi.Schema(type=openapi.TYPE_INTEGER,
-                                          description="Id of mission"),
-            },
-        )],
+        manual_parameters=[
+            openapi.Parameter(
+                "mission",
+                "path",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+                description="id of the mission"
+            )
+        ],
         responses={
             "302": openapi.Response(
                 description="Redirection to the minio storage of the pdf file.",
@@ -67,7 +68,7 @@ class GenerateReportView(APIView):
     )
     def get(self, request):
 
-        mission_id = request.GET.get("mission")
+        mission_id = request.data.get("mission")
         if not mission_id:
             return Response({
                 'error': 'No mission id provided. Report couldn\'t be generated',

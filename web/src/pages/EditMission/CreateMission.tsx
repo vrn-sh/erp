@@ -183,6 +183,7 @@ export default function CreateMission() {
                                 className="form-control"
                                 value={label}
                                 onChange={(e) => setLabel(e.target.value)}
+                                onKeyDown={setScopes}
                             />
                         </div>
                         <Grid

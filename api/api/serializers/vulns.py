@@ -91,6 +91,9 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
             # TODO(djnn): add error message (probably do the checks in viewset)
             mime_type = self.get_mime_type(image_data)
             image_data = self.get_image_data(image_data)
+
+            warn(f'mime_type: {mime_type} -> data: {data}')
+
             if not mime_type or not image_data:
                 continue
 
@@ -99,13 +102,18 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
             s3_client = S3Bucket()
             image_name = f'{uuid.uuid4().hex}'
+
+            warn(f'image name: {image_name}')
+
             iostream = BytesIO(image_data)
-            s3_client.upload_stream(
+            resp = s3_client.upload_stream(
                 'rootbucket',
                 image_name,
                 iostream,
                 f'image/{mime_type}',
             )
+
+            warn(f'response status: {resp}')
 
             images.append(image_name)
         internal_value['images'] = images
