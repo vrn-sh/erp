@@ -15,6 +15,7 @@ from api.views.report import GenerateReportView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView
+from api.views.viewsets.search import SearchView
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -45,6 +46,7 @@ urlpatterns = [
     path(r'login', LoginView.as_view(), name='knox_login'),
     path('logout', LogoutView.as_view(), name='knox_logout'),
     path('ping', PingView.as_view()),
+    path('search', SearchView.as_view()),
     path('confirm', ConfirmAccountView.as_view()),
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
