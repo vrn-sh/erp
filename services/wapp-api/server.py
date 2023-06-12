@@ -7,7 +7,7 @@ import subprocess as sp
 
 api = FastAPI()
 
-@api.get("/run")
+@api.post("/run")
 def run_wappalyzer(url: str):
     """ Runs wappalyzer free cli against one url """
     process = sp.run(['node', './wappalyzer/src/drivers/npm/cli.js', url], capture_output=True)

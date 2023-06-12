@@ -359,5 +359,5 @@ class WappalyzerRequestView(APIView):
                 if os.environ.get('IN_CONTAINER', '0') == '0' \
                 else 'http://wapp-api:4000/run'
 
-        result = requests.get(f'{wapp_api_url}?url={url}', timeout=20.0)
-        return Response(json.loads(result.text))
+        result = requests.post(f'{wapp_api_url}?url={url}', timeout=20.0)
+        return Response(result.json())
