@@ -1,0 +1,136 @@
+{
+    "urls":{
+        "https://djnn.sh/":{
+            "status":200
+        }
+    },
+    "technologies":[
+    {
+        "slug":"fly-io",
+        "name":"Fly.io",
+        "description":"Fly is a platform for running full stack apps and databases.",
+        "confidence":100,
+        "version":null,
+        "icon":"Fly.io.png",
+        "website":"https://fly.io",
+        "cpe":null,
+        "categories":[{
+            "id":62,
+            "slug":"paas",
+            "name":"PaaS"
+        }],
+        "rootPath":true
+    },
+    {
+        "slug":"cloudflare-rocket-loader",
+        "name":"Cloudflare Rocket Loader",
+        "description":"Cloudflare Rocket Loader is responsible for prioritising over website's content by delaying the loading of Javascript until rendering.",
+        "confidence":100,
+        "version":null,
+        "icon":"CloudFlare.svg",
+        "website":"https://support.cloudflare.com/hc/en-us/articles/200168056-Understanding-Rocket-Loader",
+        "cpe":null,
+        "categories":[{
+            "id":92,
+            "slug":"performance",
+            "name":"Performance"
+        }],
+        "rootPath":true
+    },
+    {
+        "slug":"cdnjs",
+        "name":"cdnjs",
+        "description":"cdnjs is a free distributed JS library delivery service.",
+        "confidence":100,
+        "version":null,
+        "icon":"cdnjs.svg",
+        "website":"https://cdnjs.com",
+        "cpe":null,
+        "categories":[{
+            "id":31,
+            "slug":"cdn",
+            "name":"CDN"
+        }],
+        "rootPath":true
+    },
+    {
+        "slug":"cloudflare",
+        "name":"Cloudflare",
+        "description":"Cloudflare is a web-infrastructure and website-security company, providing content-delivery-network services, DDoS mitigation, Internet security, and distributed domain-name-server services.",
+        "confidence":100,
+        "version":null,
+        "icon":"CloudFlare.svg",
+        "website":"http://www.cloudflare.com",
+        "cpe":null,
+        "categories":[{
+            "id":31,
+            "slug":"cdn",
+            "name":"CDN"
+        }],
+        "rootPath":true
+    },
+    {
+        "slug":"prism",
+        "name":"Prism",
+        "description":"Prism is an extensible syntax highlighter.",
+        "confidence":100,
+        "version":null,
+        "icon":"Prism.svg",
+        "website":"http://prismjs.com",
+        "cpe":null,
+        "categories":[{
+            "id":19,
+            "slug":"miscellaneous",
+            "name":"Miscellaneous"
+        }],
+        "rootPath":true
+    },
+    {
+        "slug":"rss",
+        "name":"RSS",
+        "description":"RSS is a family of web feed formats used to publish frequently updated works—such as blog entries, news headlines, audio, and video—in a standardized format.",
+        "confidence":100,
+        "version":null,
+        "icon":"RSS.svg",
+        "website":"https://www.rssboard.org/rss-specification",
+        "cpe":null,
+        "categories":[{
+            "id":19,
+            "slug":"miscellaneous",
+            "name":"Miscellaneous"
+        }],
+        "rootPath":true
+    },
+    {
+        "slug":"pwa",
+        "name":"PWA",
+        "description":"Progressive Web Apps (PWAs) are web apps built and enhanced with modern APIs to deliver enhanced capabilities, reliability, and installability while reaching anyone, anywhere, on any device, all with a single codebase.",
+        "confidence":100,
+        "version":null,
+        "icon":"PWA.svg",
+        "website":"https://web.dev/progressive-web-apps/",
+        "cpe":null,
+        "categories":[{
+            "id":19,
+            "slug":"miscellaneous",
+            "name":"Miscellaneous"
+        }],
+        "rootPath":true
+    },
+    {
+        "slug":"http-3",
+        "name":"HTTP/3",
+        "description":"HTTP/3 is the third major version of the Hypertext Transfer Protocol used to exchange information on the World Wide Web.",
+        "confidence":100,
+        "version":null,
+        "icon":"HTTP3.svg",
+        "website":"https://httpwg.org/",
+        "cpe":null,
+        "categories": [{
+            "id":19,
+            "slug":"miscellaneous",
+            "name":"Miscellaneous"
+        }],
+        "rootPath":true
+    }
+]}

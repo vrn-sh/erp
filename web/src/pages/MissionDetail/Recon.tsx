@@ -13,11 +13,9 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import * as AiIcons from 'react-icons/ai';
 import config from '../../config';
 import AddNMAP from './AddNMAP';
-// import R from '../../assets/strings/en/recon.json';
-import wappa from '../../assets/strings/en/wappa.json';
+import wappa from '../../assets/strings/en/wappa_test.json';
 
 export interface IRecon {
     id: number;
@@ -34,37 +32,33 @@ export interface IRecon {
 export interface ITech {
     tech: {
         name: string[];
+        description: string[];
         category: string;
+        website: string[];
     }[];
 }
 
 export interface IWapp {
-    url: string;
+    urls: {
+        [Key: string]: {
+            status: number;
+        };
+    };
     technologies: {
         slug: string;
         name: string;
-        versions: string[];
-        trafficRank: number;
-        confirmedAt: number;
+        description: string;
+        version: null | string;
+        icon: string;
+        website: string;
+        cpe: null | string;
         categories: {
             id: number;
             slug: string;
             name: string;
         }[];
+        rootPath: boolean;
     }[];
-    description: string;
-    ipCountry: string;
-    language: string;
-    responsive: boolean;
-    'certInfo.protocol': string;
-    'certInfo.validTo': number;
-    'certInfo.issuer': string;
-    'dns.spf': boolean;
-    'dns.dmarc': boolean;
-    https: boolean;
-    createdAt: number;
-    updatedAt: number;
-    languages: string[];
 }
 
 export default function Recon(idMission: any) {
@@ -75,21 +69,10 @@ export default function Recon(idMission: any) {
     });
     const [wappDomain, setWappDomain] = useState('');
     const [wappRes, setWappRes] = useState<IWapp>({
-        url: '',
+        urls: {
+            example: { status: 200 },
+        },
         technologies: [],
-        description: '',
-        ipCountry: '',
-        language: '',
-        responsive: false,
-        'certInfo.protocol': '',
-        'certInfo.validTo': 0,
-        'certInfo.issuer': '',
-        'dns.spf': false,
-        'dns.dmarc': false,
-        https: false,
-        createdAt: 0,
-        updatedAt: 0,
-        languages: [],
     });
     const [tech, setTech] = useState<ITech>({
         tech: [],
@@ -135,38 +118,47 @@ export default function Recon(idMission: any) {
         return -1;
     };
 
-    const getWappa = async () => {
+    const getTech = (w: any) => {
         const tab = [];
-        for (let i = 0; i < wappRes.technologies.length; i += 1) {
-            const tmp = wappRes.technologies[i];
+        for (let i = 0; i < w.technologies.length; i += 1) {
+            const tmp = w.technologies[i];
             for (let j = 0; j < tmp.categories.length; j += 1) {
                 const checked = findCategory(tab, tmp.categories[j].name);
                 if (checked > 0) {
                     tab[checked].name.push(tmp.name);
+                    tab[checked].website.push(tmp.website);
+                    tab[checked].description.push(tmp.description);
                 } else
                     tab.push({
                         name: [tmp.name],
+                        description: [tmp.description],
                         category: tmp.categories[j].name,
+                        website: [tmp.website],
                     });
             }
         }
         tech.tech = tab;
-        await axios
-            .get(
-                `https://api.wappalyzer.com/v2/lookup/?urls=http://wordpress.com&sets=security,meta,locale,events`,
-                {
-                    headers: {
-                        'x-api-key': 'pCQm2CSmQS9rVR8wFzLna6tWwPrf7Dyz1wYZOR9r',
-                    },
-                }
-            )
+        setTech(tech);
+    };
+
+    const getWappa = async () => {
+        await axios(`${config.apiUrl}/wappa?url=${wappDomain}`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Token ${Cookies.get('Token')}`,
+            },
+            maxBodyLength: Infinity,
+        })
             .then((data) => {
-                setWappRes(data.data[0]);
-                console.log("Here is the api data:")
-                console.log(data.data[0]);
+                setWappRes(data.data);
+                getTech(wappa);
+                console.log('Here is the api data:');
+                console.log(data);
             })
             .catch((e) => {
                 setWappRes(wappa);
+                getTech(wappa);
                 console.log(e);
             });
     };
@@ -195,6 +187,10 @@ export default function Recon(idMission: any) {
     useEffect(() => {
         getMission();
     }, []);
+
+    useEffect(() => {
+        getTech(wappRes);
+    }, [wappRes]);
 
     return (
         <>
@@ -418,11 +414,9 @@ export default function Recon(idMission: any) {
 
                     <div className="wappa_res_container">
                         <div className="wappa_res_info">
-                            <h4>{wappRes.url}</h4>
-                            <h5>Description</h5>
-                            <p>{wappRes.description}</p>
+                            <h4>{wappDomain}</h4>
                         </div>
-                        <div className="wappa_res_info">
+                        {/* <div className="wappa_res_info">
                             <h5>Security</h5>
                             <div className="wappa_row">
                                 <div className="md-5">
@@ -446,9 +440,9 @@ export default function Recon(idMission: any) {
                                     <p>{wappRes['dns.dmarc']}</p>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
-                        <div className="wappa_res_info">
+                        {/* <div className="wappa_res_info">
                             <h5>Local</h5>
                             <h6>Ip country</h6>
                             <p>{wappRes.ipCountry}</p>
@@ -462,31 +456,34 @@ export default function Recon(idMission: any) {
                                     </p>
                                 );
                             })}
-                        </div>
+                        </div> */}
 
-                        <div className="wappa_res_info">
-                            <h5>Technologie stacks</h5>
-                            {tech.tech.map((o) => {
-                                return (
-                                    <>
-                                        <h6>{o.category}</h6>
-                                        {o.name.map((n, i) => {
-                                            return (
-                                                <p
-                                                    style={{
-                                                        display: 'inline',
-                                                    }}
-                                                >
-                                                    {i === o.name.length - 1
-                                                        ? `${n}`
-                                                        : `${n}, `}
-                                                </p>
-                                            );
-                                        })}
-                                    </>
-                                );
-                            })}
-                        </div>
+                        {tech.tech.length > 1 ? (
+                            <div className="wappa_res_info">
+                                <h5>Technologie stacks</h5>
+                                {tech.tech.map((o) => {
+                                    return (
+                                        <>
+                                            <h6>{o.category}</h6>
+                                            {o.name.map((n, i) => {
+                                                return (
+                                                    <p>
+                                                        <a
+                                                            href={o.website[i]}
+                                                            className="wappa-tech-title"
+                                                        >
+                                                            {n}
+                                                        </a>
+                                                        : {o.description[i]}
+                                                    </p>
+                                                );
+                                            })}
+                                            <br />
+                                        </>
+                                    );
+                                })}
+                            </div>
+                        ) : null}
                     </div>
                 </div>
             </div>
