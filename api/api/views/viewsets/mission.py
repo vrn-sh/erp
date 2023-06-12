@@ -11,6 +11,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
+from django.core.cache import cache
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 from api.models import Auth, Pentester
@@ -355,9 +356,21 @@ class WappalyzerRequestView(APIView):
 
     def post(self, request, *args, **kwargs):
         url = request.GET.get('url')
+
+        cached = cache.get(url)
+        if cached:
+            cache.set(f'WAPPALYZER-{url}', cached, 60 * 15)
+            return Response(cached)
+
         wapp_api_url = 'http://localhost:4000/run' \
                 if os.environ.get('IN_CONTAINER', '0') == '0' \
                 else 'http://wapp-api:4000/run'
 
         result = requests.post(f'{wapp_api_url}?url={url}', timeout=20.0)
-        return Response(result.json())
+        if result.status_code != 200:
+            return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        as_json = result.json()
+        cache.set(f'WAPPALYZER-{url}', as_json, 60 * 15)
+
+        return Response(as_json)
