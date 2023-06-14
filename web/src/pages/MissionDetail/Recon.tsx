@@ -3,6 +3,7 @@ import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import './Recon.scss';
 import * as IoIcons from 'react-icons/io';
+import * as AiIcons from 'react-icons/ai';
 import {
     Accordion,
     AccordionDetails,
@@ -15,7 +16,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import AddNMAP from './AddNMAP';
-import wappa from '../../assets/strings/en/wappa_test.json';
+import Feedbacks from '../../component/Feedback';
 
 export interface IRecon {
     id: number;
@@ -32,33 +33,37 @@ export interface IRecon {
 export interface ITech {
     tech: {
         name: string[];
-        description: string[];
         category: string;
-        website: string[];
     }[];
 }
 
 export interface IWapp {
-    urls: {
-        [Key: string]: {
-            status: number;
-        };
-    };
+    url: string;
+    description: string;
     technologies: {
         slug: string;
         name: string;
-        description: string;
-        version: null | string;
-        icon: string;
-        website: string;
-        cpe: null | string;
+        versions: string[];
+        trafficRank: number;
+        confirmedAt: number;
         categories: {
             id: number;
             slug: string;
             name: string;
         }[];
-        rootPath: boolean;
     }[];
+    ipCountry: string;
+    language: string;
+    responsive: boolean;
+    'certInfo.protocol': string;
+    'certInfo.validTo': number;
+    'certInfo.issuer': string;
+    'dns.spf': boolean;
+    'dns.dmarc': boolean;
+    https: boolean;
+    createdAt: number;
+    updatedAt: number;
+    languages: string[];
 }
 
 export default function Recon(idMission: any) {
@@ -68,11 +73,23 @@ export default function Recon(idMission: any) {
         nmap_runs: [],
     });
     const [wappDomain, setWappDomain] = useState('');
+    const [wappaOk, setWappaOk] = useState(false);
     const [wappRes, setWappRes] = useState<IWapp>({
-        urls: {
-            example: { status: 200 },
-        },
+        url: '',
         technologies: [],
+        description: '',
+        ipCountry: '',
+        language: '',
+        responsive: false,
+        'certInfo.protocol': '',
+        'certInfo.validTo': 0,
+        'certInfo.issuer': '',
+        'dns.spf': false,
+        'dns.dmarc': false,
+        https: false,
+        createdAt: 0,
+        updatedAt: 0,
+        languages: [],
     });
     const [tech, setTech] = useState<ITech>({
         tech: [],
@@ -88,6 +105,11 @@ export default function Recon(idMission: any) {
     const { id } = idMission;
     const isPentester = Cookies.get('Role') === '1';
     const [expanded, setExpanded] = React.useState<string | false>(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+    const [open, setOpen] = useState(false);
 
     const handleChange =
         (panel: string) =>
@@ -118,6 +140,10 @@ export default function Recon(idMission: any) {
         return -1;
     };
 
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
     const getTech = (w: any) => {
         const tab = [];
         for (let i = 0; i < w.technologies.length; i += 1) {
@@ -126,14 +152,10 @@ export default function Recon(idMission: any) {
                 const checked = findCategory(tab, tmp.categories[j].name);
                 if (checked > 0) {
                     tab[checked].name.push(tmp.name);
-                    tab[checked].website.push(tmp.website);
-                    tab[checked].description.push(tmp.description);
                 } else
                     tab.push({
                         name: [tmp.name],
-                        description: [tmp.description],
                         category: tmp.categories[j].name,
-                        website: [tmp.website],
                     });
             }
         }
@@ -141,8 +163,14 @@ export default function Recon(idMission: any) {
         setTech(tech);
     };
 
+    const close = () => {
+        setOpen(false);
+    };
+
     const getWappa = async () => {
-        await axios(`${config.apiUrl}/wappa?url=${wappDomain}`, {
+        setWappaOk(false);
+        setOpen(true);
+        await axios(`${config.apiUrl}/wappa?urls=${wappDomain}`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -151,14 +179,14 @@ export default function Recon(idMission: any) {
             maxBodyLength: Infinity,
         })
             .then((data) => {
-                setWappRes(data.data);
-                getTech(wappa);
-                console.log('Here is the api data:');
-                console.log(data);
+                setWappaOk(true);
+                setMessage('Succeed to search!', 'success');
+                setWappRes(data.data[0]);
+                getTech(data.data[0]);
             })
             .catch((e) => {
-                setWappRes(wappa);
-                getTech(wappa);
+                setWappaOk(false);
+                setMessage('Please enter a correct url!', 'error');
                 console.log(e);
             });
     };
@@ -406,87 +434,122 @@ export default function Recon(idMission: any) {
                         <button
                             type="button"
                             className="searchBtn wappa_search"
-                            onClick={getWappa}
+                            onClick={() => {
+                                getWappa();
+                            }}
                         >
                             Search
                         </button>
                     </div>
 
-                    <div className="wappa_res_container">
-                        <div className="wappa_res_info">
-                            <h4>{wappDomain}</h4>
-                        </div>
-                        {/* <div className="wappa_res_info">
-                            <h5>Security</h5>
-                            <div className="wappa_row">
-                                <div className="md-5">
-                                    <h6>Certificate protocol</h6>
-                                    <p>{wappRes['certInfo.protocol']}</p>
-                                    <h6>Certificate expire</h6>
-                                    <p>{wappRes['certInfo.validTo']}</p>
-                                </div>
-                                <div className="md-5">
-                                    <h6>SPF record</h6>
-                                    {wappRes['dns.spf'] === true ? (
-                                        <AiIcons.AiOutlineCheck
-                                            style={{ color: 'green' }}
-                                        />
-                                    ) : (
-                                        <AiIcons.AiOutlineClose
-                                            style={{ color: 'red' }}
-                                        />
-                                    )}
-                                    <h6>DMARC record</h6>
-                                    <p>{wappRes['dns.dmarc']}</p>
-                                </div>
-                            </div>
-                        </div> */}
-
-                        {/* <div className="wappa_res_info">
-                            <h5>Local</h5>
-                            <h6>Ip country</h6>
-                            <p>{wappRes.ipCountry}</p>
-                            <h6>Languages</h6>
-                            {wappRes.languages.map((langue, i) => {
-                                return (
-                                    <p style={{ display: 'inline' }}>
-                                        {i === wappRes.languages.length - 1
-                                            ? `${langue}`
-                                            : `${langue}, `}
-                                    </p>
-                                );
-                            })}
-                        </div> */}
-
-                        {tech.tech.length > 1 ? (
+                    {wappaOk ? (
+                        <div className="wappa_res_container">
                             <div className="wappa_res_info">
-                                <h5>Technologie stacks</h5>
-                                {tech.tech.map((o) => {
-                                    return (
-                                        <>
-                                            <h6>{o.category}</h6>
-                                            {o.name.map((n, i) => {
-                                                return (
-                                                    <p>
-                                                        <a
-                                                            href={o.website[i]}
-                                                            className="wappa-tech-title"
-                                                        >
-                                                            {n}
-                                                        </a>
-                                                        : {o.description[i]}
-                                                    </p>
-                                                );
-                                            })}
-                                            <br />
-                                        </>
-                                    );
-                                })}
+                                <h4
+                                    style={{
+                                        textAlign: 'center',
+                                        color: '#632add',
+                                    }}
+                                >
+                                    {wappRes.url}
+                                </h4>
+                                <h5>Description</h5>
+                                <p>{wappRes.description}</p>
                             </div>
-                        ) : null}
-                    </div>
+                            <div className="wappa_res_info">
+                                <h5>Security</h5>
+                                <div className="wappa_row">
+                                    <div className="md-5">
+                                        <h6>Certificate protocol</h6>
+                                        <p>{wappRes['certInfo.protocol']}</p>
+                                        <h6>Certificate expire</h6>
+                                        <p>{wappRes['certInfo.validTo']}</p>
+                                    </div>
+                                    <div className="md-5">
+                                        <h6>SPF record</h6>
+                                        {wappRes['dns.spf'] === true ? (
+                                            <AiIcons.AiOutlineCheck
+                                                style={{ color: 'green' }}
+                                            />
+                                        ) : (
+                                            <AiIcons.AiOutlineClose
+                                                style={{ color: 'red' }}
+                                            />
+                                        )}
+                                        <h6>DMARC record</h6>
+                                        {wappRes['dns.dmarc'] === true ? (
+                                            <AiIcons.AiOutlineCheck
+                                                style={{ color: 'green' }}
+                                            />
+                                        ) : (
+                                            <AiIcons.AiOutlineClose
+                                                style={{ color: 'red' }}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="wappa_res_info">
+                                <h5>Local</h5>
+                                <h6>Ip country</h6>
+                                <p>{wappRes.ipCountry}</p>
+                                <h6>Languages</h6>
+                                {wappaOk && wappRes
+                                    ? wappRes.languages.map((langue, i) => {
+                                          return (
+                                              <p style={{ display: 'inline' }}>
+                                                  {i ===
+                                                  wappRes.languages.length - 1
+                                                      ? `${langue}`
+                                                      : `${langue}, `}
+                                              </p>
+                                          );
+                                      })
+                                    : null}
+                            </div>
+
+                            {tech.tech.length > 1 ? (
+                                <div className="wappa_res_info">
+                                    <h5>Technologie stacks</h5>
+                                    {tech.tech.map((o) => {
+                                        return (
+                                            <>
+                                                <h6>{o.category}</h6>
+                                                {o.name.map((n, i) => {
+                                                    return (
+                                                        <p
+                                                            style={{
+                                                                display:
+                                                                    'inline',
+                                                            }}
+                                                        >
+                                                            {i ===
+                                                            o.name.length - 1
+                                                                ? `${n}`
+                                                                : `${n}, `}
+                                                        </p>
+                                                    );
+                                                })}
+                                            </>
+                                        );
+                                    })}
+                                </div>
+                            ) : null}
+                        </div>
+                    ) : (
+                        <h5 className="error_msg">Please enter a right url</h5>
+                    )}
                 </div>
             </div>
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    close={close}
+                    color={message.color}
+                    open={open}
+                />
+            )}
         </>
     );
 }
