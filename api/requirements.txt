@@ -17,3 +17,4 @@ sendgrid==6.10.0
 pymemcache==4.0.0
 pdfkit==1.0.0
 python-dateutil==2.8.2
+numpy==1.25.0
