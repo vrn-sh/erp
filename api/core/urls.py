@@ -12,6 +12,7 @@ from knox.views import LogoutView
 
 from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.report import GenerateReportView
+from api.views.hunter import HunterView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView
@@ -40,6 +41,7 @@ router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)
 router.register(r'nmap', NmapViewset)
 
+
 urlpatterns = [
     path(r'crtsh', CrtShView.as_view()),
     path(r'login', LoginView.as_view(), name='knox_login'),
@@ -49,5 +51,6 @@ urlpatterns = [
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path(r'download-report', GenerateReportView.as_view())
+    path(r'download-report', GenerateReportView.as_view()),
+    path(r'hunt', HunterView.as_view()),
 ] + router.urls
