@@ -1,7 +1,7 @@
 # Search across all models
 
 import numpy as np
-from rest_framework import viewsets
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -19,7 +19,7 @@ from api.models.mission import Mission
 from api.models.vulns import Vulnerability
 
 
-class SearchView(viewsets.ViewSet):
+class SearchView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -44,24 +44,6 @@ class SearchView(viewsets.ViewSet):
             )
         ]
     )
-
-
-    def fetch(self, model, query, user, search_managers=False):
-        if not query:
-            return None
-
-        filters = Q(name__icontains=query) | \
-                Q(description__icontains=query) | \
-                Q(impact__icontains=query) | \
-                Q(recommendation__icontains=query)
-
-        if user.is_superuser or (search_managers and model == Manager):
-            return model.objects.filter(filters)
-        elif hasattr(model, 'team'):
-            return model.objects.filter(filters, team__in=user.teams.all())
-        else:
-            return model.objects.none()
-
 
     def get(self, request):
         query = request.query_params.get('q', None)
@@ -92,3 +74,19 @@ class SearchView(viewsets.ViewSet):
         return Response({
             'results': results
         })
+
+    def fetch(self, model, query, user, search_managers=False):
+        if not query:
+            return None
+
+        filters = Q(name__icontains=query) | \
+                Q(description__icontains=query) | \
+                Q(impact__icontains=query) | \
+                Q(recommendation__icontains=query)
+
+        if user.is_superuser or (search_managers and model == Manager):
+            return model.objects.filter(filters)
+        elif hasattr(model, 'team'):
+            return model.objects.filter(filters, team__in=user.teams.all())
+        else:
+            return model.objects.none()
