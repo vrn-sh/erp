@@ -6,6 +6,7 @@ import Mission from './SubDashboards/Mission';
 import CrtSh from './SubDashboards/CrtSh';
 import Notes from './SubDashboards/Notes/Notes';
 import Vulnerability from './SubDashboards/Vulnerability';
+import Report from "./SubDashboards/Report/Report";
 
 function MissionSubMenu(props: any) {
     const tmp = props;
@@ -46,6 +47,9 @@ function DashboardMission() {
         }
         if (active === 'vuln') {
             return <Vulnerability />;
+        }
+        if (active === 'report') {
+            return <Report />
         }
         return null;
     };
@@ -95,6 +99,15 @@ function DashboardMission() {
                                 active={active}
                                 handleClick={handleClick}
                                 title="crt.sh"
+                            />
+                        )}
+                        {isPentester && (
+                            <MissionSubMenu
+                                key_p="6"
+                                id_p="report"
+                                active={active}
+                                handleClick={handleClick}
+                                title="Report"
                             />
                         )}
                     </div>
