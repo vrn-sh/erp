@@ -6,7 +6,7 @@ import Mission from './SubDashboards/Mission';
 import CrtSh from './SubDashboards/CrtSh';
 import Notes from './SubDashboards/Notes/Notes';
 import Vulnerability from './SubDashboards/Vulnerability';
-import Report from "./SubDashboards/Report/Report";
+import Report from './SubDashboards/Report/Report';
 
 function MissionSubMenu(props: any) {
     const tmp = props;
@@ -49,7 +49,7 @@ function DashboardMission() {
             return <Vulnerability />;
         }
         if (active === 'report') {
-            return <Report />
+            return <Report />;
         }
         return null;
     };

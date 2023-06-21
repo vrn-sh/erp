@@ -1,6 +1,7 @@
-import "./MarkdownHelper.scss";
+import React from 'react';
+import './MarkdownHelper.scss';
 
-export function MarkdownHelper() {
+export default function MarkdownHelper() {
     return (
         <div className="markdown-helper">
             <ul>
@@ -32,7 +33,9 @@ export function MarkdownHelper() {
                     <p className="bold">**bold**</p>
                 </li>
                 <li>
-                    <p className="help-text">This makes the content between the ** bold</p>
+                    <p className="help-text">
+                        This makes the content between the ** bold
+                    </p>
                 </li>
             </ul>
             <ul>
@@ -40,15 +43,31 @@ export function MarkdownHelper() {
                     <p className="italic">*italic*</p>
                 </li>
                 <li>
-                    <p className="help-text">This makes the content between the * italic</p>
+                    <p className="help-text">
+                        This makes the content between the * italic
+                    </p>
                 </li>
             </ul>
             <ul>
                 <li>
-                    _ _ _
+                    <ul>
+                        <li className="puce">
+                            <p>something</p>
+                        </li>
+                    </ul>
                 </li>
                 <li>
-                    <p className="help-text">This one is to generate a whole new page</p>
+                    <p className="help-text">
+                        Putting one * in front of a line makes a list
+                    </p>
+                </li>
+            </ul>
+            <ul>
+                <li>_ _ _</li>
+                <li>
+                    <p className="help-text">
+                        This one is to generate a whole new page
+                    </p>
                 </li>
             </ul>
         </div>
