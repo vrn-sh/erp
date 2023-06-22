@@ -3,6 +3,7 @@ import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import './Recon.scss';
 import * as IoIcons from 'react-icons/io';
+import * as AiIcons from 'react-icons/ai';
 import {
     Accordion,
     AccordionDetails,
@@ -13,11 +14,9 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import * as AiIcons from 'react-icons/ai';
 import config from '../../config';
 import AddNMAP from './AddNMAP';
-// import R from '../../assets/strings/en/recon.json';
-import wappa from '../../assets/strings/en/wappa.json';
+import Feedbacks from '../../component/Feedback';
 
 export interface IRecon {
     id: number;
@@ -40,6 +39,7 @@ export interface ITech {
 
 export interface IWapp {
     url: string;
+    description: string;
     technologies: {
         slug: string;
         name: string;
@@ -52,7 +52,6 @@ export interface IWapp {
             name: string;
         }[];
     }[];
-    description: string;
     ipCountry: string;
     language: string;
     responsive: boolean;
@@ -74,6 +73,7 @@ export default function Recon(idMission: any) {
         nmap_runs: [],
     });
     const [wappDomain, setWappDomain] = useState('');
+    const [wappaOk, setWappaOk] = useState(false);
     const [wappRes, setWappRes] = useState<IWapp>({
         url: '',
         technologies: [],
@@ -105,6 +105,11 @@ export default function Recon(idMission: any) {
     const { id } = idMission;
     const isPentester = Cookies.get('Role') === '1';
     const [expanded, setExpanded] = React.useState<string | false>(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+    const [open, setOpen] = useState(false);
 
     const handleChange =
         (panel: string) =>
@@ -135,10 +140,14 @@ export default function Recon(idMission: any) {
         return -1;
     };
 
-    const getWappa = async () => {
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const getTech = (w: any) => {
         const tab = [];
-        for (let i = 0; i < wappRes.technologies.length; i += 1) {
-            const tmp = wappRes.technologies[i];
+        for (let i = 0; i < w.technologies.length; i += 1) {
+            const tmp = w.technologies[i];
             for (let j = 0; j < tmp.categories.length; j += 1) {
                 const checked = findCategory(tab, tmp.categories[j].name);
                 if (checked > 0) {
@@ -151,22 +160,33 @@ export default function Recon(idMission: any) {
             }
         }
         tech.tech = tab;
-        await axios
-            .get(
-                `https://api.wappalyzer.com/v2/lookup/?urls=http://wordpress.com&sets=security,meta,locale,events`,
-                {
-                    headers: {
-                        'x-api-key': 'pCQm2CSmQS9rVR8wFzLna6tWwPrf7Dyz1wYZOR9r',
-                    },
-                }
-            )
+        setTech(tech);
+    };
+
+    const close = () => {
+        setOpen(false);
+    };
+
+    const getWappa = async () => {
+        setWappaOk(false);
+        setOpen(true);
+        await axios(`${config.apiUrl}/wappa?urls=${wappDomain}`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Token ${Cookies.get('Token')}`,
+            },
+            maxBodyLength: Infinity,
+        })
             .then((data) => {
+                setWappaOk(true);
+                setMessage('Succeed to search!', 'success');
                 setWappRes(data.data[0]);
-                console.log("Here is the api data:")
-                console.log(data.data[0]);
+                getTech(data.data[0]);
             })
             .catch((e) => {
-                setWappRes(wappa);
+                setWappaOk(false);
+                setMessage('Please enter a correct url!', 'error');
                 console.log(e);
             });
     };
@@ -195,6 +215,10 @@ export default function Recon(idMission: any) {
     useEffect(() => {
         getMission();
     }, []);
+
+    useEffect(() => {
+        getTech(wappRes);
+    }, [wappRes]);
 
     return (
         <>
@@ -410,86 +434,122 @@ export default function Recon(idMission: any) {
                         <button
                             type="button"
                             className="searchBtn wappa_search"
-                            onClick={getWappa}
+                            onClick={() => {
+                                getWappa();
+                            }}
                         >
                             Search
                         </button>
                     </div>
 
-                    <div className="wappa_res_container">
-                        <div className="wappa_res_info">
-                            <h4>{wappRes.url}</h4>
-                            <h5>Description</h5>
-                            <p>{wappRes.description}</p>
-                        </div>
-                        <div className="wappa_res_info">
-                            <h5>Security</h5>
-                            <div className="wappa_row">
-                                <div className="md-5">
-                                    <h6>Certificate protocol</h6>
-                                    <p>{wappRes['certInfo.protocol']}</p>
-                                    <h6>Certificate expire</h6>
-                                    <p>{wappRes['certInfo.validTo']}</p>
-                                </div>
-                                <div className="md-5">
-                                    <h6>SPF record</h6>
-                                    {wappRes['dns.spf'] === true ? (
-                                        <AiIcons.AiOutlineCheck
-                                            style={{ color: 'green' }}
-                                        />
-                                    ) : (
-                                        <AiIcons.AiOutlineClose
-                                            style={{ color: 'red' }}
-                                        />
-                                    )}
-                                    <h6>DMARC record</h6>
-                                    <p>{wappRes['dns.dmarc']}</p>
+                    {wappaOk ? (
+                        <div className="wappa_res_container">
+                            <div className="wappa_res_info">
+                                <h4
+                                    style={{
+                                        textAlign: 'center',
+                                        color: '#632add',
+                                    }}
+                                >
+                                    {wappRes.url}
+                                </h4>
+                                <h5>Description</h5>
+                                <p>{wappRes.description}</p>
+                            </div>
+                            <div className="wappa_res_info">
+                                <h5>Security</h5>
+                                <div className="wappa_row">
+                                    <div className="md-5">
+                                        <h6>Certificate protocol</h6>
+                                        <p>{wappRes['certInfo.protocol']}</p>
+                                        <h6>Certificate expire</h6>
+                                        <p>{wappRes['certInfo.validTo']}</p>
+                                    </div>
+                                    <div className="md-5">
+                                        <h6>SPF record</h6>
+                                        {wappRes['dns.spf'] === true ? (
+                                            <AiIcons.AiOutlineCheck
+                                                style={{ color: 'green' }}
+                                            />
+                                        ) : (
+                                            <AiIcons.AiOutlineClose
+                                                style={{ color: 'red' }}
+                                            />
+                                        )}
+                                        <h6>DMARC record</h6>
+                                        {wappRes['dns.dmarc'] === true ? (
+                                            <AiIcons.AiOutlineCheck
+                                                style={{ color: 'green' }}
+                                            />
+                                        ) : (
+                                            <AiIcons.AiOutlineClose
+                                                style={{ color: 'red' }}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="wappa_res_info">
-                            <h5>Local</h5>
-                            <h6>Ip country</h6>
-                            <p>{wappRes.ipCountry}</p>
-                            <h6>Languages</h6>
-                            {wappRes.languages.map((langue, i) => {
-                                return (
-                                    <p style={{ display: 'inline' }}>
-                                        {i === wappRes.languages.length - 1
-                                            ? `${langue}`
-                                            : `${langue}, `}
-                                    </p>
-                                );
-                            })}
-                        </div>
+                            <div className="wappa_res_info">
+                                <h5>Local</h5>
+                                <h6>Ip country</h6>
+                                <p>{wappRes.ipCountry}</p>
+                                <h6>Languages</h6>
+                                {wappaOk && wappRes
+                                    ? wappRes.languages.map((langue, i) => {
+                                          return (
+                                              <p style={{ display: 'inline' }}>
+                                                  {i ===
+                                                  wappRes.languages.length - 1
+                                                      ? `${langue}`
+                                                      : `${langue}, `}
+                                              </p>
+                                          );
+                                      })
+                                    : null}
+                            </div>
 
-                        <div className="wappa_res_info">
-                            <h5>Technologie stacks</h5>
-                            {tech.tech.map((o) => {
-                                return (
-                                    <>
-                                        <h6>{o.category}</h6>
-                                        {o.name.map((n, i) => {
-                                            return (
-                                                <p
-                                                    style={{
-                                                        display: 'inline',
-                                                    }}
-                                                >
-                                                    {i === o.name.length - 1
-                                                        ? `${n}`
-                                                        : `${n}, `}
-                                                </p>
-                                            );
-                                        })}
-                                    </>
-                                );
-                            })}
+                            {tech.tech.length > 1 ? (
+                                <div className="wappa_res_info">
+                                    <h5>Technologie stacks</h5>
+                                    {tech.tech.map((o) => {
+                                        return (
+                                            <>
+                                                <h6>{o.category}</h6>
+                                                {o.name.map((n, i) => {
+                                                    return (
+                                                        <p
+                                                            style={{
+                                                                display:
+                                                                    'inline',
+                                                            }}
+                                                        >
+                                                            {i ===
+                                                            o.name.length - 1
+                                                                ? `${n}`
+                                                                : `${n}, `}
+                                                        </p>
+                                                    );
+                                                })}
+                                            </>
+                                        );
+                                    })}
+                                </div>
+                            ) : null}
                         </div>
-                    </div>
+                    ) : (
+                        <h5 className="error_msg">Please enter a right url</h5>
+                    )}
                 </div>
             </div>
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    close={close}
+                    color={message.color}
+                    open={open}
+                />
+            )}
         </>
     );
 }
