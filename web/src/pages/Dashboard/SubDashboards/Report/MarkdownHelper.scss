@@ -1,0 +1,58 @@
+.markdown-helper {
+
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        h6 {
+            padding: 0;
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        li {
+            .help-text {
+                text-indent: 12px;
+                font-weight: lighter;
+                margin: 0;
+                color: var(--gray-btn);
+            }
+
+            p {
+                font-size: 12px;
+            }
+
+            .puce {
+                list-style-type: disc;
+                margin-left: 12px;
+            }
+
+            padding-bottom: 6px;
+        }
+    }
+
+}
