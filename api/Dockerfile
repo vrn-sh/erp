@@ -10,7 +10,6 @@ RUN apt-get update \
     libssl-dev \
     libffi-dev \
     python3-dev \
-    python-dev \
     software-properties-common
 
 RUN apt-get update && apt-get install -y \
