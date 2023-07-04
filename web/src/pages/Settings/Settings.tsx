@@ -35,12 +35,12 @@ const subPagesData: SubPage[] = [
     //     icon: <IoIosNotifications style={{ fontSize: '22px' }} />,
     //     key: 1,
     // },
-    // {
-    //     title: 'Security',
-    //     content: <SettingSecurity />,
-    //     icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
-    //     key: 1,
-    // },
+    {
+        title: 'Security',
+        content: <SettingSecurity />,
+        icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
+        key: 1,
+    },
     // {
     //     title: 'Billing',
     //     content: <SettingBilling />,
