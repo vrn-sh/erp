@@ -158,7 +158,7 @@ export default function Scope(/* need to add list as a param here */) {
 
     useEffect(() => {
         setMissionId(location.state.missionId);
-        setScope(location.state.scopeList);
+        // setScope(location.state.scopeList);
     }, []);
 
     useEffect(() => {
