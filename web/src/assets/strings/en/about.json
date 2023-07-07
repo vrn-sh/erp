@@ -5,16 +5,24 @@
     "bullets": ["Efficient", "Fast", "Easy to use", "Built for your workflow"],
     "more": [
         {
-            "title": "Voron ?",
-            "desc": "Voron is a platform that allows service providers to test deployed defenses and processes to ensure the sustainability of the system, through the missions to infiltrate corporate networks which are provided by Voron."
+            "title": "Our mission",
+            "desc": "Voron is a platform designed to enable service providers to evaluate the effectiveness of their deployed defenses and processes. By providing missions that simulate infiltration attempts on corporate networks, Voron helps ensure the resilience and sustainability of these systems."
         },
         {
-            "title": "Makes you trustworthy",
-            "desc": "Voron ensures that the companies who will be tested had already authorized computer attacks on their information networks."
+            "title": "Ethics and Transparency",
+            "desc": "Voron operates on a principle of transparency and ethical conduct. We guarantee that every penetration test conducted by Voron is authorized by the respective company, thereby establishing an environment of trust and professionalism."
         },
         {
-            "title": "Generates neat reports",
-            "desc": "Voron will provide a report detailing the findings and various vulnerabilities, while attesting that the rules of engagement are being followed."
+            "title": "Comprehensive Reporting",
+            "desc": "Our commitment to you doesn’t end with the testing phase. After each mission, Voron provides a comprehensive report detailing our findings. This includes a detailed analysis of detected vulnerabilities and potential risk factors. By maintaining rigorous documentation, we aim to ensure your organization has all the necessary tools to address identified weaknesses."
+        },
+        {
+            "title": "Adherence to Rules of Engagement",
+            "desc": "In all our endeavors, we follow established rules of engagement, confirming our operations are within the authorized scope and do not infrace upon any contractual or legal boundaries. Our steadfast adherence to these guidelines ensures your trust and the reliability of our services."
+        },
+        {
+            "title": "",
+            "desc": "Your Trusted Partner in Security Trust Voron - where security meets excellence."
         }
     ]
 }
