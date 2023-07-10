@@ -99,7 +99,7 @@ export default function HunterIo() {
     const [selectedSubPage, setSelectedSubPage] = useState<number>(0);
 
     return (
-        <div>
+        <div className="setting-feats">
             <div className="setting-menu">
                 <HunterMenu
                     selectedSubPage={selectedSubPage}

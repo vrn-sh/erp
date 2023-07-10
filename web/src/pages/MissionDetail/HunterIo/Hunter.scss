@@ -1,0 +1,71 @@
+.hunter-scroll-div {
+    height: 60vh;
+    overflow-y: scroll;
+}
+
+.hunter-input-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hunter-form-control {
+    width: 70%;
+    height: 2rem;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.15em;
+    font-size: 14px;
+    font-family: 'Poppins-Regular';
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid var(--gray-btn);
+}
+
+.hunter-form-control::placeholder {
+    font-size: 1em;
+}
+
+.hunter-company-p {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.hunter-company-subinfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hunter-list-summary {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.domain-owner {
+    width: 40%;
+    overflow: hidden;
+    color: red;
+}
+
+.domain-detail-container {
+    border-bottom: .5px solid var(--gray-btn);
+}
+
+.domain-detail {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.domain-uri {
+    text-decoration: none;
+    color: black;
+}
