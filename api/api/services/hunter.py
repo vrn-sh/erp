@@ -3,6 +3,7 @@
 import os
 import requests
 
+
 class Hunter:
     def __init__(self) -> None:
         self.api_key = os.environ['HUNTER_API_KEY']

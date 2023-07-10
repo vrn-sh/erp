@@ -97,7 +97,6 @@ class Auth(AbstractUser):
                 f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
                 os.environ['SENDGRID_SENDER'],
                 [self.email],
-                fail_silently=False,
             )
 
         mail = SendgridClient([self.email])
@@ -127,7 +126,6 @@ class Auth(AbstractUser):
                 f'Hello there\nPlease click on this link to reset your password: {url}',
                 os.environ['SENDGRID_SENDER'],
                 [self.email],
-                fail_silently=False,
             )
 
         mail = SendgridClient([self.email])
