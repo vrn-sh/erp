@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:1.24.0
     ports:
       - "127.0.0.1:${REVERSE_PROXY_PORT}:80"
     env_file:
@@ -20,7 +20,7 @@ services:
       - s3
 
   db:
-    image: postgres:latest
+    image: postgres:15.3
     ports:
       - "127.0.0.1:${DATABASE_PORT}:${POSTGRES_PORT}"
     env_file:
@@ -47,7 +47,7 @@ services:
       - s3-layer
 
   memcached:
-   image: memcached
+   image: memcached:1.6
    ports:
      - "127.0.0.1:${CACHE_PORT}:11211"
    entrypoint:
@@ -74,7 +74,7 @@ services:
       - web-layer
 
   s3:
-    image: quay.io/minio/minio:latest
+    image: quay.io/minio/minio:RELEASE.2023-06-29T05-12-28Z
     command: server --console-address ":9001" /data
     ports:
       - "127.0.0.1:${S3_PORT}:9000"
