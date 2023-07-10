@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   db:
-    image: postgres:latest
+    image: postgres:15.3
     ports:
       - "127.0.0.1:5431:5432"
     env_file:
@@ -40,7 +40,7 @@ services:
       - s3-layer
 
   memcached:
-   image: memcached
+   image: memcached:1.6
    ports:
      - "127.0.0.1:11211:11211"
    entrypoint:
@@ -67,7 +67,7 @@ services:
       - web-layer
 
   s3:
-    image: quay.io/minio/minio:latest
+    image: quay.io/minio/minio:RELEASE.2023-06-29T05-12-28Z
     command: server --console-address ":9001" /data
     ports:
       - "127.0.0.1:9000:9000"
