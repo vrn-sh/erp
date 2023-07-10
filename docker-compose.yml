@@ -19,6 +19,16 @@ services:
       - web
       - s3
 
+  # wapp-api:
+  #   environment:
+  #     IN_CONTAINER: 1
+  #   build:
+  #     context: ./services/wapp-api/.
+  #   ports:
+  #     - "127.0.0.1:4000:4000"
+  #   networks:
+  #     - api-layer
+
   db:
     image: postgres:latest
     ports:

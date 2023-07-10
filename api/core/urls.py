@@ -14,13 +14,13 @@ from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.report import GenerateReportView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
-from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView
+from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView, WappalyzerRequestView
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
    openapi.Info(
       title="voron API",
-      default_version='0.1.1',
+      default_version='0.1.2',
       description="API storing and managing notes, users, and stuff",
       terms_of_service="https://github.com/vrn-sh/erp/blob/current/LICENSE",
       contact=openapi.Contact(email="voron@djnn.sh"),
@@ -49,5 +49,6 @@ urlpatterns = [
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path(r'download-report', GenerateReportView.as_view())
+    path(r'download-report', GenerateReportView.as_view()),
+    path('wappa', WappalyzerRequestView.as_view()),
 ] + router.urls

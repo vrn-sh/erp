@@ -15,15 +15,23 @@ class SendgridParameters:
 class SendgridClient:
     """Sendgrid integration API"""
 
-    def __init__(self, recipients: List[str],
-                 sender: Optional[str] = SendgridParameters.DEFAULT_SENDER):
+    def __init__(
+            self,
+            recipient: str,
+            sender: Optional[str] = SendgridParameters.DEFAULT_SENDER,
+        ):
+
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
 
-        self.sendgrid_client = SendGridAPIClient(SendgridParameters.SENDGRID_API_KEY)
+        self.sendgrid_client = SendGridAPIClient(
+                api_key=SendgridParameters.SENDGRID_API_KEY,
+        )
+
         self.mail = Mail(
-            from_email=sender,
-            to_emails=recipients,
+            sender,
+            To(recipient),
+            '[voron] new email from voron.sh!',
         )
 
     def set_template_data(self, data: dict):
