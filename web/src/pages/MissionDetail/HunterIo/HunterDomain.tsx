@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
     Chip,
 } from '@mui/material';
-import './Hunter.scss';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
 import * as MdIcons from 'react-icons/md';
 import * as BsIcons from 'react-icons/bs';
-import HunterData from '../../../assets/strings/en/domain.json';
+import Feedbacks from '../../../component/Feedback';
+import './Hunter.scss';
 
-export interface IRecon {
+export interface IHunter {
     domain: string;
     disposable: boolean;
     webmail: boolean;
@@ -31,11 +32,11 @@ export interface IRecon {
     city: string | null;
     postal_code: string | null;
     street: string | null;
-    email: {
+    emails: {
         value: string;
         type: string;
         confidence: number;
-        souces: {
+        sources: {
             domain: string;
             uri: string;
             extracted_on: string;
@@ -71,14 +72,54 @@ export interface IRecon {
 
 export default function HunterDomain() {
     const [expanded, setExpanded] = React.useState<string | false>(false);
-
+    const [domain, setDomain] = useState('');
+    const [getRes, setGetRes] = useState(false);
+    const [hunterData, sethunterData] = useState<IHunter>({
+        domain: '',
+        disposable: false,
+        webmail: false,
+        accept_all: false,
+        pattern: '',
+        organization: '',
+        description: null,
+        twitter: null,
+        facebook: null,
+        linkedin: null,
+        instagram: null,
+        youtube: null,
+        technologies: [],
+        country: null,
+        state: null,
+        city: null,
+        postal_code: null,
+        street: null,
+        emails: [],
+        meta: {
+            results: 0,
+            limit: 0,
+            offset: 0,
+            params: {
+                domain: '',
+                company: null,
+                type: null,
+                seniority: null,
+                department: null,
+            },
+        },
+    });
     const recordsPerPage = 3;
     const [currentPage, setCurrentPage] = useState(1);
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
-    const records = HunterData!.data.emails.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(HunterData!.data.emails.length / recordsPerPage);
+    const records = hunterData!.emails.slice(firstIndex, lastIndex);
+    const npage = Math.ceil(hunterData!.emails.length / recordsPerPage);
     const nums = [...Array(npage + 1).keys()].slice(1);
+
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+    const [open, setOpen] = useState(false);
 
     const handleChange =
         (panel: string) =>
@@ -101,6 +142,39 @@ export default function HunterDomain() {
         setCurrentPage(n);
     };
 
+    const close = () => {
+        setOpen(false);
+    };
+
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
+
+    const domainSearch = async () => {
+        setOpen(true);
+        await axios
+            .get(
+                `https://api.hunter.io/v2/domain-search?domain=${domain}&api_key=${
+                    import.meta.env.VITE_REACT_APP_HUNTER_API_KEY
+                }`,
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                }
+            )
+            .then((data) => {
+                console.log(data.data.data);
+                setMessage('Searching...', 'success');
+                setGetRes(true);
+                sethunterData(data.data.data);
+            })
+            .catch((e) => {
+                setMessage('Failed...', 'error');
+                throw e.message;
+            });
+    };
+
     return (
         <div className="hunter-scroll-div">
             <div className="hunter-input-bar">
@@ -110,13 +184,18 @@ export default function HunterDomain() {
                     placeholder="Enter an domain name"
                     type="text"
                     name="domain"
+                    onChange={(e) => setDomain(e.target.value)}
                 />
 
-                <button type="button" className="searchBtn">
+                <button
+                    type="button"
+                    className="searchBtn"
+                    onClick={domainSearch}
+                >
                     Search
                 </button>
             </div>
-            {!HunterData.data ? (
+            {!getRes ? (
                 <h3 style={{ fontFamily: 'Poppins-Regular' }}>
                     Nothing to show
                 </h3>
@@ -148,32 +227,42 @@ export default function HunterDomain() {
                                                 marginLeft: '.5rem',
                                             }}
                                         >
-                                            {HunterData.data.organization}
+                                            {hunterData.organization}
                                         </span>
-                                        <a
-                                            href={HunterData.data.facebook}
-                                            style={{
-                                                marginRight: '.5rem',
-                                                marginLeft: '.5rem',
-                                            }}
-                                        >
-                                            <BsIcons.BsFacebook size={16} />
-                                        </a>
-                                        <a
-                                            href={HunterData.data.twitter}
-                                            style={{ marginRight: '.5rem' }}
-                                        >
-                                            <BsIcons.BsTwitter size={16} />
-                                        </a>
-                                        <a
-                                            href={HunterData.data.linkedin}
-                                            style={{ marginRight: '.5rem' }}
-                                        >
-                                            <BsIcons.BsLinkedin size={16} />
-                                        </a>
-                                        <a href={HunterData.data.instagram}>
-                                            <BsIcons.BsInstagram size={16} />
-                                        </a>
+                                        {hunterData.facebook !== null ? (
+                                            <a
+                                                href={hunterData.facebook}
+                                                style={{
+                                                    marginRight: '.5rem',
+                                                    marginLeft: '.5rem',
+                                                }}
+                                            >
+                                                <BsIcons.BsFacebook size={16} />
+                                            </a>
+                                        ) : null}
+                                        {hunterData.twitter !== null ? (
+                                            <a
+                                                href={hunterData.twitter}
+                                                style={{ marginRight: '.5rem' }}
+                                            >
+                                                <BsIcons.BsTwitter size={16} />
+                                            </a>
+                                        ) : null}
+                                        {hunterData.linkedin !== null ? (
+                                            <a
+                                                href={hunterData.linkedin}
+                                                style={{ marginRight: '.5rem' }}
+                                            >
+                                                <BsIcons.BsLinkedin size={16} />
+                                            </a>
+                                        ) : null}
+                                        {hunterData.instagram !== null ? (
+                                            <a href={hunterData.instagram}>
+                                                <BsIcons.BsInstagram
+                                                    size={16}
+                                                />
+                                            </a>
+                                        ) : null}
                                     </div>
                                 </p>
                                 <div className="hunter-company-subinfo">
@@ -185,8 +274,8 @@ export default function HunterDomain() {
                                                 marginLeft: '.5rem',
                                             }}
                                         >
-                                            {HunterData.data.pattern}@
-                                            {HunterData.data.domain}
+                                            {hunterData.pattern}@
+                                            {hunterData.domain}
                                         </span>
                                     </p>
                                     <p
@@ -196,7 +285,7 @@ export default function HunterDomain() {
                                         }}
                                     >
                                         Accept all:
-                                        {HunterData.data.accept_all === true ? (
+                                        {hunterData.accept_all === true ? (
                                             <AiIcons.AiOutlineCheck
                                                 color="green"
                                                 size={20}
@@ -215,7 +304,7 @@ export default function HunterDomain() {
                                         }}
                                     >
                                         Webmail:
-                                        {HunterData.data.webmail === true ? (
+                                        {hunterData.webmail === true ? (
                                             <AiIcons.AiOutlineCheck
                                                 color="green"
                                                 size={20}
@@ -376,6 +465,14 @@ export default function HunterDomain() {
                     </li>
                 </ul>
             </nav>
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    close={close}
+                    color={message.color}
+                    open={open}
+                />
+            )}
         </div>
     );
 }
