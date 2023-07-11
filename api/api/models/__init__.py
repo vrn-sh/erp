@@ -68,6 +68,7 @@ class Auth(AbstractUser):
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
     is_enabled: models.BooleanField = models.BooleanField(default=False)
+    favorites: models.ManyToManyField = models.ManyToManyField('Mission', related_name='favoris', blank=True)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
