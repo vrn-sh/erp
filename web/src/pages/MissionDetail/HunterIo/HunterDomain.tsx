@@ -164,7 +164,6 @@ export default function HunterDomain() {
                 }
             )
             .then((data) => {
-                console.log(data.data.data);
                 setMessage('Searching...', 'success');
                 setGetRes(true);
                 sethunterData(data.data.data);

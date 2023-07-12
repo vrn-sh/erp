@@ -73,3 +73,48 @@
         color: black;
     }
 }
+
+.emailv {
+    &-intro-txt {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    &-intro-txt p {
+        color: var(--gray-btn);
+    }
+
+    &-detail-info {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: .5rem;
+        background-color: var(--secondary-gray-bg);
+        border-radius: 6px;
+    }
+
+    &-detail-info p {
+        color: black;
+    }
+
+    &-detail-part {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+    }
+
+    &-detail-height {
+        height: 50%;
+    }
+
+    &-detail-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    &-detail-title p {
+        margin: 0;
+        margin-right: 1rem;
+    }
+}
