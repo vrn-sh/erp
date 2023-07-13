@@ -109,6 +109,7 @@ export default function DorkEngine() {
                                     <a
                                         href={getLink(dork[0].path)}
                                         className="dork_link"
+                                        target="blank"
                                     >
                                         {dork[0].title}
                                     </a>
@@ -117,6 +118,7 @@ export default function DorkEngine() {
                                     <a
                                         href={getLink(dork[1].path)}
                                         className="dork_link"
+                                        target="blank"
                                     >
                                         {dork[1].title}
                                     </a>
