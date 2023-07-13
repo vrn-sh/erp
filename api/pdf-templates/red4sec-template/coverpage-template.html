@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Test Report: DENIC ID Relying Party - Member Login</title>
+</head>
+
+<body>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+             height: 20mm;
+        }
+        .cover-page {
+            width: 100%;
+            display: block;
+            justify-content: space-around;
+            position: relative;
+        }
+
+        .cover-page h1 {
+            position: fixed;
+            top: 550px;
+            width: 100%;
+            font-size: 5.75em;
+            color: rgb(77, 76, 76);
+            text-align: center;
+            margin: auto;
+            z-index: 5;
+        }
+
+        .cover-page h1 span {
+            color: rgba(243, 62, 136, 1) !important;
+        }
+
+        .cover-page svg#wave-bottom {
+            position: fixed;
+            left: 0;
+            top: 1000px;
+            width: 100%;
+            height: 600px;
+        }
+        .cover-page svg#wave-top {
+            position: fixed;
+            left: 0;
+            top: -200px;
+            width: 100%;
+            height: 600px;
+        }
+
+        .bandeau {
+            position: fixed;
+            top: 800px;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            background-color: white;
+        }
+
+        .bandeau h2 {
+            width: 100%;
+            padding: .75rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 3em;
+            color: rgba(255, 85, 11, 1) !important;
+        }
+
+        .bandeau h2 span {
+            font-style: italic;
+        }
+
+        .report-info {
+            text-align: center;
+            color: gray;
+            font-weight: 400;
+            font-size: 1em;
+        }
+    </style>
+
+    <div class="cover-page">
+        <svg id="wave-top" style="transform:rotate(180deg); transition: 0.3s" viewBox="0 0 1440 690" version="1.1" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0"><stop stop-color="rgba(243, 62, 142.024, 1)" offset="0%"></stop><stop stop-color="rgba(255, 85.812, 11, 1)" offset="100%"></stop></linearGradient></defs><path style="transform:translate(0, 0px); opacity:1" fill="url(#sw-gradient-0)" d="M0,392L288,294L576,98L864,245L1152,441L1440,196L1728,392L2016,98L2304,147L2592,98L2880,245L3168,294L3456,0L3744,245L4032,98L4320,0L4608,392L4896,0L5184,343L5472,245L5760,196L6048,343L6336,49L6624,392L6912,49L6912,490L6624,490L6336,490L6048,490L5760,490L5472,490L5184,490L4896,490L4608,490L4320,490L4032,490L3744,490L3456,490L3168,490L2880,490L2592,490L2304,490L2016,490L1728,490L1440,490L1152,490L864,490L576,490L288,490L0,490Z"></path><defs><linearGradient id="sw-gradient-1" x1="0" x2="0" y1="1" y2="0"><stop stop-color="rgba(243, 62, 172.685, 0.63)" offset="0%"></stop><stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop></linearGradient></defs><path style="transform:translate(0, 50px); opacity:0.9" fill="url(#sw-gradient-1)" d="M0,49L288,196L576,245L864,147L1152,196L1440,98L1728,49L2016,49L2304,0L2592,392L2880,196L3168,147L3456,147L3744,343L4032,392L4320,294L4608,196L4896,0L5184,0L5472,0L5760,49L6048,98L6336,147L6624,245L6912,49L6912,490L6624,490L6336,490L6048,490L5760,490L5472,490L5184,490L4896,490L4608,490L4320,490L4032,490L3744,490L3456,490L3168,490L2880,490L2592,490L2304,490L2016,490L1728,490L1440,490L1152,490L864,490L576,490L288,490L0,490Z"></path><defs><linearGradient id="sw-gradient-2" x1="0" x2="0" y1="1" y2="0"><stop stop-color="rgba(243, 62, 135.892, 0.32)" offset="0%"></stop><stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop></linearGradient></defs><path style="transform:translate(0, 100px); opacity:0.8" fill="url(#sw-gradient-2)" d="M0,147L288,343L576,147L864,196L1152,441L1440,245L1728,196L2016,343L2304,245L2592,147L2880,49L3168,49L3456,49L3744,49L4032,196L4320,196L4608,294L4896,98L5184,98L5472,147L5760,49L6048,392L6336,392L6624,147L6912,343L6912,490L6624,490L6336,490L6048,490L5760,490L5472,490L5184,490L4896,490L4608,490L4320,490L4032,490L3744,490L3456,490L3168,490L2880,490L2592,490L2304,490L2016,490L1728,490L1440,490L1152,490L864,490L576,490L288,490L0,490Z"></path></svg>
+
+        <h1>RED<span>4</span>SEC</h1>
+        <svg id="wave-bottom" style="transform:rotate(0deg); transition: 0.3s" viewBox="0 0 1440 690" version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(243, 62, 142, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(255, 85, 11, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path style="transform:translate(0, 0px); opacity:1" fill="url(#sw-gradient-0)"
+                d="M0,392L360,294L720,98L1080,245L1440,441L1800,196L2160,392L2520,98L2880,147L3240,98L3600,245L3960,294L4320,0L4680,245L5040,98L5400,0L5760,392L6120,0L6480,343L6840,245L7200,196L7560,343L7920,49L8280,392L8640,49L8640,490L8280,490L7920,490L7560,490L7200,490L6840,490L6480,490L6120,490L5760,490L5400,490L5040,490L4680,490L4320,490L3960,490L3600,490L3240,490L2880,490L2520,490L2160,490L1800,490L1440,490L1080,490L720,490L360,490L0,490Z">
+            </path>
+            <defs>
+                <linearGradient id="sw-gradient-1" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(243, 62, 172, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path style="transform:translate(0, 50px); opacity:0.9" fill="url(#sw-gradient-1)"
+                d="M0,49L360,196L720,245L1080,147L1440,196L1800,98L2160,49L2520,49L2880,0L3240,392L3600,196L3960,147L4320,147L4680,343L5040,392L5400,294L5760,196L6120,0L6480,0L6840,0L7200,49L7560,98L7920,147L8280,245L8640,49L8640,490L8280,490L7920,490L7560,490L7200,490L6840,490L6480,490L6120,490L5760,490L5400,490L5040,490L4680,490L4320,490L3960,490L3600,490L3240,490L2880,490L2520,490L2160,490L1800,490L1440,490L1080,490L720,490L360,490L0,490Z">
+            </path>
+            <defs>
+                <linearGradient id="sw-gradient-2" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(243, 62, 135, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path style="transform:translate(0, 100px); opacity:0.8" fill="url(#sw-gradient-2)"
+                d="M0,147L360,343L720,147L1080,196L1440,441L1800,245L2160,196L2520,343L2880,245L3240,147L3600,49L3960,49L4320,49L4680,49L5040,196L5400,196L5760,294L6120,98L6480,98L6840,147L7200,49L7560,392L7920,392L8280,147L8640,343L8640,490L8280,490L7920,490L7560,490L7200,490L6840,490L6480,490L6120,490L5760,490L5400,490L5040,490L4680,490L4320,490L3960,490L3600,490L3240,490L2880,490L2520,490L2160,490L1800,490L1440,490L1080,490L720,490L360,490L0,490Z">
+            </path>
+        </svg>
+        <div class="bandeau">
+            <h2 id="mission-title">Smart Security Contract Audit</h1>
+            <div class="report-info">
+                <p id="version">Version: 1.2</p>
+                <p id="report-date">25.07.2019</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
