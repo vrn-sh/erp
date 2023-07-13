@@ -16,5 +16,7 @@ class ClientInfo(models.Model):
         verbose_name = _('client info')
         verbose_name_plural = _('client info')
 
+    REQUIRED_FIELDS = ['company_name', 'creation_date', 'nb_employees', 'occupation', 'legal_entity', 'brief_description']
+
     def __str__(self):
         return self.company_name
