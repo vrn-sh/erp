@@ -20,6 +20,7 @@ import PrivatePolicy from './pages/Home/PrivacyPolicy';
 import TermOfUse from './pages/Home/TermOfUse';
 import ConfirmEmail from './pages/SignUp/ConfirmEmail';
 import EditVulnerability from './pages/Vulnerability/EditVuln';
+import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
 
 function App() {
     return (
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/vuln/add" element={<AddVulnerability />} />
                 <Route path="/vuln/edit" element={<EditVulnerability />} />
+                <Route path="/vuln/detail" element={<VulnerabilityDetail />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/mission/detail" element={<MissionDetail />} />
