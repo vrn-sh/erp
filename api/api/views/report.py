@@ -11,7 +11,7 @@ from shutil import rmtree
 from rest_framework import permissions
 from knox.auth import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.status import HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -43,7 +43,31 @@ def generate_members(team: Team) -> str:
     return members_html
 
 
-class GenerateReportView(APIView):
+def generate_vuln_figures(vuln: Vulnerability, md=False) -> str:
+    figure_html = ""
+    figure_md = ""
+    s3_client = S3Bucket()
+    for i, image in enumerate(vuln.images):
+        if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
+            continue
+
+        if md:
+            figure_md += f'''
+                ![Figure {i + 1}]({s3_client.get_object_url('rootbucket', image)})
+                _Figure {i + 1}_
+            '''
+        else:
+            figure_html += '''
+    <div class="figure">
+        <img src="{img_path}"/>
+        <p>{description}</p>
+    </div>
+        '''.format(img_path=s3_client.get_object_url('rootbucket', image),
+                   description=f"Figure {i + 1}")  # well, Figure 0 is a bit weird..
+    return figure_html
+
+
+class GeneratePDFReportView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
 
@@ -435,21 +459,171 @@ class GenerateReportView(APIView):
                        cvss_score=vuln.severity,
                        vuln_type_description=vuln.vuln_type.description,
                        vuln_description=vuln.description,
-                       images=self.generate_vuln_figures(vuln))
+                       images=generate_vuln_figures(vuln))
         return html
 
-    def generate_vuln_figures(self, vuln: Vulnerability) -> str:
-        figure_html = ""
-        s3_client = S3Bucket()
-        for i, image in enumerate(vuln.images):
-            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-                continue
+class GenerateMDReportView(APIView):
 
-            figure_html += '''
-        <div class="figure">
-            <img src="{img_path}"/>
-            <p>{description}</p>
-        </div>
-            '''.format(img_path=s3_client.get_object_url('rootbucket', image),
-                       description=f"Figure {i + 1}")  # well, Figure 0 is a bit weird..
-        return figure_html
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
+    @swagger_auto_schema(
+        operation_description="Get the mission report in Markdown generated with the mission' data.",
+        manual_parameters=[
+            openapi.Parameter(
+                "mission",
+                "body",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+                description="id of the mission"
+            ),
+            openapi.Parameter(
+                "version",
+                "body",
+                required=False,
+                type=openapi.TYPE_NUMBER,
+                description="Report version"
+            )
+        ],
+        responses={
+            "302": openapi.Response(
+                description="Redirection to the minio storage of the pdf file.",
+            )
+        },
+        security=['Bearer'],
+        tags=['Report'],
+    )
+    def get(self, request):
+
+        mission_id = request.data.get("mission")
+        if not mission_id:
+            return Response({
+                'error': 'No mission id provided. Report couldn\'t be generated',
+            }, status=HTTP_404_NOT_FOUND)
+
+        mission = Mission.objects.filter(pk=mission_id).first()
+        if not mission:
+            return Response({
+                'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
+            }, status=HTTP_404_NOT_FOUND)
+        version = request.data.get("version")
+        if not version:
+            version = 1.0
+        return Response(
+            self.generate_project_information(mission, version) +
+            self.generate_condition_and_scopes(mission) +
+            self.generate_weaknesses(mission),
+            status=HTTP_200_OK
+        )
+
+    def generate_project_information(self, mission: Mission, version):
+        return f'''
+        # Project information
+
+        |-------------------|------------------:|
+        | Project executive | {mission.team.leader.auth.first_name} {mission.team.leader.auth.last_name} |
+        |                   | {mission.team.leader.auth.phone_number}   |
+        |                   | {mission.team.leader.auth.email}          |
+        ''' + self.generate_members(mission) + f'''
+        | Project Period    | {mission.start} - {mission.end} |
+        | Report Version    | {version}                            |
+        '''
+
+    def generate_members(self, mission: Mission):
+        first_member = mission.team.members[0].auth
+        members_md = f'|    Members    | {first_member.first_name} {first_member.last_name}'
+        for member in mission.team.members[1:]:
+            members_md += f'|                    | {member.auth.first_name} {member.auth.last_name}'
+        return members_md
+
+    def generate_condition_and_scopes(self, mission: Mission):
+        mrkdwn_scopes = ''
+
+        for scope in mission.scope:
+            mrkdwn_scopes += f"* {scope}" if '*' in scope or '../' in scope or '$' in scope else f'* ```{scope}```'
+
+        return '''
+        # General Conditions and Scopes
+
+        The scope used during this mission were the following:
+
+
+        ''' + mrkdwn_scopes
+
+    def generate_weaknesses(self, mission: Mission):
+        return '''
+        # Weaknesses
+
+
+        In the following sections, we list the identified weaknesses. Every weakness has an identification name
+        which can be used as a reference in the event of questions, or during the patching phase.
+        ''' + self.generate_detailed_vulns(mission)
+
+    def generate_detailed_vulns(self, mission: Mission):
+        md = ""
+        severity_counter = {"l": 0, "m": 0, "h": 0, "c": 0}
+        severity_key = 'l'
+        vulns = Vulnerability.objects.filter(mission_id=mission.id)
+        for vuln in vulns.all():
+            if 0 <= vuln.severity <= 3.9:
+                severity_key = "l"
+            elif 4 <= vuln.severity <= 6.9:
+                severity_key = "m"
+            elif 7 <= vuln.severity <= 8.9:
+                severity_key = "h"
+            elif 9 <= vuln.severity <= 10:
+                severity_key = "c"
+            severity_counter[severity_key] += 1
+            vuln_label = severity_key.upper() + f'0{severity_counter[severity_key]}' \
+                if severity_counter[severity_key] < 10 else severity_counter[severity_key]
+            md += f'''
+            ## {vuln_label}
+            | Exploitability Metrics |     Impact Metrics     |
+            |------------------------|------------------------|
+            |                         <table class="sub-table">
+                            <tr>
+                                <td>Attack Vector (AV)</td>
+                                <th>Network</th>
+                            </tr>
+                            <tr>
+                                <td>Attack Complexity (AC)</td>
+                                <th>Low</th>
+                            </tr>
+                            <tr>
+                                <td>Privileges Required (PR)</td>
+                                <th>Low</th>
+                            </tr>
+                            <tr>
+                                <td>User Interaction</td>
+                                <th>Required</th>
+                            </tr>
+                        </table> |                         <table class="sub-table">
+                            <tr>
+                                <td>Confidentiality Impact (C)</td>
+                                <th>Low</th>
+                            </tr>
+                            <tr>
+                                <td>Integrity Impact (I)</td>
+                                <th>Low</th>
+                            </tr>
+                            <tr>
+                                <td>Availability Impact (A)</td>
+                                <th>None</th>
+                            </tr>
+                            <tr>
+                                <td>Scope (S)</td>
+                                <th>Unchanged</th>
+                            </tr>
+                        </table> |
+            | Subscore: {vuln.severity * 0.45} | Subscore: {vuln.severit * 0.55} |
+
+            ### General Description
+
+            {vuln.vuln_type.description}
+
+            ### Weakness
+
+            {vuln.description}
+
+            {generate_vuln_figures(vuln, md=True)}
+            '''
+        return md

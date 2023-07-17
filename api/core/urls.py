@@ -11,7 +11,7 @@ from drf_yasg import openapi
 from knox.views import LogoutView
 
 from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
-from api.views.report import GenerateReportView
+from api.views.report import GeneratePDFReportView, GenerateMDReportView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView
@@ -49,5 +49,6 @@ urlpatterns = [
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path(r'download-report', GenerateReportView.as_view())
+    path(r'download-report', GeneratePDFReportView.as_view()),
+    path(r'markdown-report', GenerateMDReportView.as_view())
 ] + router.urls

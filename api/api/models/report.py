@@ -1,55 +1,151 @@
-import re
+from datetime import date
 
-import markdown
 from django.db import models
+
+from api.models.mission import Mission
 
 
 class ReportTemplate(models.Model):
-    pass
-
-
-class ReportMarkdownForm(models.Model):
-    """
-        When the PDF template is selected, the user can then write markdown for its final report.
-    """
-
     class Meta:
-        verbose_name = 'Report Markdown Form'
-        verbose_name_plural = 'Report Markdown Forms'
+        verbose_name = 'Report Template'
+        verbose_name_plural = 'Report Templates'
 
     REQUIRED_FIELDS = []
-    template_id = models.ForeignKey(to=ReportTemplate, on_delete=models.CASCADE, related_name='template_id')
-    markdown_content = models.TextField()  # TODO: Add a default with the template id
+    name = models.CharField(max_length=25)
+    css_style = models.TextField()
+    cover_html = models.TextField()
 
-    def find_between_tag(self, tag, content):
-        return re.findall("<" + tag + ">(.*?)</" + tag + ">", content)[0]
 
-    def to_html(self) -> str:
-        html_opt: str = ''
-        pages = []
-        current_page_info = {}
+class ReportHtml(models.Model):
+    class Meta:
+        verbose_name = 'Report Html'
+        verbose_name_plural = 'Reports Html'
 
-        self.markdown_content = self.markdown_content.replace('\n\n', '<div style="height: 40px; width: 100%;" />')
-        for page in self.markdown_content.split('_ _ _'):
-            html_page = markdown.markdown(page)
-            html_page = html_page.replace('h2', 'h6')
-            current_page_info['title'] = self.find_between_tag('h1', html_page)
-            for i in range(len(html_page)):
-                if html_page[i: i + 3] == '<h1>':
-                    if self.find_between_tag('h1', html_page[i]) != current_page_info['title']:  # there are 2 <h1>
-                        html_page[i:] = html_page[i:].replace('h1', 'h6')
+    REQUIRED_FIELDS = []
 
-                if html_page[i: i + 4] == '</h3>' or html_page[i: i + 4] == '</h6>':
-                    i += 4
-                    html_page = f'{html_page[:i]}<div class="section-text">{html_page[i:]}'
-                    while html_page[i] and (html_page[i: i + 3] != '<h3>' or html_page[i: i + 3] != '<h6>'):
-                        i += 1
-                    if html_page[i]:
-                        i += 3
-                    html_page = f'{html_page[:i]}</div>{html_page[i:]}'
-            # TODO: faire le header et le tag main.
+    template = models.ForeignKey(to=ReportTemplate, on_delete=models.CASCADE, related_name='template_id',
+                                 blank=True, default=None)
+    mission = models.ForeignKey(to=Mission, on_delete=models.CASCADE, related_name='mission_id')
+    version = models.FloatField(default=1.0)
 
-        html_opt = markdown.markdown(self.markdown_content)
-        html_opt.replace('h2', 'h6')
-        html_opt.replace('_ _ _', '<div style = "display:block; clear:both; page-break-after:always;" />')
-        return html_opt
+    def generate_cover(self):
+        if self.template:
+            return self.template.cover_html.format(
+                mission_title=self.mission.title,
+                report_version=self.version,
+                report_date=date.today().strftime('%Y-%m-%d')
+            )
+
+    def gen_header(self, title: str) -> str:
+        header_templates = [
+            {
+                "name": "red4sec",
+                "template_id": 1,
+                "html_header": '''
+                          <header>
+          <style>
+              header {
+                  display: block;
+              }
+
+              .inline-title-logo {
+                  display: flex;
+                  justify-content: space-between;
+                  background-color:  rgb(77, 76, 76);
+              }
+
+              .inline-title-logo .box {
+                  width: 15%;
+                  float: right;
+                  background-color: rgba(255, 86, 11, 1) !important;
+              }
+
+              .inline-title-logo p {
+
+                  padding: 1.5rem;
+                  font-variant: small-caps;
+                  font-weight: 400;
+                  letter-spacing: 1.5px;
+                  margin: 0;
+              }
+
+              .inline-title-logo p#logo {
+                  float: right;
+                  color: white;
+                  font-weight: bold;
+              }
+
+              .inline-title-logo p#logo span {
+                  color: rgba(255, 86, 11, 1) !important;
+              }
+
+              .client-name {
+                  display: flex;
+                  justify-content: space-between;
+              }
+
+              .client-name img {
+                  object-fit: cover;
+                  width: 15%;
+              }
+              .client-name p {
+                  align-self: center;
+                  font-size: xx-large;
+                  color: gray;
+                  font-weight: medium;
+              }
+          </style>
+          <div class="inline-title-logo">
+          ''' + f'''
+              <p id="logo">RED<span>4</span>SEC</p>
+              <div class="box"></div>
+          </div>
+          <div class="client-name">
+              <p>{title}</p>
+              <img src="https://avatars.githubusercontent.com/u/33096324?s=280&v=4">
+          </div>
+      </header>
+                  '''
+            },
+            {
+                "name": "hackmanit",
+                "template_id": 2,
+                "html_header": '''
+                      <header>
+          <style>
+              header {
+                  display: block;
+              }
+
+              img {
+                  float: right;
+                  height: 10%;
+                  width: 15%;
+                  object-fit: cover;
+              }
+
+              .inline-title-logo {
+                  display: flex;
+                  justify-content: space-between;
+              }
+
+              .inline-title-logo p {
+                  font-variant: small-caps;
+                  color: red;
+                  font-weight: 400;
+                  letter-spacing: 1.5px;
+                  margin: 0;
+              }
+          </style>
+          ''' + f'''
+          <div class="inline-title-logo">
+              <img alt="logo-company" id="logo"
+                  src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+              <p>{title}</p>
+          </div>
+          <div class="divider-x"></div>
+      </header>
+                  '''
+            }
+        ]
+        return list(filter(lambda a: a['template_id'] == self.template, header_templates))[0]['html_header']

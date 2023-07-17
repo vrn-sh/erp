@@ -1,86 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+from django.core.management import BaseCommand
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penetration Test Report: DENIC ID Relying Party - Member Login</title>
-</head>
+from api.models.report import ReportTemplate
 
-<body>
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-             height: 20mm;
-        }
-        .cover-page {
-            width: 100%;
-            display: block;
-            justify-content: space-around;
-            position: relative;
-        }
 
-        .cover-page h1 {
-            position: fixed;
-            top: 550px;
-            width: 100%;
-            font-size: 5.75em;
-            color: rgb(77, 76, 76);
-            text-align: center;
-            margin: auto;
-            z-index: 5;
-        }
+class Command(BaseCommand):
+    """Command creating report templates information"""
+    def handle(self, *_, **__):
 
-        .cover-page h1 span {
-            color: rgba(243, 62, 136, 1) !important;
-        }
-
-        .cover-page svg#wave-bottom {
-            position: fixed;
-            left: 0;
-            top: 1000px;
-            width: 100%;
-            height: 600px;
-        }
-        .cover-page svg#wave-top {
-            position: fixed;
-            left: 0;
-            top: -200px;
-            width: 100%;
-            height: 600px;
-        }
-
-        .bandeau {
-            position: fixed;
-            top: 800px;
-            left: 0;
-            width: 100%;
-            z-index: 10;
-            background-color: white;
-        }
-
-        .bandeau h2 {
-            width: 100%;
-            padding: .75rem;
-            text-align: center;
-            font-weight: bold;
-            font-size: 3em;
-            color: rgba(255, 85, 11, 1) !important;
-        }
-
-        .bandeau h2 span {
-            font-style: italic;
-        }
-
-        .report-info {
-            text-align: center;
-            color: gray;
-            font-weight: 400;
-            font-size: 1em;
-        }
-    </style>
-
+        if ReportTemplate.objects.count() == 0:
+            templates = [
+                ('red4sec',
+                 self.read_css('../../../pdf-templates/red4sec-template/main.css'),
+                 '''
     <div class="cover-page">
         <svg id="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <defs>
@@ -116,14 +47,34 @@
             </defs>
             <path fill="url(#sw-gradient-1)" fill-opacity="0.7" d="M0,64L205.7,224L411.4,256L617.1,256L822.9,224L1028.6,224L1234.3,32L1440,256L1440,320L1234.3,320L1028.6,320L822.9,320L617.1,320L411.4,320L205.7,320L0,320Z"></path></svg>
         <div class="bandeau">
-            <h2 id="mission-title">Smart Security Contract Audit</h2>
+            <h2 id="mission-title">{mission_title}</h2>
             <div class="report-info">
-                <p id="version">Version: 1.2</p>
-                <p id="report-date">25.07.2019</p>
+                <p id="version">Version: {report_version}</p>
+                <p id="report-date">{report_date}</p>
             </div>
         </div>
 
+    </div>'''),
+                ('hackmanit',
+                 self.read_css('../../../pdf-templates/hackmanit-template/main.css'),
+                 '''
+    <div class="cover-page">
+        <img alt="logo-company" id="logo" src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+        <h1 id="mission-title>{mission_title}</h1>
+        <div class="report-info">
+            <p id="version">Version: {report_version}</p>
+            <p id="report-date">{report_date}</p>
+        </div>
     </div>
-</body>
+                 ''')
+            ]
+            for (name, css, cover_html) in templates:
+                ReportTemplate(name=name, css_style=css, cover_html=cover_html).save()
+                print('[+] All report templates created.')
 
-</html>
+        else:
+            print('[!] All report templates have already been created.')
+
+    def read_css(self, css_relative_path) -> str:
+        with open(css_relative_path, 'r') as fd:
+            return fd.read()
