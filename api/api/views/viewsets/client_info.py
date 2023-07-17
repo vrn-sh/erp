@@ -2,7 +2,7 @@
 
 from rest_framework import viewsets
 from rest_framework import permissions
-from rest_framework.authentication import TokenAuthentication
+from knox.auth import TokenAuthentication
 from rest_framework.views import Response
 from api.models import Auth
 
@@ -16,8 +16,8 @@ class ClientInfoViewset(viewsets.ModelViewSet):
     """CRUD for clientInfos object"""
 
     queryset = ClientInfo.objects.all()
-    permission_classes = [permissions.IsAuthenticated & IsManager | permissions.IsAuthenticated & IsLinkedToData]
     authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated & IsManager | permissions.IsAuthenticated & IsLinkedToData | permissions.IsAuthenticated & IsPentester & ReadOnly]
     serializer_class = ClientInfoSerializer
 
     def create(self, request, *args, **kwargs):
@@ -28,25 +28,12 @@ class ClientInfoViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         request.data['last_editor'] = request.user.id
         return super().update(request, *args, **kwargs)
-    
+
     def list(self, request, *args, **kwargs):
-        if request.user.is_manager:
-            return super().list(request, *args, **kwargs)
-        else:
-            queryset = ClientInfo.objects.filter(mission__pentester=request.user.id)
-            serializer = ClientInfoSerializer(queryset, many=True)
-            return Response(serializer.data)
-    
+        return super().list(request, *args, **kwargs)
+
     def retrieve(self, request, *args, **kwargs):
-        if request.user.is_manager:
-            return super().retrieve(request, *args, **kwargs)
-        else:
-            queryset = ClientInfo.objects.filter(mission__pentester=request.user.id)
-            serializer = ClientInfoSerializer(queryset, many=True)
-            return Response(serializer.data)
-    
+        return super().retrieve(request, *args, **kwargs)
+
     def destroy(self, request, *args, **kwargs):
-        if request.user.is_manager:
-            return super().destroy(request, *args, **kwargs)
-        else:
-            return Response(status=403)
+        return super().destroy(request, *args, **kwargs)

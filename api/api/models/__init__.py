@@ -10,7 +10,9 @@ The following models are present here:
 import uuid
 from logging import info, warning
 import os
+from django.contrib.postgres.fields import ArrayField
 from typing import List, Optional
+from rest_framework.serializers import CharField
 
 from argon2 import PasswordHasher
 
@@ -68,7 +70,7 @@ class Auth(AbstractUser):
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
     is_enabled: models.BooleanField = models.BooleanField(default=False)
-    favorites: models.ManyToManyField = models.ManyToManyField('Mission', related_name='favoris', blank=True)
+    favorites: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
