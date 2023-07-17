@@ -7,14 +7,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0010_merge_20230713_1322'),
+        ('api', '0009_alter_vulnerability_options_clientinfo'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='auth',
-            name='favorites',
-        ),
         migrations.AddField(
             model_name='auth',
             name='favorites',
