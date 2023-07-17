@@ -381,7 +381,6 @@ class GeneratePDFReportView(APIView):
                 if severity_counter[severity_key] < 10 else severity_counter[severity_key]
 
             html += '''
-        <h2><span class="{vuln_label_class}">{vuln_label}</span>{vuln_title}</h2>
         <table class="main-table">
             <thead>
                 <tr>
@@ -471,14 +470,14 @@ class GenerateMDReportView(APIView):
         manual_parameters=[
             openapi.Parameter(
                 "mission",
-                "body",
+                "path",
                 required=True,
                 type=openapi.TYPE_INTEGER,
                 description="id of the mission"
             ),
             openapi.Parameter(
                 "version",
-                "body",
+                "",
                 required=False,
                 type=openapi.TYPE_NUMBER,
                 description="Report version"
@@ -518,7 +517,8 @@ class GenerateMDReportView(APIView):
     def generate_project_information(self, mission: Mission, version):
         return f'''
         # Project information
-
+        
+        | | |
         |-------------------|------------------:|
         | Project executive | {mission.team.leader.auth.first_name} {mission.team.leader.auth.last_name} |
         |                   | {mission.team.leader.auth.phone_number}   |
@@ -529,17 +529,19 @@ class GenerateMDReportView(APIView):
         '''
 
     def generate_members(self, mission: Mission):
-        first_member = mission.team.members[0].auth
-        members_md = f'|    Members    | {first_member.first_name} {first_member.last_name}'
-        for member in mission.team.members[1:]:
-            members_md += f'|                    | {member.auth.first_name} {member.auth.last_name}'
+        members_md = ""
+        for i, member in enumerate(mission.team.members.all()):
+            if i == 0:
+                members_md = f'|    Members    | {member.auth.first_name} {member.auth.last_name}'
+            else:
+                members_md += f'|                    | {member.auth.first_name} {member.auth.last_name}'
         return members_md
 
     def generate_condition_and_scopes(self, mission: Mission):
         mrkdwn_scopes = ''
 
         for scope in mission.scope:
-            mrkdwn_scopes += f"* {scope}" if '*' in scope or '../' in scope or '$' in scope else f'* ```{scope}```'
+            mrkdwn_scopes += f"* ```{scope}```\n" if '*' in scope or '../' in scope or '$' in scope else f'* {scope}\n'
 
         return '''
         # General Conditions and Scopes
@@ -576,54 +578,33 @@ class GenerateMDReportView(APIView):
             vuln_label = severity_key.upper() + f'0{severity_counter[severity_key]}' \
                 if severity_counter[severity_key] < 10 else severity_counter[severity_key]
             md += f'''
-            ## {vuln_label}
-            | Exploitability Metrics |     Impact Metrics     |
-            |------------------------|------------------------|
-            |                         <table class="sub-table">
-                            <tr>
-                                <td>Attack Vector (AV)</td>
-                                <th>Network</th>
-                            </tr>
-                            <tr>
-                                <td>Attack Complexity (AC)</td>
-                                <th>Low</th>
-                            </tr>
-                            <tr>
-                                <td>Privileges Required (PR)</td>
-                                <th>Low</th>
-                            </tr>
-                            <tr>
-                                <td>User Interaction</td>
-                                <th>Required</th>
-                            </tr>
-                        </table> |                         <table class="sub-table">
-                            <tr>
-                                <td>Confidentiality Impact (C)</td>
-                                <th>Low</th>
-                            </tr>
-                            <tr>
-                                <td>Integrity Impact (I)</td>
-                                <th>Low</th>
-                            </tr>
-                            <tr>
-                                <td>Availability Impact (A)</td>
-                                <th>None</th>
-                            </tr>
-                            <tr>
-                                <td>Scope (S)</td>
-                                <th>Unchanged</th>
-                            </tr>
-                        </table> |
-            | Subscore: {vuln.severity * 0.45} | Subscore: {vuln.severit * 0.55} |
-
-            ### General Description
-
-            {vuln.vuln_type.description}
-
-            ### Weakness
-
-            {vuln.description}
-
+                        ### {vuln_label} | {vuln.title}
+            
+            <h6>Exploitability Metrics</h6>
+            | | |
+            |:------------------------|----------------------:|
+            | Attack Vector (AV)      |      Network          |
+            | Attack Complexity (AC)  | Low                   |
+            | Privileges Required (PR)| None                  |
+            | User Interaction        | Required              |
+            | Subscore: {vuln.severity / 10 * 0.45}  | Subscore: {vuln.severity / 10 * 0.55}|
+            <h6>Impact Metrics</h6>
+            
+            
+            | | |
+            |:--------------------------|----------------------:|
+            | Confidentiality Impact (C)|      Low            |
+            | Integrity Impact (I)      | Low                 |
+            | Availability Impact (A)   | None                |
+            | Scope (S)                 | Unchanged           |
+            | Subscore: {vuln.severity / 10 * 0.45}  | Subscore: {vuln.severity / 10 * 0.55}|
+            
+        **Overall CVSS Score for {vuln_label}: {vuln.severity}**
+        
+        **General Description** {vuln.vuln_type.description}
+        
+        **Weakness.** {vuln.description}
+        
             {generate_vuln_figures(vuln, md=True)}
             '''
         return md
