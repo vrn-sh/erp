@@ -9,6 +9,7 @@ import Recon from './Recon';
 import * as AiIcons from 'react-icons/ai';
 import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
+import HunterIo from './HunterIo/HunterIo';
 
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
@@ -115,6 +116,9 @@ export default function MissionDetail() {
         if (active === 'recon') {
             return <Recon id={id} />;
         }
+        if (active === 'hunter') {
+            return <HunterIo />;
+        }
         return null;
     };
 
@@ -159,6 +163,17 @@ export default function MissionDetail() {
                                 onClick={handleClick}
                             >
                                 Recon
+                            </button>
+                            <button
+                                key={3}
+                                id="hunter"
+                                type="button"
+                                className={
+                                    active === 'hunter' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Hunter IO
                             </button>
                         </div>
                     </div>

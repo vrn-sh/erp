@@ -149,6 +149,16 @@
             "id": 30,
             "title": "Search in SHODAN",
             "path": "https://www.shodan.io/search?query={{DOMAIN}}"
+        }],
+        [{
+            "id": 31,
+            "title": "Pastebin leaks",
+            "path": "https://www.google.com/search?q=site:pastebin.com+\"{{DOMAIN}}\""
+        },
+        {
+            "id": 32,
+            "title": "PHP extensions with path parameters",
+            "path": "https://www.google.com/search?q=site:{{DOMAIN}}+ext:php+inurl:?"
         }]
     ]
 }

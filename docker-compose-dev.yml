@@ -1,0 +1,87 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15.3
+    ports:
+      - "127.0.0.1:5431:5432"
+    env_file:
+      - ./api/.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - db-layer
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data:delegated
+
+  # wapp-api:
+  #   environment:
+  #     IN_CONTAINER: 1
+  #   build:
+  #     context: ./services/wapp-api/.
+  #   ports:
+  #     - "127.0.0.1:4000:4000"
+  #   networks:
+  #     - api-layer
+
+
+  api:
+    env_file:
+      - ./api/.env
+    build:
+      context: ./api
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - db
+    networks:
+      - api-layer
+      - db-layer
+      - s3-layer
+
+  memcached:
+   image: memcached:1.6
+   ports:
+     - "127.0.0.1:11211:11211"
+   entrypoint:
+    - memcached
+    - -m 64
+   networks:
+    - api-layer
+   depends_on:
+     - api
+
+  web:
+    build:
+      context: ./web
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - VITE_REACT_APP_NODE_ENV=production
+      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - ./web/.env
+    depends_on:
+      - api
+    networks:
+      - web-layer
+
+  s3:
+    image: quay.io/minio/minio:RELEASE.2023-06-29T05-12-28Z
+    command: server --console-address ":9001" /data
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    env_file:
+      - ./api/.env
+    volumes:
+      - ./volumes/s3:/data:delegated
+    networks:
+      - s3-layer
+      - api-layer
+
+networks:
+  db-layer:
+  api-layer:
+  web-layer:
+  s3-layer:

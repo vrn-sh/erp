@@ -68,6 +68,7 @@ class Auth(AbstractUser):
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
     is_enabled: models.BooleanField = models.BooleanField(default=False)
+    favorites: models.ManyToManyField = models.ManyToManyField('Mission', related_name='favoris', blank=True)
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -97,7 +98,6 @@ class Auth(AbstractUser):
                 f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
                 os.environ['SENDGRID_SENDER'],
                 [self.email],
-                fail_silently=False,
             )
 
         mail = SendgridClient([self.email])
@@ -127,7 +127,6 @@ class Auth(AbstractUser):
                 f'Hello there\nPlease click on this link to reset your password: {url}',
                 os.environ['SENDGRID_SENDER'],
                 [self.email],
-                fail_silently=False,
             )
 
         mail = SendgridClient([self.email])

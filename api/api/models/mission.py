@@ -113,7 +113,7 @@ class Mission(models.Model):
             self.recon = Recon.objects.create()
             self.bucket_name = uuid.uuid4().hex
 
-            if environ.get('PRODUCTION', '0') == '1':
+            if environ.get('IN_CONTAINER', '0') == '1':
                 S3Bucket().create_bucket(self.bucket_name)
 
         super().save(*args, **kwargs)

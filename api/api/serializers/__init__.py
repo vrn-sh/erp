@@ -41,7 +41,7 @@ class AuthSerializer(serializers.ModelSerializer):
         model = Auth
         fields = [
             'username', 'email', 'first_name', 'last_name',
-            'last_login', 'date_joined', 'password', 'phone_number', 'role'
+            'last_login', 'date_joined', 'password', 'phone_number', 'role', 'favorites'
         ]
 
     def update(self, instance, validated_data) -> Auth:
@@ -59,6 +59,9 @@ class AuthSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             password: str = validated_data.pop('password')
             validated_data['password'] = PasswordHasher().hash(password)
+
+        # temporarily set here until sendgrid is fixed
+        # validated_data['is_enabled'] = True
         return Auth.objects.create(**validated_data)
 
 

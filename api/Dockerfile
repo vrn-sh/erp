@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:latest
+FROM python:3.11
 
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -10,7 +10,6 @@ RUN apt-get update \
     libssl-dev \
     libffi-dev \
     python3-dev \
-    python-dev \
     software-properties-common
 
 RUN apt-get update && apt-get install -y \
