@@ -164,6 +164,9 @@ class Manager(models.Model):
     auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
 
+    # will hold a key that can be fetched by S3 service to get a profile image
+    profile_image: Optional[CharField] = models.CharField(max_length=32, null=True, blank=True)
+
 
 class Pentester(models.Model):
     """
