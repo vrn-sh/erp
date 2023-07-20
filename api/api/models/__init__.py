@@ -48,7 +48,9 @@ class Auth(AbstractUser):
         role: integer containing the current role of the user
         password: hashed password of the user
         phone_number: phone number used for MFA (should use E164 format)
-        is_disabled: boolean value checking if user has been locked, or has not confirmed account yet
+        is_enabled: boolean value checking if user has been locked, or has not confirmed account yet
+        favorites: value use for front-end to decide which favorites to display
+        profile_image: key holding the value of an image in the bucket
 
     """
 
@@ -71,6 +73,10 @@ class Auth(AbstractUser):
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
     is_enabled: models.BooleanField = models.BooleanField(default=False)
     favorites: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)
+
+    # will hold a key that can be fetched by S3 service to get a profile image
+    profile_image: Optional[CharField] = models.CharField(max_length=32, null=True, blank=True)
+
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -163,9 +169,6 @@ class Manager(models.Model):
     id: models.AutoField = models.AutoField(primary_key=True)
     auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
-
-    # will hold a key that can be fetched by S3 service to get a profile image
-    profile_image: Optional[CharField] = models.CharField(max_length=32, null=True, blank=True)
 
 
 class Pentester(models.Model):
