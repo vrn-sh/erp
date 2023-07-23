@@ -79,6 +79,31 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         owner_model = get_user_model(owner)
         request.data['leader'] = owner_model.id
         return super().create(request, *args, **kwargs)
+    
+    def search(self, request):
+        """
+        Filter teams by name (case-insensitive).
+        Example usage: GET /team?search=Something
+        """
+        # Get the search query from the request data
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            # If there is a search query, filter the teams using the name__icontains lookup
+            # This will perform a case-insensitive search for teams containing the search query in their name
+            teams = Team.objects.filter(name__icontains=name_query)
+            
+            # Check if any teams were found
+            if teams.exists():
+                # Serialize the teams and return the data
+                serializer = TeamSerializer(teams, many=True)
+                return Response(serializer.data)
+            else:
+                # If no teams were found, return an empty list
+                return Response([])
+        else:
+            # If there's no search query, return an empty list of teams
+            return Response([])
 
     @swagger_auto_schema(
         operation_description="Updates a team with its [id]. Must be done by a Manager."
