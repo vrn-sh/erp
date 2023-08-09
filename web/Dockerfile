@@ -1,17 +1,16 @@
-FROM node:16.19.1
-
-RUN mkdir -p /moron
-WORKDIR /moron
+FROM node:hydrogen-alpine3.17 as web-build
 
 COPY package.json .
-RUN yarn global add react-scripts serve && \
-    yarn install
+RUN yarn install
 
 COPY . .
 
-EXPOSE 3000
-
 RUN yarn build
 
-CMD ["serve", "-s" , "dist"]
+FROM nginx:stable-alpine3.17 as run
+RUN apk update && apk upgrade
 
+COPY --from=web-build /dist /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 3000

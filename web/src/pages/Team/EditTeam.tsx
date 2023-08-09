@@ -18,7 +18,7 @@ import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
-import { Input } from '../EditMission/EditMission';
+import Input from '../../component/Input';
 
 const ITEM_HEIGHT = 55;
 const ITEM_PADDING_TOP = 8;

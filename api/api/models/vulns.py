@@ -11,6 +11,7 @@ from api.models.mission import Mission
 def get_bucket_path(instance, filename) -> str:
     return f'{instance.bucket_name}/{instance.title.replace(" ", "_")}/{filename}'
 
+
 class Notes(models.Model):
     """
         In order to give pentesters flexibility in their

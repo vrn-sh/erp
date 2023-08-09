@@ -1,12 +1,17 @@
 from datetime import datetime
 from json import dumps, loads
+import json
 from typing import Any, Dict, List
 from warnings import warn
+
+import os
+import requests
 
 from drf_yasg import openapi
 from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
+from django.core.cache import cache
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 from api.models import Auth, Pentester
@@ -188,7 +193,7 @@ class CrtShView(APIView):
 
             # return json parsed data
             return Response({'dump': certificates}, status=status)
-        
+
         status = HTTP_201_CREATED
         if self.has_crtsh_error(loads(crt_object.dump)):
             status = HTTP_500_INTERNAL_SERVER_ERROR
@@ -343,3 +348,49 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
 
         request.data["last_updated_by"] = request.user.id
         return super().update(request, *args, **kwargs)
+
+
+# class WappalyzerRequestView(APIView):
+#     permission_classes = [permissions.IsAuthenticated]
+#     authentication_classes = [TokenAuthentication]
+
+#     def post(self, request, *args, **kwargs):
+#         url = request.GET.get('url')
+
+#         cached = cache.get(url)
+#         if cached:
+#             cache.set(f'WAPPALYZER-{url}', cached, 60 * 15)
+#             return Response(cached)
+
+#         wapp_api_url = 'http://localhost:4000/run' \
+#                 if os.environ.get('IN_CONTAINER', '0') == '0' \
+#                 else 'http://wapp-api:4000/run'
+
+#         result = requests.post(f'{wapp_api_url}?url={url}', timeout=20.0)
+#         if result.status_code != 200:
+#             return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+#         as_json = result.json()
+#         cache.set(f'WAPPALYZER-{url}', as_json, 60 * 15)
+
+#         return Response(as_json)
+class WappalyzerRequestView(APIView):
+     authentication_classes = [TokenAuthentication]
+     permission_classes = [permissions.IsAuthenticated]
+
+     def post(self, request, *args, **kwargs):
+
+         sets = 'security,meta,locale,events'
+         urls = request.GET.get('urls')
+
+         # TODO(djnn): add rate-limit per user per day
+
+         data = requests.get(
+             f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
+             timeout=2.0,
+             headers={
+                 "x-api-key": os.environ['WAPPALYZER_API_KEY'],
+             }
+         )
+
+         return Response(data.json(), status=HTTP_200_OK)
