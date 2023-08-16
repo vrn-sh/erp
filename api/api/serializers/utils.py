@@ -2,6 +2,8 @@
     This module is made of utility function used to build serializers
 """
 
+import base64
+import re
 from django.db.models import Model
 from rest_framework.serializers import ModelSerializer, Serializer
 from typing import Any, Callable, List, Optional, OrderedDict
@@ -61,3 +63,35 @@ def get_multiple_instances(
         objects.append(model)
 
     return objects
+
+
+def get_image_data(content: str) -> Optional[bytes]:
+    """Strips the MIME type information from image data"""
+    as_base64 = content.split('base64,')
+    if len(as_base64) != 2:
+        return None
+
+    as_base64 = as_base64[1]
+    from_base64 = base64.b64decode(as_base64)
+    return from_base64
+
+def get_mime_type(content: str) -> Optional[str]:
+    """Get MIME type from the start of an image file"""
+
+    pattern = re.compile('data:(.*);base64')
+    if pattern.match(content):
+        rg_search = pattern.search(content)
+        if not rg_search:
+            return None
+
+        content_type = rg_search.group(0)
+        if not content_type.startswith('data:image/'):
+            return None
+
+        image_type = content_type.split('/')[1].split(';', 1)[0]
+        allowed_filetype = ['jpg', 'jpeg', 'png', 'gif']
+
+        if image_type not in allowed_filetype:
+            return None
+        return image_type
+    return None

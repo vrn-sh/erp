@@ -47,36 +47,32 @@ class SearchView(APIView):
 
     def get(self, request):
         query = request.query_params.get('q', None)
-        if query is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if not query:
+            return Response({'error': 'Query parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
         look_for_team = request.query_params.get('look_for_team', False)
         search_managers = request.query_params.get('search_managers', False)
         size = request.query_params.get('size', 20)
 
-        # managers = self.fetch(Manager, query, request.user, search_managers=search_managers)
-        # pentesters = self.fetch(Pentester, query, request.user)
-        # teams = Team.objects.none()
-        # if look_for_team:
-        #     user_teams = request.user.teams.all()
-        #     teams = self.fetch(Team, query, request.user).exclude(id__in=[team.id for team in user_teams])
+        managers = self.fetch(Manager, query, request.user, search_managers=search_managers)
+        pentesters = self.fetch(Pentester, query, request.user)
+        teams = Team.objects.none()
         vulnerabilities = self.fetch(Vulnerability, query, request.user)
         missions = self.fetch(Mission, query, request.user)
 
         results = []
-        # for model in [managers, pentesters, teams, vulnerabilities, missions]:
-        for model in [missions, vulnerabilities]:
-            print(model)
+
+        for model in [missions, vulnerabilities, managers, pentesters, teams]:
             for item in model:
-                print(item)
-                # name = item.name if hasattr(item, 'name') else item.first_name + ' ' + item.last_name
-                # similarity = np.dot(query, name) / (np.linalg.norm(query) * np.linalg.norm(name))
-                # results.append((item, similarity))
+                attributes = {}
+                if hasattr(item, 'title'):
+                    attributes['title'] = item.title
+                if hasattr(item, 'auth'):
+                    attributes['username'] = item.auth.username
                 results.append({
                     'id': item.id,
-                    'title': item.title,
+                    **attributes,
+                    'model': model.model.__name__
                 })
-
-        # results = sorted(results, key=lambda x: x[1], reverse=True)[:size]
 
         return Response({
             'results': results
@@ -86,11 +82,13 @@ class SearchView(APIView):
         if not query:
             return None
 
-        filters = Q(title__icontains=query)
+        filters = Q()
 
-        # if user.is_superuser or (search_managers and model == Manager):
+        if hasattr(model, 'title') and model in [Mission, Vulnerability]:
+            filters = Q(title__icontains=query)
+        if search_managers and model == Manager or model == Pentester:
+            filters = Q(auth__username__icontains=query)
+        if model == Team:
+            filters = Q(teams__name__icontains=query)
+
         return model.objects.filter(filters)
-        # elif hasattr(model, 'name'):
-        #     return model.objects.filter(filters, team__in=user.teams.all())
-        # else:
-        #     return model.objects.none()
