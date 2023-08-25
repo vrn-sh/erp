@@ -17,7 +17,8 @@ export default function TopBar() {
     const handleKeydown = () => {};
 
     const goProfile = () => {
-        navigate('/settings');
+        // navigate('/settings');
+        navigate('/profile');
     };
 
     return (

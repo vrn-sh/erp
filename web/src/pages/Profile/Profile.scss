@@ -1,29 +1,110 @@
-.profile-container{
-    background-color: #FCFBFD;
+.profile {
+    &-container {
+        background-color: white;
+        display: flex;
+        flex-direction: row;
+        width: 95%;
+        border: 1px var(--gray-btn) solid;
+        border-radius: 10px;
+        padding: 1rem;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    &-username {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    
+        & h5 {
+            font-size: 16px;
+            font-family: "Poppins-Regular";
+            padding: 0;
+            margin: 0;
+        }
+    
+        & p {
+            font-size: 14px;
+            font-family: "Poppins-Light";
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    &-infos {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        margin-bottom: 1rem;
+    
+        & p {
+            font-size: 12px;
+            font-family: "Poppins-Light";
+            padding: 0;
+            margin: 0;
+        }
+    
+        & span {
+            font-size: 16px;
+            font-family: "Poppins-Light";
+            padding: 0;
+            margin: 0;
+        }
+    
+    }
+
+    &-pic{
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        width: 30%;
+        height: 500px;
+        margin-top: 50px;
+    }
+
+    &-h4 {
+        font-size: 13px;
+        font-family: 'Poppins-Regular';
+    }
+
+    &-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+    }
+}
+
+.mainInfo-container {
     display: flex;
-}
-.profile-infos{
-    text-align: left;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    width: 63%;
-    height: fit-content;
-    margin: 50px;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
 }
 
-.profile-pic{
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    width: 30%;
-    height: 500px;
-    margin-top: 50px;
+.showInfo {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.cover-img{
-    background-image: url("../../assets/cover.jpg");
-    height: 45%;
+.info-h4 {
+    color: var(--gray-btn);
+}
+
+.btn-container {
+    display: flex;
+    justify-content: end;
+}
+
+.set-button {
+    min-width: 1rem;
+    background-color: white;
+    color: var(--primary-btn);
+    border: 1px solid var(--primary-btn);
+    border-radius: 6px;
+    justify-content: end;
 }
