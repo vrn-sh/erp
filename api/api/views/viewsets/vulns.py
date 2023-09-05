@@ -7,8 +7,9 @@ from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.views import Response
-from api.models import Auth
+from django.core.cache import cache
 
+from api.models import Auth
 from api.models.vulns import Notes, VulnType, Vulnerability
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 
@@ -90,12 +91,8 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
 
-    def list(self, request, *args, **kwargs):
-        if mission_id := self.request.GET.get('mission_id'):
-            vulns = self.get_queryset().filter(mission__id=mission_id)
-            serializer = self.get_serializer(vulns, many=True, read_only=True)
-            return Response(serializer.data)
-        return super().list(request, *args, **kwargs)
+    CACHE_KEY_PREFIX = 'vuln_'
+    CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
 
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
@@ -140,6 +137,19 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         security=['Bearer'],
         tags=['vulnerability'],
     )
+
+    def list(self, request, *args, **kwargs):
+        if mission_id := self.request.GET.get('mission_id'):
+            cache_key = f'{self.CACHE_KEY_PREFIX}list_{mission_id}'
+            vulns = cache.get(cache_key)
+            if not vulns:
+                vulns = self.get_queryset().filter(mission=mission_id)
+                serializer = self.get_serializer(vulns, many=True, read_only=True)
+                vulns = serializer.data
+                cache.set(cache_key, vulns, self.CACHE_TIMEOUT)
+            return Response(vulns)
+        return super().list(request, *args, **kwargs)
+
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
@@ -160,7 +170,12 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
-        return super().create(request, *args, **kwargs)
+        response = super().create(request, *args, **kwargs)
+
+        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}'
+        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
+
+        return response
 
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
@@ -177,4 +192,8 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             if not 'description' in request.data:
                 request.data['description'] = vuln_obj.description
 
-        return super().update(request, *args, **kwargs)
+        response = super().update(request, *args, **kwargs)
+
+        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["id"]}'
+        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
+        return response
