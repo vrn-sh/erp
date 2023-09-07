@@ -21,6 +21,7 @@ import TermOfUse from './pages/Home/TermOfUse';
 import ConfirmEmail from './pages/SignUp/ConfirmEmail';
 import EditVulnerability from './pages/Vulnerability/EditVuln';
 import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
+import PrivateRoute from './pages/TokenVerification/TokenVerification'
 
 function App() {
     return (
@@ -33,18 +34,20 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />
                 <Route path="/confirm" element={<ConfirmEmail />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/vuln/add" element={<AddVulnerability />} />
-                <Route path="/vuln/edit" element={<EditVulnerability />} />
-                <Route path="/vuln/detail" element={<VulnerabilityDetail />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/mission/detail" element={<MissionDetail />} />
-                <Route path="/mission/edit" element={<EditMission />} />
-                <Route path="/mission/create" element={<CreateMission />} />
-                <Route path="/team" element={<Team />} />
-                <Route path="/team/create" element={<CreateTeam />} />
-                <Route path="/team/edit" element={<EditTeam />} />
+                <Route element={<PrivateRoute/>}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/vuln/add" element={<AddVulnerability />} />
+                    <Route path="/vuln/edit" element={<EditVulnerability />} />
+                    <Route path="/vuln/detail" element={<VulnerabilityDetail />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/mission/detail" element={<MissionDetail />} />
+                    <Route path="/mission/edit" element={<EditMission />} />
+                    <Route path="/mission/create" element={<CreateMission />} />
+                    <Route path="/team" element={<Team />} />
+                    <Route path="/team/create" element={<CreateTeam />} />
+                    <Route path="/team/edit" element={<EditTeam />} />
+                </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </div>
