@@ -21,6 +21,7 @@ import TermOfUse from './pages/Home/TermOfUse';
 import ConfirmEmail from './pages/SignUp/ConfirmEmail';
 import EditVulnerability from './pages/Vulnerability/EditVuln';
 import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
+import ViewTeamDetails from './pages/Team/ViewTeam';
 
 function App() {
     return (
