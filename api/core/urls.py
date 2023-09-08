@@ -16,6 +16,7 @@ from api.views.hunter import HunterView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 from api.views.viewsets.mission import MissionViewset, NmapViewset, ReconViewset, CrtShView, WappalyzerRequestView
+from api.views.search import SearchView
 from api.views.viewsets.client_info import ClientInfoViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
@@ -54,6 +55,7 @@ urlpatterns = [
     path('register', RegisterViewset.as_view({'post': 'create'})),
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path(r'download-report', GenerateReportView.as_view()),
+    path('search', SearchView.as_view()),
     path(r'hunt', HunterView.as_view()),
-    path('wappa', WappalyzerRequestView.as_view()),
+    path('wappa', WappalyzerRequestView.as_view())
 ] + router.urls
