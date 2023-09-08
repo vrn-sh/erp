@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Profile.scss';
 import '../Settings/Settings.scss';
 import { useNavigate } from 'react-router-dom';
+import { Chip } from '@mui/material';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import pp from '../../assets/testpp.png';
@@ -20,6 +21,58 @@ type InfoProps = {
     c1: string;
     c2: string;
 };
+
+type MissionDetail = {
+    name: string;
+    state: string;
+    scope: string;
+    des: string;
+    id: number;
+};
+
+function MissionCard({ name, state, scope, des, id }: MissionDetail) {
+    return (
+        <div className="profile-mission-card">
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                    gap: '1rem',
+                }}
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignContent: 'center',
+                    }}
+                >
+                    <h4>{name}</h4>
+                    <Chip
+                        label="Succeed"
+                        color="success"
+                        variant="outlined"
+                        size="small"
+                    />
+                </div>
+                <h4>{scope}</h4>
+                <div
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'end',
+                    }}
+                >
+                    <button type="button" className="detail-btn">
+                        Open
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 function Input({ label, size, value }: InputProps) {
     const [valuenew, setValue] = useState(value);
@@ -57,11 +110,29 @@ export default function ProfilePage() {
     const [lastName, setlastName] = useState('XU');
     const [email, setEmail] = useState('yuhui.xu@epitech.eu');
     const [Username, setUsername] = useState('claraxuxu');
+    const [role, setRole] = useState('pentester');
     const navigate = useNavigate();
-    const [seeMission, setSeeMission] = useState(false);
+    const [testvar, setTestVar] = useState({
+        display: 'none',
+    });
+
+    const [missionStyle, setMissionStyle] = useState({
+        backgroundColor: 'white',
+        color: '#7c44f3',
+    });
 
     const goToSetting = () => {
         navigate('/settings');
+    };
+
+    const MissionShow = () => {
+        if (testvar.display === 'none') {
+            setTestVar({ display: '' }); // cancel display style
+            setMissionStyle({ backgroundColor: '#7c44f3', color: 'white' }); // change style mission btn
+        } else if (testvar.display === '') {
+            setTestVar({ display: 'none' });
+            setMissionStyle({ backgroundColor: 'white', color: '#7c44f3' });
+        }
     };
 
     return (
@@ -83,23 +154,23 @@ export default function ProfilePage() {
                                     src={pp}
                                 />
                                 <div className="profile-username">
-                                    <h5>Username</h5>
-                                    <p>Pentester</p>
+                                    <h5>{Username}</h5>
+                                    <p>{role}</p>
                                 </div>
                             </div>
 
                             <GroupInfo
                                 t1="First name"
                                 t2="Email"
-                                c1="Clara"
-                                c2="yuhui.xu@epitech.eu"
+                                c1={firstName}
+                                c2={email}
                             />
 
                             <GroupInfo
                                 t1="Last name"
                                 t2="Co-workers"
-                                c1="Xu"
-                                c2="5"
+                                c1={lastName}
+                                c2="10"
                             />
                             <GroupInfo t1="Missions" t2="Teams" c1="3" c2="2" />
 
@@ -150,9 +221,24 @@ export default function ProfilePage() {
                                             <button
                                                 type="button"
                                                 className="set-button"
+                                                onClick={MissionShow}
+                                                style={missionStyle}
                                             >
                                                 Mission
                                             </button>
+                                        </td>
+                                    </tr>
+                                    <tr style={testvar}>
+                                        <td colSpan={5}>
+                                            <div className="profile-mission-detail">
+                                                <MissionCard
+                                                    name="test"
+                                                    state="success"
+                                                    scope="https://localhost:3000"
+                                                    des="Lorem ipsum dolor sit amet, consectetur adipis. Lorem ipsum dolor sit amet consectetur adi"
+                                                    id={0}
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>

@@ -74,6 +74,40 @@
         height: 150px;
         border-radius: 50%;
     }
+
+    &-mission-detail {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 33.33% 33.33% 33.33%;
+        grid-template-rows: auto;
+    }
+
+    &-mission-card {
+        padding: 1rem;
+        margin: 2rem;
+        // width: 20%;
+        height: 20vh;
+        background-color: var(--light-gray);
+        border-radius: 4px;
+        padding: 1rem;
+        & h4 {
+            margin: 0;
+            overflow-wrap: break-word;
+        }
+        & p {
+            margin: 0;
+            padding: 0;
+        }
+    }
+}
+
+.detail-btn {
+    min-width: 2px;
+    width: fit-content;
+    height: 2rem;
+    padding: 5px 10px;
+    margin: 0 .5rem;
+    text-align: end;
 }
 
 .mainInfo-container {
