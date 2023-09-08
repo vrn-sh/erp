@@ -7,6 +7,7 @@ import './MissionDetail.scss';
 import Scope from './Scope';
 import Recon from './Recon';
 import HunterIo from './HunterIo/HunterIo';
+import Credentials from './Credential' 
 
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
@@ -30,6 +31,9 @@ export default function MissionDetail() {
         }
         if (active === 'hunter') {
             return <HunterIo />;
+        }
+        if (active === 'credential') {
+            return <Credentials idMission={undefined} />;
         }
         return null;
     };
@@ -77,6 +81,17 @@ export default function MissionDetail() {
                                 onClick={handleClick}
                             >
                                 Hunter IO
+                            </button>
+                            <button
+                                key={4}
+                                id="credential"
+                                type="button"
+                                className={
+                                    active === 'credential' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Credential
                             </button>
                         </div>
                     </div>
