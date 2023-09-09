@@ -46,6 +46,7 @@ router.register(r'client-info', ClientInfoViewset)
 
 urlpatterns = [
     path('team', TeamViewset.as_view({'get': 'search'}), name='team-search'),
+    path('mission', MissionViewset.as_view({'get': 'search'}), name='mission-search'),
     path(r'crtsh', CrtShView.as_view()),
     path(r'login', LoginView.as_view(), name='knox_login'),
     path('logout', LogoutView.as_view(), name='knox_logout'),

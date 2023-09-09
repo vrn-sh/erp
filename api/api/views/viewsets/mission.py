@@ -342,6 +342,32 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         request.data['last_updated_by'] = request.user.id
         return super().create(request, *args, **kwargs)
 
+    def search(self, request):
+        """
+        Filter missions by name (case-insensitive).
+        Example usage: GET /mission?search=Something
+        """
+        # Get the search query from the request data
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            # If there is a search query, filter the missions using the name__icontains lookup
+            # This will perform a case-insensitive search for missions containing the search query in their name
+            missions = Mission.objects.filter(name__icontains=name_query)
+            
+            # Check if any missions were found
+            if missions.exists():
+                # Serialize the missions and return the data
+                serializer = MissionSerializer(missions, many=True)
+                return Response(serializer.data)
+            else:
+                # If no missions were found, return an empty list
+                return Response([])
+        else:
+            # If there's no search query, return an empty list of missions
+            return Response([])
+
+
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
             request.data.pop("created_by")
