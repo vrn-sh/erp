@@ -162,6 +162,31 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
 
         return super().create(request, *args, **kwargs)
 
+    def search(self, request):
+        """
+        Filter Vulnerability by name (case-insensitive).
+        Example usage: GET /vuln-type?search=Something
+        """
+        # Get the search query from the request data
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            # If there is a search query, filter the teams using the name__icontains lookup
+            # This will perform a case-insensitive search for teams containing the search query in their name
+            vulnerability = Vulnerability.objects.filter(name__icontains=name_query)
+            
+            # Check if any vulnerabilities were found
+            if vulnerability.exists():
+                # Serialize the teams and return the data
+                serializer = VulnerabilitySerializer(vulnerability, many=True)
+                return Response(serializer.data)
+            else:
+                # If no teams were found, return an empty list
+                return Response([])
+        else:
+            # If there's no search query, return an empty list of vulnerability
+            return Response([])
+
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
             request.data.pop('author')
