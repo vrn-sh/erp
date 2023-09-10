@@ -91,7 +91,7 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         if name_query:
             # If there is a search query, filter the teams using the name__icontains lookup
             # This will perform a case-insensitive search for teams containing the search query in their name
-            teams = Team.objects.filter(name__icontains=name_query)
+            teams = Team.objects.filter(name=name_query)
             
             # Check if any teams were found
             if teams.exists():
@@ -174,6 +174,30 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     permission_classes = [permissions.IsAuthenticated, IsManager | IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
+    def search(self, request):
+        """
+        Filter manager by name (case-insensitive).
+        Example usage: GET /mission?search=Something
+        """
+        # Get the search query from the request data
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            # If there is a search query, filter the pentester using the name__icontains lookup
+            # This will perform a case-insensitive search for manager containing the search query in their name
+            pentester = Pentester.objects.filter(auth__username=name_query)
+            
+            # Check if any pentester were found
+            if pentester.exists():
+                # Serialize the pentester and return the data
+                serializer = PentesterSerializer(pentester, many=True)
+                return Response(serializer.data)
+            else:
+                # If no pentester were found, return an empty list
+                return Response([])
+        else:
+            # If there's no search query, return an empty list of pentester
+            return Response([])
 
 
 class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -187,6 +211,30 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
     permission_classes = [permissions.IsAuthenticated & IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = ManagerSerializer
+    def search(self, request):
+        """
+        Filter manager by name (case-insensitive).
+        Example usage: GET /mission?search=Something
+        """
+        # Get the search query from the request data
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            # If there is a search query, filter the manager using the name__icontains lookup
+            # This will perform a case-insensitive search for manager containing the search query in their name
+            manager = Manager.objects.filter(auth__username=name_query)
+            
+            # Check if any manager were found
+            if manager.exists():
+                # Serialize the manager and return the data
+                serializer = ManagerSerializer(manager, many=True)
+                return Response(serializer.data)
+            else:
+                # If no manager were found, return an empty list
+                return Response([])
+        else:
+            # If there's no search query, return an empty list of manager
+            return Response([])
 
 
 class AuthViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors

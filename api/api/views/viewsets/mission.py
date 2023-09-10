@@ -353,7 +353,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         if name_query:
             # If there is a search query, filter the missions using the name__icontains lookup
             # This will perform a case-insensitive search for missions containing the search query in their name
-            missions = Mission.objects.filter(name__icontains=name_query)
+            missions = Mission.objects.filter(title=name_query)
             
             # Check if any missions were found
             if missions.exists():

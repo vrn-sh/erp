@@ -173,7 +173,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if name_query:
             # If there is a search query, filter the teams using the name__icontains lookup
             # This will perform a case-insensitive search for teams containing the search query in their name
-            vulnerability = Vulnerability.objects.filter(name__icontains=name_query)
+            vulnerability = Vulnerability.objects.filter(title=name_query)
             
             # Check if any vulnerabilities were found
             if vulnerability.exists():
