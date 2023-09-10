@@ -71,6 +71,6 @@ class MissionSerializer(serializers.ModelSerializer):
 
 class CredentialsSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ['login', 'password', 'service', 'comment']
-        read_only_fields = ['id', 'mission_id']
+        fields = ['id', 'login', 'password', 'service', 'comment']
+        read_only_fields = ['mission_id']
         model = Credentials

@@ -105,9 +105,16 @@ class Mission(models.Model):
         """get the number of days between start and end"""
         return self.get_delta(self.start, self.end).days  # type: ignore
 
+    @property
     def days_left(self) -> float:
         """get number of days left in this mission"""
         return self.get_delta(datetime.today(), self.end).days  # type: ignore
+
+
+    def is_member(self, user: Auth) -> bool:
+        """checks if a user is a member of the mission"""
+        return self.team.is_member(user)
+
 
     def save(self, *args, **kwargs):
         if self.pk is None:

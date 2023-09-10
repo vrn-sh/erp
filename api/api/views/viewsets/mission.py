@@ -13,7 +13,7 @@ from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
 from django.core.cache import cache
 from rest_framework.routers import Response
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from api.models import Auth, Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
@@ -281,9 +281,102 @@ class CredentialViewset(viewsets.ModelViewSet):
     """CRUD operation to add credentials to a mission"""
 
     queryset = Credentials.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = CredentialsSerializer
+
+    @swagger_auto_schema(
+        operation_description="Lists all Credentials for a mission",
+        manual_parameters=[
+            openapi.Parameter(
+                name="mission_id",
+                in_=openapi.IN_QUERY,
+                description="ID of the mission to save the certificates.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+            )
+        ],
+        responses={
+            "200": openapi.Response(
+                description="200 OK",
+            ),
+            "400": openapi.Response(
+                description="400 Bad Request",
+            )
+        },
+        security=['Bearer'],
+        tags=['credentials'],
+    )
+    def list(self, request, *args, **kwargs):
+
+        mission_id = request.data.get('mission_id', 0)
+        if mission := Mission.objects.filter(id=mission_id).first():
+
+            if not mission.is_member(self.request.user):
+                return Response(HTTP_403_FORBIDDEN)
+
+            creds = Credentials.objects.filter(mission_id=mission_id)  # type: ignore
+
+             # Apply pagination to the queryset
+            page = self.paginate_queryset(creds)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = self.get_serializer(creds, many=True)
+            return Response(serializer.data)
+
+        return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
+
+    @swagger_auto_schema(
+        operation_description="Creates a Credential model",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['mission_id', 'login', 'password', 'service'],
+            properties={
+                'login': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="username",
+                ),
+                'password': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="credential password",
+                ),
+                'service': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="service the credential is linked to",
+                ),
+                'mission_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="mission ID of the related credential",
+                ),
+           },
+        ),
+        responses={
+            "200": openapi.Response(
+                description="200 OK",
+                examples={
+                    "login": "example@epitech.eu",
+                    "password": "s3cr37P4ssw0rd",
+                    "service": "https://intra.epitech.eu",
+                    "comment": "student account -- no admin privs",
+                }
+            )
+        },
+        security=['Bearer'],
+        tags=['credentials'],
+    )
+    def create(self, request, *args, **kwargs):
+        mission_id = request.data.get('mission_id', 0)
+        if mission := Mission.objects.filter(id=mission_id).first():
+
+            if not mission.is_member(self.request.user):
+                return Response(HTTP_403_FORBIDDEN)
+
+            request.data['mission'] = mission
+            return super().create(request, *args, **kwargs)
+
+        return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
