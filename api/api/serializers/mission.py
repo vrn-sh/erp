@@ -1,7 +1,7 @@
 from json import loads
 from rest_framework import serializers
 
-from api.models.mission import Mission, Recon, NmapScan, CrtSh
+from api.models.mission import Credentials, Mission, Recon, NmapScan, CrtSh
 from api.models.utils import NmapPort, parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
 
 
@@ -67,3 +67,10 @@ class MissionSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Mission
+
+
+class CredentialsSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id', 'login', 'password', 'service', 'comment']
+        read_only_fields = ['mission_id']
+        model = Credentials
