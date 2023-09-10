@@ -71,11 +71,11 @@ class Auth(AbstractUser):
     password: models.CharField = models.CharField(max_length=128)
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
-    is_enabled: models.BooleanField = models.BooleanField(default=False)
-    favorites: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)
+    is_enabled: models.BooleanField = models.BooleanField(default=False)  # type: ignore
+    favorites: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)  # type: ignore
 
     # will hold a key that can be fetched by S3 service to get a profile image
-    profile_image: Optional[CharField] = models.CharField(max_length=32, null=True, blank=True)
+    profile_image: Optional[CharField] = models.CharField(max_length=38, null=True, blank=True)  # type: ignore
 
 
     def set_password(self, raw_password: str | None = None):

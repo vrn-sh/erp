@@ -149,12 +149,12 @@ class ManagerSerializer(serializers.ModelSerializer):
         validated_data['auth']['role'] = 2
         validated_data['auth']['is_superuser'] = False
         validated_data['auth']['is_staff'] = False
-        auth: Auth = create_instance(AuthSerializer, validated_data, 'auth')
-        return Manager.objects.create(auth=auth, **validated_data)
+        auth: Auth = create_instance(AuthSerializer, validated_data, 'auth')  # type: ignore
+        return Manager.objects.create(auth=auth, **validated_data)  # type: ignore
 
     def update(self, instance, validated_data) -> Manager:
         if 'auth' in validated_data:
-            nested_serializer: AuthSerializer = self.fields['auth']
+            nested_serializer: AuthSerializer = self.fields['auth']  # type: ignore
             nested_instance: Auth = instance.auth
             nested_data: dict[str, str] = validated_data.pop('auth')
             nested_serializer.update(nested_instance, nested_data)

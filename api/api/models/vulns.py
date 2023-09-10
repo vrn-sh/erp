@@ -72,10 +72,10 @@ class Vulnerability(models.Model):
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
 
-    author: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='author')
-    last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')
+    author: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='author')  # type: ignore
+    last_editor: Auth = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_editor')  # type: ignore
 
-    vuln_type: VulnType = models.ForeignKey(VulnType, on_delete=models.CASCADE)
-    images: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)
+    vuln_type: VulnType = models.ForeignKey(VulnType, on_delete=models.CASCADE)  # type: ignore
+    images: Optional[List[CharField]] = ArrayField(models.CharField(max_length=38), blank=True, null=True, size=4)  # type: ignore
 
-    mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
+    mission: Mission = models.ForeignKey(Mission, on_delete=models.CASCADE)  # type: ignore
