@@ -65,13 +65,33 @@ export default function SettingAccount() {
         setUserInfos({ ...userInfos, last_name: e.target.value });
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            console.log("userInfos.profile_image avant la conversion :", userInfos.profile_image);
+
+            const base64Image = await convertImageToBase64(file);
+    
+            // Vérifiez que le résultat de la conversion en base64 est une chaîne (string)
+            if (typeof base64Image === 'string') {
+                setUserInfos({ ...userInfos, profile_image: base64Image });
+               // console.log("UserInfos.profile_image apres la conversion:", userInfos.profile_image);
+            } else {
+                console.error("La conversion en base64 a échoué.");
+            }
+    
             setSelectedFile(file);
         }
     };
-
+    
+    // Utilisez un effet secondaire pour surveiller les changements de userInfos.profile_image
+    useEffect(() => {
+    }, [userInfos.profile_image]);
+    
+    
+    
+    
     const convertImageToBase64 = (file: File) => {
         return new Promise<string | ArrayBuffer | null>((resolve) => {
             const reader = new FileReader();
@@ -81,6 +101,7 @@ export default function SettingAccount() {
             reader.readAsDataURL(file);
         });
     };
+    
 
     const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -95,7 +116,6 @@ export default function SettingAccount() {
                     auth: {
                         first_name: userInfos.first_name,
                         last_name: userInfos.last_name,
-                        profile_image: userInfos.profile_image,
                     },
                 },
                 {
@@ -111,43 +131,34 @@ export default function SettingAccount() {
             .catch((error) => {
                 setMessage(error.message, 'error');
             });
-    
-        // Si une nouvelle photo de profil a été sélectionnée, convertissez-la en base64
-        // et mettez à jour le champ profile_image
-        if (selectedFile) {
-            const base64Image = await convertImageToBase64(selectedFile);
-            console.log(base64Image);
-            if (typeof base64Image === 'string') { // Vérification du type
-                setUserInfos({ ...userInfos, profile_image: base64Image });
-    
-                // Mettez à jour le champ profile_image avec la base64 dans la requête PATCH
-                await axios
-                    .patch(
-                        `${url}/${Cookies.get('Id')}`,
-                        {
-                            auth: {
-                                profile_image: base64Image,
+
+            if (selectedFile) {
+                console.log("UserInfos.profile_image juste avant lenvoi:", userInfos.profile_image);
+                    // Mettez à jour le champ profile_image avec la base64 dans la requête PATCH
+                    axios
+                        .patch(
+                            `${url}/${Cookies.get('Id')}`,
+                            {
+                                auth: {
+                                    profile_image: userInfos.profile_image,
+                                },
                             },
-                        },
-                        {
-                            headers: {
-                                'Content-type': 'application/json',
-                                Authorization: `Token ${Cookies.get('Token')}`,
-                            },
-                        }
-                    )
-                    .then(() => {
-                        setMessage('Updated profile image!', 'success');
-                    })
-                    .catch((error) => {
-                        setMessage(error.message, 'error');
-                    });
-            } else {
-                // Gérez l'erreur ou fournissez un message à l'utilisateur si la conversion échoue
-                setMessage('Failed to convert image to base64', 'error');
-            }
-        }
-    };
+                            {
+                                headers: {
+                                    'Content-type': 'application/json',
+                                    Authorization: `Token ${Cookies.get('Token')}`,
+                                },
+                            }
+                        )
+                        .then(() => {
+                            setMessage('Updated profile image!', 'success');
+                        })
+                        .catch((error) => {
+                            setMessage(error.message, 'error');
+                        });
+                }
+    
+        };
     
       
     return (
