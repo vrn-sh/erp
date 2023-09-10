@@ -33,6 +33,7 @@ class Recon(models.Model):
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
 
+
 class CrtSh(models.Model):
     """
         Model responsible for reading crt.sh API results
@@ -102,18 +103,33 @@ class Mission(models.Model):
     @property
     def duration(self) -> float:
         """get the number of days between start and end"""
-        return self.get_delta(self.start, self.end).days
+        return self.get_delta(self.start, self.end).days  # type: ignore
 
     def days_left(self) -> float:
         """get number of days left in this mission"""
-        return self.get_delta(datetime.today(), self.end).days
+        return self.get_delta(datetime.today(), self.end).days  # type: ignore
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-            self.recon = Recon.objects.create()
-            self.bucket_name = uuid.uuid4().hex
+            self.recon = Recon.objects.create()  # type: ignore
+            self.bucket_name = uuid.uuid4().hex  # type: ignore
 
             if environ.get('IN_CONTAINER', '0') == '1':
                 S3Bucket().create_bucket(self.bucket_name)
 
         super().save(*args, **kwargs)
+
+
+
+class Credentials(models.Model):
+    """
+        Model storing the information to be found in /credentials page
+    """
+
+    REQUIRED_FIELDS = ['login', 'mission', 'password', 'service']
+
+    login: models.CharField = models.CharField(max_length=128)
+    password: models.CharField = models.CharField(max_length=128)
+    service: models.CharField = models.CharField(max_length=128)
+    comment: models.CharField = models.CharField(max_length=128, blank=True, null=True)
+    mission: models.ForeignKey = models.ForeignKey(Mission, on_delete=models.CASCADE)

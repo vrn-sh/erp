@@ -16,9 +16,9 @@ from rest_framework.routers import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
 from api.models import Auth, Pentester
 
-from api.models.mission import Mission, NmapScan, Recon, CrtSh
+from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
-from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
+from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
 from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
 
 from api.services.crtsh import fetch_certificates_from_crtsh
@@ -277,7 +277,13 @@ class CrtShView(APIView):
         return Response({'dump': certificates}, status)
 
 
+class CredentialViewset(viewsets.ModelViewSet):
+    """CRUD operation to add credentials to a mission"""
 
+    queryset = Credentials.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = CredentialsSerializer
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -394,3 +400,4 @@ class WappalyzerRequestView(APIView):
          )
 
          return Response(data.json(), status=HTTP_200_OK)
+
