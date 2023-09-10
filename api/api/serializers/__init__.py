@@ -54,12 +54,34 @@ class AuthSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             password: str = validated_data.pop('password')
             validated_data['password'] = PasswordHasher().hash(password)
+
+        image_data: str = validated_data.get('profile_image', '')
+        if image_data != '':
+            mime_type = get_mime_type(image_data)
+            image_data = get_image_data(image_data)  # type: ignore
+
+            if not mime_type or not image_data:
+                validated_data['profile_image'] = None
+                return super().update(instance, validated_data)
+
+            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
+                validated_data['profile_image'] = None
+                return super().update(instance, validated_data)
+
+            s3_client = S3Bucket()
+            image_name = f'{uuid.uuid4().hex}'
+
+            iostream = BytesIO(image_data)  # type: ignore
+            _ = s3_client.upload_stream(
+                'rootbucket',
+                image_name,
+                iostream,
+                f'image/{mime_type}',
+            )
+            validated_data['profile_image'] = image_name
+
         return super().update(instance, validated_data)
 
-    def to_representation(self, instance) -> OrderedDict[str, str]:
-        representation: OrderedDict[str, str] = super().to_representation(instance)
-        representation.pop('password', None)
-        return representation
 
     def create(self, validated_data) -> Auth:
         if 'password' in validated_data:
@@ -67,50 +89,48 @@ class AuthSerializer(serializers.ModelSerializer):
             validated_data['password'] = PasswordHasher().hash(password)
 
         # temporarily set here until sendgrid is fixed
-        # validated_data['is_enabled'] = True
-        return Auth.objects.create(**validated_data)
+        validated_data['is_enabled'] = True
 
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-
-        if instance.profile_image is not None:
-            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
-                return representation
-
-            s3_client = S3Bucket()
-            representation['profile_image'] = s3_client.get_object_url('rootbucket', image)
-
-        return representation
-
-
-    def to_internal_value(self, data: dict[str, Any]) -> OrderedDict[Any, Any]:
-        internal_value = super().to_internal_value(data)
-        image_data: str = data.get('profile_image', '')
-
+        image_data: str = validated_data.get('profile_image', '')
         if image_data != '':
             mime_type = get_mime_type(image_data)
-            image_data = get_image_data(image_data)
+            image_data = get_image_data(image_data)  # type: ignore
 
             if not mime_type or not image_data:
-                return internal_value
+                validated_data['profile_image'] = None
+                return Auth.objects.create(**validated_data)
 
             if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-                return internal_value
+                validated_data['profile_image'] = None
+                return Auth.objects.create(**validated_data)
 
             s3_client = S3Bucket()
             image_name = f'{uuid.uuid4().hex}'
 
-            iostream = BytesIO(image_data)
+            iostream = BytesIO(image_data)  # type: ignore
             _ = s3_client.upload_stream(
                 'rootbucket',
                 image_name,
                 iostream,
                 f'image/{mime_type}',
             )
+            validated_data['profile_image'] = image_name
 
-            internal_value['profile_image'] = image_name
-        return internal_value
+        return Auth.objects.create(**validated_data)
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation.pop('password', None)
+
+        if instance.profile_image is not None:
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                return representation
+
+            s3_client = S3Bucket()
+            representation['profile_image'] = s3_client.get_object_url('rootbucket', image)  # type: ignore
+
+        return representation
 
 
 class PentesterSerializer(serializers.ModelSerializer):
