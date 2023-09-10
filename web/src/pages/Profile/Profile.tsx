@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 import './Profile.scss';
 import '../Settings/Settings.scss';
 import { useNavigate } from 'react-router-dom';
-import { Chip } from '@mui/material';
+import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import pp from '../../assets/testpp.png';
-
-type InputSizes = 'small' | 'medium' | 'large';
-
-type InputProps = {
-    label: string;
-    size: InputSizes;
-    value: string;
-};
+import TableSection from './TableSection';
 
 type InfoProps = {
     t1: string;
@@ -21,74 +16,6 @@ type InfoProps = {
     c1: string;
     c2: string;
 };
-
-type MissionDetail = {
-    name: string;
-    state: string;
-    scope: string;
-    des: string;
-    id: number;
-};
-
-function MissionCard({ name, state, scope, des, id }: MissionDetail) {
-    return (
-        <div className="profile-mission-card">
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '100%',
-                    gap: '1rem',
-                }}
-            >
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignContent: 'center',
-                    }}
-                >
-                    <h4>{name}</h4>
-                    <Chip
-                        label="Succeed"
-                        color="success"
-                        variant="outlined"
-                        size="small"
-                    />
-                </div>
-                <h4>{scope}</h4>
-                <div
-                    style={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'end',
-                    }}
-                >
-                    <button type="button" className="detail-btn">
-                        Open
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function Input({ label, size, value }: InputProps) {
-    const [valuenew, setValue] = useState(value);
-
-    return (
-        <div className={`input input-${size}`}>
-            <label htmlFor={`input-${label}`}>{label}</label>
-            <input
-                id={`input-${label}`}
-                type="text"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
-        </div>
-    );
-}
 
 function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
     return (
@@ -106,34 +33,141 @@ function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
 }
 
 export default function ProfilePage() {
-    const [firstName, setFirstName] = useState('Clara');
-    const [lastName, setlastName] = useState('XU');
-    const [email, setEmail] = useState('yuhui.xu@epitech.eu');
-    const [Username, setUsername] = useState('claraxuxu');
-    const [role, setRole] = useState('pentester');
+    const role = Cookies.get('Role');
     const navigate = useNavigate();
-    const [testvar, setTestVar] = useState({
-        display: 'none',
+    const [coworker, setCowoker] = useState(0);
+    const [userInfos, setUserInfos] = useState({
+        username: '',
+        email: '',
+        first_name: '',
+        last_name: '',
+        profile_image: '',
+        phone_number: '',
     });
 
-    const [missionStyle, setMissionStyle] = useState({
-        backgroundColor: 'white',
-        color: '#7c44f3',
-    });
+    const [teamList, setTeamList] = useState<
+        {
+            id: number;
+            leader: {
+                id: number;
+                auth: {
+                    username: string;
+                    email: string;
+                    first_name: string;
+                    last_name: string;
+                    last_login: string;
+                    date_joined: string;
+                    password: string;
+                    phone_number: string | null;
+                    role: number;
+                    favorites: string | null;
+                    profile_image: string | null;
+                };
+                creation_date: string;
+            };
+            name: string;
+            people: number;
+        }[]
+    >([]);
+
+    const [missionList, setMissionList] = useState<
+        {
+            id: number;
+            start: string;
+            end: string;
+            title: string;
+            scope: string[];
+            team: number;
+        }[]
+    >([]);
 
     const goToSetting = () => {
         navigate('/settings');
     };
 
-    const MissionShow = () => {
-        if (testvar.display === 'none') {
-            setTestVar({ display: '' }); // cancel display style
-            setMissionStyle({ backgroundColor: '#7c44f3', color: 'white' }); // change style mission btn
-        } else if (testvar.display === '') {
-            setTestVar({ display: 'none' });
-            setMissionStyle({ backgroundColor: 'white', color: '#7c44f3' });
-        }
+    const getUserInfos = async () => {
+        let url = `${config.apiUrl}/`;
+        if (role === '2') url += 'manager';
+        else url += 'pentester';
+        await axios
+            .get(`${url}/${Cookies.get('Id')}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setUserInfos(data.data.auth);
+            })
+            .catch((e) => {
+                throw e;
+            });
     };
+
+    const getTeams = async () => {
+        await axios
+            .get(`${config.apiUrl}/team?/page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const res = data.data.results;
+                const t = [];
+                for (let j = 0; j < res.length; j += 1) {
+                    let f = false;
+                    if (res[j].leader.auth.email === userInfos.email) f = true;
+                    for (let i = 0; i < res[j].members.length; i += 1) {
+                        if (res[j].members[i].auth.email === userInfos.email)
+                            f = true;
+                    }
+                    if (f === true) {
+                        const member = res[j].members.length;
+                        const sum = coworker + member;
+                        delete res[j].members;
+                        res[j].people = member;
+                        setCowoker(sum);
+                        t.push(res[j]);
+                    }
+                }
+                setTeamList(t);
+            });
+    };
+
+    const getMission = async () => {
+        await axios
+            .get(`${config.apiUrl}/mission?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const res = data.data.results;
+                for (let i = 0; i < res.length; i += 1) {
+                    delete res[i].recon;
+                    delete res[i].bucket_name;
+                    delete res[i].creation_date;
+                    delete res[i].last_updated;
+                    delete res[i].created_by;
+                    delete res[i].last_updated_by;
+                }
+                setMissionList(res);
+            });
+    };
+
+    useEffect(() => {
+        getUserInfos();
+    }, []);
+
+    useEffect(() => {
+        getTeams();
+    }, [userInfos]);
+
+    useEffect(() => {
+        getMission();
+    }, [teamList]);
 
     return (
         <div className="dashboard">
@@ -154,25 +188,44 @@ export default function ProfilePage() {
                                     src={pp}
                                 />
                                 <div className="profile-username">
-                                    <h5>{Username}</h5>
-                                    <p>{role}</p>
+                                    <h5>{userInfos.username}</h5>
+                                    <p>
+                                        {role === '1' ? 'Pentester' : 'Manager'}
+                                    </p>
                                 </div>
                             </div>
 
                             <GroupInfo
                                 t1="First name"
                                 t2="Email"
-                                c1={firstName}
-                                c2={email}
+                                c1={
+                                    userInfos.first_name.length === 0
+                                        ? '-'
+                                        : userInfos.first_name
+                                }
+                                c2={userInfos.email}
                             />
 
                             <GroupInfo
                                 t1="Last name"
                                 t2="Co-workers"
-                                c1={lastName}
-                                c2="10"
+                                c1={
+                                    userInfos.last_name.length === 0
+                                        ? '-'
+                                        : userInfos.last_name
+                                }
+                                c2={String(coworker)}
                             />
-                            <GroupInfo t1="Missions" t2="Teams" c1="3" c2="2" />
+                            <GroupInfo
+                                t1="Phone Number"
+                                t2="Teams"
+                                c1={
+                                    userInfos.phone_number === null
+                                        ? '-'
+                                        : userInfos.phone_number
+                                }
+                                c2={String(teamList.length)}
+                            />
 
                             <div className="btn-container">
                                 <button
@@ -206,41 +259,14 @@ export default function ProfilePage() {
                                         <th>Members</th>
                                         <th>Actions</th>
                                     </tr>
-                                    <tr>
-                                        <td>Test</td>
-                                        <td>Clara</td>
-                                        <td>01/01/2023</td>
-                                        <td>6</td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                className="set-button"
-                                            >
-                                                Open
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="set-button"
-                                                onClick={MissionShow}
-                                                style={missionStyle}
-                                            >
-                                                Mission
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr style={testvar}>
-                                        <td colSpan={5}>
-                                            <div className="profile-mission-detail">
-                                                <MissionCard
-                                                    name="test"
-                                                    state="success"
-                                                    scope="https://localhost:3000"
-                                                    des="Lorem ipsum dolor sit amet, consectetur adipis. Lorem ipsum dolor sit amet consectetur adi"
-                                                    id={0}
-                                                />
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {teamList.map((teamInfo) => {
+                                        return (
+                                            <TableSection
+                                                teamInfo={teamInfo}
+                                                missionList={missionList}
+                                            />
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
