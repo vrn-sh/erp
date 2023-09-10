@@ -186,11 +186,21 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
 
 
     def update(self, request, *args, **kwargs):
-        request.data['profile_image'] = self.set_image(request)
+        if 'auth' in request.data:
+            token = S3Bucket().upload_single_image_if_exists(
+                'profile_image',
+                request.data['auth'],
+            )
+            request.data['auth']['profile_image'] = token
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
-        request.data['profile_image'] = self.set_image(request)
+        if 'auth' in request.data:
+            token = S3Bucket().upload_single_image_if_exists(
+                'profile_image',
+                request.data['auth'],
+            )
+            request.data['auth']['profile_image'] = token
         return super().partial_update(request, *args, **kwargs)
 
 
@@ -212,8 +222,6 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
                 'profile_image',
                 request.data['auth'],
             )
-
-            warn(f'token (full update): {token}')
             request.data['auth']['profile_image'] = token
         return super().update(request, *args, **kwargs)
 
@@ -223,8 +231,6 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
                 'profile_image',
                 request.data['auth'],
             )
-
-            warn(f'token (partial update): {token}')
             request.data['auth']['profile_image'] = token
         return super().partial_update(request, *args, **kwargs)
 
