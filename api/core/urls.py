@@ -15,7 +15,7 @@ from api.views.report import GenerateReportView
 from api.views.hunter import HunterView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
-from api.views.viewsets.mission import MissionViewset, NmapViewset, CrtShView, WappalyzerRequestView
+from api.views.viewsets.mission import CredentialViewset, MissionViewset, NmapViewset, CrtShView, WappalyzerRequestView
 from api.views.search import SearchView
 from api.views.viewsets.client_info import ClientInfoViewset
 
@@ -43,6 +43,7 @@ router.register(r'vuln-type', VulnTypeViewset)
 router.register(r'mission', MissionViewset)
 router.register(r'nmap', NmapViewset)
 router.register(r'client-info', ClientInfoViewset)
+router.register(r'credentials', CredentialViewset)
 
 
 urlpatterns = [
