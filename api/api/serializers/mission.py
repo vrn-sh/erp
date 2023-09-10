@@ -2,7 +2,7 @@ from json import loads
 from rest_framework import serializers
 
 from api.models.mission import Mission, Recon, NmapScan, CrtSh
-from api.models.utils import NmapPort, parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
+from api.models.utils import NmapPort
 
 
 class StringArrayField(serializers.ListField):

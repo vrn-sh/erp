@@ -4,6 +4,7 @@ from io import BytesIO
 import os
 from typing import Any, Optional, OrderedDict
 import uuid
+from warnings import warn
 from rest_framework import serializers
 from argon2 import PasswordHasher
 from api.backends import EmailBackend
@@ -54,31 +55,6 @@ class AuthSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             password: str = validated_data.pop('password')
             validated_data['password'] = PasswordHasher().hash(password)
-
-        image_data: str = validated_data.get('profile_image', '')
-        if image_data != '':
-            mime_type = get_mime_type(image_data)
-            image_data = get_image_data(image_data)  # type: ignore
-
-            if not mime_type or not image_data:
-                validated_data['profile_image'] = None
-                return super().update(instance, validated_data)
-
-            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-                validated_data['profile_image'] = None
-                return super().update(instance, validated_data)
-
-            s3_client = S3Bucket()
-            image_name = f'{uuid.uuid4().hex}'
-
-            iostream = BytesIO(image_data)  # type: ignore
-            _ = s3_client.upload_stream(
-                'rootbucket',
-                image_name,
-                iostream,
-                f'image/{mime_type}',
-            )
-            validated_data['profile_image'] = image_name
 
         return super().update(instance, validated_data)
 
@@ -143,7 +119,7 @@ class PentesterSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data) -> Pentester:
         if 'auth' in validated_data:
-            nested_serializer: AuthSerializer = self.fields['auth']
+            nested_serializer: AuthSerializer = self.fields['auth']  # type: ignore
             nested_instance: Auth = instance.auth
             nested_data: dict[str, str] = validated_data.pop('auth')
             nested_serializer.update(nested_instance, nested_data)
@@ -153,8 +129,8 @@ class PentesterSerializer(serializers.ModelSerializer):
         validated_data['auth']['role'] = 1
         validated_data['auth']['is_superuser'] = False
         validated_data['auth']['is_staff'] = False
-        auth = create_instance(AuthSerializer, validated_data, 'auth')
-        return Pentester.objects.create(auth=auth, **validated_data)
+        auth = create_instance(AuthSerializer, validated_data, 'auth')  # type: ignore
+        return Pentester.objects.create(auth=auth, **validated_data)  # type: ignore
 
 
 class ManagerSerializer(serializers.ModelSerializer):

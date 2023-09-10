@@ -24,7 +24,7 @@ from django.db.models.deletion import CASCADE
 from django.core.mail import send_mail
 from django.core.cache import cache
 
-from api.services.sendgrid_mail import SendgridClient, SendgridParameters
+from api.services.sendgrid_mail import SendgridClient
 
 MAX_TITLE_LENGTH = 256
 MAX_NOTE_LENGTH = 8186
@@ -82,10 +82,10 @@ class Auth(AbstractUser):
         if not raw_password:
             return
         hashed = PasswordHasher().hash(raw_password)
-        self.password = hashed
+        self.password = hashed  # type: ignore
 
     def check_password(self, raw_password=None) -> bool:
-        return PasswordHasher().verify(self.password, raw_password) if raw_password else False
+        return PasswordHasher().verify(self.password, raw_password) if raw_password else False  # type: ignore
 
     def send_confirm_email(self) -> int:
         """sends account-confirmation email"""
@@ -108,7 +108,7 @@ class Auth(AbstractUser):
                 [self.email],
             )
 
-        mail = SendgridClient([self.email])
+        mail = SendgridClient([self.email])  # type: ignore
         mail.set_template_data({
             'username': self.first_name,
             'url': url

@@ -2,10 +2,13 @@
 
 from io import BytesIO
 import os
+from typing import Dict, Optional
+import uuid
+from warnings import warn
 
 from minio import Minio
-from minio.api import VersioningConfig
-from minio.versioningconfig import ENABLED
+
+from api.serializers.utils import get_image_data, get_mime_type
 
 class S3Bucket:
     def __init__(self) -> None:
@@ -16,6 +19,38 @@ class S3Bucket:
             os.environ['MINIO_ROOT_PASSWORD'],
             secure=os.environ.get('PRODUCTION', '0') == '1',
         )
+
+
+    def upload_single_image(self, image_data: str) -> Optional[str]:
+        mime = get_mime_type(image_data)
+        as_b64 = get_image_data(image_data)
+
+        if not mime or not as_b64:
+            return None
+
+        image_name = f'{uuid.uuid4().hex}'
+        iostream = BytesIO(as_b64)  # type: ignore
+        _ = self.upload_stream(
+            'rootbucket',
+            image_name,
+            iostream,
+            f'image/{mime}',
+        )
+        return image_name
+
+
+    def upload_single_image_if_exists(
+            self,
+            key_name: str,
+            data: Optional[Dict[str, str]],
+        ) -> Optional[str]:
+
+        image: Optional[str] = data.get(key_name) if data else None
+        if image:
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                return None
+            return self.upload_single_image(image)
+
 
     def create_bucket(self, bucket: str) -> None:
         if not self.client.bucket_exists(bucket):

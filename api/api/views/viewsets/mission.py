@@ -18,7 +18,7 @@ from api.models import Auth, Pentester
 
 from api.models.mission import Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
-from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
+from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer
 from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
 
 from api.services.crtsh import fetch_certificates_from_crtsh
@@ -28,7 +28,7 @@ class NmapViewset(viewsets.ModelViewSet):
     """
         CRUD for Nmap scan object
     """
-    queryset = NmapScan.objects.all()
+    queryset = NmapScan.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
     permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester]
@@ -114,7 +114,7 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         CRUD for Recon object
     """
 
-    queryset = Recon.objects.all()
+    queryset = Recon.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
@@ -168,23 +168,23 @@ class CrtShView(APIView):
             }, status=HTTP_400_BAD_REQUEST)
 
         # getting related mission
-        mission = Mission.objects.filter(id=mission_id).first()
+        mission = Mission.objects.filter(id=mission_id).first()  # type: ignore
         if not mission:
             return Response({
                 "error": "Mission not found",
             }, status=HTTP_400_BAD_REQUEST)
 
-        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)
+        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)  # type: ignore
         if current_user not in mission.team.members.all():
             return Response({
                 'error': 'user not member of mission',
             }, status=HTTP_400_BAD_REQUEST)
 
         # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
         if not crt_object:
             certificates = fetch_certificates_from_crtsh(domain)
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
             crt_object.save()
 
             status = HTTP_201_CREATED
@@ -240,13 +240,13 @@ class CrtShView(APIView):
             }, status=HTTP_400_BAD_REQUEST)
 
         # getting related mission
-        mission = Mission.objects.filter(id=mission_id).first()
+        mission = Mission.objects.filter(id=mission_id).first()  # type: ignore
         if not mission:
             return Response({
                 "error": "Mission not found",
             }, status=HTTP_400_BAD_REQUEST)
 
-        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)
+        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)  # type: ignore
         if current_user not in mission.team.members.all():
             return Response({
                 'error': 'user not member of mission',
@@ -255,9 +255,9 @@ class CrtShView(APIView):
         certificates = fetch_certificates_from_crtsh(domain)
 
         # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
         if not crt_object:
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
             crt_object.save()
 
             status = HTTP_200_OK
@@ -277,15 +277,12 @@ class CrtShView(APIView):
         return Response({'dump': certificates}, status)
 
 
-
-
-
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     """
         CRUD for mission object
     """
 
-    queryset = Mission.objects.all()
+    queryset = Mission.objects.all()  # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
