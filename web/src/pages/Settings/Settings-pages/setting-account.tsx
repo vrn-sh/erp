@@ -109,6 +109,8 @@ export default function SettingAccount() {
         if (role === '2') url += 'manager';
         else url += 'pentester';
     
+        console.log("UserInfos.profile_image juste avant lenvoi:", userInfos.profile_image);
+
         await axios
             .patch(
                 `${url}/${Cookies.get('Id')}`,
@@ -116,6 +118,7 @@ export default function SettingAccount() {
                     auth: {
                         first_name: userInfos.first_name,
                         last_name: userInfos.last_name,
+                        profile_image: userInfos.profile_image,
                     },
                 },
                 {
@@ -131,32 +134,6 @@ export default function SettingAccount() {
             .catch((error) => {
                 setMessage(error.message, 'error');
             });
-
-            if (selectedFile) {
-                console.log("UserInfos.profile_image juste avant lenvoi:", userInfos.profile_image);
-                    // Mettez à jour le champ profile_image avec la base64 dans la requête PATCH
-                    axios
-                        .patch(
-                            `${url}/${Cookies.get('Id')}`,
-                            {
-                                auth: {
-                                    profile_image: userInfos.profile_image,
-                                },
-                            },
-                            {
-                                headers: {
-                                    'Content-type': 'application/json',
-                                    Authorization: `Token ${Cookies.get('Token')}`,
-                                },
-                            }
-                        )
-                        .then(() => {
-                            setMessage('Updated profile image!', 'success');
-                        })
-                        .catch((error) => {
-                            setMessage(error.message, 'error');
-                        });
-                }
     
         };
     
