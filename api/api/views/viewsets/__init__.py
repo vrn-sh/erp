@@ -12,7 +12,6 @@ from io import BytesIO
 import os
 from typing import List, Optional
 import uuid
-from warnings import warn
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -160,8 +159,6 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
         image = request.data['auth'].get('profile_image') if 'auth' in request else None
         if image:
 
-            warn(f'Image data: {image}')
-
             mime_type = get_mime_type(image)
             image_data = get_image_data(image_data)  # type: ignore
 
@@ -224,14 +221,3 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
             )
             request.data['auth']['profile_image'] = token
         return super().update(request, *args, **kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        if 'auth' in request.data:
-            token = S3Bucket().upload_single_image_if_exists(
-                'profile_image',
-                request.data['auth'],
-            )
-            request.data['auth']['profile_image'] = token
-        return super().partial_update(request, *args, **kwargs)
-
-
