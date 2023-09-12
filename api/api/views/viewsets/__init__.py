@@ -154,34 +154,6 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
 
-    def set_image(self, request) -> Optional[str]:
-
-        image = request.data['auth'].get('profile_image') if 'auth' in request else None
-        if image:
-
-            mime_type = get_mime_type(image)
-            image_data = get_image_data(image_data)  # type: ignore
-
-            if not mime_type or not image_data:
-                return None
-
-            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-                return None
-
-            s3_client = S3Bucket()
-            image_name = f'{uuid.uuid4().hex}'
-
-            iostream = BytesIO(image_data)  # type: ignore
-            _ = s3_client.upload_stream(
-                'rootbucket',
-                image_name,
-                iostream,
-                f'image/{mime_type}',
-            )
-            return image_name
-        return None
-
-
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
             token = S3Bucket().upload_single_image_if_exists(
@@ -190,16 +162,6 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
             )
             request.data['auth']['profile_image'] = token
         return super().update(request, *args, **kwargs)
-
-    def partial_update(self, request, *args, **kwargs):
-        if 'auth' in request.data:
-            token = S3Bucket().upload_single_image_if_exists(
-                'profile_image',
-                request.data['auth'],
-            )
-            request.data['auth']['profile_image'] = token
-        return super().partial_update(request, *args, **kwargs)
-
 
 
 class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
