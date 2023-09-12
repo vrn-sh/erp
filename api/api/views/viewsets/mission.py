@@ -384,10 +384,13 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
-    queryset = Mission.objects.all()
+    queryset = Mission.objects.order_by('id')
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
+
+    CACHE_KEY_PREFIX = 'mission_'
+    CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
 
     @swagger_auto_schema(
         operation_description="Creates a mission. Must be done by a Manager.",
@@ -436,61 +439,70 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         security=['Bearer'],
         tags=['mission'],
     )
+
+    def retrieve(self, request, *args, **kwargs):
+        cached_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}'
+
+        mission = cache.get(cached_key)
+        if not mission:
+            mission = self.get_object()
+            serializer = self.get_serializer(mission)
+            mission = serializer.data
+            cache.set(cached_key, mission, self.CACHE_TIMEOUT)
+            return super().retrieve(request, *args, **kwargs)
+        return Response(mission)
+
+    def list(self, request, *args, **kwargs):
+        cached_key = f'{self.CACHE_KEY_PREFIX}list'
+        missions = cache.get(cached_key)
+        if not missions:
+            missions = self.get_queryset()
+            serializer = self.get_serializer(missions, many=True, read_only=True)
+            missions = serializer.data
+            cache.set(cached_key, missions, self.CACHE_TIMEOUT)
+            return super().list(request, *args, **kwargs)
+        return Response(missions)
+
     def create(self, request, *args, **kwargs):
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
-        return super().create(request, *args, **kwargs)
+
+        response = super().create(request, *args, **kwargs)
+        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}'
+        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
+        return response
 
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
             request.data.pop("created_by")
 
         request.data["last_updated_by"] = request.user.id
-        return super().update(request, *args, **kwargs)
+
+        response = super().update(request, *args, **kwargs)
+
+        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}'
+        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
+
+        return response
 
 
-# class WappalyzerRequestView(APIView):
-#     permission_classes = [permissions.IsAuthenticated]
-#     authentication_classes = [TokenAuthentication]
-
-#     def post(self, request, *args, **kwargs):
-#         url = request.GET.get('url')
-
-#         cached = cache.get(url)
-#         if cached:
-#             cache.set(f'WAPPALYZER-{url}', cached, 60 * 15)
-#             return Response(cached)
-
-#         wapp_api_url = 'http://localhost:4000/run' \
-#                 if os.environ.get('IN_CONTAINER', '0') == '0' \
-#                 else 'http://wapp-api:4000/run'
-
-#         result = requests.post(f'{wapp_api_url}?url={url}', timeout=20.0)
-#         if result.status_code != 200:
-#             return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
-
-#         as_json = result.json()
-#         cache.set(f'WAPPALYZER-{url}', as_json, 60 * 15)
-
-#         return Response(as_json)
 class WappalyzerRequestView(APIView):
-     authentication_classes = [TokenAuthentication]
-     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
-     def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
 
-         sets = 'security,meta,locale,events'
-         urls = request.GET.get('urls')
+        sets = 'security,meta,locale,events'
+        urls = request.GET.get('urls')
 
-         # TODO(djnn): add rate-limit per user per day
+        # TODO(djnn): add rate-limit per user per day
 
-         data = requests.get(
-             f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
-             timeout=2.0,
-             headers={
-                 "x-api-key": os.environ['WAPPALYZER_API_KEY'],
-             }
-         )
+        data = requests.get(
+            f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
+            timeout=2.0,
+            headers={
+                "x-api-key": os.environ['WAPPALYZER_API_KEY'],
+            }
+        )
 
-         return Response(data.json(), status=HTTP_200_OK)
-
+        return Response(data.json(), status=HTTP_200_OK)

@@ -86,7 +86,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     """
         CRUD to manage vulnerabilities.
     """
-    queryset = Vulnerability.objects.all()
+    queryset = Vulnerability.objects.order_by('id')
     permissions = [permissions.IsAuthenticated, IsLinkedToData & IsPentester | IsManager & IsLinkedToData & ReadOnly]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
@@ -138,17 +138,29 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         tags=['vulnerability'],
     )
 
+    def retrieve(self, request, *args, **kwargs):
+        cache_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}'
+
+        vuln = cache.get(cache_key)
+        if not vuln:
+            vuln = self.get_object()
+            serializer = self.get_serializer(vuln)
+            vuln = serializer.data
+            cache.set(cache_key, vuln, self.CACHE_TIMEOUT)
+            return super().retrieve(request, *args, **kwargs)
+        return Response(vuln)
+
     def list(self, request, *args, **kwargs):
-        if mission_id := self.request.GET.get('mission_id'):
-            cache_key = f'{self.CACHE_KEY_PREFIX}list_{mission_id}'
-            vulns = cache.get(cache_key)
-            if not vulns:
-                vulns = self.get_queryset().filter(mission=mission_id)
-                serializer = self.get_serializer(vulns, many=True, read_only=True)
-                vulns = serializer.data
-                cache.set(cache_key, vulns, self.CACHE_TIMEOUT)
-            return Response(vulns)
-        return super().list(request, *args, **kwargs)
+        cache_key = f'{self.CACHE_KEY_PREFIX}list'
+
+        vulns = cache.get(cache_key)
+        if not vulns:
+            vulns = self.get_queryset()
+            serializer = self.get_serializer(vulns, many=True, read_only=True)
+            vulns = serializer.data
+            cache.set(cache_key, vulns, self.CACHE_TIMEOUT)
+            return super().list(request, *args, **kwargs)
+        return Response(vulns)
 
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
@@ -180,6 +192,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
             request.data.pop('author')
+        request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
 
         if 'vuln_type' in request.data:
@@ -193,7 +206,6 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                 request.data['description'] = vuln_obj.description
 
         response = super().update(request, *args, **kwargs)
-
-        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["id"]}'
+        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}'
         cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
         return response
