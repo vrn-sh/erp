@@ -96,7 +96,7 @@ class Mission(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
 
-    scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64)
+    scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
 
     bucket_name: Optional[models.CharField] = models.CharField(max_length=48, null=True, blank=True)
 

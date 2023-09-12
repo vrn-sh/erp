@@ -79,7 +79,7 @@ class AuthSerializer(serializers.ModelSerializer):
                 return representation
 
             s3_client = S3Bucket()
-            representation['profile_image'] = s3_client.get_object_url('rootbucket', image)
+            representation['profile_image'] = s3_client.get_object_url('rootbucket', instance.profile_image)
 
         return representation
 

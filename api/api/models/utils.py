@@ -2,7 +2,6 @@
 
 import re
 from typing import Callable, List, Optional, Tuple
-from warnings import warn
 from django.db import models
 
 
@@ -16,7 +15,15 @@ class NmapPortField(models.Field):
         if value is None:
             return value
         port_number, state, protocol, service, metadata = value.split(",")
-        return NmapPort(port_number, state, protocol, service, metadata)
+        port = NmapPort()
+
+        port.port_number = port_number
+        port.state = state
+        port.protocol = protocol
+        port.service = service
+        port.metadata = metadata
+
+        return port
 
     def to_python(self, value):
         if isinstance(value, NmapPort):
@@ -24,7 +31,14 @@ class NmapPortField(models.Field):
         if value is None:
             return value
         port_number, state, protocol, service, metadata = value.split(",")
-        return NmapPort(port_number, state, protocol, service, metadata)
+        port = NmapPort()
+
+        port.port_number = port_number
+        port.state = state
+        port.protocol = protocol
+        port.service = service
+        port.metadata = metadata
+        return port
 
     def get_prep_value(self, value):
         if value is None:
@@ -64,6 +78,13 @@ class NmapParser:
     scan_date: str                      = ''
 
 
+    def __clear(self):
+        self.ports = []
+        self.ip_addrs = []
+        self.os_details = None
+        self.version_nmap = ''
+        self.scan_date = ''
+
     def ___parser_was_successful(self) -> bool:
         return self.version_nmap != '' and self.ports != [] and self.ip_addrs != []
 
@@ -75,6 +96,15 @@ class NmapParser:
 
     def __return_false(self, _: str) -> bool:
         return False
+
+    def __parse_os_detail(self, line: str) -> bool:
+        # if we have OS details, we can just set it here
+        # OS details: Linux 2.6.13 - 2.6.31, Linux 2.6.18
+        if line.startswith('OS details: '):
+            self.os_details = line.lstrip('OS details: ')
+            return True
+
+        return True
 
     def __parse_header(self, line: str) -> bool:
         """will return True on successful parsing"""
@@ -100,10 +130,6 @@ class NmapParser:
     def __parse_port(self, line: str) -> bool:
         """will return True on successful parsing"""
 
-        # if we have OS details, we can just set it here
-        if line.startswith('OS details: '):
-            self.os_details = line.lstrip('OS details: ')
-            return True
 
         # we have additional info for the last parsed port
         if line[0] == '|':
@@ -114,7 +140,7 @@ class NmapParser:
                 self.ports[-1].metadata = line[1:]
                 return True
 
-            self.ports[-1].metadata += '\n' + line[1:]
+            self.ports[-1].metadata += ' ' + line[1:]
             return True
 
         # we _should_ have a new port
@@ -145,10 +171,6 @@ class NmapParser:
         return False
 
 
-    def __return_true(self, _: str) -> bool:
-        return True
-
-
     def run(self, nmap_output: str) -> bool:
         """runs parser & returns True if parsing was successful"""
 
@@ -162,11 +184,13 @@ class NmapParser:
         # the mapped callable is a function that shall check for the next state
         #
 
+        self.__clear()
+
         parsing_index = 0
         parsing_states: List[Tuple[str, Callable, Callable]] = [
             ('header',  self.__check_if_port_state, self.__parse_header),
             ('ports',   self.__check_port_done,     self.__parse_port),
-            ('footer',  self.__return_false,        self.__return_true)
+            ('footer',  self.__return_false,        self.__parse_os_detail),
         ]
 
         for line in nmap_output.splitlines():
