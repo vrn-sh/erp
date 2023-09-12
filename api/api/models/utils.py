@@ -2,6 +2,7 @@
 
 import re
 from typing import Callable, List, Optional, Tuple
+from warnings import warn
 from django.db import models
 
 
@@ -69,22 +70,26 @@ class NmapParser:
     def __check_if_port_state(self, line: str) -> bool:
         return line.startswith('PORT')
 
-    def __check_empty_line(self, line: str) -> bool:
-        return line == ''
+    def __check_port_done(self, line: str) -> bool:
+        return not line[:2].isnumeric() and not line.startswith('|')
+
+    def __return_false(self, _: str) -> bool:
+        return False
 
     def __parse_header(self, line: str) -> bool:
         """will return True on successful parsing"""
 
         nmap_scan_str = 'Nmap scan report for '
         if line.startswith(nmap_scan_str):
-            self.ip_addrs.append(line.lstrip(nmap_scan_str))
+            ip_addr = line.lstrip(nmap_scan_str)
+            self.ip_addrs.append(ip_addr)
             return True
 
         # pattern for the nmap version & scan date
         pattern = r'(?:Starting )?Nmap ([\w.-]+)?.*?(?: at | scan initiated )(.*?)(?: as:|$)'
         if rgx_match := re.match(pattern, line):
 
-            if len(rgx_match.groups()) != 3: return False
+            if len(rgx_match.groups()) != 2: return False
 
             self.version_nmap = rgx_match.group(1)
             self.scan_date = rgx_match.group(2)
@@ -101,7 +106,8 @@ class NmapParser:
             return True
 
         # we have additional info for the last parsed port
-        if line.startswith('|'):
+        if line[0] == '|':
+
             if self.ports == []: return False
 
             if not self.ports[-1].metadata:
@@ -121,18 +127,17 @@ class NmapParser:
         if matches := re.match(pattern, line):
 
             nb_groups = len(matches.groups())
-            if nb_groups < 5: return False
+            if nb_groups < 4: return False
 
             port_nb = int(matches.group(1)) if matches.group(1).isdigit() else -1
             if port_nb == -1: return False
 
-            port = NmapPort(
-                port_number=port_nb,
-                protocol=matches.group(2),
-                state=matches.group(3),
-                service=matches.group(4),
-                metadata=matches.group(5) if nb_groups == 6 else None,
-            )
+            port = NmapPort()
+            port.port_number=port_nb
+            port.protocol=matches.group(2)
+            port.state=matches.group(3)
+            port.service=matches.group(4)
+            port.metadata=matches.group(5) if nb_groups == 5 else None
 
             self.ports.append(port)
             return True
@@ -157,14 +162,16 @@ class NmapParser:
         # the mapped callable is a function that shall check for the next state
         #
 
+        parsing_index = 0
         parsing_states: List[Tuple[str, Callable, Callable]] = [
             ('header',  self.__check_if_port_state, self.__parse_header),
-            ('ports',   self.__check_empty_line,    self.__parse_port),
-            ('footer',  self.__check_empty_line,    self.__return_true)
+            ('ports',   self.__check_port_done,     self.__parse_port),
+            ('footer',  self.__return_false,        self.__return_true)
         ]
-        parsing_index = 0
 
         for line in nmap_output.splitlines():
+
+            line = line.strip()
             _, state_check, parse_function = parsing_states[parsing_index]
             if state_check(line):
                 parsing_index += 1
