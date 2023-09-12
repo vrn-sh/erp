@@ -489,8 +489,6 @@ class WappalyzerRequestView(APIView):
          sets = 'security,meta,locale,events'
          urls = request.GET.get('urls')
 
-         return Response(status=HTTP_200_OK)
-
          # TODO(djnn): add rate-limit per user per day
 
          data = requests.get(
