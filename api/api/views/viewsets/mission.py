@@ -19,7 +19,7 @@ from api.models import Auth, Pentester
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
-from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
+from api.models.utils import NmapParser, minimal_nmap_output
 from api.services.crtsh import fetch_certificates_from_crtsh
 
 class NmapViewset(viewsets.ModelViewSet):
