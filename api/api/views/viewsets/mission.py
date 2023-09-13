@@ -392,6 +392,16 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     CACHE_KEY_PREFIX = 'mission_'
     CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
 
+    @property
+    def filtered_queryset(self):
+        user = self.request.user
+        if user.is_manager:
+            return Mission.objects.order_by('id')
+        return Mission.objects.filter(team__members__auth__id=user.id)
+
+    def get_queryset(self):
+        return self.filtered_queryset
+
     @swagger_auto_schema(
         operation_description="Creates a mission. Must be done by a Manager.",
         request_body=openapi.Schema(
@@ -441,34 +451,35 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     )
 
     def retrieve(self, request, *args, **kwargs):
-        cached_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}'
-
+        cached_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}_{request.user.team.id}'
         mission = cache.get(cached_key)
+
         if not mission:
             mission = self.get_object()
             serializer = self.get_serializer(mission)
             mission = serializer.data
             cache.set(cached_key, mission, self.CACHE_TIMEOUT)
-            return super().retrieve(request, *args, **kwargs)
         return Response(mission)
 
     def list(self, request, *args, **kwargs):
-        cached_key = f'{self.CACHE_KEY_PREFIX}list'
-        missions = cache.get(cached_key)
+        team_id = request.user.team.id
+        cache_key = f'{self.CACHE_KEY_PREFIX}list_{team_id}'
+        missions = cache.get(cache_key)
+
         if not missions:
             missions = self.get_queryset()
             serializer = self.get_serializer(missions, many=True, read_only=True)
             missions = serializer.data
-            cache.set(cached_key, missions, self.CACHE_TIMEOUT)
-            return super().list(request, *args, **kwargs)
+            cache.set(cache_key, missions, self.CACHE_TIMEOUT)
         return Response(missions)
 
     def create(self, request, *args, **kwargs):
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
+        team_id = request.user.team.id
 
         response = super().create(request, *args, **kwargs)
-        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}'
+        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}_{team_id}'
         cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
         return response
 
@@ -477,10 +488,11 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
             request.data.pop("created_by")
 
         request.data["last_updated_by"] = request.user.id
+        team_id = request.user.team.id
 
         response = super().update(request, *args, **kwargs)
 
-        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}'
+        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}_{team_id}'
         cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
 
         return response

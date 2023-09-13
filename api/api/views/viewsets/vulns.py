@@ -94,6 +94,16 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     CACHE_KEY_PREFIX = 'vuln_'
     CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
 
+    @property
+    def filtered_queryset(self):
+        user = self.request.user
+        if user.is_manager:
+            return Vulnerability.objects.order_by('id')
+        return Vulnerability.objects.filter(team__members__auth__id=user.id)
+
+    def get_queryset(self):
+        return self.filtered_queryset
+
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
         request_body=openapi.Schema(
@@ -139,27 +149,26 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     )
 
     def retrieve(self, request, *args, **kwargs):
-        cache_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}'
-
+        cache_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}_{request.user.team.id}'
         vuln = cache.get(cache_key)
+
         if not vuln:
             vuln = self.get_object()
             serializer = self.get_serializer(vuln)
             vuln = serializer.data
             cache.set(cache_key, vuln, self.CACHE_TIMEOUT)
-            return super().retrieve(request, *args, **kwargs)
         return Response(vuln)
 
     def list(self, request, *args, **kwargs):
-        cache_key = f'{self.CACHE_KEY_PREFIX}list'
-
+        team_id = request.user.team.id
+        cache_key = f'{self.CACHE_KEY_PREFIX}list_{team_id}'
         vulns = cache.get(cache_key)
+
         if not vulns:
             vulns = self.get_queryset()
             serializer = self.get_serializer(vulns, many=True, read_only=True)
             vulns = serializer.data
             cache.set(cache_key, vulns, self.CACHE_TIMEOUT)
-            return super().list(request, *args, **kwargs)
         return Response(vulns)
 
     def create(self, request, *args, **kwargs):
@@ -182,9 +191,9 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
+        team_id = request.user.team.id
         response = super().create(request, *args, **kwargs)
-
-        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}'
+        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}_{team_id}'
         cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
 
         return response
@@ -192,6 +201,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
             request.data.pop('author')
+
         request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
 
@@ -205,7 +215,9 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             if not 'description' in request.data:
                 request.data['description'] = vuln_obj.description
 
+        team_id = request.user.team.id
         response = super().update(request, *args, **kwargs)
-        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}'
+        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}_{team_id}'
         cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
+
         return response
