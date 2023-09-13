@@ -114,6 +114,13 @@ class Mission(models.Model):
         """get number of days left in this mission"""
         return self.get_delta(datetime.today(), self.end).days  # type: ignore
 
+    @property
+    def status(self) -> str:
+        """Obtain the mission status"""
+        if self.start <= datetime.today <= self.end:
+            return "In progress"
+        else:
+            return "Succeeded"
 
     def is_member(self, user: Auth) -> bool:
         """checks if a user is a member of the mission"""

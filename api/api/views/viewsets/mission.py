@@ -23,7 +23,6 @@ from api.models.utils import NmapParser, minimal_nmap_output
 
 from api.services.crtsh import fetch_certificates_from_crtsh
 
-
 class NmapViewset(viewsets.ModelViewSet):
     """
         CRUD for Nmap scan object
@@ -125,7 +124,6 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
-
 
 class CrtShView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -284,6 +282,7 @@ class CrtShView(APIView):
         return Response({'dump': certificates}, status)
 
 
+
 class CredentialViewset(viewsets.ModelViewSet):
     """CRUD operation to add credentials to a mission"""
 
@@ -434,6 +433,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                     "end": "2022-06-03",
                     "team": 1,
                     "scopes": ["*.djnn.sh", "10.10.0.1/24"],
+                    "status": "In progress",
                     "recon": {
                         "nmap": []
                     }
