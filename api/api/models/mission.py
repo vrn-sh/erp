@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 from os import environ
-from typing import List, Optional
+from typing import Optional
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
@@ -62,11 +62,15 @@ class NmapScan(models.Model):
 
     REQUIRED_FIELDS = ['recon', 'ips', 'ports']
 
-    recon: Recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='nmap_runs')
+    recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='nmap_runs')
     creation_timestamp: models.DateTimeField = models.DateTimeField(editable=False, auto_now=True)
 
-    ips: List[models.CharField] = ArrayField(models.CharField(max_length=32))
-    ports: List[NmapPortField] = ArrayField(NmapPortField())
+    ips = ArrayField(models.CharField(max_length=32))
+    ports = ArrayField(NmapPortField())
+    os_details = models.CharField(max_length=64, null=True, blank=True)
+
+    nmap_version = models.CharField(max_length=32, null=True, blank=True)
+    scan_date = models.CharField(max_length=32, null=True, blank=True)
 
 
 class Mission(models.Model):
@@ -89,10 +93,10 @@ class Mission(models.Model):
     last_updated_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_updated_by')
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
 
-    team: Team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    recon: Optional[Recon] = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
 
-    scope: Optional[models.CharField] = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64)
+    scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
 
     bucket_name: Optional[models.CharField] = models.CharField(max_length=48, null=True, blank=True)
 
@@ -110,6 +114,13 @@ class Mission(models.Model):
         """get number of days left in this mission"""
         return self.get_delta(datetime.today(), self.end).days  # type: ignore
 
+    @property
+    def status(self) -> str:
+        """Obtain the mission status"""
+        if self.start <= datetime.today <= self.end:
+            return "In progress"
+        else:
+            return "Succeeded"
 
     def is_member(self, user: Auth) -> bool:
         """checks if a user is a member of the mission"""
