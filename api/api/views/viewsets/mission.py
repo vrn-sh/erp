@@ -20,13 +20,14 @@ from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
 from api.models.utils import NmapParser, minimal_nmap_output
+
 from api.services.crtsh import fetch_certificates_from_crtsh
 
 class NmapViewset(viewsets.ModelViewSet):
     """
         CRUD for Nmap scan object
     """
-    queryset = NmapScan.objects.all()
+    queryset = NmapScan.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
     permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester]
@@ -37,10 +38,14 @@ class NmapViewset(viewsets.ModelViewSet):
             type=openapi.TYPE_OBJECT,
             required=['recon_id', 'nmap_file'],
             properties={
-                'recon_id': openapi.Schema(type=openapi.TYPE_INTEGER,
-                                           description="Id of recon"),
-                'nmap_file': openapi.Schema(type=openapi.TYPE_STRING,
-                                      description="Nmap output.", default=default_nmap_output),
+                'recon_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="Recon object ID"
+                ),
+                'nmap_file': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="Nmap output.", default=minimal_nmap_output
+                ),
             },
         ),
         responses={
@@ -58,17 +63,18 @@ class NmapViewset(viewsets.ModelViewSet):
         tags=['NMAP'],
     )
     def create(self, request, *args, **kwargs):
-        fields = {
-            'ips': parse_nmap_ips,
-            'domain': parse_nmap_domain,
-            'ports': parse_nmap_scan,
-        }
 
-        for field, func in fields.items():
-            result = func(request.data.get('nmap_file', ''))
-            if result == [] or result is None:
-                return Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
-            request.data[field] = result
+        parser = NmapParser()
+        if file := request.data.get('nmap_file'):
+
+            if not parser.run(file): return Response({'error': 'invalid nmap file'}, status=HTTP_400_BAD_REQUEST)
+
+            request.data['ips'] = parser.ip_addrs
+            request.data['ports'] = parser.ports
+            request.data['nmap_version'] = parser.version_nmap
+            request.data['scan_date'] = parser.scan_date
+
+            if parser.os_details: request.data['os_details'] = parser.os_details
 
         # this will just error in the serializer if input is not provided
         request.data['recon'] = request.data.get('recon_id', 0)
@@ -84,21 +90,23 @@ class NmapViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        fields = {
-            'ips': parse_nmap_ips,
-            'domain': parse_nmap_domain,
-            'ports': parse_nmap_scan,
-        }
-
         data = {}
         # this will just error in the serializer if input is not provided
         data['recon'] = request.data.get('recon_id', 0)
 
-        for field, func in fields.items():
-            result = func(request.data.get('nmap_file', ''))
-            if not result:
-                Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
-            data[field] = result
+        parser = NmapParser()
+        if file := request.data.get('nmap_file'):
+
+            if not parser.run(file): return Response({'error': 'invalid nmap file'}, status=HTTP_400_BAD_REQUEST)
+
+            request.data['ips'] = parser.ip_addrs
+            request.data['ports'] = parser.ports
+            request.data['nmap_version'] = parser.version_nmap
+            request.data['scan_date'] = parser.scan_date
+
+            if parser.os_details: request.data['os_details'] = parser.os_details
+
+            request.data.pop('nmap_file')
 
         serializer = self.get_serializer(instance, data=data, partial=False)
         serializer.is_valid(raise_exception=True)
@@ -112,7 +120,7 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         CRUD for Recon object
     """
 
-    queryset = Recon.objects.all()
+    queryset = Recon.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
@@ -165,23 +173,23 @@ class CrtShView(APIView):
             }, status=HTTP_400_BAD_REQUEST)
 
         # getting related mission
-        mission = Mission.objects.filter(id=mission_id).first()
+        mission = Mission.objects.filter(id=mission_id).first()  # type: ignore
         if not mission:
             return Response({
                 "error": "Mission not found",
             }, status=HTTP_400_BAD_REQUEST)
 
-        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)
+        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)  # type: ignore
         if current_user not in mission.team.members.all():
             return Response({
                 'error': 'user not member of mission',
             }, status=HTTP_400_BAD_REQUEST)
 
         # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
         if not crt_object:
             certificates = fetch_certificates_from_crtsh(domain)
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
             crt_object.save()
 
             status = HTTP_201_CREATED
@@ -252,9 +260,9 @@ class CrtShView(APIView):
         certificates = fetch_certificates_from_crtsh(domain)
 
         # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
         if not crt_object:
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
             crt_object.save()
 
             status = HTTP_200_OK
@@ -308,7 +316,7 @@ class CredentialViewset(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
 
         mission_id = request.data.get('mission_id', 0)
-        if mission := Mission.objects.filter(id=mission_id).first():
+        if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
             if not mission.is_member(self.request.user):
                 return Response(HTTP_403_FORBIDDEN)
@@ -382,7 +390,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
-    queryset = Mission.objects.all()
+    queryset = Mission.objects.all()  # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer

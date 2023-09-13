@@ -2,7 +2,7 @@ from json import loads
 from rest_framework import serializers
 
 from api.models.mission import Credentials, Mission, Recon, NmapScan, CrtSh
-from api.models.utils import NmapPort, parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
+from api.models.utils import NmapPort
 
 
 class StringArrayField(serializers.ListField):
@@ -36,7 +36,6 @@ class NmapSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        read_only_fields = ['creation_timestamp', 'ips', 'ports', 'id']
         model = NmapScan
         ordering = ['-creation_timestamp']
 
