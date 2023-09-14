@@ -123,6 +123,35 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
 
 
 class CrtShView(APIView):
+    @swagger_auto_schema(
+        operation_description="Fetches certificates for a given domain and saves them to a mission.",
+        manual_parameters=[
+            openapi.Parameter(
+                name="mission_id",
+                in_=openapi.IN_QUERY,
+                description="ID of the mission to save the certificates.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+            ),
+            openapi.Parameter(
+                name="domain",
+                in_=openapi.IN_QUERY,
+                description="domain name to check.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+            )
+        ],
+        responses={
+            "201": openapi.Response(
+                description="201 Created",
+            ),
+            "400": openapi.Response(
+                description="400 Bad Request",
+            )
+        },
+        security=['Bearer'],
+        tags=['crt.sh'],
+    )
     def get(self, request):
         # Get the 'domain' parameter from the query parameters
         domain = request.GET.get('domain')
