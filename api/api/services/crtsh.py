@@ -1,63 +1,55 @@
-from logging import warning
-import os
-import requests
-import json
-import re
+"""
+This is the (unofficial) Python API for crt.sh website.
 
-from typing import Any, Dict, List
-from dateutil.parser import parse
-from requests.exceptions import ConnectTimeout, ReadTimeout
+Using this code, you can retrieve subdomains.
+"""
 
+import requests, json
 
-CRTSH_API_BASE_URL = "https://crt.sh?q="
+class crtshAPI(object):
+    """crtshAPI main handler."""
 
+    def search(self, domain, wildcard=True, expired=True):
+        """
+        Search crt.sh for the given domain.
 
-def fetch_certificates_from_crtsh(domain: str) -> List[Dict[str, Any]]:
-    """
-    Fetches certificates for a given domain using the crt.sh API.
+        domain -- Domain to search for
+        wildcard -- Whether or not to prepend a wildcard to the domain
+                    (default: True)
+        expired -- Whether or not to include expired certificates
+                    (default: True)
 
-    :param domain: The domain to search for certificates.
-    :return: A list of certificates.
-    """
+        Return a list of objects, like so:
 
-    # bypassing the request if we are running tests in order not to overload the
-    # crt.sh API
-    if os.environ.get('TEST', '0') == '1' or os.environ.get('CI', '0') == '1':
-        return [{'testing': 'dummy data'}]
+        {
+            "issuer_ca_id": 16418,
+            "issuer_name": "C=US, O=Let's Encrypt, CN=Let's Encrypt Authority X3",
+            "name_value": "hatch.uber.com",
+            "min_cert_id": 325717795,
+            "min_entry_timestamp": "2018-02-08T16:47:39.089",
+            "not_before": "2018-02-08T15:47:39"
+        }
+        """
+        base_url = "https://crt.sh/?q={}&output=json"
+        if not expired:
+            base_url = base_url + "&exclude=expired"
+        if wildcard and "%" not in domain:
+            domain = "%.{}".format(domain)
+        url = base_url.format(domain)
 
+        ua = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
+        req = requests.get(url, headers={'User-Agent': ua})
 
-    try:
-        r = requests.get(
-            "https://crt.sh/", params={"q": domain, "output": "json"}, timeout=15.0
-        )
-        nameparser = re.compile('([a-zA-Z]+)=("[^"]+"|[^,]+)')
-        certs: List[Dict[str, Any]] = []
-
-        for c in r.json():
-            certs.append(
-                {
-                    "id": c["id"],
-                    "logged_at": parse(c["entry_timestamp"]),
-                    "not_before": parse(c["not_before"]),
-                    "not_after": parse(c["not_after"]),
-                    "name": c["name_value"],
-                    "ca": {
-                        "caid": c["issuer_ca_id"],
-                        "name": c["issuer_name"],
-                        "parsed_name": dict(nameparser.findall(c["issuer_name"])),
-                    },
-                }
-            )
-
-    except ConnectTimeout:
-        return [{'error': "could not connect to crt.sh API. Service is down."}]
-
-    except ReadTimeout:
-        return [{'error': "could not read from crt.sh API. Service is overloaded."}]
-
-    except Exception as ex:
-        warning(f'{ex}')
-        return [{'error': 'could not parse json response.'}]
-
-    return certs
-
+        if req.ok:
+            try:
+                content = req.content.decode('utf-8')
+                data = json.loads(content)
+                return data
+            except ValueError:
+                # crt.sh fixed their JSON response. This shouldn't be necessary anymore
+                # https://github.com/crtsh/certwatch_db/commit/f4f46ea37c23543c4cdf1a3c8867d68967641807
+                data = json.loads("[{}]".format(content.replace('}{', '},{')))
+                return data
+            except Exception as err:
+                print("Error retrieving information.")
+        return None
