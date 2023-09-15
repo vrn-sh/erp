@@ -31,8 +31,8 @@ function ContactForm() {
                 import.meta.env.VITE_REACT_APP_PUBLIC_KEY_CONTACT_FORM
             )
             .catch((error) => {
-                throw error
-            })
+                throw error;
+            });
     };
 
     return (
