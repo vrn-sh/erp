@@ -450,6 +450,13 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         request.data['last_updated_by'] = request.user.id
         return super().create(request, *args, **kwargs)
 
+    def list(self, request, *args, **kwargs):
+        if request.user.role == 'manager':
+            return super().list(request, *args, **kwargs)
+
+        missions = Mission.objects.filter(team__members__auth__id=request.user.id)  # type: ignore
+        serializer = self.get_serializer(missions, many=True)
+        return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
