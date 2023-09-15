@@ -31,13 +31,11 @@ function ContactForm() {
                 import.meta.env.VITE_REACT_APP_PUBLIC_KEY_CONTACT_FORM
             )
             .then(
-                (result) => {
-                    console.log(result.text);
-                },
-                (error) => {
-                    console.log(error.text);
-                }
-            );
+                () => {}
+            )
+            .catch((error) => {
+                throw error
+            })
     };
 
     return (
