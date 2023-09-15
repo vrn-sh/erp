@@ -30,9 +30,6 @@ function ContactForm() {
                 e.target,
                 import.meta.env.VITE_REACT_APP_PUBLIC_KEY_CONTACT_FORM
             )
-            .then(
-                () => {}
-            )
             .catch((error) => {
                 throw error
             })
