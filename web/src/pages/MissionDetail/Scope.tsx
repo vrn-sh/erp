@@ -18,7 +18,7 @@ type TmpScope = {
 export default function Scope(/* need to add list as a param here */) {
     const [keyword, setKeyword] = useState('');
     const [scope, setScope] = useState([]);
-    const [tmpScope, setTmpScope] = useState<TmpScope>([])
+    const [tmpScope, setTmpScope] = useState<TmpScope>([]);
     const [missionId, setMissionId] = useState(0);
     const [Title, setTitle] = useState('');
     const [Team, setTeam] = useState(0);
@@ -72,6 +72,19 @@ export default function Scope(/* need to add list as a param here */) {
 
     const changePage = (n: number) => {
         setCurrentPage(n);
+    };
+
+    const getOriginalScope = () => {
+        setKeyword('');
+        const res: TmpScope = [];
+        for (let i = 0; i < scope.length; i += 1) {
+            const tmp = {
+                scope: scope[i],
+                index: i,
+            };
+            res.push(tmp);
+        }
+        setTmpScope(res);
     };
 
     const delScope = async (index: number) => {
@@ -142,7 +155,7 @@ export default function Scope(/* need to add list as a param here */) {
                 Authorization: `Token ${Cookies.get('Token')}`,
             },
         })
-            .then((data) => {
+            .then(() => {
                 // here to open a link in new tab, replace google link by our url
                 window.open('https://google.fr', '_blank', 'noreferrer');
                 setMessage('Created!', 'success');
@@ -152,22 +165,9 @@ export default function Scope(/* need to add list as a param here */) {
             });
     };
 
-    const getOriginalScope = () => {
-        setKeyword('');
-        let res:TmpScope = [];
-        for (let i = 0; i < scope.length; i += 1) {
-            var tmp = {
-                scope: scope[i],
-                index: i,
-            }
-            res.push(tmp)
-        }
-        setTmpScope(res);
-    }
-
     const searchScope = () => {
         let find = false;
-        let res:TmpScope = [];
+        const res: TmpScope = [];
 
         for (let i = 0; i < tmpScope.length; i += 1) {
             if (tmpScope[i].scope.indexOf(keyword) !== -1) {
@@ -175,15 +175,12 @@ export default function Scope(/* need to add list as a param here */) {
                 const p = Math.floor(i / recordsPerPage) + 1;
                 if (i % 5 === 0) setCurrentPage(p - 1);
                 else setCurrentPage(p);
-                console.log(p)
-                res.push(tmpScope[i])
+                res.push(tmpScope[i]);
             }
-            setTmpScope(res)
+            setTmpScope(res);
         }
-        if (find === true)
-            setTmpScope(res)
-        else
-            getOriginalScope();
+        if (find === true) setTmpScope(res);
+        else getOriginalScope();
         setCurrentPage(1);
     };
 
@@ -194,8 +191,8 @@ export default function Scope(/* need to add list as a param here */) {
 
     useEffect(() => {
         getOriginalScope();
-    }, [scope])
-    
+    }, [scope]);
+
     useEffect(() => {
         getMission();
         setRecord(tmpScope.slice(firstIndex, lastIndex));
@@ -282,7 +279,9 @@ export default function Scope(/* need to add list as a param here */) {
                                         <AiIcons.AiFillDelete
                                             className="scope-action-icons"
                                             style={{ color: 'red' }}
-                                            onClick={() => delScope(s_list.index)}
+                                            onClick={() =>
+                                                delScope(s_list.index)
+                                            }
                                         />
                                     </td>
                                 )}
