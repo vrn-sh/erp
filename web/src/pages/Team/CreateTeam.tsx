@@ -18,7 +18,7 @@ import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
-import { Input } from '../EditMission/EditMission';
+import Input from '../../component/Input';
 
 const ITEM_HEIGHT = 55;
 const ITEM_PADDING_TOP = 8;
@@ -166,10 +166,6 @@ export default function CreateTeam() {
                             Create new team
                         </h2>
                     </div>
-                    <div className="page-searcher">
-                        <label>Search on page</label>
-                        <input type="text" placeholder="Search..." />
-                    </div>
                 </div>
                 <div className="edit-container">
                     <div
@@ -247,7 +243,7 @@ export default function CreateTeam() {
                                             gap: 0.5,
                                         }}
                                     >
-                                        {Team!.map((value) => (
+                                        {Team?.map((value) => (
                                             <Chip
                                                 key={value}
                                                 variant="outlined"

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import '../Dashboard/Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
+import ViewTeam from '../Team/ViewTeam';
+
 
 export default function TeamList() {
     const [list, setList] = useState<
@@ -167,7 +169,7 @@ export default function TeamList() {
                                     return (
                                         <tbody key={team.id}>
                                             <tr key={team.id}>
-                                                <td>{team.name}</td>
+                                                <td><Link to={`/team/view/${team.id}`}>{team.name}</Link></td>
                                                 <td>{team.manager}</td>
                                                 <td>{team.nbMember}</td>
                                                 <td>{team.nbMission}</td>

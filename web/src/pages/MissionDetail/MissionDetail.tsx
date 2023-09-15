@@ -6,6 +6,7 @@ import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import Scope from './Scope';
 import Recon from './Recon';
+import HunterIo from './HunterIo/HunterIo';
 
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
@@ -26,6 +27,9 @@ export default function MissionDetail() {
         }
         if (active === 'recon') {
             return <Recon id={id} />;
+        }
+        if (active === 'hunter') {
+            return <HunterIo />;
         }
         return null;
     };
@@ -62,6 +66,17 @@ export default function MissionDetail() {
                                 onClick={handleClick}
                             >
                                 Recon
+                            </button>
+                            <button
+                                key={3}
+                                id="hunter"
+                                type="button"
+                                className={
+                                    active === 'hunter' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Hunter IO
                             </button>
                         </div>
                     </div>

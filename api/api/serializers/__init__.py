@@ -1,12 +1,16 @@
 """This module stores all the basic serializers for user & authentication management"""
 
-from typing import Optional, OrderedDict
+from io import BytesIO
+import os
+from typing import Any, Optional, OrderedDict
+import uuid
 from rest_framework import serializers
 from argon2 import PasswordHasher
 from api.backends import EmailBackend
 
 from api.models import Manager, Pentester, Auth, Team
-from api.serializers.utils import create_instance
+from api.serializers.utils import create_instance, get_image_data, get_mime_type
+from api.services.s3 import S3Bucket
 
 
 class LoginSerializer(serializers.Serializer):
@@ -41,7 +45,9 @@ class AuthSerializer(serializers.ModelSerializer):
         model = Auth
         fields = [
             'username', 'email', 'first_name', 'last_name',
-            'last_login', 'date_joined', 'password', 'phone_number', 'role'
+            'last_login', 'date_joined', 'password',
+            'phone_number', 'role', 'favorites',
+            'profile_image',
         ]
 
     def update(self, instance, validated_data) -> Auth:
@@ -61,8 +67,50 @@ class AuthSerializer(serializers.ModelSerializer):
             validated_data['password'] = PasswordHasher().hash(password)
 
         # temporarily set here until sendgrid is fixed
-        validated_data['is_enabled'] = True
+        # validated_data['is_enabled'] = True
         return Auth.objects.create(**validated_data)
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if instance.profile_image is not None:
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                return representation
+
+            s3_client = S3Bucket()
+            representation['profile_image'] = s3_client.get_object_url('rootbucket', instance.profile_image)
+
+        return representation
+
+
+    def to_internal_value(self, data: dict[str, Any]) -> OrderedDict[Any, Any]:
+        internal_value = super().to_internal_value(data)
+        image_data: str = data.get('profile_image', '')
+
+        if image_data != '':
+            mime_type = get_mime_type(image_data)
+            image_data = get_image_data(image_data)
+
+            if not mime_type or not image_data:
+                return internal_value
+
+            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
+                return internal_value
+
+            s3_client = S3Bucket()
+            image_name = f'{uuid.uuid4().hex}'
+
+            iostream = BytesIO(image_data)
+            _ = s3_client.upload_stream(
+                'rootbucket',
+                image_name,
+                iostream,
+                f'image/{mime_type}',
+            )
+
+            internal_value['profile_image'] = image_name
+        return internal_value
 
 
 class PentesterSerializer(serializers.ModelSerializer):

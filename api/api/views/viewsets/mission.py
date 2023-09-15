@@ -1,29 +1,32 @@
 from datetime import datetime
 from json import dumps, loads
+import json
 from typing import Any, Dict, List
 from warnings import warn
+
+import os
+import requests
 
 from drf_yasg import openapi
 from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
 from rest_framework.routers import Response
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR
-from api.models import Auth, Pentester
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+from api.models import Pentester
 
-from api.models.mission import Mission, NmapScan, Recon, CrtSh
+from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
-from api.serializers.mission import MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
-from api.models.utils import parse_nmap_ips, parse_nmap_domain, parse_nmap_scan, default_nmap_output
+from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
+from api.models.utils import NmapParser, minimal_nmap_output
 
 from api.services.crtsh import fetch_certificates_from_crtsh
-
 
 class NmapViewset(viewsets.ModelViewSet):
     """
         CRUD for Nmap scan object
     """
-    queryset = NmapScan.objects.all()
+    queryset = NmapScan.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
     permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester]
@@ -34,10 +37,14 @@ class NmapViewset(viewsets.ModelViewSet):
             type=openapi.TYPE_OBJECT,
             required=['recon_id', 'nmap_file'],
             properties={
-                'recon_id': openapi.Schema(type=openapi.TYPE_INTEGER,
-                                           description="Id of recon"),
-                'nmap_file': openapi.Schema(type=openapi.TYPE_STRING,
-                                      description="Nmap output.", default=default_nmap_output),
+                'recon_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="Recon object ID"
+                ),
+                'nmap_file': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="Nmap output.", default=minimal_nmap_output
+                ),
             },
         ),
         responses={
@@ -55,17 +62,18 @@ class NmapViewset(viewsets.ModelViewSet):
         tags=['NMAP'],
     )
     def create(self, request, *args, **kwargs):
-        fields = {
-            'ips': parse_nmap_ips,
-            'domain': parse_nmap_domain,
-            'ports': parse_nmap_scan,
-        }
 
-        for field, func in fields.items():
-            result = func(request.data.get('nmap_file', ''))
-            if result == [] or result is None:
-                return Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
-            request.data[field] = result
+        parser = NmapParser()
+        if file := request.data.get('nmap_file'):
+
+            if not parser.run(file): return Response({'error': 'invalid nmap file'}, status=HTTP_400_BAD_REQUEST)
+
+            request.data['ips'] = parser.ip_addrs
+            request.data['ports'] = parser.ports
+            request.data['nmap_version'] = parser.version_nmap
+            request.data['scan_date'] = parser.scan_date
+
+            if parser.os_details: request.data['os_details'] = parser.os_details
 
         # this will just error in the serializer if input is not provided
         request.data['recon'] = request.data.get('recon_id', 0)
@@ -81,21 +89,23 @@ class NmapViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        fields = {
-            'ips': parse_nmap_ips,
-            'domain': parse_nmap_domain,
-            'ports': parse_nmap_scan,
-        }
-
         data = {}
         # this will just error in the serializer if input is not provided
         data['recon'] = request.data.get('recon_id', 0)
 
-        for field, func in fields.items():
-            result = func(request.data.get('nmap_file', ''))
-            if not result:
-                Response({'error': f'error running {func.__name__}'}, status=HTTP_400_BAD_REQUEST)
-            data[field] = result
+        parser = NmapParser()
+        if file := request.data.get('nmap_file'):
+
+            if not parser.run(file): return Response({'error': 'invalid nmap file'}, status=HTTP_400_BAD_REQUEST)
+
+            request.data['ips'] = parser.ip_addrs
+            request.data['ports'] = parser.ports
+            request.data['nmap_version'] = parser.version_nmap
+            request.data['scan_date'] = parser.scan_date
+
+            if parser.os_details: request.data['os_details'] = parser.os_details
+
+            request.data.pop('nmap_file')
 
         serializer = self.get_serializer(instance, data=data, partial=False)
         serializer.is_valid(raise_exception=True)
@@ -109,11 +119,10 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         CRUD for Recon object
     """
 
-    queryset = Recon.objects.all()
+    queryset = Recon.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
-
 
 class CrtShView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -163,23 +172,23 @@ class CrtShView(APIView):
             }, status=HTTP_400_BAD_REQUEST)
 
         # getting related mission
-        mission = Mission.objects.filter(id=mission_id).first()
+        mission = Mission.objects.filter(id=mission_id).first()  # type: ignore
         if not mission:
             return Response({
                 "error": "Mission not found",
             }, status=HTTP_400_BAD_REQUEST)
 
-        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)
+        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)  # type: ignore
         if current_user not in mission.team.members.all():
             return Response({
                 'error': 'user not member of mission',
             }, status=HTTP_400_BAD_REQUEST)
 
         # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
         if not crt_object:
             certificates = fetch_certificates_from_crtsh(domain)
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
             crt_object.save()
 
             status = HTTP_201_CREATED
@@ -188,7 +197,7 @@ class CrtShView(APIView):
 
             # return json parsed data
             return Response({'dump': certificates}, status=status)
-        
+
         status = HTTP_201_CREATED
         if self.has_crtsh_error(loads(crt_object.dump)):
             status = HTTP_500_INTERNAL_SERVER_ERROR
@@ -250,9 +259,9 @@ class CrtShView(APIView):
         certificates = fetch_certificates_from_crtsh(domain)
 
         # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()
+        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
         if not crt_object:
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))
+            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
             crt_object.save()
 
             status = HTTP_200_OK
@@ -273,6 +282,106 @@ class CrtShView(APIView):
 
 
 
+class CredentialViewset(viewsets.ModelViewSet):
+    """CRUD operation to add credentials to a mission"""
+
+    queryset = Credentials.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = CredentialsSerializer
+
+    @swagger_auto_schema(
+        operation_description="Lists all Credentials for a mission",
+        manual_parameters=[
+            openapi.Parameter(
+                name="mission_id",
+                in_=openapi.IN_QUERY,
+                description="ID of the mission to save the certificates.",
+                required=True,
+                type=openapi.TYPE_INTEGER,
+            )
+        ],
+        responses={
+            "200": openapi.Response(
+                description="200 OK",
+            ),
+            "400": openapi.Response(
+                description="400 Bad Request",
+            )
+        },
+        security=['Bearer'],
+        tags=['credentials'],
+    )
+    def list(self, request, *args, **kwargs):
+
+        mission_id = request.data.get('mission_id', 0)
+        if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
+
+            if not mission.is_member(self.request.user):
+                return Response(HTTP_403_FORBIDDEN)
+
+            creds = Credentials.objects.filter(mission_id=mission_id)  # type: ignore
+
+             # Apply pagination to the queryset
+            page = self.paginate_queryset(creds)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = self.get_serializer(creds, many=True)
+            return Response(serializer.data)
+
+        return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
+
+    @swagger_auto_schema(
+        operation_description="Creates a Credential model",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['mission_id', 'login', 'password', 'service'],
+            properties={
+                'login': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="username",
+                ),
+                'password': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="credential password",
+                ),
+                'service': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="service the credential is linked to",
+                ),
+                'mission_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description="mission ID of the related credential",
+                ),
+           },
+        ),
+        responses={
+            "200": openapi.Response(
+                description="200 OK",
+                examples={
+                    "login": "example@epitech.eu",
+                    "password": "s3cr37P4ssw0rd",
+                    "service": "https://intra.epitech.eu",
+                    "comment": "student account -- no admin privs",
+                }
+            )
+        },
+        security=['Bearer'],
+        tags=['credentials'],
+    )
+    def create(self, request, *args, **kwargs):
+        mission_id = request.data.get('mission_id', 0)
+        if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
+
+            if not mission.is_member(self.request.user):
+                return Response(HTTP_403_FORBIDDEN)
+
+            request.data['mission'] = mission
+            return super().create(request, *args, **kwargs)
+
+        return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -280,10 +389,13 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
-    queryset = Mission.objects.all()
+    queryset = Mission.objects.all() # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
+
+    CACHE_KEY_PREFIX = 'mission_'
+    CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
 
     @swagger_auto_schema(
         operation_description="Creates a mission. Must be done by a Manager.",
@@ -323,6 +435,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                     "end": "2022-06-03",
                     "team": 1,
                     "scopes": ["*.djnn.sh", "10.10.0.1/24"],
+                    "status": "In progress",
                     "recon": {
                         "nmap": []
                     }
@@ -337,9 +450,38 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         request.data['last_updated_by'] = request.user.id
         return super().create(request, *args, **kwargs)
 
+    def list(self, request, *args, **kwargs):
+        if request.user.role == 'manager':
+            return super().list(request, *args, **kwargs)
+
+        missions = Mission.objects.filter(team__members__auth__id=request.user.id)  # type: ignore
+        serializer = self.get_serializer(missions, many=True)
+        return Response(serializer.data)
+
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
             request.data.pop("created_by")
-
         request.data["last_updated_by"] = request.user.id
         return super().update(request, *args, **kwargs)
+
+
+class WappalyzerRequestView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+
+        sets = 'security,meta,locale,events'
+        urls = request.GET.get('urls')
+
+        # TODO(djnn): add rate-limit per user per day
+
+        data = requests.get(
+            f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
+            timeout=2.0,
+            headers={
+                "x-api-key": os.environ['WAPPALYZER_API_KEY'],
+            }
+        )
+
+        return Response(data.json(), status=HTTP_200_OK)

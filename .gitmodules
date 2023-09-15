@@ -1,0 +1,3 @@
+[submodule "services/wapp-api/wappalyzer"]
+	path = services/wapp-api/wappalyzer
+	url = git@github.com:wappalyzer/wappalyzer.git
