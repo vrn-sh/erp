@@ -57,7 +57,6 @@ class TeamTestCase(TransactionTestCase):
             format='json',
             data={'title': "Eurk"}
         )
-        warn(f'{response.json()}')
         self.assertEqual(response.status_code, 200)
 
         response = client.delete(

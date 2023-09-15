@@ -199,9 +199,9 @@ class Team(models.Model):
 
     REQUIRED_FIELDS = ['name', 'leader', 'members']
 
-    name: models.CharField = models.CharField(max_length=32)
-    leader: Manager = models.ForeignKey(Manager, on_delete=CASCADE)
-    members: List[Pentester] = models.ManyToManyField(Pentester, blank=True)
+    name = models.CharField(max_length=32)
+    leader = models.ForeignKey(Manager, on_delete=CASCADE)
+    members = models.ManyToManyField(Pentester, blank=True)
 
     def is_member(self, user) -> bool:
         """check if user is member of the team"""

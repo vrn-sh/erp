@@ -1,15 +1,11 @@
-from typing import List, Optional
-from warnings import warn
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import Response
-from django.core.cache import cache
 
-from api.models import Auth
 from api.models.vulns import Notes, VulnType, Vulnerability
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 
@@ -86,23 +82,10 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     """
         CRUD to manage vulnerabilities.
     """
-    queryset = Vulnerability.objects.order_by('id')
+    queryset = Vulnerability.objects.order_by('id')  # type: ignore
     permissions = [permissions.IsAuthenticated, IsLinkedToData & IsPentester | IsManager & IsLinkedToData & ReadOnly]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
-
-    CACHE_KEY_PREFIX = 'vuln_'
-    CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
-
-    @property
-    def filtered_queryset(self):
-        user = self.request.user
-        if user.is_manager:
-            return Vulnerability.objects.order_by('id')
-        return Vulnerability.objects.filter(team__members__auth__id=user.id)
-
-    def get_queryset(self):
-        return self.filtered_queryset
 
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
@@ -147,30 +130,6 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         security=['Bearer'],
         tags=['vulnerability'],
     )
-
-    def retrieve(self, request, *args, **kwargs):
-        cache_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}_{request.user.team.id}'
-        vuln = cache.get(cache_key)
-
-        if not vuln:
-            vuln = self.get_object()
-            serializer = self.get_serializer(vuln)
-            vuln = serializer.data
-            cache.set(cache_key, vuln, self.CACHE_TIMEOUT)
-        return Response(vuln)
-
-    def list(self, request, *args, **kwargs):
-        team_id = request.user.team.id
-        cache_key = f'{self.CACHE_KEY_PREFIX}list_{team_id}'
-        vulns = cache.get(cache_key)
-
-        if not vulns:
-            vulns = self.get_queryset()
-            serializer = self.get_serializer(vulns, many=True, read_only=True)
-            vulns = serializer.data
-            cache.set(cache_key, vulns, self.CACHE_TIMEOUT)
-        return Response(vulns)
-
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
@@ -181,7 +140,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                 'errors': 'missing "vuln_type" field',
             }, status=HTTP_400_BAD_REQUEST)
 
-        vuln_obj = VulnType.objects.filter(name=vuln).first()
+        vuln_obj = VulnType.objects.filter(name=vuln).first()  # type: ignore
         if not vuln_obj:
             return Response({
                 'errors': 'unknown "vuln_type" type',
@@ -191,12 +150,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
-        team_id = request.user.team.id
-        response = super().create(request, *args, **kwargs)
-        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}_{team_id}'
-        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
-
-        return response
+        return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
@@ -206,7 +160,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         request.data['last_editor'] = request.user.id
 
         if 'vuln_type' in request.data:
-            vuln_obj = VulnType.objects.filter(name=request.data['vuln_type']).first()
+            vuln_obj = VulnType.objects.filter(name=request.data['vuln_type']).first()  # type: ignore
             if not vuln_obj:
                 return Response({
                     'errors': 'unknown "vuln_type" type',
@@ -215,9 +169,4 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             if not 'description' in request.data:
                 request.data['description'] = vuln_obj.description
 
-        team_id = request.user.team.id
-        response = super().update(request, *args, **kwargs)
-        cache_key = f'{self.CACHE_KEY_PREFIX}{request.data["mission"]}_{team_id}'
-        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
-
-        return response
+        return super().update(request, *args, **kwargs)

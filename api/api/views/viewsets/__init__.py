@@ -31,10 +31,10 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         Create and manage teams
     """
 
-    queryset = Team.objects.all()
+    queryset = Team.objects.all()  # type: ignore
     permission_classes = [
         permissions.IsAuthenticated,
-        # IsLinkedToData,
+        IsLinkedToData,
         IsManager | IsPentester & ReadOnly
     ]
     authentication_classes = [TokenAuthentication]

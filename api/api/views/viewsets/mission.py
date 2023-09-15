@@ -11,10 +11,9 @@ from drf_yasg import openapi
 from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
-from django.core.cache import cache
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
-from api.models import Auth, Pentester
+from api.models import Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
@@ -374,7 +373,7 @@ class CredentialViewset(viewsets.ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         mission_id = request.data.get('mission_id', 0)
-        if mission := Mission.objects.filter(id=mission_id).first():
+        if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
             if not mission.is_member(self.request.user):
                 return Response(HTTP_403_FORBIDDEN)
@@ -390,23 +389,13 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
-    queryset = Mission.objects.order_by('id')  # type: ignore
+    queryset = Mission.objects.all() # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
 
     CACHE_KEY_PREFIX = 'mission_'
     CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
-
-    @property
-    def filtered_queryset(self):
-        user = self.request.user
-        if user.role == 'manager':
-            return Mission.objects.order_by('id')  # type: ignore
-        return Mission.objects.filter(team__members__auth__id=user.id)  # type: ignore
-
-    def get_queryset(self):
-        return self.filtered_queryset
 
     @swagger_auto_schema(
         operation_description="Creates a mission. Must be done by a Manager.",
@@ -456,62 +445,17 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         security=['Bearer'],
         tags=['mission'],
     )
-    def retrieve(self, request, *args, **kwargs):
-        cached_key = f'{self.CACHE_KEY_PREFIX}{kwargs["pk"]}_{request.user.id}'
-        mission = cache.get(cached_key)
-
-        if not mission:
-            mission = self.get_object()
-            serializer = self.get_serializer(mission)
-            mission = serializer.data
-            cache.set(cached_key, mission, self.CACHE_TIMEOUT)
-        return Response(mission)
-
-    def list(self, request, *args, **kwargs):
-        cache_key = f'{self.CACHE_KEY_PREFIX}list_{request.user.id}'
-        missions = cache.get(cache_key)
-
-        if not missions:
-            missions = self.get_queryset()
-            serializer = self.get_serializer(missions, many=True, read_only=True)
-            missions = serializer.data
-            cache.set(cache_key, missions, self.CACHE_TIMEOUT)
-        return Response(missions)
-
     def create(self, request, *args, **kwargs):
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
+        return super().create(request, *args, **kwargs)
 
-        response = super().create(request, *args, **kwargs)
-        if not response or 'id' not in response.data:
-            return Response({
-                'error': 'creation failed',
-            }, status=HTTP_400_BAD_REQUEST)
-
-        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}_{request.user.id}'
-        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
-        return response
 
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
             request.data.pop("created_by")
-
         request.data["last_updated_by"] = request.user.id
-        try:
-            response = super().update(request, *args, **kwargs)
-        except Exception as e:
-            warn(f'Except: {e}')
-        warn('HELLO 2')
-        warn(f'Response: {response.json()}')
-        if not response or 'id' not in response.data:
-            return Response({
-                'error': 'update failed',
-            }, status=HTTP_400_BAD_REQUEST)
-
-        cache_key = f'{self.CACHE_KEY_PREFIX}{response.data["id"]}_{request.user.id}'
-        cache.set(cache_key, response.data, self.CACHE_TIMEOUT)
-
-        return response
+        return super().update(request, *args, **kwargs)
 
 
 class WappalyzerRequestView(APIView):

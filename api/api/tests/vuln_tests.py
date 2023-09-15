@@ -32,41 +32,35 @@ class VulnTestCase(TransactionTestCase):
         self.manager.delete()
         self.other_user.delete()
 
-    # def test_create_valid_vulnerability(self):
-    #     client: APIClient = APIClient()
 
-    #     mission = create_mission(self.manager, [self.user, self.other_user])
+    def test_create_valid_vulnerability(self):
+        client: APIClient = APIClient()
 
-    #     auth_token: str = login_as(self.user.auth.email, default_user_password())
-    #     client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
-        
-    #     vuln_type = VulnType.objects.create(
-    #         name='Injection',
-    #         description='Injection vulnerabilities allow an attacker to inject malicious code into an application or database.'
-    #     )   
-    #     self.assertIsNotNone(vuln_type)
+        mission = create_mission(self.manager, [self.user, self.other_user])
 
-    #     response = client.post(
-    #         '/vulnerability',
-    #         format='json',
-    #         data={
-    #             'mission': mission.id,
-    #             'title': 'String Error Termination',
-    #             'vuln_type': vuln_type.id,
-    #             'severity': 6.5,
-    #             'images': []
-    #         }
-    #     )
+        auth_token: str = login_as(self.user.auth.email, default_user_password())
+        client.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
+        response = client.post(
+            '/vulnerability',
+            format='json',
+            data={
+                'mission': mission.id,
+                'title': 'String Error Terminatoin', # Typo made on purpose
+                'vuln_type': 'Cross-Site Scripting (XSS)',
+                'severity': 6.5,
+                'screenshots': []
+            }
+        )
 
-    #     self.assertEqual(response.status_code, 201)
-    #     vuln_id = response.data['id']
+        self.assertEqual(response.status_code, 201)
+        vuln_id = response.data['id']
 
-    #     response = client.patch(
-    #         f'/vulnerability/{vuln_id}',
-    #         format='json',
-    #         data={
-    #             'title': "String Error Termination",
-    #         }
-    #     )
+        response = client.patch(
+            f'/vulnerability/{vuln_id}',
+            format='json',
+            data={
+                'title': "String Error Termination",
+            }
+        )
 
-    #     self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
