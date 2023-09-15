@@ -156,32 +156,33 @@ class CrtShView(APIView):
         tags=['crt.sh'],
     )
     def get(self, request):
-    # Get the 'domain' parameter from the query parameters
         domain = request.GET.get('domain')
 
         if not domain:
             return JsonResponse({"error": "Domain parameter is missing."}, status=400)
 
-        # Call the crtshAPI.search method with the provided domain
         data = crtshAPI().search(domain)
 
-        if data is not None and len(data) > 0:
+        crtsh_data_list = []
+
+        for item in data:
             crtsh_data = {
-                "id": data[0].get("id"),
-                "logged_at": data[0].get("entry_timestamp"),
-                "not_before": data[0].get("not_before"),
-                "not_after": data[0].get("not_after"),
-                "name": data[0].get("name_value"),
+                "id": item.get("id"),
+                "logged_at": item.get("entry_timestamp"),
+                "not_before": item.get("not_before"),
+                "not_after": item.get("not_after"),
+                "name": item.get("name_value"),
                 "ca": dict(
-                    name.split("=") for name in data[0].get("issuer_name", "").split(",")
+                    (name.split("=") if "=" in name else (name, None))
+                    for name in item.get("issuer_name", "").split(",")
                 ),
             }
+            crtsh_data_list.append(crtsh_data)
 
-            # Return the crt.sh data as JSON response
-            return JsonResponse(crtsh_data)
+        return JsonResponse(crtsh_data_list, safe=False)
 
-        else:
-            return JsonResponse({"message": "No data found for the domain."}, status=404)
+
+
 
 
 class CredentialViewset(viewsets.ModelViewSet):
