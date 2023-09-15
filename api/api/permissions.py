@@ -67,7 +67,7 @@ class IsLinkedToData(permissions.BasePermission):
 
         if isinstance(obj, Team):
             for m in obj.members.all():
-                if m.id == request.user.id:
+                if request.user.id == m.auth.id:
                     return True
             return obj.leader.auth.id == request.user.id
 
