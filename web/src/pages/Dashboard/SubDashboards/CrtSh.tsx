@@ -247,6 +247,7 @@ export default function CrtSh() {
                     type="button"
                     onClick={searchIdentity}
                     className="searchBtn"
+                    onKeyDown={handleKeyDown}
                 >
                     Search
                 </button>
