@@ -11,10 +11,9 @@ from drf_yasg import openapi
 from drf_yasg.utils import APIView, swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
-from django.core.cache import cache
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
-from api.models import Auth, Pentester
+from api.models import Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
@@ -374,7 +373,7 @@ class CredentialViewset(viewsets.ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         mission_id = request.data.get('mission_id', 0)
-        if mission := Mission.objects.filter(id=mission_id).first():
+        if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
             if not mission.is_member(self.request.user):
                 return Response(HTTP_403_FORBIDDEN)
@@ -390,10 +389,13 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
-    queryset = Mission.objects.all()  # type: ignore
+    queryset = Mission.objects.all() # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
+
+    CACHE_KEY_PREFIX = 'mission_'
+    CACHE_TIMEOUT = 60 * 60 * 24 # 24 hours
 
     @swagger_auto_schema(
         operation_description="Creates a mission. Must be done by a Manager.",
@@ -448,56 +450,31 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         request.data['last_updated_by'] = request.user.id
         return super().create(request, *args, **kwargs)
 
+
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
             request.data.pop("created_by")
-
         request.data["last_updated_by"] = request.user.id
         return super().update(request, *args, **kwargs)
 
 
-# class WappalyzerRequestView(APIView):
-#     permission_classes = [permissions.IsAuthenticated]
-#     authentication_classes = [TokenAuthentication]
-
-#     def post(self, request, *args, **kwargs):
-#         url = request.GET.get('url')
-
-#         cached = cache.get(url)
-#         if cached:
-#             cache.set(f'WAPPALYZER-{url}', cached, 60 * 15)
-#             return Response(cached)
-
-#         wapp_api_url = 'http://localhost:4000/run' \
-#                 if os.environ.get('IN_CONTAINER', '0') == '0' \
-#                 else 'http://wapp-api:4000/run'
-
-#         result = requests.post(f'{wapp_api_url}?url={url}', timeout=20.0)
-#         if result.status_code != 200:
-#             return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
-
-#         as_json = result.json()
-#         cache.set(f'WAPPALYZER-{url}', as_json, 60 * 15)
-
-#         return Response(as_json)
 class WappalyzerRequestView(APIView):
-     authentication_classes = [TokenAuthentication]
-     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
-     def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
 
-         sets = 'security,meta,locale,events'
-         urls = request.GET.get('urls')
+        sets = 'security,meta,locale,events'
+        urls = request.GET.get('urls')
 
-         # TODO(djnn): add rate-limit per user per day
+        # TODO(djnn): add rate-limit per user per day
 
-         data = requests.get(
-             f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
-             timeout=2.0,
-             headers={
-                 "x-api-key": os.environ['WAPPALYZER_API_KEY'],
-             }
-         )
+        data = requests.get(
+            f'https://api.wappalyzer.com/v2/lookup?urls={urls}&sets={sets}',
+            timeout=2.0,
+            headers={
+                "x-api-key": os.environ['WAPPALYZER_API_KEY'],
+            }
+        )
 
-         return Response(data.json(), status=HTTP_200_OK)
-
+        return Response(data.json(), status=HTTP_200_OK)

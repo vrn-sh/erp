@@ -5,6 +5,7 @@ from api.models import Manager, Pentester
 
 from api.management.commands.init_builtin_vuln_types import Command
 from api.models import Manager, Pentester
+from api.models.vulns import VulnType
 
 from api.tests.helpers import create_mission, create_random_pentester, create_random_manager, default_user_password, \
     login_as
@@ -30,6 +31,7 @@ class VulnTestCase(TransactionTestCase):
         self.user.delete()
         self.manager.delete()
         self.other_user.delete()
+
 
     def test_create_valid_vulnerability(self):
         client: APIClient = APIClient()
