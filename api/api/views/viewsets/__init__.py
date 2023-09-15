@@ -8,10 +8,7 @@
 - AddressViewset: Address class CRUD (no preloaded data)
 """
 
-from io import BytesIO
-import os
-from typing import List, Optional
-import uuid
+from typing import List
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -27,7 +24,6 @@ from api.backends import EmailBackend
 from api.serializers import ManagerSerializer, PentesterSerializer, TeamSerializer
 from api.models import USER_ROLES, Manager, Pentester, Team, get_user_model
 from api.permissions import IsManager, IsLinkedToData, IsPentester, PostOnly, ReadOnly
-from api.serializers.utils import get_image_data, get_mime_type
 from api.services.s3 import S3Bucket
 
 
@@ -39,6 +35,7 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     queryset = Team.objects.all()  # type: ignore
     permission_classes = [
         permissions.IsAuthenticated,
+        IsLinkedToData,
         IsManager | IsPentester & ReadOnly
     ]
     authentication_classes = [TokenAuthentication]

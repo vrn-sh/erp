@@ -66,34 +66,7 @@ class AuthSerializer(serializers.ModelSerializer):
 
         # temporarily set here until sendgrid is fixed
         validated_data['is_enabled'] = True
-
-        image_data: str = validated_data.get('profile_image', '')
-        if image_data != '':
-            mime_type = get_mime_type(image_data)
-            image_data = get_image_data(image_data)  # type: ignore
-
-            if not mime_type or not image_data:
-                validated_data['profile_image'] = None
-                return Auth.objects.create(**validated_data)
-
-            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-                validated_data['profile_image'] = None
-                return Auth.objects.create(**validated_data)
-
-            s3_client = S3Bucket()
-            image_name = f'{uuid.uuid4().hex}'
-
-            iostream = BytesIO(image_data)  # type: ignore
-            _ = s3_client.upload_stream(
-                'rootbucket',
-                image_name,
-                iostream,
-                f'image/{mime_type}',
-            )
-            validated_data['profile_image'] = image_name
-
         return Auth.objects.create(**validated_data)
-
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+from django.core.cache import cache
 from rest_framework import serializers
 
 from api.services.s3 import S3Bucket
@@ -27,6 +28,10 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def to_representation(self, instance):
+        cache_key = f'vulnerability_{instance.pk}'
+        if cached := cache.get(cache_key):
+            return cached
+
         representation = super().to_representation(instance)
         s3_client = S3Bucket()
 
@@ -48,4 +53,5 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
             images.append(s3_client.get_object_url('rootbucket', image))
 
         representation['images'] = images
+        cache.set(cache_key, representation)
         return representation

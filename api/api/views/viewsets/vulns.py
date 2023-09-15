@@ -84,16 +84,13 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         CRUD to manage vulnerabilities.
     """
     queryset = Vulnerability.objects.all()  # type: ignore
-    permissions = [permissions.IsAuthenticated, IsLinkedToData & IsPentester | IsManager & IsLinkedToData & ReadOnly]
+    permissions = [
+        permissions.IsAuthenticated,
+        IsLinkedToData,
+        IsPentester | IsManager & ReadOnly,
+    ]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
-
-    def list(self, request, *args, **kwargs):
-        if mission_id := self.request.GET.get('mission_id'):
-            vulns = self.get_queryset().filter(mission__id=mission_id)
-            serializer = self.get_serializer(vulns, many=True, read_only=True)
-            return Response(serializer.data)
-        return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
@@ -168,6 +165,8 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
             request.data.pop('author')
+
+        request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
 
         if 'vuln_type' in request.data:
