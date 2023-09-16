@@ -9,6 +9,7 @@ import Recon from './Recon';
 import HunterIo from './HunterIo/HunterIo';
 import Credentials from './Credential' 
 
+
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
     const [id, setId] = useState(0);
@@ -33,7 +34,7 @@ export default function MissionDetail() {
             return <HunterIo />;
         }
         if (active === 'credential') {
-            return <Credentials idMission={undefined} />;
+            return <Credentials idMission={id} />;
         }
         return null;
     };

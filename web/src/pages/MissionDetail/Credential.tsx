@@ -3,7 +3,7 @@ import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { HiChevronDown } from 'react-icons/hi';
-import { IconButton, TextField, InputAdornment, Dialog, DialogTitle, DialogContent, DialogActions, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,} from '@mui/material';
+import { IconButton, TextField, InputAdornment, Dialog, DialogTitle, DialogContent, DialogActions, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, } from '@mui/material';
 import axios from 'axios';
 
 interface Credential {
@@ -48,11 +48,23 @@ export default function Credentials({ idMission }: CredentialsProps) {
 
   const addCredential = async () => {
     try {
-      const response = await axios.post('API_URL', newCredential);
+      // Envoyer une requête POST pour ajouter une nouvelle credential
+      const response = await axios.post('/credentials', {
+        service: newCredential.service,
+        login: newCredential.login,
+        password: newCredential.password,
+        comments: newCredential.comments,
+        mission_id: idMission,
+      });
+      const addedCredential = response.data;
+
+      // Mettre à jour la liste des credentials avec la nouvelle credential ajoutée
       setCredentials((prevCredentials) => [
         ...prevCredentials,
-        response.data,
+        addedCredential,
       ]);
+
+      // Réinitialiser le formulaire
       setNewCredential({
         service: '',
         login: '',
@@ -83,7 +95,10 @@ export default function Credentials({ idMission }: CredentialsProps) {
   useEffect(() => {
     const fetchCredentials = async () => {
       try {
-        const response = await axios.get('API_URL');
+        // Envoyer une requête GET pour récupérer les credentials associés à la mission
+        const response = await axios.get('/credentials', {
+          params: { mission_id: idMission },
+        });
         setCredentials(response.data.credentials);
       } catch (error) {
         console.error(error);
@@ -91,7 +106,8 @@ export default function Credentials({ idMission }: CredentialsProps) {
     };
 
     fetchCredentials();
-  }, []);
+  }, [idMission]);
+
 
   return (
     <>
