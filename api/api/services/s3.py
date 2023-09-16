@@ -1,14 +1,13 @@
 """module handling minio integration"""
 
+import base64
 from io import BytesIO
 import os
+import re
 from typing import Dict, Optional
 import uuid
-from warnings import warn
 
 from minio import Minio
-
-from api.serializers.utils import get_image_data, get_mime_type
 
 class S3Bucket:
     def __init__(self) -> None:
@@ -20,10 +19,42 @@ class S3Bucket:
             secure=os.environ.get('PRODUCTION', '0') == '1',
         )
 
+    def __get_mime_type(self, content: str) -> Optional[str]:
+        """Get MIME type from the start of an image file"""
+
+        pattern = re.compile('data:(.*);base64')
+        if pattern.match(content):
+            rg_search = pattern.search(content)
+            if not rg_search:
+                return None
+
+            content_type = rg_search.group(0)
+            if not content_type.startswith('data:image/'):
+                return None
+
+            image_type = content_type.split('/')[1].split(';', 1)[0]
+            allowed_filetype = ['jpg', 'jpeg', 'png', 'gif']
+
+            if image_type not in allowed_filetype:
+                return None
+            return image_type
+        return None
+
+
+    def __get_image_data(self, content: str) -> Optional[bytes]:
+        """Strips the MIME type information from image data"""
+        as_base64 = content.split('base64,')
+        if len(as_base64) != 2:
+            return None
+
+        as_base64 = as_base64[1]
+        from_base64 = base64.b64decode(as_base64)
+        return from_base64
+
 
     def upload_single_image(self, image_data: str) -> Optional[str]:
-        mime = get_mime_type(image_data)
-        as_b64 = get_image_data(image_data)
+        mime = self.__get_mime_type(image_data)
+        as_b64 = self.__get_image_data(image_data)
 
         if not mime or not as_b64:
             return None
