@@ -23,6 +23,28 @@ $opacity-transition: opacity;
     }
 }
 
+
+
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.column {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.form-header {
+    font-weight: bold;
+    background-color: #f0f0f0;
+    padding: 5px 0;
+}
+
+
 .page-info {
     display: flex;
     flex-direction: row;
