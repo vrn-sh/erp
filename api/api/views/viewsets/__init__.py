@@ -42,6 +42,38 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     serializer_class = TeamSerializer
 
     @swagger_auto_schema(
+        operation_description="Lists all teams. Must be done by a Manager or a Pentester.",
+        responses={
+            "200": openapi.Response(
+                description="200 OK",
+                examples={
+                    "id": 1,
+                    "name": "Ohayo Sekai",
+                    "members": [1, 2],
+                    "leader": 1
+                }
+            )
+        },
+        security=['Bearer'],
+        tags=['Team'],
+    )
+    def list(self, request, *args, **kwargs):
+        owner = EmailBackend().get_user_by_email(request.user.email)
+        if owner is None:
+            return Response({
+                'error': 'user does not exist',
+            }, status=HTTP_400_BAD_REQUEST)
+
+        owner_model = get_user_model(owner)
+        if USER_ROLES[owner.role] == 'manager':
+            teams = Team.objects.filter(leader=owner_model.id)
+            self.queryset = teams
+            return super().list(request, *args, **kwargs)
+        teams = Team.objects.filter(members__in=[owner_model.id])
+        self.queryset = teams
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
         operation_description="Creates a team. Must be done by a Manager.",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
