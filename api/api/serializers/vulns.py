@@ -1,11 +1,8 @@
 import os
 from typing import List
 
-from rest_framework import serializers
 from django.core.cache import cache
-from io import BytesIO
-import uuid
-from api.serializers.utils import get_image_data, get_mime_type
+from rest_framework import serializers
 
 from api.services.s3 import S3Bucket
 from api.models.vulns import Notes, VulnType, Vulnerability
@@ -38,6 +35,14 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         s3_client = S3Bucket()
 
+        representation['images'] = []
+
+        if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            return representation
+
+        if not instance.images:
+            return representation
+
         images: List[str] = []
         for image in instance.images:
 
@@ -50,35 +55,3 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         representation['images'] = images
         cache.set(cache_key, representation)
         return representation
-
-    def to_internal_value(self, data):
-        internal_value = super().to_internal_value(data)
-        images = []
-
-        for image_data in data.get('images', []):
-
-            # silenlty passing erronous images
-            # TODO(djnn): add error message (probably do the checks in viewset)
-            mime_type = get_mime_type(image_data)
-            image_data = get_image_data(image_data)
-
-            if not mime_type or not image_data:
-                continue
-
-            if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-                continue
-
-            s3_client = S3Bucket()
-            image_name = f'{uuid.uuid4().hex}'
-
-            iostream = BytesIO(image_data)
-            _ = s3_client.upload_stream(
-                'rootbucket',
-                image_name,
-                iostream,
-                f'image/{mime_type}',
-            )
-
-            images.append(image_name)
-        internal_value['images'] = images
-        return internal_value
