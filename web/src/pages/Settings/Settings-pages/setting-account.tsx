@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Stack } from '@mui/material';
 import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
-import { FaCamera, FaUser } from 'react-icons/fa';
+import '../Settings.scss';
 
 export default function SettingAccount() {
     const [userInfos, setUserInfos] = useState({

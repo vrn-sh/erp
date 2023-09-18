@@ -45,7 +45,7 @@ function App() {
                 <Route path="/mission/create" element={<CreateMission />} />
                 <Route path="/team" element={<Team />} />
                 <Route path="/team/create" element={<CreateTeam />} />
-                <Route path="/team/view/:id" element={<ViewTeamDetails/>}/>
+                <Route path="/team/view/:id" element={<ViewTeamDetails />} />
                 <Route path="/team/edit" element={<EditTeam />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
