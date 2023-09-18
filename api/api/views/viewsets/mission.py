@@ -20,7 +20,9 @@ from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer
 from api.models.utils import NmapParser, minimal_nmap_output
 
-from api.services.crtsh import fetch_certificates_from_crtsh
+from django.http import JsonResponse
+from api.services.crtsh import crtshAPI
+from django.core.cache import cache
 
 class NmapViewset(viewsets.ModelViewSet):
     """
@@ -125,14 +127,7 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
 class CrtShView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsPentester]
-
-    @staticmethod
-    def has_crtsh_error(response: List[Dict[str, Any]]) -> bool:
-        """checks if there is an error returned from crtsh.py"""
-        return len(response) == 1 and 'error' in response[0]
-
+    CACHE_TIMEOUT = 3600  # Set your desired cache timeout in seconds
     @swagger_auto_schema(
         operation_description="Fetches certificates for a given domain and saves them to a mission.",
         manual_parameters=[
@@ -162,125 +157,35 @@ class CrtShView(APIView):
         security=['Bearer'],
         tags=['crt.sh'],
     )
-    def post(self, request, *args, **kwargs):
-        mission_id = request.query_params.get('mission_id')
-        domain = request.query_params.get('domain')
+    def get(self, request):
+        domain = request.GET.get('domain')
 
-        if not mission_id or not domain:
-            return Response({
-                "error": "Domain and mission_id parameters are required.",
-            }, status=HTTP_400_BAD_REQUEST)
+        if not domain:
+            return JsonResponse({"error": "Domain parameter is missing."}, status=400)
 
-        # getting related mission
-        mission = Mission.objects.filter(id=mission_id).first()  # type: ignore
-        if not mission:
-            return Response({
-                "error": "Mission not found",
-            }, status=HTTP_400_BAD_REQUEST)
+        cached_data = cache.get(domain)
+        if cached_data:
+            return JsonResponse(cached_data, safe=False)
 
-        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)  # type: ignore
-        if current_user not in mission.team.members.all():
-            return Response({
-                'error': 'user not member of mission',
-            }, status=HTTP_400_BAD_REQUEST)
+        data = crtshAPI().search(domain)
 
-        # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
-        if not crt_object:
-            certificates = fetch_certificates_from_crtsh(domain)
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
-            crt_object.save()
+        crtsh_data_list = []
 
-            status = HTTP_201_CREATED
-            if self.has_crtsh_error(certificates):
-                status = HTTP_500_INTERNAL_SERVER_ERROR
-
-            # return json parsed data
-            return Response({'dump': certificates}, status=status)
-
-        status = HTTP_201_CREATED
-        if self.has_crtsh_error(loads(crt_object.dump)):
-            status = HTTP_500_INTERNAL_SERVER_ERROR
-
-        return Response({'dump': loads(crt_object.dump)}, status)
-
-
-    @swagger_auto_schema(
-        operation_description="Fetches certificates for a given domain and updates the mission data.",
-        manual_parameters=[
-            openapi.Parameter(
-                name="mission_id",
-                in_=openapi.IN_QUERY,
-                description="ID of the mission to save the certificates.",
-                required=True,
-                type=openapi.TYPE_INTEGER,
-            ),
-            openapi.Parameter(
-                name="domain",
-                in_=openapi.IN_QUERY,
-                description="domain name to check.",
-                required=True,
-                type=openapi.TYPE_INTEGER,
-            )
-        ],
-        responses={
-            "200": openapi.Response(
-                description="200 OK",
-            ),
-            "400": openapi.Response(
-                description="400 Bad Request",
-            )
-        },
-        security=['Bearer'],
-        tags=['crt.sh'],
-    )
-    def patch(self, request, *args, **kwargs):
-        mission_id = request.query_params.get('mission_id')
-        domain = request.query_params.get('domain')
-
-        if not mission_id or not domain:
-            return Response({
-                "error": "Domain and mission_id parameters are required.",
-            }, status=HTTP_400_BAD_REQUEST)
-
-        # getting related mission
-        mission = Mission.objects.filter(id=mission_id).first()  # type: ignore
-        if not mission:
-            return Response({
-                "error": "Mission not found",
-            }, status=HTTP_400_BAD_REQUEST)
-
-        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)  # type: ignore
-        if current_user not in mission.team.members.all():
-            return Response({
-                'error': 'user not member of mission',
-            }, status=HTTP_400_BAD_REQUEST)
-
-        certificates = fetch_certificates_from_crtsh(domain)
-
-        # if CrtSh already exists, no need to recreate it
-        crt_object = CrtSh.objects.filter(recon_id=mission.recon.id).first()  # type: ignore
-        if not crt_object:
-            crt_object = CrtSh.objects.create(recon_id=mission.recon.id, dump=dumps(certificates, default=str))  # type: ignore
-            crt_object.save()
-
-            status = HTTP_200_OK
-            if self.has_crtsh_error(certificates):
-                status = HTTP_500_INTERNAL_SERVER_ERROR
-
-            # return json parsed data
-            return Response({'dump': certificates}, status=status)
-
-        crt_object.dump = dumps(certificates, default=str)
-        crt_object.save()
-
-        status = HTTP_200_OK
-        if self.has_crtsh_error(certificates):
-            status = HTTP_500_INTERNAL_SERVER_ERROR
-
-        return Response({'dump': certificates}, status)
-
-
+        for item in data:
+            crtsh_data = {
+                "id": item.get("id"),
+                "logged_at": item.get("entry_timestamp"),
+                "not_before": item.get("not_before"),
+                "not_after": item.get("not_after"),
+                "name": item.get("name_value"),
+                "ca": dict(
+                    (name.split("=") if "=" in name else (name, None))
+                    for name in item.get("issuer_name", "").split(",")
+                ),
+            }
+            crtsh_data_list.append(crtsh_data)
+        cache.set(domain, crtsh_data_list, self.CACHE_TIMEOUT)
+        return JsonResponse(crtsh_data_list, safe=False)
 
 class CredentialViewset(viewsets.ModelViewSet):
     """CRUD operation to add credentials to a mission"""
