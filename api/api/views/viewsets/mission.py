@@ -22,6 +22,8 @@ from api.serializers.mission import CredentialsSerializer, MissionSerializer, Nm
 from api.models.utils import NmapParser, minimal_nmap_output
 
 from api.services.crtsh import crtshAPI
+from django.core.cache import cache
+
 
 class NmapViewset(viewsets.ModelViewSet):
     """
@@ -126,6 +128,7 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
 
 class CrtShView(APIView):
+    CACHE_TIMEOUT = 3600  # Set your desired cache timeout in seconds
     @swagger_auto_schema(
         operation_description="Fetches certificates for a given domain and saves them to a mission.",
         manual_parameters=[
@@ -161,6 +164,10 @@ class CrtShView(APIView):
         if not domain:
             return JsonResponse({"error": "Domain parameter is missing."}, status=400)
 
+        cached_data = cache.get(domain)
+        if cached_data:
+            return JsonResponse(cached_data, safe=False)
+
         data = crtshAPI().search(domain)
 
         crtsh_data_list = []
@@ -178,7 +185,7 @@ class CrtShView(APIView):
                 ),
             }
             crtsh_data_list.append(crtsh_data)
-
+        cache.set(domain, crtsh_data_list, self.CACHE_TIMEOUT)
         return JsonResponse(crtsh_data_list, safe=False)
 
 
