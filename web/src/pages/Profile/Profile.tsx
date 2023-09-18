@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import './Profile.scss';
 import '../Settings/Settings.scss';
 import { useNavigate } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
-import pp from '../../assets/testpp.png';
 import TableSection from './TableSection';
 
 type InfoProps = {
@@ -35,6 +36,7 @@ function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
 export default function ProfilePage() {
     const role = Cookies.get('Role');
     const navigate = useNavigate();
+    const [NumMission, setNumMission] = useState(0);
     const [coworker, setCowoker] = useState(0);
     const [userInfos, setUserInfos] = useState({
         username: '',
@@ -73,8 +75,7 @@ export default function ProfilePage() {
     const [missionList, setMissionList] = useState<
         {
             id: number;
-            start: string;
-            end: string;
+            state: string;
             title: string;
             scope: string[];
             team: number;
@@ -146,6 +147,11 @@ export default function ProfilePage() {
             .then((data) => {
                 const res = data.data.results;
                 for (let i = 0; i < res.length; i += 1) {
+                    if (dayjs().isBefore(dayjs(res[i].end)))
+                        res[i].state = 'Succeed';
+                    else res[i].state = 'In progress';
+                    delete res[i].start;
+                    delete res[i].end;
                     delete res[i].recon;
                     delete res[i].bucket_name;
                     delete res[i].creation_date;
@@ -154,6 +160,7 @@ export default function ProfilePage() {
                     delete res[i].last_updated_by;
                 }
                 setMissionList(res);
+                setNumMission(data.data.count);
             });
     };
 
@@ -182,11 +189,29 @@ export default function ProfilePage() {
                     <div className="assigned-missions">
                         <div className="profile-container">
                             <div className="mainInfo-container">
-                                <img
+                                {/* <img
                                     className="profile-photo"
                                     alt="profile"
-                                    src={pp}
-                                />
+                                    src={userInfos.profile_image}
+                                /> */}
+                                {userInfos.profile_image ? (
+                                    <img
+                                        src={userInfos.profile_image} // Affichez l'image depuis l'état local
+                                        alt="Profile"
+                                        className="profile-photo"
+                                    />
+                                ) : (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <FaUser size={32} />
+                                    </div>
+                                )}
                                 <div className="profile-username">
                                     <h5>{userInfos.username}</h5>
                                     <p>
@@ -203,7 +228,11 @@ export default function ProfilePage() {
                                         ? '-'
                                         : userInfos.first_name
                                 }
-                                c2={userInfos.email}
+                                c2={
+                                    userInfos.email.length === 0
+                                        ? '-'
+                                        : userInfos.email
+                                }
                             />
 
                             <GroupInfo
@@ -217,13 +246,9 @@ export default function ProfilePage() {
                                 c2={String(coworker)}
                             />
                             <GroupInfo
-                                t1="Phone Number"
+                                t1="Missions"
                                 t2="Teams"
-                                c1={
-                                    userInfos.phone_number === null
-                                        ? '-'
-                                        : userInfos.phone_number
-                                }
+                                c1={String(NumMission)}
                                 c2={String(teamList.length)}
                             />
 

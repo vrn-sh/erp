@@ -6,18 +6,18 @@ type MissionDetail = {
     id: number;
     name: string;
     scope: string[];
+    state: string;
 };
 
 type MissionProps = {
     id: number;
-    start: string;
-    end: string;
+    state: string;
     title: string;
     scope: string[];
     team: number;
 }[];
 
-function MissionCard({ id, name, scope }: MissionDetail) {
+function MissionCard({ id, name, scope, state }: MissionDetail) {
     const navigate = useNavigate();
 
     const NavMissionDetail = () => {
@@ -49,8 +49,8 @@ function MissionCard({ id, name, scope }: MissionDetail) {
                 >
                     <h4>{name}</h4>
                     <Chip
-                        label="Succeed"
-                        color="success"
+                        label={state}
+                        color={state === 'Succeed' ? 'success' : 'warning'}
                         variant="outlined"
                         size="small"
                     />
@@ -59,7 +59,7 @@ function MissionCard({ id, name, scope }: MissionDetail) {
                     style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        height: '60px',
+                        height: '50px',
                         overflow: 'scroll',
                     }}
                 >
@@ -103,7 +103,7 @@ export default function TableRow(props: {
                                 id={mission.id}
                                 name={mission.title}
                                 scope={mission.scope}
-                                // id={mission.id}
+                                state={mission.state}
                             />
                         );
                     })}

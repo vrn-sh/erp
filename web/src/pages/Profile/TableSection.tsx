@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TableRow from './TableRow';
 import './Profile.scss';
 import '../Settings/Settings.scss';
@@ -28,8 +29,7 @@ type TeamProps = {
 
 type MissionProps = {
     id: number;
-    start: string;
-    end: string;
+    state: string;
     title: string;
     scope: string[];
     team: number;
@@ -46,8 +46,11 @@ export default function TableSection(props: {
     const MissionList = prop.missionList;
     const [showDetail, setShowDetail] = useState(false);
     const [thisMissionList, setThisMissionList] = useState<MissionProps>([]);
+    const navigate = useNavigate();
 
-    const NavTeamDetail = () => {};
+    const NavTeamDetail = () => {
+        navigate(`/team/view/${TeamInfo.id}`);
+    };
 
     const DisplayMission = () => {
         const res = [];
@@ -85,6 +88,11 @@ export default function TableSection(props: {
 
             {showDetail && thisMissionList.length > 0 && (
                 <TableRow missionList={thisMissionList} />
+            )}
+            {showDetail && thisMissionList.length === 0 && (
+                <h3 style={{ fontFamily: 'Poppins-Regular' }}>
+                    No mission in this team
+                </h3>
             )}
         </>
     );
