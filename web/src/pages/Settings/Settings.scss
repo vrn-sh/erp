@@ -115,3 +115,48 @@
     width: 5px;
     color: #7C44F3;
 }
+
+.pwd {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.pwd label {
+    font-size: .9rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(0, -140%);
+}
+
+#input_pwd{
+    height: 2.5rem;
+    border-radius: 6px;
+    padding: .5rem;
+    border: 1px solid var(--primary-btn);
+}
+
+
+.pwdEyeBtn {
+    background: transparent;
+    color: var(--gray-btn);
+    font-size: 1.2rem;
+    outline: none;
+    max-width: 1em;
+    margin: 0;
+    padding: 0;
+    margin-left: 94%;
+    margin-top: -2.5rem;
+    cursor: pointer;
+}
+
+.pwdEyeBtn:hover {
+    background: transparent;
+    color: var(--primary-hover-btn);
+}
+
+.modal-card-secu {
+    max-width: 700px !important;
+}

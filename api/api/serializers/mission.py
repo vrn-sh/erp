@@ -2,6 +2,8 @@ from json import loads
 from django.core.cache import cache
 from rest_framework import serializers
 
+from api.models.mission import Mission, Recon, NmapScan, CrtSh
+from api.models.utils import NmapPort
 from api.models.mission import Credentials, Mission, Recon, NmapScan, CrtSh
 from api.models.utils import NmapPort
 
