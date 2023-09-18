@@ -8,7 +8,6 @@ import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
 import ViewTeam from '../Team/ViewTeam';
 
-
 export default function TeamList() {
     const [list, setList] = useState<
         {

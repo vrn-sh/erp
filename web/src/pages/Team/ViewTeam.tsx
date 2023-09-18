@@ -6,6 +6,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import { RiEyeLine, RiUserFill } from 'react-icons/ri';
+import Modal from 'react-modal';
+
 
 interface Member {
   id: number;
@@ -26,6 +28,9 @@ interface Member {
 export default function ViewTeamDetails() {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
 
   const [teamData, setTeamData] = useState<{
     id: number;
@@ -73,9 +78,43 @@ export default function ViewTeamDetails() {
     getTeamDetails();
   }, [id]); // Ajouter id comme dépendance
 
-  const goToProfile = (memberId: number) => {
-    navigate('/profile');
+  const goToProfile = (member: Member) => {
+    openModal(member);
   };
+  const MemberModal = () => {
+    return (
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Member Details"
+        // Personnalisez le style du modal ici
+      >
+        {selectedMember && (
+          <div>
+            <h2>Member Details</h2>
+            <div>
+              <img src={selectedMember.auth.profileImage} alt="Profile" />
+              <p>Username: {selectedMember.auth.username}</p>
+              <p>Email: {selectedMember.auth.email}</p>
+              <p>Phone Number: {selectedMember.auth.phone_number || 'N/A'}</p>
+              <p>Last Login: {selectedMember.auth.last_login || 'N/A'}</p>
+            </div>
+            <button onClick={closeModal}>Close</button>
+          </div>
+        )}
+      </Modal>
+    );
+  };
+    
+  const openModal = (member: Member) => {
+    setSelectedMember(member);
+    setModalIsOpen(true);
+  };
+  const closeModal = () => {
+    setSelectedMember(null);
+    setModalIsOpen(false);
+  };
+    
   
     const renderMembers = () => {
         if (!teamData) {
@@ -140,7 +179,7 @@ export default function ViewTeamDetails() {
               </p>
               <div style={{ display: 'flex', alignItems: 'center', marginLeft:'60%' }}>
                 <RiEyeLine style={{ marginRight: '5px', fontSize: '12px' }} />
-                <Link to="#" onClick={() => goToProfile(member.id)}>
+                <Link to="#" onClick={() => goToProfile(member)}>
                     <span style={{ color: 'black', fontFamily: 'Poppins-Regular', fontSize: '12px' }}>View</span>
                 </Link>
             </div>
@@ -185,6 +224,7 @@ export default function ViewTeamDetails() {
               </div><br />
               <h4 style={{ margin: '5px' }}>Members:</h4>
               {renderMembers()}
+              <MemberModal />
             </div>
           ) : (
             <p>Loading team data...</p>
