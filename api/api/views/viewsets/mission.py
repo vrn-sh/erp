@@ -455,8 +455,8 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
             missions = Mission.objects.all()
         else:
             missions = Mission.objects.filter(team__members__auth__id=request.user.id) # type: ignore
-        serializer = self.get_serializer(missions, many=True)
-        return Response(serializer.data)
+        self.queryset = missions
+        return super().list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
