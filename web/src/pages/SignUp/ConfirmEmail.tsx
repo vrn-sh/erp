@@ -6,6 +6,7 @@ import './SignUp.scss';
 import config from '../../config';
 
 export default function ConfirmEmail() {
+    // eslint-disable-next-line
     const [query, setQuery] = useSearchParams();
     const token = query.get('token');
     const [confirmed, setConfirmed] = useState(false);
@@ -13,18 +14,16 @@ export default function ConfirmEmail() {
     const pwd = user !== null ? JSON.parse(user).password : '';
 
     const confirmFun = async () => {
-        try {
-            await axios
-                .post(`${config.apiUrl}/confirm?token=${token}`, {
-                    password: pwd,
-                })
-                .then(() => {
-                    setConfirmed(true);
-                })
-                .catch(() => {});
-        } catch (e) {
-            console.log(e);
-        }
+        await axios
+            .post(`${config.apiUrl}/confirm?token=${token}`, {
+                password: pwd,
+            })
+            .then(() => {
+                setConfirmed(true);
+            })
+            .catch((error) => {
+                throw error;
+            });
     };
 
     return (
