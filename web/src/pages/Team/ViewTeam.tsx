@@ -7,6 +7,9 @@ import Cookies from 'js-cookie';
 import config from '../../config';
 import { RiEyeLine, RiUserFill } from 'react-icons/ri';
 import Modal from 'react-modal';
+import { TbBorderRadius } from 'react-icons/tb';
+import './viewteam.scss'
+import { FaUserCircle } from 'react-icons/fa';
 
 
 interface Member {
@@ -81,30 +84,87 @@ export default function ViewTeamDetails() {
   const goToProfile = (member: Member) => {
     openModal(member);
   };
+  
   const MemberModal = () => {
     return (
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Member Details"
-        // Personnalisez le style du modal ici
+        style={{
+          content: { 
+            width: '35%',
+            height: '50%',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            position: 'absolute',
+            borderRadius: '20px',
+            fontSize:'12px'
+          },
+        }}
       >
         {selectedMember && (
-          <div>
-            <h2>Member Details</h2>
-            <div>
-              <img src={selectedMember.auth.profileImage} alt="Profile" />
-              <p>Username: {selectedMember.auth.username}</p>
-              <p>Email: {selectedMember.auth.email}</p>
-              <p>Phone Number: {selectedMember.auth.phone_number || 'N/A'}</p>
-              <p>Last Login: {selectedMember.auth.last_login || 'N/A'}</p>
+          <div className="member-modal">
+            <div className="header">
+              <div className="profile-info">
+                {selectedMember.auth.profileImage ? (
+                        <img
+                        src={selectedMember.auth.profileImage}
+                        alt="Profile"
+                        className="profile-image"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                        }}
+                    />                    
+                    ) : (
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginRight:'20px',
+                                marginBottom:'10px'
+                            }}
+                        >
+                            <FaUserCircle size={60} />
+                        </div>
+                )}
+                <div className="user-info">
+                  <p className="username">{selectedMember.auth.username}</p>
+                  <p className="role">Role: {selectedMember.auth.role === 1 ? 'Pentester' : 'Manager'}</p>
+                </div>
+              </div> <br />
             </div>
-            <button onClick={closeModal}>Close</button>
+            <div className="details">
+              <div className="detail">
+                <span style={{ fontWeight: 'bold' }}>Email Address:</span>
+                <span>{selectedMember.auth.email}</span>
+              </div>
+              <div className="detail">
+                <span style={{ fontWeight: 'bold' }}>Tel:</span>
+                <span>{selectedMember.auth.phone_number || 'N/A'}</span>
+              </div>
+              <div className="detail">
+                <span style={{ fontWeight: 'bold' }}>Last Login:</span>
+                <span>{selectedMember.auth.last_login || 'N/A'}</span>
+              </div>
+              <div className="detail">
+                <span style={{ fontWeight: 'bold' }}>Date Joined:</span>
+                <span>{selectedMember.auth.date_joined || 'N/A'}</span>
+              </div><br />
+              <button style={{borderRadius:'40px', backgroundColor:'#A687E9'}} onClick={closeModal}>Close</button>
+            </div>
           </div>
         )}
       </Modal>
     );
-  };
+  };  
+  
     
   const openModal = (member: Member) => {
     setSelectedMember(member);
