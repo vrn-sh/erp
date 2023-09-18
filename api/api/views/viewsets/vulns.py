@@ -10,6 +10,7 @@ from api.models.vulns import Notes, VulnType, Vulnerability
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
+from api.services.s3 import S3Bucket
 
 
 class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -18,7 +19,7 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         CRUD for notes object
     """
 
-    queryset = Notes.objects.all()
+    queryset = Notes.objects.all()  # type: ignore
     permission_classes = [permissions.IsAuthenticated & IsManager | permissions.IsAuthenticated & IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = NotesSerializer
@@ -72,7 +73,7 @@ class VulnTypeViewset(viewsets.ModelViewSet):
     """
         CRUD to add a new vulnerability type. Shouldn't happen often, but still.
     """
-    queryset = VulnType.objects.all()
+    queryset = VulnType.objects.all()  # type: ignore
     permissions = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnTypeSerializer
@@ -82,8 +83,12 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     """
         CRUD to manage vulnerabilities.
     """
-    queryset = Vulnerability.objects.order_by('id')  # type: ignore
-    permissions = [permissions.IsAuthenticated, IsLinkedToData & IsPentester | IsManager & IsLinkedToData & ReadOnly]
+    queryset = Vulnerability.objects.all()  # type: ignore
+    permissions = [
+        permissions.IsAuthenticated,
+        IsLinkedToData,
+        IsPentester | IsManager & ReadOnly,
+    ]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
 
@@ -150,6 +155,11 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
+        if 'images' in request.data:
+            nb_images = min(len(request.data['images']), 4)
+            for n in range(nb_images):
+                request.data['images'][n] = S3Bucket().upload_single_image(request.data['images'][n])
+
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
@@ -168,5 +178,10 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             request.data['vuln_type'] = vuln_obj.id
             if not 'description' in request.data:
                 request.data['description'] = vuln_obj.description
+
+        if 'images' in request.data:
+            nb_images = min(len(request.data['images']), 4)
+            for n in range(nb_images):
+                request.data['images'][n] = S3Bucket().upload_single_image(request.data['images'][n])
 
         return super().update(request, *args, **kwargs)

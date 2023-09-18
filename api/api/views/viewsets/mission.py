@@ -17,7 +17,7 @@ from api.models import Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
-from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer, CrtShSerializer
+from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer
 from api.models.utils import NmapParser, minimal_nmap_output
 
 from api.services.crtsh import fetch_certificates_from_crtsh
@@ -244,13 +244,13 @@ class CrtShView(APIView):
             }, status=HTTP_400_BAD_REQUEST)
 
         # getting related mission
-        mission = Mission.objects.filter(id=mission_id).first()
+        mission = Mission.objects.filter(id=mission_id).first()  # type: ignore
         if not mission:
             return Response({
                 "error": "Mission not found",
             }, status=HTTP_400_BAD_REQUEST)
 
-        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)
+        current_user: Pentester = Pentester.objects.get(auth__id=request.user.id)  # type: ignore
         if current_user not in mission.team.members.all():
             return Response({
                 'error': 'user not member of mission',
@@ -389,7 +389,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         CRUD for mission object
     """
 
-    queryset = Mission.objects.all() # type: ignore
+    queryset = Mission.objects.all()  # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
@@ -452,7 +452,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
 
     def list(self, request, *args, **kwargs):
         if request.user.role == 2:
-            missions = Mission.objects.all()
+            missions = Mission.objects.filter(created_by=request.user.id) # type: ignore
         else:
             missions = Mission.objects.filter(team__members__auth__id=request.user.id) # type: ignore
         self.queryset = missions
