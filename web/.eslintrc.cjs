@@ -13,6 +13,7 @@ module.exports = {
         'no-await-in-loop': 'off',
         '@typescript-eslint/no-loop-func': 'off',
         '@typescript-eslint/no-empty-interface': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
         'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
     },
     root: true,
