@@ -10,6 +10,7 @@ import uuid
 import re
 import base64
 from api.models.mission import Mission
+from api.serializers.utils import get_image_data, get_mime_type
 
 from api.services.s3 import S3Bucket
 from api.models.vulns import Notes, VulnType, Vulnerability
@@ -33,37 +34,6 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Vulnerability
         fields = '__all__'
-
-    def get_image_data(self, content: str) -> Optional[bytes]:
-        """Strips the MIME type information from image data"""
-        as_base64 = content.split('base64,')
-        if len(as_base64) != 2:
-            return None
-
-        as_base64 = as_base64[1]
-        from_base64 = base64.b64decode(as_base64)
-        return from_base64
-
-    def get_mime_type(self, content: str) -> Optional[str]:
-        """Get MIME type from the start of an image file"""
-
-        pattern = re.compile('data:(.*);base64')
-        if pattern.match(content):
-            rg_search = pattern.search(content)
-            if not rg_search:
-                return None
-
-            content_type = rg_search.group(0)
-            if not content_type.startswith('data:image/'):
-                return None
-
-            image_type = content_type.split('/')[1].split(';', 1)[0]
-            allowed_filetype = ['jpg', 'jpeg', 'png', 'gif']
-
-            if image_type not in allowed_filetype:
-                return None
-            return image_type
-        return None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -89,10 +59,8 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
 
             # silenlty passing erronous images
             # TODO(djnn): add error message (probably do the checks in viewset)
-            mime_type = self.get_mime_type(image_data)
-            image_data = self.get_image_data(image_data)
-
-            warn(f'mime_type: {mime_type} -> data: {data}')
+            mime_type = get_mime_type(image_data)
+            image_data = get_image_data(image_data)
 
             if not mime_type or not image_data:
                 continue
@@ -103,17 +71,13 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
             s3_client = S3Bucket()
             image_name = f'{uuid.uuid4().hex}'
 
-            warn(f'image name: {image_name}')
-
             iostream = BytesIO(image_data)
-            resp = s3_client.upload_stream(
+            _ = s3_client.upload_stream(
                 'rootbucket',
                 image_name,
                 iostream,
                 f'image/{mime_type}',
             )
-
-            warn(f'response status: {resp}')
 
             images.append(image_name)
         internal_value['images'] = images
