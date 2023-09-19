@@ -58,20 +58,28 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         tags=['Team'],
     )
     def list(self, request, *args, **kwargs):
-        owner = EmailBackend().get_user_by_email(request.user.email)
-        if owner is None:
-            return Response({
-                'error': 'user does not exist',
-            }, status=HTTP_400_BAD_REQUEST)
+        name_query = request.query_params.get('search', None)
+        if name_query:
+            users = self.get_queryset().filter(name__icontains=name_query)
+            if users.count() >= 1:
+                page = self.paginate_queryset(users)
+                if page is not None:
+                    serializer = self.get_serializer(page, many=True)
+                    return self.get_paginated_response(serializer.data)
+            # serializer = self.get_serializer(users, many=True)
+            # return Response(serializer.data)
 
-        owner_model = get_user_model(owner)
-        if USER_ROLES[owner.role] == 'manager':
-            teams = Team.objects.filter(leader=owner_model.id)
-            self.queryset = teams
-            return super().list(request, *args, **kwargs)
-        teams = Team.objects.filter(members__in=[owner_model.id])
-        self.queryset = teams
-        return super().list(request, *args, **kwargs)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 
     @swagger_auto_schema(
         operation_description="Creates a team. Must be done by a Manager.",
