@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { Stack } from '@mui/material';
+import { FaUser, FaCamera } from 'react-icons/fa';
 import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
 import '../Settings.scss';
-import { FaUser, FaCamera } from 'react-icons/fa';
 
 export default function SettingAccount() {
     const [userInfos, setUserInfos] = useState({
@@ -54,6 +54,16 @@ export default function SettingAccount() {
         setMess({ mess, color });
     };
 
+    const convertImageToBase64 = (file: File) => {
+        return new Promise<string | ArrayBuffer | null>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserInfos({ ...userInfos, username: e.target.value });
     };
@@ -66,20 +76,22 @@ export default function SettingAccount() {
         setUserInfos({ ...userInfos, last_name: e.target.value });
     };
 
-
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            console.log("userInfos.profile_image avant la conversion :", userInfos.profile_image);
+            console.log(
+                'userInfos.profile_image avant la conversion :',
+                userInfos.profile_image
+            );
 
             const base64Image = await convertImageToBase64(file);
 
             // Vérifiez que le résultat de la conversion en base64 est une chaîne (string)
             if (typeof base64Image === 'string') {
                 setUserInfos({ ...userInfos, profile_image: base64Image });
-               // console.log("UserInfos.profile_image apres la conversion:", userInfos.profile_image);
+                // console.log("UserInfos.profile_image apres la conversion:", userInfos.profile_image);
             } else {
-                console.error("La conversion en base64 a échoué.");
+                console.error('La conversion en base64 a échoué.');
             }
 
             setSelectedFile(file);
@@ -87,22 +99,7 @@ export default function SettingAccount() {
     };
 
     // Utilisez un effet secondaire pour surveiller les changements de userInfos.profile_image
-    useEffect(() => {
-    }, [userInfos.profile_image]);
-
-
-
-
-    const convertImageToBase64 = (file: File) => {
-        return new Promise<string | ArrayBuffer | null>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                resolve(reader.result);
-            };
-            reader.readAsDataURL(file);
-        });
-    };
-
+    useEffect(() => {}, [userInfos.profile_image]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -110,7 +107,10 @@ export default function SettingAccount() {
         if (role === '2') url += 'manager';
         else url += 'pentester';
 
-        console.log("UserInfos.profile_image juste avant lenvoi:", userInfos.profile_image);
+        console.log(
+            'UserInfos.profile_image juste avant lenvoi:',
+            userInfos.profile_image
+        );
 
         await axios
             .patch(
@@ -135,9 +135,7 @@ export default function SettingAccount() {
             .catch((error) => {
                 setMessage(error.message, 'error');
             });
-
-        };
-
+    };
 
     return (
         <div className="container">

@@ -124,7 +124,7 @@ export default function CrtSh() {
         setMessage('Loading...', 'info');
         setOpen(true);
         axios(
-            `http://127.0.0.1:8000/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
+            `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
                 method: 'PATCH',
                 headers: {
