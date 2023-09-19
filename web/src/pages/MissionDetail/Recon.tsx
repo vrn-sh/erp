@@ -182,6 +182,7 @@ export default function Recon(idMission: any) {
                 setWappaOk(true);
                 setMessage('Succeed to search!', 'success');
                 setWappRes(data.data[0]);
+                console.log(data.data[0]);
                 getTech(data.data[0]);
             })
             .catch((e) => {
@@ -453,17 +454,34 @@ export default function Recon(idMission: any) {
                                 >
                                     {wappRes.url}
                                 </h4>
-                                <h5>Description</h5>
-                                <p>{wappRes.description}</p>
+                                {wappRes.description === undefined ? null : (
+                                    <>
+                                        <h5>Description</h5>
+                                        <p>{wappRes.description}</p>
+                                    </>
+                                )}
                             </div>
                             <div className="wappa_res_info">
                                 <h5>Security</h5>
                                 <div className="wappa_row">
                                     <div className="md-5">
                                         <h6>Certificate protocol</h6>
-                                        <p>{wappRes['certInfo.protocol']}</p>
+                                        {wappRes['certInfo.protocol'] ===
+                                        undefined ? (
+                                            <p>-</p>
+                                        ) : (
+                                            <p>
+                                                {wappRes['certInfo.protocol']}
+                                            </p>
+                                        )}
+
                                         <h6>Certificate expire</h6>
-                                        <p>{wappRes['certInfo.validTo']}</p>
+                                        {wappRes['certInfo.validTo'] ===
+                                        undefined ? (
+                                            <p>-</p>
+                                        ) : (
+                                            <p>{wappRes['certInfo.validTo']}</p>
+                                        )}
                                     </div>
                                     <div className="md-5">
                                         <h6>SPF record</h6>
