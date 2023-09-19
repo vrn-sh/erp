@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import './team.scss';
 import Cookies from 'js-cookie';
@@ -11,7 +10,6 @@ interface Group {
 }
 
 interface UserGroupsProps {
-    userId: number;
     userRole: string;
 }
 
@@ -54,7 +52,8 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
     );
 }
 
-function SettingTeam({ userId, userRole }: UserGroupsProps) {
+function SettingTeam({ userRole }: UserGroupsProps) {
+    // eslint-disable-next-line
     const [groups, setGroups] = useState<Group[]>([]);
     const isPentester = Cookies.get('Role') === '1';
 
@@ -63,9 +62,9 @@ function SettingTeam({ userId, userRole }: UserGroupsProps) {
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const handleButtonClick = () => {
-        setIsOpen(true);
-    };
+    // const handleButtonClick = () => {
+    //     setIsOpen(true);
+    // };
 
     const handleClosePopup = () => {
         setIsOpen(false);
