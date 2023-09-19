@@ -102,7 +102,6 @@ export default function TeamList() {
                 }
                 tab.reverse();
                 setList(tab);
-                console.log(tab);
             })
             .catch((e) => {
                 throw e.message;
@@ -169,7 +168,13 @@ export default function TeamList() {
                                     return (
                                         <tbody key={team.id}>
                                             <tr key={team.id}>
-                                                <td><Link to={`/team/view/${team.id}`}>{team.name}</Link></td>
+                                                <td>
+                                                    <Link
+                                                        to={`/team/view/${team.id}`}
+                                                    >
+                                                        {team.name}
+                                                    </Link>
+                                                </td>
                                                 <td>{team.manager}</td>
                                                 <td>{team.nbMember}</td>
                                                 <td>{team.nbMission}</td>

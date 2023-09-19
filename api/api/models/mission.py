@@ -2,8 +2,9 @@
 
 from datetime import datetime, timedelta
 from os import environ
-from typing import List, Optional
+from typing import Optional
 from django.db import models
+from django.core.cache import cache
 from django.contrib.postgres.fields import ArrayField
 
 from api.models import Auth, MAX_TITLE_LENGTH, Team
@@ -62,11 +63,15 @@ class NmapScan(models.Model):
 
     REQUIRED_FIELDS = ['recon', 'ips', 'ports']
 
-    recon: Recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='nmap_runs')
+    recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='nmap_runs')
     creation_timestamp: models.DateTimeField = models.DateTimeField(editable=False, auto_now=True)
 
-    ips: List[models.CharField] = ArrayField(models.CharField(max_length=32))
-    ports: List[NmapPortField] = ArrayField(NmapPortField())
+    ips = ArrayField(models.CharField(max_length=32))
+    ports = ArrayField(NmapPortField())
+    os_details = models.CharField(max_length=64, null=True, blank=True)
+
+    nmap_version = models.CharField(max_length=32, null=True, blank=True)
+    scan_date = models.CharField(max_length=32, null=True, blank=True)
 
 
 class Mission(models.Model):
@@ -75,7 +80,7 @@ class Mission(models.Model):
     class Meta:
         verbose_name = "Mission"
         verbose_name_plural = "Missions"
-        ordering = ['start']
+        ordering = ['start', 'id']
 
     REQUIRED_FIELDS = ['start', 'end', 'team', 'created_by', 'scope']
 
@@ -84,15 +89,15 @@ class Mission(models.Model):
 
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
-    created_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='created_by')
+    created_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='missions')
 
-    last_updated_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_updated_by')
+    last_updated_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_updated_missions')
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
 
-    team: Team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    recon: Optional[Recon] = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of')
+    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
 
-    scope: Optional[models.CharField] = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64)
+    scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
 
     bucket_name: Optional[models.CharField] = models.CharField(max_length=48, null=True, blank=True)
 
@@ -110,13 +115,21 @@ class Mission(models.Model):
         """get number of days left in this mission"""
         return self.get_delta(datetime.today(), self.end).days  # type: ignore
 
+    @property
+    def status(self) -> str:
+        """Obtain the mission status"""
+        if self.start <= datetime.today <= self.end:
+            return "In progress"
+        else:
+            return "Succeeded"
 
     def is_member(self, user: Auth) -> bool:
         """checks if a user is a member of the mission"""
-        return self.team.is_member(user)
+        return self.team.is_member(user)  # type: ignore
 
 
     def save(self, *args, **kwargs):
+
         if self.pk is None:
             self.recon = Recon.objects.create()  # type: ignore
             self.bucket_name = uuid.uuid4().hex  # type: ignore
@@ -124,6 +137,7 @@ class Mission(models.Model):
             if environ.get('IN_CONTAINER', '0') == '1':
                 S3Bucket().create_bucket(self.bucket_name)
 
+        else: cache.delete(f'mission_{self.pk}')  # type: ignore
         super().save(*args, **kwargs)
 
 
