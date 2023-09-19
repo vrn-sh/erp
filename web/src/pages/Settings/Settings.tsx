@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
-import { RiTeamLine } from 'react-icons/ri';
+import { BsFillShieldLockFill } from 'react-icons/bs';
 // import { IoIosNotifications } from 'react-icons/io';
 // import { BsCreditCard } from 'react-icons/bs';
-import { BsFillShieldLockFill } from 'react-icons/bs';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import './Settings.scss';
 import SettingAccount from './Settings-pages/setting-account';
-// import SettingNotification from './Settings-pages/set-notif';
 import SettingSecurity from './Settings-pages/set-security';
+// import SettingNotification from './Settings-pages/set-notif';
 // import SettingBilling from './Settings-pages/set-billing';
-import SettingTeam from './Settings-pages/set-team';
 
 // Interface pour les données de sous-pages
 interface SubPage {
@@ -35,12 +33,12 @@ const subPagesData: SubPage[] = [
     //     icon: <IoIosNotifications style={{ fontSize: '22px' }} />,
     //     key: 1,
     // },
-    // {
-    //     title: 'Security',
-    //     content: <SettingSecurity />,
-    //     icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
-    //     key: 1,
-    // },
+    {
+        title: 'Security',
+        content: <SettingSecurity />,
+        icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
+        key: 1,
+    },
     // {
     //     title: 'Billing',
     //     content: <SettingBilling />,

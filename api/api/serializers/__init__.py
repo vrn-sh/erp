@@ -1,12 +1,17 @@
 """This module stores all the basic serializers for user & authentication management"""
 
-from typing import Optional, OrderedDict
+from io import BytesIO
+import os
+from typing import Any, Optional, OrderedDict
+import uuid
+from warnings import warn
 from rest_framework import serializers
 from argon2 import PasswordHasher
 from api.backends import EmailBackend
 
 from api.models import Manager, Pentester, Auth, Team
-from api.serializers.utils import create_instance
+from api.serializers.utils import create_instance, get_image_data, get_mime_type
+from api.services.s3 import S3Bucket
 
 
 class LoginSerializer(serializers.Serializer):
@@ -41,19 +46,18 @@ class AuthSerializer(serializers.ModelSerializer):
         model = Auth
         fields = [
             'username', 'email', 'first_name', 'last_name',
-            'last_login', 'date_joined', 'password', 'phone_number', 'role', 'favorites'
+            'last_login', 'date_joined', 'password',
+            'phone_number', 'role', 'favorites',
+            'profile_image',
         ]
 
     def update(self, instance, validated_data) -> Auth:
         if 'password' in validated_data:
             password: str = validated_data.pop('password')
             validated_data['password'] = PasswordHasher().hash(password)
+
         return super().update(instance, validated_data)
 
-    def to_representation(self, instance) -> OrderedDict[str, str]:
-        representation: OrderedDict[str, str] = super().to_representation(instance)
-        representation.pop('password', None)
-        return representation
 
     def create(self, validated_data) -> Auth:
         if 'password' in validated_data:
@@ -61,8 +65,21 @@ class AuthSerializer(serializers.ModelSerializer):
             validated_data['password'] = PasswordHasher().hash(password)
 
         # temporarily set here until sendgrid is fixed
-        # validated_data['is_enabled'] = True
+        validated_data['is_enabled'] = True
         return Auth.objects.create(**validated_data)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation.pop('password', None)
+
+        if instance.profile_image is not None:
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                return representation
+
+            s3_client = S3Bucket()
+            representation['profile_image'] = s3_client.get_object_url('rootbucket', instance.profile_image)  # type: ignore
+
+        return representation
 
 
 class PentesterSerializer(serializers.ModelSerializer):
@@ -75,7 +92,7 @@ class PentesterSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data) -> Pentester:
         if 'auth' in validated_data:
-            nested_serializer: AuthSerializer = self.fields['auth']
+            nested_serializer: AuthSerializer = self.fields['auth']  # type: ignore
             nested_instance: Auth = instance.auth
             nested_data: dict[str, str] = validated_data.pop('auth')
             nested_serializer.update(nested_instance, nested_data)
@@ -85,8 +102,8 @@ class PentesterSerializer(serializers.ModelSerializer):
         validated_data['auth']['role'] = 1
         validated_data['auth']['is_superuser'] = False
         validated_data['auth']['is_staff'] = False
-        auth = create_instance(AuthSerializer, validated_data, 'auth')
-        return Pentester.objects.create(auth=auth, **validated_data)
+        auth = create_instance(AuthSerializer, validated_data, 'auth')  # type: ignore
+        return Pentester.objects.create(auth=auth, **validated_data)  # type: ignore
 
 
 class ManagerSerializer(serializers.ModelSerializer):
@@ -101,12 +118,12 @@ class ManagerSerializer(serializers.ModelSerializer):
         validated_data['auth']['role'] = 2
         validated_data['auth']['is_superuser'] = False
         validated_data['auth']['is_staff'] = False
-        auth: Auth = create_instance(AuthSerializer, validated_data, 'auth')
-        return Manager.objects.create(auth=auth, **validated_data)
+        auth: Auth = create_instance(AuthSerializer, validated_data, 'auth')  # type: ignore
+        return Manager.objects.create(auth=auth, **validated_data)  # type: ignore
 
     def update(self, instance, validated_data) -> Manager:
         if 'auth' in validated_data:
-            nested_serializer: AuthSerializer = self.fields['auth']
+            nested_serializer: AuthSerializer = self.fields['auth']  # type: ignore
             nested_instance: Auth = instance.auth
             nested_data: dict[str, str] = validated_data.pop('auth')
             nested_serializer.update(nested_instance, nested_data)
