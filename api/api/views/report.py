@@ -1,5 +1,4 @@
 import base64
-from logging import warning
 import os
 from datetime import datetime
 from typing import Type, List
@@ -507,34 +506,47 @@ class GenerateMDReportView(APIView):
         version = request.data.get("version")
         if not version:
             version = 1.0
-        return Response(
-            self.generate_project_information(mission, version) +
-            self.generate_condition_and_scopes(mission) +
-            self.generate_weaknesses(mission),
-            status=HTTP_200_OK
-        )
+        
+        s3 = S3Bucket()
+        s3.create_bucket(mission.bucket_name)
 
+        dir_path = f'/tmp/{mission.bucket_name}'
+        filepath = f'{dir_path}/REPORT.md'
+        os.mkdir(dir_path, dir_fd=None)
+        with open(filepath, 'w+') as fd:
+            fd.write(
+                self.generate_project_information(mission, version) +
+                self.generate_condition_and_scopes(mission) +
+                self.generate_weaknesses(mission)
+            )
+        object_name = f'report-{mission.title}.md'
+
+        s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
+        rmtree(dir_path)
+
+        object_url = s3.get_object_url(mission.bucket_name, object_name)
+        return HttpResponseRedirect(redirect_to=object_url)
+        
     def generate_project_information(self, mission: Mission, version):
         return f'''
-        # Project information
+# Project information
         
-        | | |
-        |-------------------|------------------:|
-        | Project executive | {mission.team.leader.auth.first_name} {mission.team.leader.auth.last_name} |
-        |                   | {mission.team.leader.auth.phone_number}   |
-        |                   | {mission.team.leader.auth.email}          |
-        ''' + self.generate_members(mission) + f'''
-        | Project Period    | {mission.start} - {mission.end} |
-        | Report Version    | {version}                            |
-        '''
+| | |
+|-------------------|------------------:|
+| Project executive | {mission.team.leader.auth.first_name} {mission.team.leader.auth.last_name} |
+|                   | {mission.team.leader.auth.phone_number if mission.team.leader.auth.phone_number else ""}   |
+|                   | {mission.team.leader.auth.email}          |
+''' + self.generate_members(mission) \
+            + f'''| Project Period    | {mission.start} - {mission.end} |
+| Report Version    | {version}                            |'''
 
     def generate_members(self, mission: Mission):
         members_md = ""
         for i, member in enumerate(mission.team.members.all()):
             if i == 0:
-                members_md = f'|    Members    | {member.auth.first_name} {member.auth.last_name}'
+                members_md = f'|    Members    | {member.auth.first_name} {member.auth.last_name}\n'
             else:
-                members_md += f'|                    | {member.auth.first_name} {member.auth.last_name}'
+                members_md += f'|                    | {member.auth.first_name} {member.auth.last_name}\n'
         return members_md
 
     def generate_condition_and_scopes(self, mission: Mission):
@@ -544,20 +556,18 @@ class GenerateMDReportView(APIView):
             mrkdwn_scopes += f"* ```{scope}```\n" if '*' in scope or '../' in scope or '$' in scope else f'* {scope}\n'
 
         return '''
-        # General Conditions and Scopes
+# General Conditions and Scopes
 
-        The scope used during this mission were the following:
-
-
-        ''' + mrkdwn_scopes
+The scope used during this mission were the following:
+''' + mrkdwn_scopes
 
     def generate_weaknesses(self, mission: Mission):
         return '''
-        # Weaknesses
+# Weaknesses
 
 
-        In the following sections, we list the identified weaknesses. Every weakness has an identification name
-        which can be used as a reference in the event of questions, or during the patching phase.
+In the following sections, we list the identified weaknesses. Every weakness has an identification name
+which can be used as a reference in the event of questions, or during the patching phase.
         ''' + self.generate_detailed_vulns(mission)
 
     def generate_detailed_vulns(self, mission: Mission):
@@ -578,33 +588,33 @@ class GenerateMDReportView(APIView):
             vuln_label = severity_key.upper() + f'0{severity_counter[severity_key]}' \
                 if severity_counter[severity_key] < 10 else severity_counter[severity_key]
             md += f'''
-                        ### {vuln_label} | {vuln.title}
+### {vuln_label} | {vuln.title}
             
-            <h6>Exploitability Metrics</h6>
-            | | |
-            |:------------------------|----------------------:|
-            | Attack Vector (AV)      |      Network          |
-            | Attack Complexity (AC)  | Low                   |
-            | Privileges Required (PR)| None                  |
-            | User Interaction        | Required              |
-            | Subscore: {vuln.severity / 10 * 0.45}  | Subscore: {vuln.severity / 10 * 0.55}|
-            <h6>Impact Metrics</h6>
+<h6>Exploitability Metrics</h6>
+
+| | |
+|:------------------------|----------------------:|
+| Attack Vector (AV)      |      Network          |
+| Attack Complexity (AC)  | Low                   |
+| Privileges Required (PR)| None                  |
+| User Interaction        | Required              |
+| Subscore: {vuln.severity / 10 * 0.45}  | Subscore: {vuln.severity / 10 * 0.55}|
+<h6>Impact Metrics</h6>
             
             
-            | | |
-            |:--------------------------|----------------------:|
-            | Confidentiality Impact (C)|      Low            |
-            | Integrity Impact (I)      | Low                 |
-            | Availability Impact (A)   | None                |
-            | Scope (S)                 | Unchanged           |
-            | Subscore: {vuln.severity / 10 * 0.45}  | Subscore: {vuln.severity / 10 * 0.55}|
+| | |
+|:--------------------------|----------------------:|
+| Confidentiality Impact (C)|      Low            |
+| Integrity Impact (I)      | Low                 |
+| Availability Impact (A)   | None                |
+| Scope (S)                 | Unchanged           |
+| Subscore: {vuln.severity / 10 * 0.45}  | Subscore: {vuln.severity / 10 * 0.55}|
             
-        **Overall CVSS Score for {vuln_label}: {vuln.severity}**
+**Overall CVSS Score for {vuln_label}: {vuln.severity}**
         
-        **General Description** {vuln.vuln_type.description}
+**General Description** {vuln.vuln_type.description}
         
-        **Weakness.** {vuln.description}
+**Weakness.** {vuln.description}
         
-            {generate_vuln_figures(vuln, md=True)}
-            '''
+{generate_vuln_figures(vuln, md=True)}'''
         return md
