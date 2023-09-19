@@ -182,7 +182,6 @@ export default function Recon(idMission: any) {
                 setWappaOk(true);
                 setMessage('Succeed to search!', 'success');
                 setWappRes(data.data[0]);
-                console.log(data.data[0]);
                 getTech(data.data[0]);
             })
             .catch((e) => {
