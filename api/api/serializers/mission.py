@@ -65,6 +65,7 @@ class ReconSerializer(serializers.ModelSerializer):
 
 class MissionSerializer(serializers.ModelSerializer):
     recon = ReconSerializer(many=False, read_only=True)
+    status = serializers.ReadOnlyField()
 
     class Meta:
         fields = '__all__'
@@ -75,6 +76,7 @@ class MissionSerializer(serializers.ModelSerializer):
             return cached
 
         repr = super().to_representation(instance)
+        repr['status'] = instance.status
         cache.set(f'mission_{instance.pk}', repr)
         return repr
 

@@ -167,7 +167,7 @@ class Manager(models.Model):
         ordering = ['creation_date']
 
     id: models.AutoField = models.AutoField(primary_key=True)
-    auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+    auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
 
 
@@ -186,7 +186,7 @@ class Pentester(models.Model):
         ordering = ['creation_date']
 
     id: models.AutoField = models.AutoField(primary_key=True)
-    auth: Auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+    auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
     creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
 
 
@@ -203,9 +203,10 @@ class Team(models.Model):
     leader = models.ForeignKey(Manager, on_delete=CASCADE)
     members = models.ManyToManyField(Pentester, blank=True)
 
-    def is_member(self, user) -> bool:
+    def is_member(self, user: Auth) -> bool:
         """check if user is member of the team"""
-        return self.leader == user or user in self.members
+        members_auth = [x.a for x in self.members.all()]
+        return self.leader.auth == user or user in members_auth
 
 
 AuthenticatedUser = Pentester | Manager

@@ -190,7 +190,7 @@ class CrtShView(APIView):
 class CredentialViewset(viewsets.ModelViewSet):
     """CRUD operation to add credentials to a mission"""
 
-    queryset = Credentials.objects.all()
+    queryset = Credentials.objects.all()  # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = CredentialsSerializer
@@ -223,7 +223,7 @@ class CredentialViewset(viewsets.ModelViewSet):
         if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
             if not mission.is_member(self.request.user):
-                return Response(HTTP_403_FORBIDDEN)
+                return Response(status=HTTP_403_FORBIDDEN)
 
             creds = Credentials.objects.filter(mission_id=mission_id)  # type: ignore
 
@@ -353,6 +353,11 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def create(self, request, *args, **kwargs):
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
+
+        recon = Recon.objects.create()
+        recon.save()
+        request.data['recon_id'] = recon.id
+
         return super().create(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):

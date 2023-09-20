@@ -72,6 +72,9 @@ export default function Login() {
                         Cookies.set('Id', e.data.id, {
                             expires: Date.parse(e.data.expiry),
                         });
+                        Cookies.set('Fav', '', {
+                            expires: Date.parse(e.data.expiry),
+                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
