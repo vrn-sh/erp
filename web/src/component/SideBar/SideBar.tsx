@@ -4,8 +4,8 @@ import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { SideBarData } from './SideBarData';
-import { ICardItem } from './SideBarMenu.type';
+import  SideBarData  from './SideBarData';
+import { ICardItem, ISideBarMenu } from './SideBarMenu.type';
 import config from '../../config';
 import icon from '../../assets/voron-logo.svg';
 
@@ -82,7 +82,7 @@ export default function SideBar() {
                 <h1 className="sidebar-site-title">voron</h1>
             </Link>
             <div>
-                {data.map((item, index) => {
+                {data.map((item: ISideBarMenu, index: number) => {
                     if (isPentester) {
                         if (index > 1) {
                             return <SubMenuItem key={item.title} item={item} />;
