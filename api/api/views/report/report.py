@@ -8,7 +8,7 @@ from shutil import rmtree
 from rest_framework import permissions
 from knox.auth import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.status import HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -151,17 +151,24 @@ class GenerateMDReportView(APIView):
         manual_parameters=[
             openapi.Parameter(
                 "mission",
-                "path",
+                "body",
                 required=True,
                 type=openapi.TYPE_INTEGER,
                 description="id of the mission"
             ),
             openapi.Parameter(
                 "version",
-                "",
+                "body",
                 required=False,
                 type=openapi.TYPE_NUMBER,
                 description="Report version"
+            ),
+            openapi.Parameter(
+                "download",
+                "body",
+                required=False,
+                type=openapi.TYPE_BOOLEAN,
+                description="if you want a text format or Downloading the file"
             )
         ],
         responses={
@@ -188,6 +195,13 @@ class GenerateMDReportView(APIView):
         version = request.data.get("version")
         if not version:
             version = 1.0
+        download = request.data.get("download", False)
+
+        md_content = self.generate_project_information(mission, version) + \
+                self.generate_condition_and_scopes(mission) + \
+                self.generate_weaknesses(mission)
+        if not download:
+            return Response(data=md_content, status=HTTP_200_OK)
         
         s3 = S3Bucket()
         s3.create_bucket(mission.bucket_name)

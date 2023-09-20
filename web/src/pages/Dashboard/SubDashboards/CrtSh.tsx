@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
+import { SelectMission } from '../../../component/SelectMission';
 
 export default function CrtSh() {
     const [open, setOpen] = useState(false);
@@ -54,12 +51,7 @@ export default function CrtSh() {
             },
         },
     ]);
-    const [list, setList] = useState<
-        {
-            value: number;
-            label: string;
-        }[]
-    >([]);
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTmpIdentity(inputIdentity);
@@ -144,34 +136,6 @@ export default function CrtSh() {
             });
     };
 
-    const getMission = async () => {
-        await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((data) => {
-                const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
-                    const res = data.data.results[i];
-                    tab.push({
-                        value: res.id,
-                        label: res.title,
-                    });
-                }
-                tab.reverse();
-                setList(tab);
-            })
-            .catch((e) => {
-                throw e.message;
-            });
-    };
-    useEffect(() => {
-        getMission();
-    }, []);
-
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 4;
     const lastIndex = currentPage * recordsPerPage;
@@ -199,42 +163,10 @@ export default function CrtSh() {
     const changePage = (e: string) => {
         setCurrentPage(parseInt(e, 10));
     };
-    const handleMissionSelect = (event: SelectChangeEvent) => {
-        setMissionId(parseInt(event.target.value, 10));
-    };
-
     return (
         <>
             <div className="crt_input">
-                <FormControl
-                    variant="standard"
-                    sx={{
-                        m: 1,
-                        minWidth: 100,
-                        fontSize: '12px',
-                        margin: '0 1rem',
-                    }}
-                >
-                    <InputLabel id="demo-simple-select-standard-label">
-                        Choose a mission
-                    </InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={JSON.stringify(missionId)}
-                        label="mission"
-                        onChange={handleMissionSelect}
-                    >
-                        {list.map((elem) => {
-                            return (
-                                <MenuItem value={elem.value}>
-                                    {elem.label}
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-
+                <SelectMission setMissionId={setMissionId} missionId={missionId} />
                 <input
                     className="crt-form-control"
                     placeholder="Enter an Identity"
