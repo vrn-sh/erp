@@ -1,6 +1,6 @@
 """This module manages generic models required for missions"""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from os import environ
 from typing import Optional
 from django.db import models
@@ -118,7 +118,8 @@ class Mission(models.Model):
     @property
     def status(self) -> str:
         """Obtain the mission status"""
-        if self.start <= datetime.today <= self.end:
+        today = date.today()
+        if self.start <= today <= self.end:
             return "In progress"
         else:
             return "Succeeded"
