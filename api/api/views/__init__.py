@@ -16,14 +16,12 @@ from rest_framework.status import (
     HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     HTTP_200_OK,
-    HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST
     )
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
-from api.backends import EmailBackend
 from api.models import Auth, Manager, Pentester
 
 from knox.views import LoginView as KnoxLoginView

@@ -10,9 +10,15 @@ import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
 
+type TmpScope = {
+    scope: string;
+    index: number;
+}[];
+
 export default function Scope(/* need to add list as a param here */) {
     const [keyword, setKeyword] = useState('');
     const [scope, setScope] = useState([]);
+    const [tmpScope, setTmpScope] = useState<TmpScope>([]);
     const [missionId, setMissionId] = useState(0);
     const [Title, setTitle] = useState('');
     const [Team, setTeam] = useState(0);
@@ -45,7 +51,7 @@ export default function Scope(/* need to add list as a param here */) {
 
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
-    const [record, setRecord] = useState([]);
+    const [record, setRecord] = useState<TmpScope>([]);
     const [npage, setNPage] = useState(0);
     const [nums, setNums] = useState<any[]>([]);
     let lastIndex = currentPage * recordsPerPage;
@@ -66,6 +72,19 @@ export default function Scope(/* need to add list as a param here */) {
 
     const changePage = (n: number) => {
         setCurrentPage(n);
+    };
+
+    const getOriginalScope = () => {
+        setKeyword('');
+        const res: TmpScope = [];
+        for (let i = 0; i < scope.length; i += 1) {
+            const tmp = {
+                scope: scope[i],
+                index: i,
+            };
+            res.push(tmp);
+        }
+        setTmpScope(res);
     };
 
     const delScope = async (index: number) => {
@@ -93,6 +112,7 @@ export default function Scope(/* need to add list as a param here */) {
                 setOpen(true);
                 setMessage('Deleted !', 'success');
                 setScope(newScope);
+                getOriginalScope();
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -135,7 +155,7 @@ export default function Scope(/* need to add list as a param here */) {
                 Authorization: `Token ${Cookies.get('Token')}`,
             },
         })
-            .then((data) => {
+            .then(() => {
                 // here to open a link in new tab, replace google link by our url
                 window.open('https://google.fr', '_blank', 'noreferrer');
                 setMessage('Created!', 'success');
@@ -147,29 +167,39 @@ export default function Scope(/* need to add list as a param here */) {
 
     const searchScope = () => {
         let find = false;
-        for (let i = 0; i < scope.length; i += 1) {
-            if (scope[i] === keyword) {
+        const res: TmpScope = [];
+
+        for (let i = 0; i < tmpScope.length; i += 1) {
+            if (tmpScope[i].scope.indexOf(keyword) !== -1) {
+                find = true;
                 const p = Math.floor(i / recordsPerPage) + 1;
                 if (i % 5 === 0) setCurrentPage(p - 1);
                 else setCurrentPage(p);
-                find = true;
+                res.push(tmpScope[i]);
             }
-            if (find === true) break;
+            setTmpScope(res);
         }
+        if (find === true) setTmpScope(res);
+        else getOriginalScope();
+        setCurrentPage(1);
     };
 
     useEffect(() => {
         setMissionId(location.state.missionId);
-        setScope(location.state.scopeList);
+        // setScope(location.state.scopeList);
     }, []);
 
     useEffect(() => {
-        getMission();
-        setRecord(scope.slice(firstIndex, lastIndex));
-    }, [missionId, scope]);
+        getOriginalScope();
+    }, [scope]);
 
     useEffect(() => {
-        setNPage(Math.ceil(scope.length / recordsPerPage));
+        getMission();
+        setRecord(tmpScope.slice(firstIndex, lastIndex));
+    }, [missionId, tmpScope]);
+
+    useEffect(() => {
+        setNPage(Math.ceil(tmpScope.length / recordsPerPage));
         const n = [...Array(npage + 1).keys()].slice(1);
         setNums(n);
     }, [record]);
@@ -177,7 +207,7 @@ export default function Scope(/* need to add list as a param here */) {
     useEffect(() => {
         lastIndex = currentPage * recordsPerPage;
         firstIndex = lastIndex - recordsPerPage;
-        setRecord(scope.slice(firstIndex, lastIndex));
+        setRecord(tmpScope.slice(firstIndex, lastIndex));
     }, [currentPage]);
 
     return (
@@ -199,6 +229,7 @@ export default function Scope(/* need to add list as a param here */) {
                             className="scope-form-control"
                             name="searchword"
                             onChange={searchKeyword}
+                            value={keyword}
                         />
                     </div>
                     <button
@@ -207,6 +238,13 @@ export default function Scope(/* need to add list as a param here */) {
                         onClick={searchScope}
                     >
                         Search
+                    </button>
+                    <button
+                        type="button"
+                        className="searchBtn"
+                        onClick={getOriginalScope}
+                    >
+                        Clear
                     </button>
                 </div>
 
@@ -225,7 +263,7 @@ export default function Scope(/* need to add list as a param here */) {
                         <th className="md-5">Name</th>
                         {!isPentester && <th className="md-2">Actions</th>}
                     </tr>
-                    {record.map((s_list, index) => {
+                    {record.map((s_list) => {
                         return (
                             <tr>
                                 {/* <td style={{ fontSize: '18px' }}>
@@ -235,13 +273,15 @@ export default function Scope(/* need to add list as a param here */) {
                                         <AiIcons.AiOutlineCloseCircle />
                                     )}
                                 </td> */}
-                                <td id="name">{s_list}</td>
+                                <td id="name">{s_list.scope}</td>
                                 {!isPentester && (
                                     <td className="scope-table-action">
                                         <AiIcons.AiFillDelete
                                             className="scope-action-icons"
                                             style={{ color: 'red' }}
-                                            onClick={() => delScope(index)}
+                                            onClick={() =>
+                                                delScope(s_list.index)
+                                            }
                                         />
                                     </td>
                                 )}

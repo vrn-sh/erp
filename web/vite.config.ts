@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
     const env = loadEnv('mock', process.cwd(), '');
     const processEnvValues = {
         'process.env': Object.entries(env).reduce((prev, [key, val]) => {

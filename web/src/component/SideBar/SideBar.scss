@@ -20,11 +20,6 @@
     letter-spacing: 1px;
 }
 
-.topBar-wrapper {
-    position: relative;
-    width: 20%;
-}
-
 .topBar-searchIcon {
     position: absolute;
     box-sizing: border-box;
@@ -80,7 +75,8 @@
 .btn-left {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    width: 100%;
+    justify-content: end;
     align-items: center;
 }
 
