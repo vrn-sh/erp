@@ -1,18 +1,16 @@
-from typing import List, Optional
-from warnings import warn
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import Response
-from api.models import Auth
 
 from api.models.vulns import Notes, VulnType, Vulnerability
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
+from api.services.s3 import S3Bucket
 
 
 class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -21,7 +19,7 @@ class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         CRUD for notes object
     """
 
-    queryset = Notes.objects.all()
+    queryset = Notes.objects.all()  # type: ignore
     permission_classes = [permissions.IsAuthenticated & IsManager | permissions.IsAuthenticated & IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = NotesSerializer
@@ -75,7 +73,7 @@ class VulnTypeViewset(viewsets.ModelViewSet):
     """
         CRUD to add a new vulnerability type. Shouldn't happen often, but still.
     """
-    queryset = VulnType.objects.all()
+    queryset = VulnType.objects.all()  # type: ignore
     permissions = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnTypeSerializer
@@ -85,17 +83,14 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     """
         CRUD to manage vulnerabilities.
     """
-    queryset = Vulnerability.objects.all()
-    permissions = [permissions.IsAuthenticated, IsLinkedToData & IsPentester | IsManager & IsLinkedToData & ReadOnly]
+    queryset = Vulnerability.objects.all()  # type: ignore
+    permissions = [
+        permissions.IsAuthenticated,
+        IsLinkedToData,
+        IsPentester | IsManager & ReadOnly,
+    ]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer
-
-    def list(self, request, *args, **kwargs):
-        if mission_id := self.request.GET.get('mission_id'):
-            vulns = self.get_queryset().filter(mission__id=mission_id)
-            serializer = self.get_serializer(vulns, many=True, read_only=True)
-            return Response(serializer.data)
-        return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(
         operation_description="Creates a vulnerability. Must be done by a member of the team",
@@ -150,7 +145,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
                 'errors': 'missing "vuln_type" field',
             }, status=HTTP_400_BAD_REQUEST)
 
-        vuln_obj = VulnType.objects.filter(name=vuln).first()
+        vuln_obj = VulnType.objects.filter(name=vuln).first()  # type: ignore
         if not vuln_obj:
             return Response({
                 'errors': 'unknown "vuln_type" type',
@@ -160,15 +155,22 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         if 'description' not in request.data:
             request.data['description'] = vuln_obj.description
 
+        if 'images' in request.data:
+            nb_images = min(len(request.data['images']), 4)
+            for n in range(nb_images):
+                request.data['images'][n] = S3Bucket().upload_single_image(request.data['images'][n])
+
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         if 'author' in request.data:
             request.data.pop('author')
+
+        request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id
 
         if 'vuln_type' in request.data:
-            vuln_obj = VulnType.objects.filter(name=request.data['vuln_type']).first()
+            vuln_obj = VulnType.objects.filter(name=request.data['vuln_type']).first()  # type: ignore
             if not vuln_obj:
                 return Response({
                     'errors': 'unknown "vuln_type" type',
@@ -176,5 +178,10 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
             request.data['vuln_type'] = vuln_obj.id
             if not 'description' in request.data:
                 request.data['description'] = vuln_obj.description
+
+        if 'images' in request.data:
+            nb_images = min(len(request.data['images']), 4)
+            for n in range(nb_images):
+                request.data['images'][n] = S3Bucket().upload_single_image(request.data['images'][n])
 
         return super().update(request, *args, **kwargs)

@@ -187,7 +187,7 @@ export default function Recon(idMission: any) {
             .catch((e) => {
                 setWappaOk(false);
                 setMessage('Please enter a correct url!', 'error');
-                console.log(e);
+                throw e;
             });
     };
 
