@@ -58,14 +58,17 @@ class AcademicTemplate:
     def generate_members(self, mission: Mission) -> str:
         team: Team = mission.team
         members_html = f'<span>{team.leader.auth.first_name} {team.leader.auth.last_name}[1]</span>'
-        for member in team.members:
+        for member in team.members.all():
             members_html += f'<span>{member.auth.first_name} {member.auth.last_name}[1]</span>'
         return members_html
 
     def generate_scope(self, mission: Mission) -> str:
+        scope = ''
+        for x in mission.scope:
+            scope += f"<li><code>{x}</code></li>" if "*" in x or "$" in x else f"<li>{x}</li>"
+
         return '<h2>General conditions and Scope</h2><ul>{content}</ul>'.format(
-            content="".join(list(lambda x: f"<li><code>{x}</code></li>" if "*" in x or "$" in x else f"<li>{x}</li>",
-                                 mission.scope))
+            content=scope
         )
 
     def generate_weaknesses(self, mission: Mission) -> str:

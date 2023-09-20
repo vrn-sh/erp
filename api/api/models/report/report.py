@@ -1,3 +1,4 @@
+import warnings
 from datetime import date
 
 from django.db import models
@@ -32,6 +33,8 @@ class ReportHtml(models.Model):
     version = models.FloatField(default=1.0)
 
     def generate_cover(self):
+        if self.template.name == "academic":
+            raise Exception("Academic posses its own class to generate Cover page.")
         if self.template:
             return self.template.cover_html.format(
                 mission_title=self.mission.title,
@@ -41,6 +44,9 @@ class ReportHtml(models.Model):
             )
 
     def gen_header(self, title: str) -> str:
+
+        if self.template.name == "academic":
+            raise Exception("Academic posses its own class to generate header.")
         header_templates = [
             {
                 "name": "red4sec",
@@ -216,9 +222,12 @@ class ReportHtml(models.Model):
             
         }
         ]
-        return list(filter(lambda a: a['template_id'] == self.template, header_templates))[0]['html_header']
+        return list(filter(lambda a: a['template_id'] == self.template.pk, header_templates))[0]['html_header']
 
     def generate_project_info(self):
+
+        if self.template.name == "academic":
+            raise Exception("Academic posses its own class to generate Project Info")
         team: Team = self.mission.team
         return '''
                 <!DOCTYPE html>
@@ -306,6 +315,9 @@ class ReportHtml(models.Model):
                            css_style=self.template.css_style)
 
     def generate_condition_and_scope(self) -> str:
+
+            if self.template.name == "academic":
+                raise Exception("Academic posses its own class to generate Scope.")
             scope_html = ""
             for s in self.mission.scope:
                 scope_html += f"<li><code>{s}</code></li>" if "*" in s or "$" in s else f"<li>{s}</li>"
