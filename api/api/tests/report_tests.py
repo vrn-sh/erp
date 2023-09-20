@@ -9,8 +9,8 @@ from api.models import Manager, Pentester, Auth
 
 from api.tests.helpers import create_random_pentester, create_random_manager, default_user_password, login_as
 
-from api.api.models.mission import Mission
-from api.api.models.report.report import ReportHtml, ReportTemplate
+from api.models.mission import Mission
+from api.models.report.report import ReportHtml, ReportTemplate
 
 
 class TeamTestCase(TransactionTestCase):

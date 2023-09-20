@@ -1,9 +1,7 @@
 import base64
 import os
-from datetime import datetime
 from typing import Type, List
 import pdfkit
-from django.db.models import CharField
 from django.http import HttpResponseRedirect
 from shutil import rmtree
 
@@ -20,9 +18,9 @@ from api.models.mission import Mission
 from api.models.vulns import Vulnerability
 from api.services.s3 import S3Bucket
 
-from api.api.models.report.report import ReportTemplate, ReportHtml
-from api.api.models.report.academic_paper import AcademicTemplate
-from api.api.models.report.generate_html import generate_vulns_detail, generate_vuln_figures
+from api.models.report.report import ReportTemplate, ReportHtml
+from api.models.report.academic_paper import AcademicTemplate
+from api.models.report.generate_html import generate_vulns_detail, generate_vuln_figures
 
 DIR_STYLE = "./api/pdf-templates/hackmanit-template"
 CSS_PATH = f'{DIR_STYLE}/main.css'
@@ -35,15 +33,6 @@ def get_image_file_as_base64_data(path: str) -> bytes:
 
     with open(path, 'rb') as image_file:
         return base64.b64encode(image_file.read())
-
-
-def generate_members(team: Team) -> str:
-    """generate members page"""
-
-    members_html = ""
-    for member in team.members.all():
-        members_html += f"<p>{member.auth.first_name} {member.auth.last_name}</p>"
-    return members_html
 
 
 class GeneratePDFReportView(APIView):

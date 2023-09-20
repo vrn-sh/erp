@@ -11,7 +11,7 @@ from drf_yasg import openapi
 from knox.views import LogoutView
 
 from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
-from api.views.report import GeneratePDFReportView, GenerateMDReportView
+from api.views.report.report import GeneratePDFReportView, GenerateMDReportView
 from api.views.hunter import HunterView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset

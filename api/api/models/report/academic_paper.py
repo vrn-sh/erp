@@ -2,9 +2,9 @@ import os
 
 import pdfkit
 
-from api.api.models import Team
-from api.api.models.mission import Mission
-from api.api.models.report.generate_html import generate_vulns_detail
+from api.models import Team
+from api.models.mission import Mission
+from api.models.report.generate_html import generate_vulns_detail
 
 class AcademicTemplate:
     

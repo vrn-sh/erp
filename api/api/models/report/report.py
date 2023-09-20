@@ -4,9 +4,8 @@ from django.db import models
 
 from api.models.mission import Mission
 
-from api.api.models import Team
-from api.api.models.report.generate_html import generate_vulns_detail
-from api.api.views.report.report import generate_members
+from api.models import Team
+from api.models.report.generate_html import generate_vulns_detail, generate_members
 
 
 class ReportTemplate(models.Model):

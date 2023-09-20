@@ -1,9 +1,18 @@
 import os
 
-from api.api.models.mission import Mission
-from api.api.models.vulns import Vulnerability
-from api.api.services.s3 import S3Bucket
+from api.models.mission import Mission
+from api.models.vulns import Vulnerability
+from api.services.s3 import S3Bucket
+from api.models import Team
 
+
+def generate_members(team: Team) -> str:
+    """generate members page"""
+
+    members_html = ""
+    for member in team.members.all():
+        members_html += f"<p>{member.auth.first_name} {member.auth.last_name}</p>"
+    return members_html
 
 def generate_vulns_detail(mission: Mission) -> str:
     html = ""

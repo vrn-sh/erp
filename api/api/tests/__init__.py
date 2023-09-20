@@ -12,6 +12,7 @@ from api.tests.helpers import create_random_pentester, create_random_manager, de
 from .notes_tests import *
 from .vuln_tests import *
 from .mission_tests import *
+from .report_tests import *
 
 
 class AuthTestCase(TransactionTestCase):
