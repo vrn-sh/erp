@@ -4,7 +4,7 @@ import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import  SideBarData  from './SideBarData';
+import SideBarData from './SideBarData';
 import { ICardItem, ISideBarMenu } from './SideBarMenu.type';
 import config from '../../config';
 import icon from '../../assets/voron-logo.svg';
