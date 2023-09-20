@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import '../Dashboard/Dashboard.scss';
 import './MissionDetail.scss';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import { HiChevronDown } from 'react-icons/hi';
-import { IconButton, TextField, InputAdornment, Dialog, DialogTitle, DialogContent, DialogActions, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, } from '@mui/material';
+import { IconButton, TextField, InputAdornment, Dialog, DialogTitle, DialogContent, DialogActions, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import axios from 'axios';
+import config from '../../config';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 interface Credential {
+  id: number; // Ajout de l'ID pour identifier chaque credential
   service: string;
   login: string;
   password: string;
@@ -15,47 +18,41 @@ interface Credential {
 }
 
 interface CredentialsProps {
-  idMission: any;
+  idMission: number; // Assurez-vous que idMission est de type number
 }
 
 export default function Credentials({ idMission }: CredentialsProps) {
   const [credentials, setCredentials] = useState<Credential[]>([]);
-  const [newCredential, setNewCredential] = useState<Credential>({
+  const [newCredential, setNewCredential] = useState<Omit<Credential, 'id'>>({
     service: '',
     login: '',
     password: '',
     comments: '',
     passwordVisible: false,
   });
-  const [expanded, setExpanded] = useState<string | false>(false);
+  
   const [showAddForm, setShowAddForm] = useState(false);
-
-  const handleChange = (panel: string) => (
-    event: React.SyntheticEvent,
-    isExpanded: boolean
-  ) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
-  const handleCredentialChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNewCredential((prevCredential) => ({
-      ...prevCredential,
-      [event.target.name]: event.target.value,
-    }));
-  };
+  const navigate = useNavigate();
+  const role = Cookies.get('Role');
 
   const addCredential = async () => {
     try {
-      // Envoyer une requête POST pour ajouter une nouvelle credential
-      const response = await axios.post('/credentials', {
-        service: newCredential.service,
-        login: newCredential.login,
-        password: newCredential.password,
-        comments: newCredential.comments,
-        mission_id: idMission,
-      });
+      const response = await axios.post(
+        `${config.apiUrl}/credentials`,
+        {
+          login: newCredential.login,
+          password: newCredential.password,
+          service: newCredential.service,
+          mission_id: idMission,
+        },
+        {
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Token ${Cookies.get('Token')}`,
+          },
+        }
+      );
+
       const addedCredential = response.data;
 
       // Mettre à jour la liste des credentials avec la nouvelle credential ajoutée
@@ -77,6 +74,14 @@ export default function Credentials({ idMission }: CredentialsProps) {
       console.error(error);
     }
   };
+  const handleCredentialChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setNewCredential((prevCredential) => ({
+      ...prevCredential,
+      [event.target.name]: event.target.value,
+    }));
+  };
 
   const togglePasswordVisibility = (index: number) => {
     setCredentials((prevCredentials) =>
@@ -92,22 +97,27 @@ export default function Credentials({ idMission }: CredentialsProps) {
     );
   };
 
-  useEffect(() => {
-    const fetchCredentials = async () => {
-      try {
-        // Envoyer une requête GET pour récupérer les credentials associés à la mission
-        const response = await axios.get('/credentials', {
-          params: { mission_id: idMission },
-        });
-        setCredentials(response.data.credentials);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const fetchCredentials = async () => {
+    try {
+      const response = await axios.get(
+        `${config.apiUrl}/credentials/?mission_id=${idMission}`, // Utilisation de la requête avec des paramètres de requête
+        {
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Token ${Cookies.get('Token')}`,
+          },
+        }
+      );
+      const data = response.data;
+      setCredentials(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  useEffect(() => {
     fetchCredentials();
   }, [idMission]);
-
 
   return (
     <>
@@ -166,7 +176,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
               <TableCell>{newCredential.comments}</TableCell>
             </TableRow>
             {credentials.map((credential, index) => (
-              <TableRow key={index}>
+              <TableRow key={credential.id}>
                 <TableCell>{credential.service}</TableCell>
                 <TableCell>{credential.login}</TableCell>
                 <TableCell>
@@ -193,8 +203,9 @@ export default function Credentials({ idMission }: CredentialsProps) {
       </TableContainer>
 
       <Dialog open={showAddForm} onClose={() => setShowAddForm(false)}>
-        <DialogTitle style={{textAlign:'center', fontWeight:'bold', fontSize:'26px',fontFamily: 'Poppins',}}>Add Credential</DialogTitle>
-        <DialogContent style={{display:'grid'}}>
+        <DialogTitle style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '26px', fontFamily: 'Poppins', }}>Add Credential</DialogTitle>
+        <DialogContent style={{ display: 'grid' }}>
+          {/* Les champs du formulaire pour ajouter un credential */}
           <TextField
             name="service"
             label="Service"
@@ -250,31 +261,30 @@ export default function Credentials({ idMission }: CredentialsProps) {
           />
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
-            <Button
-                style={{
-                backgroundColor: '#7c44f3',
-                color: 'white',
-                borderRadius: '5px',
-                fontSize: '12px',
-                marginRight: '10px',
-                }}
-                onClick={() => setShowAddForm(false)}
-            >
-                Cancel
-            </Button>
-            <Button
-                style={{
-                backgroundColor: '#A687E9',
-                color: 'white',
-                borderRadius: '5px',
-                fontSize: '12px',
-                }}
-                onClick={addCredential}
-            >
-                Add
-            </Button>
+          <Button
+            style={{
+              backgroundColor: '#7c44f3',
+              color: 'white',
+              borderRadius: '5px',
+              fontSize: '12px',
+              marginRight: '10px',
+            }}
+            onClick={() => setShowAddForm(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            style={{
+              backgroundColor: '#A687E9',
+              color: 'white',
+              borderRadius: '5px',
+              fontSize: '12px',
+            }}
+            onClick={addCredential}
+          >
+            Add
+          </Button>
         </DialogActions>
-
       </Dialog>
     </>
   );
