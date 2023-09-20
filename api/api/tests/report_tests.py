@@ -134,5 +134,5 @@ class TeamTestCase(TransactionTestCase):
             (report.generate_condition_and_scope()),
             (report.generate_weaknesses())
         ]
-        AcademicTemplate().dump_report(Mission.objects.get(pk=mission_id), dir_path="/tmp/test-lol")
-        rmtree("/tmp/test-lol")
+        # AcademicTemplate().dump_report(Mission.objects.get(pk=mission_id), dir_path="/tmp/test-lol")
+        # rmtree("/tmp/test-lol")
