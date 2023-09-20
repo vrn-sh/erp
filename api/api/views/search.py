@@ -74,6 +74,9 @@ class SearchView(APIView):
                     'model': model.model.__name__
                 })
 
+        if results == []:
+            return Response({'error': 'No results found'}, status=status.HTTP_404_NOT_FOUND)
+
         return Response({
             'results': results
         })
@@ -86,7 +89,7 @@ class SearchView(APIView):
 
         if hasattr(model, 'title') and model in [Mission, Vulnerability]:
             filters = Q(title__icontains=query)
-        if search_managers and model == Manager or model == Pentester:
+        if model == Manager or model == Pentester:
             filters = Q(auth__username__icontains=query)
         if model == Team:
             filters = Q(teams__name__icontains=query)
