@@ -1,0 +1,81 @@
+/* Container for the "Create a Document" section */
+.report-templates-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  //background-color: white;
+  //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+  /* Heading style */
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+}
+
+/* Template row container */
+.template-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin-bottom: 20px;
+
+  /* Individual template rectangle */
+  .template {
+    flex: 0 0 200px;
+    margin-right: 20px;
+    padding: 10px;
+    background-color: #fff;
+    text-align: left;
+    cursor: pointer;
+
+    /* Template hover effect */
+
+
+    /* Template thumbnail image */
+    img {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: box-shadow 0.2s;
+      max-width: 100%;
+      height: auto;
+    &:hover {
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+    }
+
+    /* Template name text */
+    p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    /* Template subtitle text */
+    .template-name {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .template-subtitle {
+      font-size: 12px;
+      color: #777;
+    }
+  }
+
+  /* Horizontal scrollbar style */
+  &::-webkit-scrollbar {
+    height: 8px;
+    background-color: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+  }
+}
