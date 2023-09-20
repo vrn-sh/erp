@@ -4,7 +4,7 @@ import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import {SideBarData} from './SideBarData';
+import { SideBarData } from './SideBarData';
 import { ICardItem } from './SideBarMenu.type';
 import config from '../../config';
 import icon from '../../assets/voron-logo.svg';
@@ -40,7 +40,7 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
                         <Link
                             key={subItem.idNav}
                             to={subItem.path}
-                            state={{missionId: subItem.idNav}}
+                            state={{ missionId: subItem.idNav }}
                             className="dropdown-menu"
                         >
                             <p>{subItem.title}</p>
@@ -85,9 +85,9 @@ export default function SideBar() {
                 {data.map((item, index) => {
                     if (isPentester) {
                         if (index > 1) {
-                            return <SubMenuItem key={index} item={item} />;
+                            return <SubMenuItem key={item.title} item={item} />;
                         }
-                    } else return <SubMenuItem key={index} item={item} />;
+                    } else return <SubMenuItem key={item.title} item={item} />;
                     return null;
                 })}
             </div>
