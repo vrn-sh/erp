@@ -59,25 +59,25 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     )
     def list(self, request, *args, **kwargs):
         name_query = request.query_params.get('search', None)
+        queryset = self.get_queryset()  # Get the initial queryset
+        
         if name_query:
-            users = self.get_queryset().filter(name__icontains=name_query)
-            if users.count() >= 1:
-                page = self.paginate_queryset(users)
+            filtered_queryset = queryset.filter(name__icontains=name_query)
+            if filtered_queryset.exists():
+                page = self.paginate_queryset(filtered_queryset)
                 if page is not None:
                     serializer = self.get_serializer(page, many=True)
                     return self.get_paginated_response(serializer.data)
-            # serializer = self.get_serializer(users, many=True)
-            # return Response(serializer.data)
-
-        queryset = self.filter_queryset(self.get_queryset())
+        
+        # Continue with pagination and serialization for the initial queryset
         page = self.paginate_queryset(queryset)
-
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
 
 
 
