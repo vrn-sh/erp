@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from api.models.report import ReportTemplate
+from api.models.report.report import ReportTemplate
 
 
 class Command(BaseCommand):
