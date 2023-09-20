@@ -14,7 +14,7 @@ class NmapPortField(models.Field):
     def from_db_value(self, value, _, __):
         if value is None:
             return value
-        port_number, state, protocol, service, metadata = value.split(",")
+        port_number, state, protocol, service, metadata = value.split(",", 4)
         port = NmapPort()
 
         port.port_number = port_number
