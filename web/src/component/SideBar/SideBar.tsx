@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './SideBar.scss';
 import * as FiIcons from 'react-icons/fi';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import SideBarData from './SideBarData';
-import { ICardItem } from './SideBarMenu.type';
+import { ICardItem, ISideBarMenu } from './SideBarMenu.type';
 import config from '../../config';
 import icon from '../../assets/voron-logo.svg';
 
@@ -38,8 +38,9 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
                 item.subNav.map((subItem) => {
                     return (
                         <Link
-                            key={subItem.title}
+                            key={subItem.idNav}
                             to={subItem.path}
+                            state={{ missionId: subItem.idNav }}
                             className="dropdown-menu"
                         >
                             <p>{subItem.title}</p>
@@ -72,6 +73,8 @@ export default function SideBar() {
             });
     };
 
+    const data = SideBarData();
+
     return (
         <div className="sidebar">
             <Link to="/dashboard" className="sidebar-logo">
@@ -79,7 +82,7 @@ export default function SideBar() {
                 <h1 className="sidebar-site-title">voron</h1>
             </Link>
             <div>
-                {SideBarData.map((item, index) => {
+                {data.map((item: ISideBarMenu, index: number) => {
                     if (isPentester) {
                         if (index > 1) {
                             return <SubMenuItem key={item.title} item={item} />;
