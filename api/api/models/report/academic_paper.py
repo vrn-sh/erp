@@ -4,9 +4,9 @@ import pdfkit
 
 from api.api.models import Team
 from api.api.models.mission import Mission
-from generate_html import generate_vulns_detail
+from api.api.models.report.generate_html import generate_vulns_detail
 
-class AcademicReport:
+class AcademicTemplate:
     
     def dump_report(self,  mission: Mission, dir_path: str) -> str:
         template = \

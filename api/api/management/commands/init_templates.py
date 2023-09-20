@@ -11,8 +11,7 @@ class Command(BaseCommand):
             templates = [
                 ('red4sec',
                  self.read_css('../../../pdf-templates/red4sec-template/main.css'),
-                 '''
-    <div class="cover-page">
+                 '''<div class="cover-page">
         <svg id="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <defs>
                 <linearGradient id="url(#sw-gradient-1)" x1="0" x2="0" y1="1" y2="0">
@@ -28,7 +27,7 @@ class Command(BaseCommand):
                 </linearGradient>
             </defs>
             <path fill="url(#sw-gradient-0)" fill-opacity="0.7" d="M0,192L180,192L360,32L540,96L720,64L900,96L1080,224L1260,160L1440,96L1440,0L1260,0L1080,0L900,0L720,0L540,0L360,0L180,0L0,0Z"></path>        </svg>
-        <h1>RED<span>4</span>SEC</h1>
+        <h1>{team_name}</h1>
 
         <svg id="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <defs>
@@ -62,11 +61,89 @@ class Command(BaseCommand):
         <img alt="logo-company" id="logo" src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
         <h1 id="mission-title>{mission_title}</h1>
         <div class="report-info">
+            <p>{team_name}</p>
             <p id="version">Version: {report_version}</p>
             <p id="report-date">{report_date}</p>
         </div>
     </div>
-                 ''')
+                 '''),
+                ('NASA',
+                 self.read_css('../../../pdf-templates/NASA-template/main.css'),
+                 '''
+    <style>
+        body {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 2em 6.5em;
+            margin: 30px;
+        }
+
+        .divider-x {
+            border-bottom: 6px solid rgb(241, 47, 73);
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+    </style>
+    <div class="cover-page">
+        <header>
+            <style>
+                header .identity {
+                    display: flex;
+                }
+
+                header .identity .info p:first-child {
+                    font-size: 2.5rem;
+                }
+
+                header .identity .info p {
+                    font-size: 1.5rem;
+                }
+            </style>
+            <div class="identity">
+                <img class="logo"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAEN65TxlSnQM7q0XFcfdpqZkxhnIWs4BUqg&usqp=CAU"
+                    alt="logo" />
+                <div class="info">
+                    <p>{team_name}</p>
+                </div>
+            </div>
+        </header>
+        <div class="title">
+            <style>
+                .title {
+                    padding-top: 8em;
+                }
+
+                .title h1 {
+                    font-variant: small-caps;
+                    font-size: 3em;
+                }
+            </style>
+            <div class="divider-x"></div>
+            <h1>{mission_title}</h1>
+            <h2>{report_date}</h2>
+            <div class="divider-x"></div>
+        </div>
+        <footer id="footer">
+            <style>
+                #footer p {
+                    position: absolute;
+                    bottom: 0;
+                    width: 100%;
+                    height: 2.5rem;  
+                }
+            </style>
+            <p>Report No. {report_version}</p>
+        </footer>
+    </div>
+                 '''),
+                (
+                    'academic',
+                    self.read_css('../../../pdf-templates/academic-template/main.css'),
+                    '' # No coverpage for academic paper bc this one is particular and much more simple than the others.
+                )
             ]
             for (name, css, cover_html) in templates:
                 ReportTemplate(name=name, css_style=css, cover_html=cover_html).save()

@@ -10,7 +10,7 @@ from shutil import rmtree
 from rest_framework import permissions
 from knox.auth import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
+from rest_framework.status import HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -20,7 +20,9 @@ from api.models.mission import Mission
 from api.models.vulns import Vulnerability
 from api.services.s3 import S3Bucket
 
-from api.api.views.report.generate_html import generate_vulns_detail, generate_vuln_figures
+from api.api.models.report.report import ReportTemplate, ReportHtml
+from api.api.models.report.academic_paper import AcademicTemplate
+from api.api.models.report.generate_html import generate_vulns_detail, generate_vuln_figures
 
 DIR_STYLE = "./api/pdf-templates/hackmanit-template"
 CSS_PATH = f'{DIR_STYLE}/main.css'
@@ -53,10 +55,16 @@ class GeneratePDFReportView(APIView):
         manual_parameters=[
             openapi.Parameter(
                 "mission",
-                "path",
+                "body",
                 required=True,
                 type=openapi.TYPE_INTEGER,
                 description="id of the mission"
+            ),
+            openapi.Parameter(
+                name="template_name",
+                in_="body",
+                type=openapi.TYPE_INTEGER,
+                description="name of the template. We have: 'NASA', 'hackmanit', 'academic', 'red4sec'."
             )
         ],
         responses={
@@ -81,12 +89,18 @@ class GeneratePDFReportView(APIView):
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
 
+        template_name = request.data.get("template_name", "academic")
+        template = ReportHtml(template=ReportTemplate.objects.get(name=template_name), mission=mission)
+
         s3 = S3Bucket()
         s3.create_bucket(mission.bucket_name)
 
         dir_path = f'/tmp/{mission.bucket_name}'
 
-        filepath = self.dump_report(mission, dir_path)
+        if template_name == 'academic':
+            filepath = AcademicTemplate().dump_report(mission, dir_path)
+        else:
+            filepath = self.dump_report(dir_path, template)
         object_name = f'report-{mission.title}.pdf'
 
         s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
@@ -95,14 +109,14 @@ class GeneratePDFReportView(APIView):
         object_url = s3.get_object_url(mission.bucket_name, object_name)
         return HttpResponseRedirect(redirect_to=object_url)
 
-    def dump_report(self, mission: Mission, dir_path: str) -> str:
+    def dump_report(self, dir_path: str, template: ReportHtml) -> str:
         """compile pages together to generate a report"""
 
         pages = [
-            (f'{dir_path}/coverpage.html', self.generate_cover(mission, mission.team.leader)),
-            (f'{dir_path}/projectinfo.html', self.generate_project_info(mission, mission.team)),
-            (f'{dir_path}/generalconditionsandscope.html', self.generate_condition_and_scope(mission.scope)),
-            (f'{dir_path}/weaknesses.html', self.generate_weaknesses(mission))
+            (f'{dir_path}/coverpage.html', template.generate_cover()),
+            (f'{dir_path}/projectinfo.html', template.generate_project_info()),
+            (f'{dir_path}/generalconditionsandscope.html', template.generate_condition_and_scope()),
+            (f'{dir_path}/weaknesses.html', template.generate_weaknesses())
         ]
 
         os.mkdir(dir_path, dir_fd=None)
@@ -135,209 +149,7 @@ class GeneratePDFReportView(APIView):
 
         return path_to_file
 
-    def generate_cover(self, mission: Mission, leader: Manager) -> str:
-        """generate main cover of the report"""
 
-        return '''
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" href="{stylesheet_path}" />
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penetration Test Report: {mission_title}</title>
-</head>
-<body>
-    <div class="cover-page">
-
-       <img alt="logo-company" id="logo" src="{logo_path_1}" />
-        <h1 id="mission-title">Penetration Test Report: <span>{mission_title}</span></h1>
-        <div class="report-info">
-            <p id="version">Version: 0.1</p>
-            <p id="report-date">{report_date}</p>
-        </div>
-    </div>
-        <footer id="footer">
-            <p class="leader-name" id="leader-name">{leader_first_name} {leader_last_name}</p>
-            <p>Phone: <span id="leader-phone-number"> {leader_phone_number}</span> | Email: <span id="leader-email">{leader_email}</span></p>
-        </footer>
-</body>
-</html>
-        '''.format(mission_title=mission.title,
-                   report_date=datetime.now().date().__str__(),
-                   leader_first_name=leader.auth.first_name,
-                   leader_last_name=leader.auth.last_name,
-                   leader_phone_number=leader.auth.phone_number,
-                   leader_email=leader.auth.email,
-                   stylesheet_path=ABSOLUTE_CSS_PATH,
-                   logo_path_1=f'{ABSOLUTE_DIR_STYLE}/hackmanit-logo-2.png')
-
-    def generate_project_info(self, mission: Mission, team: Team) -> str:
-        return '''
-        <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Information</title>
-    <link rel="stylesheet" type="text/css" href="{stylesheet_path}" />
-</head>
-
-<body>
-
-    <header>
-        <div class="inline-title-logo">
-            <img alt="logo-company" id="logo"
-                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
-            <p>Project Information</p>
-        </div>
-        <div class="divider-x"></div>
-    </header>
-    <div class="page">
-        <h1>Project Information</h1>
-        <div class="project-info-table">
-            <div class="row">
-                <div class="col-left">
-                    <p>Project executive:</p>
-                </div>
-                <div class="col-right">
-                    <p>{leader_first_name} {leader_last_name}</p>
-                    <div class="row">
-                        <div class="sub-col-left">
-                            <p>Phone:</p>
-                        </div>
-                        <div class="sub-col-right">
-                            <p>{leader_phone_number}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="sub-col-left">
-                            <p>Email:</p>
-                        </div>
-                        <div class="sub-col-right">
-                            <p>{leader_email}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-left">
-                    <p>Project members:</p>
-                </div>
-                <div class="col-right">
-                    {members}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-left">
-                    <p>Project period:</p>
-                </div>
-                <div class="col-right">
-                    <p>{mission_start} - {mission_end}</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-left">
-                    <p>Version of the report:</p>
-                </div>
-                <div class="col-right">
-                    <p>0.1</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</body>
-
-</html>
-        '''.format(leader_first_name=team.leader.auth.first_name,
-                   leader_last_name=team.leader.auth.last_name,
-                   leader_phone_number=team.leader.auth.phone_number,
-                   leader_email=team.leader.auth.email,
-                   members=generate_members(team),
-                   mission_start=mission.start,
-                   mission_end=mission.end,
-                   logo_path_2="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png",
-                   stylesheet_path=ABSOLUTE_CSS_PATH)
-
-    def generate_condition_and_scope(self, scope: CharField) -> str:
-        scope_html = ""
-        for s in scope:
-            scope_html += f"<li><code>{s}</code></li>" if "*" in s or "$" in s else f"<li>{s}</li>"
-
-        return '''
-        <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>General Conditions and Scope</title>
-    <link rel="stylesheet" type="text/css" href="{stylesheet_path}" />
-</head>
-
-<body>
-    <header>
-        <div class="inline-title-logo">
-            <img alt="logo-company" id="logo"
-                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
-            <p>General Conditions and Scope</p>
-        </div>
-        <div class="divider-x"></div>
-    </header>
-    <main class="scopes">
-        <h1>General Condition and Scope</h1>
-        <div class="section-text">
-            <p>The scope allowed was the following:</p>
-            <ul>{scopes}</ul>
-        </div>
-    </main>
-</body>
-
-</html>
-        '''.format(scopes=scope_html,
-                   stylesheet_path=ABSOLUTE_CSS_PATH)
-
-    def generate_weaknesses(self, mission: Mission) -> str:
-        return '''
-        <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{stylesheet_path}" />
-    <title>Weaknesses</title>
-</head>
-
-<body>
-    <header>
-        <div class="inline-title-logo">
-            <img alt="logo-company" id="logo"
-                src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
-            <p>Weaknesses</p>
-        </div>
-        <div class="divider-x"></div>
-    </header>
-    <main>
-        <h1>Weaknesses</h1>
-        <div class="section-text">
-            <p>In the following sections, we list the identified weaknesses. Every weakness has an identification name
-                which can be used as a reference in the event of questions, or during the
-                patching phase.</p>
-        </div>
-        {vulnerabilities}
-    </main>
-</body>
-
-</html>
-        '''.format(vulnerabilities=generate_vulns_detail(mission),
-                   stylesheet_path=ABSOLUTE_CSS_PATH)
 
 
 
