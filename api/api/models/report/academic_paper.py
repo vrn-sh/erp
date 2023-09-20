@@ -6,6 +6,9 @@ from api.models import Team
 from api.models.mission import Mission
 from api.models.report.generate_html import generate_vulns_detail
 
+from api.models.report.report import ReportTemplate
+
+
 class AcademicTemplate:
     
     def dump_report(self,  mission: Mission, dir_path: str) -> str:
@@ -18,7 +21,13 @@ class AcademicTemplate:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{mission_title}</title>
 </head>
+
+<style>
+{css_style}
+</style>
+
 <body>
+
 <header>
     <h1>{mission_title}</h1>
     <div class="authors">
@@ -42,7 +51,8 @@ class AcademicTemplate:
                    members=self.generate_members(mission),
                    team_name=mission.team.name,
                    scope=self.generate_scope(mission),
-                   weaknesses=self.generate_weaknesses(mission))
+                   weaknesses=self.generate_weaknesses(mission),
+                   css_style=ReportTemplate.objects.get(name='academic').css_style)
 
         os.mkdir(dir_path, dir_fd=None)
         path_to_file = f'{dir_path}/report.pdf'
@@ -57,9 +67,9 @@ class AcademicTemplate:
 
     def generate_members(self, mission: Mission) -> str:
         team: Team = mission.team
-        members_html = f'<span>{team.leader.auth.first_name} {team.leader.auth.last_name}[1]</span>'
+        members_html = f'<span>{team.leader.auth.first_name} {team.leader.auth.last_name}</span>'
         for member in team.members.all():
-            members_html += f'<span>{member.auth.first_name} {member.auth.last_name}[1]</span>'
+            members_html += f'<span>{member.auth.first_name} {member.auth.last_name}</span>'
         return members_html
 
     def generate_scope(self, mission: Mission) -> str:
