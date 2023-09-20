@@ -37,28 +37,30 @@ export default function SubDashboard() {
     };
 
     // Function to submit the form data to the specified URL using curl
-    const submitForm = () => {
-        const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-        const apiUrl = `https://voron.djnn.sh/saas/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
-
-        // Use JavaScript's fetch API to make the POST request
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'X-Api-Key': apiKey,
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                // Handle the response data here
-                console.log('API Response:', data);
-            })
-            .catch((error) => {
-                // Handle any errors that occur during the request
-                console.error('API Request Error:', error);
+    async function submitForm() {
+        try {
+            const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
+            const apiUrl = `https://voron.djnn.sh/saas/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
+    
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Api-Key': apiKey,
+                },
             });
-    };
+    
+            if (!response.ok) {
+                throw new Error(`API Request Error: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log('API Response:', data);
+        } catch (error) {
+            console.error('API Request Error:', error);
+        }
+    }
+    
 
     // Data for the form rows
     const formRows = [
