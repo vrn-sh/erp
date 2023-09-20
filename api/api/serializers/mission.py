@@ -1,8 +1,11 @@
 from json import loads
+from django.core.cache import cache
 from rest_framework import serializers
 
 from api.models.mission import Mission, Recon, NmapScan, CrtSh
-from api.models.utils import NmapPort, parse_nmap_ips, parse_nmap_domain, parse_nmap_scan
+from api.models.utils import NmapPort
+from api.models.mission import Credentials, Mission, Recon, NmapScan, CrtSh
+from api.models.utils import NmapPort
 
 
 class StringArrayField(serializers.ListField):
@@ -36,7 +39,6 @@ class NmapSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        read_only_fields = ['creation_timestamp', 'ips', 'ports', 'id']
         model = NmapScan
         ordering = ['-creation_timestamp']
 
@@ -63,7 +65,24 @@ class ReconSerializer(serializers.ModelSerializer):
 
 class MissionSerializer(serializers.ModelSerializer):
     recon = ReconSerializer(many=False, read_only=True)
+    status = serializers.ReadOnlyField()
 
     class Meta:
         fields = '__all__'
         model = Mission
+
+    def to_representation(self, instance):
+        if cached := cache.get(f'mission_{instance.pk}'):
+            return cached
+
+        repr = super().to_representation(instance)
+        repr['status'] = instance.status
+        cache.set(f'mission_{instance.pk}', repr)
+        return repr
+
+
+class CredentialsSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id', 'login', 'password', 'service', 'comment']
+        read_only_fields = ['mission_id']
+        model = Credentials

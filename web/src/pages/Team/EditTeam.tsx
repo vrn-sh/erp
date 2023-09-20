@@ -216,10 +216,6 @@ export default function CreateTeam() {
                             Edit Team
                         </h2>
                     </div>
-                    <div className="page-searcher">
-                        <label>Search on page</label>
-                        <input type="text" placeholder="Search..." />
-                    </div>
                 </div>
                 <div className="edit-container">
                     <div
@@ -305,7 +301,7 @@ export default function CreateTeam() {
                                             gap: 0.5,
                                         }}
                                     >
-                                        {Team!.map((value) => (
+                                        {Team?.map((value) => (
                                             <Chip
                                                 key={value}
                                                 variant="outlined"

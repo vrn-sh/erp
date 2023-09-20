@@ -21,6 +21,7 @@ import TermOfUse from './pages/Home/TermOfUse';
 import ConfirmEmail from './pages/SignUp/ConfirmEmail';
 import EditVulnerability from './pages/Vulnerability/EditVuln';
 import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
+import ViewTeamDetails from './pages/Team/ViewTeam';
 
 function App() {
     return (
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/mission/create" element={<CreateMission />} />
                 <Route path="/team" element={<Team />} />
                 <Route path="/team/create" element={<CreateTeam />} />
+                <Route path="/team/view/:id" element={<ViewTeamDetails />} />
                 <Route path="/team/edit" element={<EditTeam />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
