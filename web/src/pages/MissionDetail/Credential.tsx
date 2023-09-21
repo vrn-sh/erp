@@ -37,13 +37,15 @@ export default function Credentials({ idMission }: CredentialsProps) {
 
   const addCredential = async () => {
     try {
+      const chaine = String(idMission);
+      console.log(chaine)
       const response = await axios.post(
         `${config.apiUrl}/credentials`,
         {
           login: newCredential.login,
           password: newCredential.password,
           service: newCredential.service,
-          mission_id: idMission,
+          mission_id: chaine,
         },
         {
           headers: {
@@ -100,7 +102,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
   const fetchCredentials = async () => {
     try {
       const response = await axios.get(
-        `${config.apiUrl}/credentials/?mission_id=${idMission}`, // Utilisation de la requête avec des paramètres de requête
+        `${config.apiUrl}/credentials?mission_id=${idMission}`, // Utilisation de la requête avec des paramètres de requête
         {
           headers: {
             'Content-type': 'application/json',
@@ -175,29 +177,37 @@ export default function Credentials({ idMission }: CredentialsProps) {
               </TableCell>
               <TableCell>{newCredential.comments}</TableCell>
             </TableRow>
-            {credentials.map((credential, index) => (
-              <TableRow key={credential.id}>
-                <TableCell>{credential.service}</TableCell>
-                <TableCell>{credential.login}</TableCell>
-                <TableCell>
-                  {credential.passwordVisible
-                    ? credential.password
-                    : '********'}
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => togglePasswordVisibility(index)}
-                  >
-                    {credential.passwordVisible ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
-                  </IconButton>
-                </TableCell>
-                <TableCell>{credential.comments}</TableCell>
-              </TableRow>
-            ))}
+            {/*
+              credentials.length === 0 ?(
+                <TableRow>
+                  <TableCell colSpan={5}>No credentials available.</TableCell>
+                </TableRow>
+              ):(
+                credentials.map((credential, index) => (
+                  <TableRow key={credential.id}>
+                    <TableCell>{credential.service}</TableCell>
+                    <TableCell>{credential.login}</TableCell>
+                    <TableCell>
+                      {credential.passwordVisible
+                        ? credential.password
+                        : '********'}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => togglePasswordVisibility(index)}
+                      >
+                        {credential.passwordVisible ? (
+                          <AiOutlineEyeInvisible />
+                        ) : (
+                          <AiOutlineEye />
+                        )}
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>{credential.comments}</TableCell>
+                  </TableRow>
+                ))
+              )
+                        */  }
           </TableBody>
         </Table>
       </TableContainer>
