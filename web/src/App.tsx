@@ -21,7 +21,7 @@ import TermOfUse from './pages/Home/TermOfUse';
 import ConfirmEmail from './pages/SignUp/ConfirmEmail';
 import EditVulnerability from './pages/Vulnerability/EditVuln';
 import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
-import PrivateRoute from './pages/TokenVerification/TokenVerification'
+import PrivateRoute from './pages/TokenVerification/TokenVerification';
 import ViewTeamDetails from './pages/Team/ViewTeam';
 
 function App() {
@@ -35,11 +35,14 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />
                 <Route path="/confirm" element={<ConfirmEmail />} />
-                <Route element={<PrivateRoute/>}>
+                <Route element={<PrivateRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/vuln/add" element={<AddVulnerability />} />
                     <Route path="/vuln/edit" element={<EditVulnerability />} />
-                    <Route path="/vuln/detail" element={<VulnerabilityDetail />} />
+                    <Route
+                        path="/vuln/detail"
+                        element={<VulnerabilityDetail />}
+                    />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/mission/detail" element={<MissionDetail />} />
@@ -47,7 +50,10 @@ function App() {
                     <Route path="/mission/create" element={<CreateMission />} />
                     <Route path="/team" element={<Team />} />
                     <Route path="/team/create" element={<CreateTeam />} />
-                    <Route path="/team/view/:id" element={<ViewTeamDetails />} />
+                    <Route
+                        path="/team/view/:id"
+                        element={<ViewTeamDetails />}
+                    />
                     <Route path="/team/edit" element={<EditTeam />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
