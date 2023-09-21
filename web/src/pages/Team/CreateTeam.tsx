@@ -2,8 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import '../EditMission/Mission.scss';
 import '../Settings/Settings.scss';
-import { Tooltip } from '@mui/material';
 import {
+    Tooltip,
     FormControl,
     InputLabel,
     Select,
@@ -182,98 +182,98 @@ export default function CreateTeam() {
                         </p>
                     </div>
                     <div className="edit-form">
-                       <Input
+                        <Input
                             label="Team Name"
                             labelState={Title}
                             setLabel={setTitle}
                             size="medium"
                         />
-                    <FormControl
-                        sx={{
-                            marginTop: '15px',
-                        }}
-                        fullWidth
-                    >
-                        <InputLabel id="manager-select-label">
-                            Manager
-                        </InputLabel>
-                        <Select
-                            labelId="manager-select-label"
-                            id="select"
-                            value={manager}
-                            label="Manager"
-                            onChange={handleChangeMana}
-                            title="Select the manager for the team"
-                        >
-                            {managerList.map((name) => (
-                                <MenuItem key={name.id} value={name.id}>
-                                    {name.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    <FormControl
-                        sx={{ paddingY: 2, width: '100%' }}
-                        size="small"
-                    >
-                        <InputLabel
-                            id="Team"
+                        <FormControl
                             sx={{
-                                fontFamily: 'Poppins-Regular',
-                                fontSize: '14px',
+                                marginTop: '15px',
                             }}
-                            title="Select team members"
+                            fullWidth
                         >
-                            Member
-                        </InputLabel>
-                        <Select
-                            labelId="demo-multiple-chip-label"
-                            id="demo-multiple-chip"
-                            multiple
-                            value={personName as unknown as string}
-                            onChange={handleChange}
-                            input={
-                                <OutlinedInput
-                                    id="select-multiple-chip"
-                                    label="Chip"
-                                />
-                            }
-                            renderValue={() => (
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexWrap: 'wrap',
-                                        gap: 0.5,
-                                    }}
-                                >
-                                    {Team?.map((value) => (
-                                        <Chip
-                                            key={value}
-                                            variant="outlined"
-                                            color="secondary"
-                                            label={value}
-                                        />
-                                    ))}
-                                </Box>
-                            )}
-                            MenuProps={MenuProps}
-                            title="Select team members"
+                            <InputLabel id="manager-select-label">
+                                Manager
+                            </InputLabel>
+                            <Select
+                                labelId="manager-select-label"
+                                id="select"
+                                value={manager}
+                                label="Manager"
+                                onChange={handleChangeMana}
+                                title="Select the manager for the team"
+                            >
+                                {managerList.map((name) => (
+                                    <MenuItem key={name.id} value={name.id}>
+                                        {name.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl
+                            sx={{ paddingY: 2, width: '100%' }}
+                            size="small"
                         >
-                            {penList.map((name) => (
-                                <MenuItem
-                                    sx={{
-                                        fontFamily: 'Poppins-Regular',
-                                        fontSize: '14px',
-                                    }}
-                                    key={name.id}
-                                    value={name.id}
-                                >
-                                    {name.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                            <InputLabel
+                                id="Team"
+                                sx={{
+                                    fontFamily: 'Poppins-Regular',
+                                    fontSize: '14px',
+                                }}
+                                title="Select team members"
+                            >
+                                Member
+                            </InputLabel>
+                            <Select
+                                labelId="demo-multiple-chip-label"
+                                id="demo-multiple-chip"
+                                multiple
+                                value={personName as unknown as string}
+                                onChange={handleChange}
+                                input={
+                                    <OutlinedInput
+                                        id="select-multiple-chip"
+                                        label="Chip"
+                                    />
+                                }
+                                renderValue={() => (
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            gap: 0.5,
+                                        }}
+                                    >
+                                        {Team?.map((value) => (
+                                            <Chip
+                                                key={value}
+                                                variant="outlined"
+                                                color="secondary"
+                                                label={value}
+                                            />
+                                        ))}
+                                    </Box>
+                                )}
+                                MenuProps={MenuProps}
+                                title="Select team members"
+                            >
+                                {penList.map((name) => (
+                                    <MenuItem
+                                        sx={{
+                                            fontFamily: 'Poppins-Regular',
+                                            fontSize: '14px',
+                                        }}
+                                        key={name.id}
+                                        value={name.id}
+                                    >
+                                        {name.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <br />
                         <div
                             style={{
