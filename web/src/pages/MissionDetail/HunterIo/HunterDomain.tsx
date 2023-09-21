@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import {
     Accordion,
     AccordionDetails,
@@ -11,6 +12,7 @@ import * as IoIcons from 'react-icons/io';
 import * as MdIcons from 'react-icons/md';
 import * as BsIcons from 'react-icons/bs';
 import Feedbacks from '../../../component/Feedback';
+import config from '../../../config';
 import './Hunter.scss';
 
 export interface IHunter {
@@ -153,16 +155,12 @@ export default function HunterDomain() {
     const domainSearch = async () => {
         setOpen(true);
         await axios
-            .get(
-                `https://api.hunter.io/v2/domain-search?domain=${domain}&api_key=${
-                    import.meta.env.VITE_REACT_APP_HUNTER_API_KEY
-                }`,
-                {
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                }
-            )
+            .get(`${config.apiUrl}/hunt?domain=${domain}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
             .then((data) => {
                 setMessage('Searching...', 'success');
                 setGetRes(true);

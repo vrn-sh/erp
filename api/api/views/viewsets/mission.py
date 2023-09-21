@@ -23,6 +23,7 @@ from api.models.utils import NmapParser, minimal_nmap_output
 from django.http import JsonResponse
 from api.services.crtsh import crtshAPI
 from django.core.cache import cache
+from django.db.models import Q
 
 class NmapViewset(viewsets.ModelViewSet):
     """
@@ -76,6 +77,10 @@ class NmapViewset(viewsets.ModelViewSet):
             request.data['scan_date'] = parser.scan_date
 
             if parser.os_details: request.data['os_details'] = parser.os_details
+
+            if recon_id := request.data.get('recon_id'):
+                recon, _ = Recon.objects.get_or_create(id=recon_id)
+                cache.delete(f'mission_{recon.mission.id}')
 
         # this will just error in the serializer if input is not provided
         request.data['recon'] = request.data.get('recon_id', 0)
@@ -190,7 +195,7 @@ class CrtShView(APIView):
 class CredentialViewset(viewsets.ModelViewSet):
     """CRUD operation to add credentials to a mission"""
 
-    queryset = Credentials.objects.all()
+    queryset = Credentials.objects.all()  # type: ignore
     permission_classes = [permissions.IsAuthenticated, IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = CredentialsSerializer
@@ -223,7 +228,7 @@ class CredentialViewset(viewsets.ModelViewSet):
         if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
             if not mission.is_member(self.request.user):
-                return Response(HTTP_403_FORBIDDEN)
+                return Response(status=HTTP_403_FORBIDDEN)
 
             creds = Credentials.objects.filter(mission_id=mission_id)  # type: ignore
 
@@ -353,13 +358,24 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def create(self, request, *args, **kwargs):
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
+
+        recon = Recon.objects.create()
+        recon.save()
+        request.data['recon_id'] = recon.id
+
         return super().create(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
+        name_query = request.query_params.get('search', None)
+
         if request.user.role == 2:
-            missions = Mission.objects.filter(created_by=request.user.id) # type: ignore
+            missions = Mission.objects.filter(created_by=request.user.id)
         else:
-            missions = Mission.objects.filter(team__members__auth__id=request.user.id) # type: ignore
+            missions = Mission.objects.filter(team__members__auth__id=request.user.id)
+
+        if name_query:
+            missions = missions.filter(title=name_query)
+
         self.queryset = missions
         return super().list(request, *args, **kwargs)
 

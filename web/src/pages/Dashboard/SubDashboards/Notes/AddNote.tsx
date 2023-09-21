@@ -9,11 +9,10 @@ import Feedbacks from '../../../../component/Feedback';
 
 interface AddNoteProps {
     func: React.MouseEventHandler<HTMLButtonElement>;
-    idMission: { id: number; title: string }[];
-    count: number;
+    mission: { id: number; title: string };
 }
 
-export default function AddNote({ func, idMission, count }: AddNoteProps) {
+export default function AddNote({ func, mission }: AddNoteProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [open, setOpen] = useState(false);
@@ -47,7 +46,7 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
                 {
                     title,
                     content,
-                    mission: idMission[count].id,
+                    mission: mission.id,
                 },
                 {
                     headers: {
@@ -75,7 +74,7 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
                         <input
                             type="text"
                             required
-                            placeholder={idMission[count].title}
+                            placeholder={mission.title}
                             className="form-control"
                             readOnly
                         />
@@ -85,7 +84,7 @@ export default function AddNote({ func, idMission, count }: AddNoteProps) {
                         <input
                             type="text"
                             required
-                            placeholder={idMission[count].title}
+                            placeholder={title}
                             className="form-control"
                             onChange={takeTitlee}
                             value={title}

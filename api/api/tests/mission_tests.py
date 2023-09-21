@@ -1,4 +1,3 @@
-from warnings import warn
 from django.test import TransactionTestCase
 from faker import Faker
 

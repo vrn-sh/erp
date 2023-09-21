@@ -1,6 +1,6 @@
 """This module manages generic models required for missions"""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from os import environ
 from typing import Optional
 from django.db import models
@@ -32,8 +32,6 @@ class Recon(models.Model):
     REQUIRED_FIELDS = []
 
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
-
-
 
 class CrtSh(models.Model):
     """
@@ -95,7 +93,7 @@ class Mission(models.Model):
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of')
-    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
+    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True, related_name='mission')
 
     scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
 
@@ -118,7 +116,8 @@ class Mission(models.Model):
     @property
     def status(self) -> str:
         """Obtain the mission status"""
-        if self.start <= datetime.today <= self.end:
+        today = date.today()
+        if self.start <= today <= self.end:
             return "In progress"
         else:
             return "Succeeded"

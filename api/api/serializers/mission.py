@@ -55,8 +55,8 @@ class CrtShSerializer(serializers.ModelSerializer):
 
 
 class ReconSerializer(serializers.ModelSerializer):
-    nmap_runs = NmapSerializer(many=True, read_only=True)
-    crtsh_runs = CrtShSerializer(many=False, read_only=True, source='')
+    nmap_runs = NmapSerializer(read_only=True, many=True)
+    crtsh_runs = CrtShSerializer(read_only=True, many=True)
 
     class Meta:
         fields = '__all__'
@@ -64,7 +64,8 @@ class ReconSerializer(serializers.ModelSerializer):
 
 
 class MissionSerializer(serializers.ModelSerializer):
-    recon = ReconSerializer(many=False, read_only=True)
+    recon = ReconSerializer(read_only=True)
+    status = serializers.ReadOnlyField()
 
     class Meta:
         fields = '__all__'
@@ -75,6 +76,7 @@ class MissionSerializer(serializers.ModelSerializer):
             return cached
 
         repr = super().to_representation(instance)
+        repr['status'] = instance.status
         cache.set(f'mission_{instance.pk}', repr)
         return repr
 

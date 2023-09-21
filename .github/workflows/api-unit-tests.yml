@@ -97,5 +97,6 @@ jobs:
       - name: build docker image
         run: |
           cd api
+          ./scripts/setup.sh
           docker build -t voron/erp:${GITHUB_SHA::7} -t voron/erp:latest .
 

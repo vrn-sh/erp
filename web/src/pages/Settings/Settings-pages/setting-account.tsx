@@ -130,7 +130,7 @@ export default function SettingAccount() {
                 }
             )
             .then(() => {
-                setMessage('Updated name and last name!', 'success');
+                setMessage('Updated your account information!', 'success');
             })
             .catch((error) => {
                 setMessage(error.message, 'error');
@@ -207,6 +207,7 @@ export default function SettingAccount() {
                             type="text"
                             value={userInfos.first_name}
                             onChange={(e) => handleFirstNameChange(e)}
+                            title="Your firstname"
                         />
                     </div>
                     <div className="input input-medium">
@@ -216,6 +217,7 @@ export default function SettingAccount() {
                             type="text"
                             value={userInfos.last_name}
                             onChange={(e) => handleLastNameChange(e)}
+                            title="Your lastname"
                         />
                     </div>
                 </Stack>

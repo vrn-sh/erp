@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import * as MdIcons from 'react-icons/md';
 import { Chip } from '@mui/material';
 import Feedbacks from '../../../component/Feedback';
+import config from '../../../config';
 
 export interface IEmailV {
     status: string;
@@ -60,16 +62,12 @@ export default function HunterEmailV() {
     const emailVerify = async () => {
         setOpen(true);
         await axios
-            .get(
-                `https://api.hunter.io/v2/email-verifier?email=${email}&api_key=${
-                    import.meta.env.VITE_REACT_APP_HUNTER_API_KEY
-                }`,
-                {
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                }
-            )
+            .get(`${config.apiUrl}/hunt?email=${email}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
             .then((data) => {
                 setMessage('Searching...', 'success');
                 setGetRes(true);
