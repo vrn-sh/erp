@@ -187,7 +187,7 @@ export default function Recon(idMission: any) {
             .catch((e) => {
                 setWappaOk(false);
                 setMessage('Please enter a correct url!', 'error');
-                console.log(e);
+                throw e;
             });
     };
 
@@ -453,17 +453,34 @@ export default function Recon(idMission: any) {
                                 >
                                     {wappRes.url}
                                 </h4>
-                                <h5>Description</h5>
-                                <p>{wappRes.description}</p>
+                                {wappRes.description === undefined ? null : (
+                                    <>
+                                        <h5>Description</h5>
+                                        <p>{wappRes.description}</p>
+                                    </>
+                                )}
                             </div>
                             <div className="wappa_res_info">
                                 <h5>Security</h5>
                                 <div className="wappa_row">
                                     <div className="md-5">
                                         <h6>Certificate protocol</h6>
-                                        <p>{wappRes['certInfo.protocol']}</p>
+                                        {wappRes['certInfo.protocol'] ===
+                                        undefined ? (
+                                            <p>-</p>
+                                        ) : (
+                                            <p>
+                                                {wappRes['certInfo.protocol']}
+                                            </p>
+                                        )}
+
                                         <h6>Certificate expire</h6>
-                                        <p>{wappRes['certInfo.validTo']}</p>
+                                        {wappRes['certInfo.validTo'] ===
+                                        undefined ? (
+                                            <p>-</p>
+                                        ) : (
+                                            <p>{wappRes['certInfo.validTo']}</p>
+                                        )}
                                     </div>
                                     <div className="md-5">
                                         <h6>SPF record</h6>
@@ -490,26 +507,40 @@ export default function Recon(idMission: any) {
                                 </div>
                             </div>
 
-                            <div className="wappa_res_info">
-                                <h5>Local</h5>
-                                <h6>Ip country</h6>
-                                <p>{wappRes.ipCountry}</p>
-                                <h6>Languages</h6>
-                                {wappaOk && wappRes
-                                    ? wappRes.languages.map((langue, i) => {
-                                          return (
-                                              <p style={{ display: 'inline' }}>
-                                                  {i ===
-                                                  wappRes.languages.length - 1
-                                                      ? `${langue}`
-                                                      : `${langue}, `}
-                                              </p>
-                                          );
-                                      })
-                                    : null}
-                            </div>
+                            {wappRes.ipCountry || wappRes.languages ? (
+                                <div className="wappa_res_info">
+                                    <h5>Local</h5>
+                                    {wappRes.ipCountry ? (
+                                        <>
+                                            <h6>Ip country</h6>
+                                            <p>{wappRes.ipCountry}</p>
+                                        </>
+                                    ) : null}
+                                    {wappaOk && wappRes.languages
+                                        ? wappRes.languages.map((langue, i) => {
+                                              return (
+                                                  <>
+                                                      <h6>Languages</h6>
+                                                      <p
+                                                          style={{
+                                                              display: 'inline',
+                                                          }}
+                                                      >
+                                                          {i ===
+                                                          wappRes.languages
+                                                              .length -
+                                                              1
+                                                              ? `${langue}`
+                                                              : `${langue}, `}
+                                                      </p>
+                                                  </>
+                                              );
+                                          })
+                                        : null}
+                                </div>
+                            ) : null}
 
-                            {tech.tech.length > 1 ? (
+                            {tech.tech && tech.tech.length > 0 ? (
                                 <div className="wappa_res_info">
                                     <h5>Technologie stacks</h5>
                                     {tech.tech.map((o) => {

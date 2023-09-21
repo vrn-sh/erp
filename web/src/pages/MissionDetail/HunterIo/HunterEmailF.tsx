@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import * as MdIcons from 'react-icons/md';
 import { Chip } from '@mui/material';
 import Feedbacks from '../../../component/Feedback';
+import config from '../../../config';
 
 export interface IEmailF {
     first_name: string;
@@ -66,14 +68,11 @@ export default function HunterEmailF() {
         const splitted = name.split(' ', 2);
         await axios
             .get(
-                `https://api.hunter.io/v2/email-finder?domain=${company}&first_name=${
-                    splitted[0]
-                }&last_name=${splitted[1]}&api_key=${
-                    import.meta.env.VITE_REACT_APP_HUNTER_API_KEY
-                }`,
+                `${config.apiUrl}/hunt?domain=${company}&first_name=${splitted[0]}&last_name=${splitted[1]}`,
                 {
                     headers: {
                         'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
                     },
                 }
             )

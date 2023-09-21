@@ -1,0 +1,129 @@
+        body {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 2em 6.5em;
+            margin: 30px;
+        }
+
+        .divider-x {
+            border-bottom: 6px solid rgb(241, 47, 73);
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+                .section {
+                    margin-top: 8rem;
+                }
+
+                .section h2 {
+                    margin-left: 45px;
+                    font-variant: small-caps;
+                    font-weight: 600;
+                    font-size: 2.5rem;
+                    color: rgb(241, 47, 73);
+                    margin-bottom: 6px;
+                }
+
+                .section h2 span {
+                    font-weight: 700;
+                }
+
+                .section-text {
+                    margin-left: 45px;
+                    font-weight: 300;
+                    margin-top: 1em;
+                }
+
+                h3 {
+                    margin-left: 45px;
+                    font-weight: 600;
+                    color: rgb(241, 47, 73);
+                }
+
+                h4 {
+                    margin-left: 90px;
+                    font-weight: 600;
+                    color: rgb(241, 47, 73);
+                    font-style: italic;
+                }
+
+                .figure {
+                    display: block;
+                }
+
+                .figure img {
+                    width: 100%;
+                    object-fit: cover;
+                }
+
+                .figure .source {
+                    font-size: .8em;
+                    font-weight: 300;
+                    font-family: 'Times New Roman', Times, serif;
+                }
+
+                .figure .source span {
+                    font-style: italic;
+                }
+
+            header {
+                font-variant: small-caps;
+                background-color: #bebebe;
+                margin-top: 10rem;
+                width: 100%;
+            }
+
+            header h1 {
+                margin-left: 45px;
+                font-size: 3em;
+            }
+
+        h3,h4,p {
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        main {
+            padding: 2em 5em;
+            margin: 30px;
+        }
+
+        .divider-x {
+            border-bottom: 6px solid rgb(241, 47, 73);
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+
+        .divider-x-black {
+            border-bottom: 3px solid black;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+
+        .divider-x-black-thin {
+            border-bottom: 2.5px solid black;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+
+        .divider-x-half {
+            border-bottom: 4px solid rgb(241, 47, 73);
+            width: 60%;
+            margin: 0;
+            padding: 0;
+            top: 0;
+            left: 0;
+        }
+
+        .spacer-x {
+            width: 10px;
+        }

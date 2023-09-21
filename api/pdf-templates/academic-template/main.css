@@ -1,0 +1,152 @@
+body {
+    font-family: "Times New Roman", Times, serif;
+            padding: 2em 4.5em;
+            margin: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 20px 0;
+}
+main {
+    line-height: 1.6;
+    position: relative;
+    width: 3.5in;
+    height: 5in;
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+}
+section {
+    width: 3.5in;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+.authors {
+    font-style: italic;
+}
+
+.authors span::before {
+    content: '[1]';
+}
+
+.lab {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.lab::before {
+    content: '[1] ';
+}
+
+.abstract {
+    margin-top: 20px;
+}
+
+.paper-content {
+    margin-top: 30px;
+}
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+            .project-info-table {
+                display: block;
+            }
+
+            .project-info-table .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            .project-info-table .col-left {
+                float: left;
+                width: 25%;
+                padding: 10px;
+            }
+
+            .project-info-table .col-right {
+                float: left;
+                padding: 10px;
+            }
+
+            .project-info-table .sub-col-left {
+                float: left;
+                width: 25%;
+                padding: 0 0 0 10px;
+            }
+
+            .project-info-table .sub-col-right {
+                float: left;
+                width: 60%;
+                padding: 0 0 0 10px;
+            }
+
+            .main-table {
+                border-collapse: separate;
+                border: 2px solid black;
+                border-left: 0;
+                border-right: 0;
+                border-spacing: 0;
+                text-align: left;
+                width: 100%;
+            }
+
+            .main-table thead th {
+                font-size: larger;
+            }
+
+            .main-table span {
+                font-weight: bold;
+            }
+
+            .main-table td:last-child,
+            th:last-child {
+                border-left: 1px solid black;
+            }
+
+            .main-table td,
+            .main-table th {
+                border-bottom: 1px solid black;
+                padding: 3px;
+            }
+
+            .sub-table {
+                border-collapse: collapse;
+                border-left: 0;
+            }
+
+            .sub-table td,
+            .sub-table th {
+                border-bottom: 0;
+            }
+
+            .figure {
+                display: block;
+                text-align: center;
+            }
+            .figure img {
+                width: 100%;
+                object-fit: cover;
+            }

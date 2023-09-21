@@ -10,7 +10,7 @@ from warnings import warn
 from rest_framework import permissions
 
 from api.models import Auth, Pentester, Manager, Team
-from api.models.mission import Mission, NmapScan, Recon
+from api.models.mission import Credentials, Mission, NmapScan, Recon
 from api.models.vulns import Notes, Vulnerability
 
 
@@ -67,7 +67,7 @@ class IsLinkedToData(permissions.BasePermission):
 
         if isinstance(obj, Team):
             for m in obj.members.all():
-                if m.id == request.user.id:
+                if request.user.id == m.auth.id:
                     return True
             return obj.leader.auth.id == request.user.id
 
@@ -76,6 +76,12 @@ class IsLinkedToData(permissions.BasePermission):
                 if m.auth.id == request.user.id:
                     return True
             return obj.team.leader.auth.id == request.user.id
+
+        if isinstance(obj, Credentials):
+            for m in obj.mission.team.members.all():
+                if m.auth.id == request.user.id:
+                    return True
+            return obj.mission.team.leader.auth.id == request.user.id
 
         if isinstance(obj, Recon):
             mission_obj = Mission.objects.filter(recon_id=obj.id).first()

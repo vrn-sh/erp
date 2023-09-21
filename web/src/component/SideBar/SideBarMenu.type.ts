@@ -11,6 +11,7 @@ export interface ISideBarMenu {
     subNav: {
         path: string;
         title: string;
+        idNav: string;
     }[];
     iconOpened: ReactNode;
     iconClosed: ReactNode;
