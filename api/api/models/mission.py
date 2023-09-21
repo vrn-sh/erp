@@ -33,6 +33,14 @@ class Recon(models.Model):
 
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            id = self.mission.id
+            cache.delete(f'mission_{id}')  # type: ignore
+        super().save(*args, **kwargs)
+
+
+
 
 
 class CrtSh(models.Model):
@@ -47,6 +55,13 @@ class CrtSh(models.Model):
 
     dump = models.TextField()
     recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='crtsh_runs')
+
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            id = self.recon.mission.id
+            cache.delete(f'mission_{id}')  # type: ignore
+        super().save(*args, **kwargs)
 
 
 class NmapScan(models.Model):
@@ -73,6 +88,12 @@ class NmapScan(models.Model):
     nmap_version = models.CharField(max_length=32, null=True, blank=True)
     scan_date = models.CharField(max_length=32, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            id = self.recon.mission.id
+            cache.delete(f'mission_{id}')  # type: ignore
+        super().save(*args, **kwargs)
+
 
 class Mission(models.Model):
     """Mission model"""
@@ -95,7 +116,7 @@ class Mission(models.Model):
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of')
-    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
+    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True, related_name='mission')
 
     scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
 

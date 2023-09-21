@@ -55,8 +55,8 @@ class CrtShSerializer(serializers.ModelSerializer):
 
 
 class ReconSerializer(serializers.ModelSerializer):
-    nmap_runs = NmapSerializer(many=True, read_only=True)
-    crtsh_runs = CrtShSerializer(many=False, read_only=True, source='')
+    nmap_runs = serializers.ListField(child=NmapSerializer())
+    crtsh_runs = serializers.ListField(child=CrtShSerializer())
 
     class Meta:
         fields = '__all__'
@@ -64,7 +64,7 @@ class ReconSerializer(serializers.ModelSerializer):
 
 
 class MissionSerializer(serializers.ModelSerializer):
-    recon = ReconSerializer(many=False, read_only=True)
+    recon = ReconSerializer(read_only=True)
     status = serializers.ReadOnlyField()
 
     class Meta:
