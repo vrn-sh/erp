@@ -160,32 +160,36 @@ export default function CreateMission() {
                         </p>
                     </div>
                     <div className="edit-form">
-                        <div className="form-group">
-                            <label>Title</label>
-                            <input
-                                type="text"
-                                required
-                                className="form-control"
-                                onChange={(e) => setTitle(e.target.value)}
-                                value={Title}
-                            />
-                        </div>
-                        <div
-                            style={{ marginBottom: '8px' }}
-                            className="form-group"
-                        >
-                            <label>Scopes</label>
-                            <input
-                                id="input-scope"
-                                type="text"
-                                required
-                                className="form-control"
-                                value={label}
-                                onChange={(e) => setLabel(e.target.value)}
-                                onKeyDown={setScopes}
-                            />
-                        </div>
-                        <Grid
+    
+
+                    <div className="form-group">
+                        <label htmlFor="title">Title</label>
+                        <input
+                            type="text"
+                            id="title"
+                            required
+                            className="form-control"
+                            onChange={(e) => setTitle(e.target.value)}
+                            value={Title}
+                            title="Enter the name for the mission"
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: '8px' }} className="form-group">
+                        <label htmlFor="scopes">Scopes</label>
+                        <input
+                            id="input-scope"
+                            type="text"
+                           // id="scopes"
+                            required
+                            className="form-control"
+                            value={label}
+                            onChange={(e) => setLabel(e.target.value)}
+                            onKeyDown={setScopes}
+                            title="Enter the environment list for the mission. Ex:epitech.eu,  (Press Enter to add)"
+                        />
+                    </div>
+                    <Grid
                             container
                             spacing={{ xs: 2, md: 3 }}
                             columns={{ xs: 4, sm: 8, md: 12 }}
@@ -208,15 +212,11 @@ export default function CreateMission() {
                             })}
                         </Grid>
                         <FormControl
-                            sx={{
-                                paddingY: 2,
-                                width: '100%',
-                                marginTop: '10px',
-                            }}
+                            sx={{ paddingY: 2, width: '100%', marginTop:'10px' }}
                             size="small"
                         >
                             <InputLabel
-                                id="Team"
+                                htmlFor="Team-select"
                                 sx={{
                                     fontFamily: 'Poppins-Regular',
                                     fontSize: '14px',
@@ -231,10 +231,12 @@ export default function CreateMission() {
                                 required
                                 label="Team"
                                 onChange={handleChange}
+                                title="Select the team for the mission"
                             >
                                 {teamList!.map((team) => {
                                     return (
                                         <MenuItem
+                                            key={team.id}
                                             sx={{
                                                 fontFamily: 'Poppins-Regular',
                                                 fontSize: '14px',
@@ -247,14 +249,16 @@ export default function CreateMission() {
                                 })}
                             </Select>
                         </FormControl>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateField
                                 label="Start date"
                                 value={start}
                                 sx={{ padding: '6px', width: '50%' }}
                                 onChange={(newValue: any) => setStart(newValue)}
                             />
-                        </LocalizationProvider>
+                    </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateField
                                 label="End date"
@@ -263,6 +267,7 @@ export default function CreateMission() {
                                 onChange={(newValue: any) => setEnd(newValue)}
                             />
                         </LocalizationProvider>
+
                         <br />
                         <div
                             style={{
