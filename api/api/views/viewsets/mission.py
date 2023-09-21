@@ -225,23 +225,18 @@ class CredentialViewset(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
 
         mission_id = request.data.get('mission_id', 0)
-        if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
-
-            if not mission.is_member(self.request.user):
-                return Response(status=HTTP_403_FORBIDDEN)
-
-            creds = Credentials.objects.filter(mission_id=mission_id)  # type: ignore
+    
+        creds = Credentials.objects.filter(mission=mission_id)  # type: ignore
+        warn(f'creds: {creds}')
 
              # Apply pagination to the queryset
-            page = self.paginate_queryset(creds)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
+        page = self.paginate_queryset(creds)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-            serializer = self.get_serializer(creds, many=True)
-            return Response(serializer.data)
-
-        return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(creds, many=True)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         operation_description="Creates a Credential model",
@@ -289,6 +284,7 @@ class CredentialViewset(viewsets.ModelViewSet):
                 return Response(HTTP_403_FORBIDDEN)
 
             request.data['mission'] = mission
+            request.data.pop('mission_id', None)
             return super().create(request, *args, **kwargs)
 
         return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
