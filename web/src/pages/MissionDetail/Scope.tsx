@@ -259,20 +259,20 @@ export default function Scope(/* need to add list as a param here */) {
             <table className="no_center_container">
                 <tbody>
                     <tr>
-                        {/* <th>Status</th> */}
+                        <th>Status</th>
                         <th className="md-5">Name</th>
                         {!isPentester && <th className="md-2">Actions</th>}
                     </tr>
                     {record.map((s_list) => {
                         return (
                             <tr>
-                                {/* <td style={{ fontSize: '18px' }}>
-                                    {s_list.status ? (
-                                        <AiIcons.AiOutlineCheckCircle />
+                                <td style={{ fontSize: '18px' }}>
+                                    {s_list.scope ? (
+                                        <AiIcons.AiOutlineCheckCircle size={'25px'} style={{marginLeft : '8px', color:'grey'}}/>
                                     ) : (
-                                        <AiIcons.AiOutlineCloseCircle />
+                                        <AiIcons.AiOutlineCloseCircle size={'25px'} style={{marginLeft : '8px', color:'grey' }} />
                                     )}
-                                </td> */}
+                                </td>
                                 <td id="name">{s_list.scope}</td>
                                 {!isPentester && (
                                     <td className="scope-table-action">
