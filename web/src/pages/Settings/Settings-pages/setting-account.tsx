@@ -130,7 +130,7 @@ export default function SettingAccount() {
                 }
             )
             .then(() => {
-                setMessage('Updated name and last name!', 'success');
+                setMessage('Updated your account information!', 'success');
             })
             .catch((error) => {
                 setMessage(error.message, 'error');

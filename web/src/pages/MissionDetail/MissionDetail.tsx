@@ -51,7 +51,6 @@ export default function MissionDetail() {
     };
 
     const handleAdd = async (val: string[]) => {
-        console.log(url);
         await axios
             .patch(
                 `${url}/${Cookies.get('Id')}`,

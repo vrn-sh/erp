@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import dayjs from 'dayjs';
 import './Profile.scss';
 import '../Settings/Settings.scss';
 import { useNavigate } from 'react-router-dom';
@@ -75,7 +74,7 @@ export default function ProfilePage() {
     const [missionList, setMissionList] = useState<
         {
             id: number;
-            state: string;
+            status: string;
             title: string;
             scope: string[];
             team: number;
@@ -147,9 +146,6 @@ export default function ProfilePage() {
             .then((data) => {
                 const res = data.data.results;
                 for (let i = 0; i < res.length; i += 1) {
-                    if (dayjs().isBefore(dayjs(res[i].end)))
-                        res[i].state = 'Succeed';
-                    else res[i].state = 'In progress';
                     delete res[i].start;
                     delete res[i].end;
                     delete res[i].recon;

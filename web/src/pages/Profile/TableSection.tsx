@@ -29,7 +29,7 @@ type TeamProps = {
 
 type MissionProps = {
     id: number;
-    state: string;
+    status: string;
     title: string;
     scope: string[];
     team: number;
