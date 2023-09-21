@@ -26,6 +26,8 @@ from api.models import USER_ROLES, Manager, Pentester, Team, get_user_model
 from api.permissions import IsManager, IsLinkedToData, IsPentester, PostOnly, ReadOnly
 from api.services.s3 import S3Bucket
 
+from django.db.models import Q
+
 
 class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     """
@@ -59,24 +61,15 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     )
     def list(self, request, *args, **kwargs):
         name_query = request.query_params.get('search', None)
-        queryset = self.get_queryset()  # Get the initial queryset
-        
-        if name_query:
-            filtered_queryset = queryset.filter(name__icontains=name_query)
-            if filtered_queryset.exists():
-                page = self.paginate_queryset(filtered_queryset)
-                if page is not None:
-                    serializer = self.get_serializer(page, many=True)
-                    return self.get_paginated_response(serializer.data)
-        
-        # Continue with pagination and serialization for the initial queryset
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        if name_query:
+            teams = self.get_queryset().filter(Q(name=name_query))
+            serializer = self.get_serializer(teams, many=True)
+            return Response(serializer.data)
+
+        # If no query, just do the normal `list()`
+        return super().list(request, *args, **kwargs)
+
 
 
 
@@ -190,6 +183,17 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     permission_classes = [permissions.IsAuthenticated, IsManager | IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
+    
+    def list(self, request, *args, **kwargs):
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            teams = self.get_queryset().filter(Q(auth__username=name_query))
+            serializer = self.get_serializer(teams, many=True)
+            return Response(serializer.data)
+
+        # If no query, just do the normal `list()`
+        return super().list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
@@ -211,6 +215,17 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
     permission_classes = [permissions.IsAuthenticated & IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = ManagerSerializer
+
+    def list(self, request, *args, **kwargs):
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            teams = self.get_queryset().filter(Q(auth__username=name_query))
+            serializer = self.get_serializer(teams, many=True)
+            return Response(serializer.data)
+
+        # If no query, just do the normal `list()`
+        return super().list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:

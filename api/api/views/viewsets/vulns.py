@@ -11,6 +11,7 @@ from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
 from api.services.s3 import S3Bucket
+from django.db.models import Q
 
 
 class NotesViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -77,7 +78,16 @@ class VulnTypeViewset(viewsets.ModelViewSet):
     permissions = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnTypeSerializer
+    def list(self, request, *args, **kwargs):
+        name_query = request.query_params.get('search', None)
 
+        if name_query:
+            teams = self.get_queryset().filter(Q(name=name_query))
+            serializer = self.get_serializer(teams, many=True)
+            return Response(serializer.data)
+
+        # If no query, just do the normal `list()`
+        return super().list(request, *args, **kwargs)
 
 class VulnerabilityViewset(viewsets.ModelViewSet):
     """
@@ -135,6 +145,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
         security=['Bearer'],
         tags=['vulnerability'],
     )
+
     def create(self, request, *args, **kwargs):
         request.data['author'] = request.user.id
         request.data['last_editor'] = request.user.id

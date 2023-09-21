@@ -23,6 +23,7 @@ from api.models.utils import NmapParser, minimal_nmap_output
 from django.http import JsonResponse
 from api.services.crtsh import crtshAPI
 from django.core.cache import cache
+from django.db.models import Q
 
 class NmapViewset(viewsets.ModelViewSet):
     """
@@ -356,11 +357,14 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         return super().create(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        if request.user.role == 2:
-            missions = Mission.objects.filter(created_by=request.user.id) # type: ignore
-        else:
-            missions = Mission.objects.filter(team__members__auth__id=request.user.id) # type: ignore
-        self.queryset = missions
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            teams = self.get_queryset().filter(Q(title=name_query))
+            serializer = self.get_serializer(teams, many=True)
+            return Response(serializer.data)
+
+        # If no query, just do the normal `list()`
         return super().list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
