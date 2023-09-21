@@ -151,21 +151,21 @@ class GenerateMDReportView(APIView):
         manual_parameters=[
             openapi.Parameter(
                 "mission",
-                "body",
+                "params",
                 required=True,
                 type=openapi.TYPE_INTEGER,
                 description="id of the mission"
             ),
             openapi.Parameter(
                 "version",
-                "body",
+                "params",
                 required=False,
                 type=openapi.TYPE_NUMBER,
                 description="Report version"
             ),
             openapi.Parameter(
                 "download",
-                "body",
+                "params",
                 required=False,
                 type=openapi.TYPE_BOOLEAN,
                 description="if you want a text format or Downloading the file"
@@ -180,8 +180,8 @@ class GenerateMDReportView(APIView):
         tags=['Report'],
     )
     def get(self, request):
-
-        mission_id = request.data.get("mission")
+        mission_id = request.query_params.get('mission')
+        print(mission_id)
         if not mission_id:
             return Response({
                 'error': 'No mission id provided. Report couldn\'t be generated',
@@ -192,15 +192,15 @@ class GenerateMDReportView(APIView):
             return Response({
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
-        version = request.data.get("version")
+        version = request.query_params.get("version")
         if not version:
             version = 1.0
-        download = request.data.get("download", False)
+        download = request.query_params.get("download", False)
 
         md_content = self.generate_project_information(mission, version) + \
                 self.generate_condition_and_scopes(mission) + \
                 self.generate_weaknesses(mission)
-        if not download:
+        if not download or download == 'false':
             return Response(data=md_content, status=HTTP_200_OK)
         
         s3 = S3Bucket()
@@ -221,6 +221,7 @@ class GenerateMDReportView(APIView):
         rmtree(dir_path)
 
         object_url = s3.get_object_url(mission.bucket_name, object_name)
+        print("object url", object_url)
         return HttpResponseRedirect(redirect_to=object_url)
         
     def generate_project_information(self, mission: Mission, version):

@@ -120,7 +120,7 @@ const SideBarData = function SideBarDataF() {
         },
         {
             title: 'Missions',
-            path: '.', // change when build client page
+            path: '/dashboard', // change when build client page
             icon: <BsIcons.BsJournals />,
             iconClosed: <IoIcons.IoIosArrowForward />,
             iconOpened: <IoIcons.IoIosArrowDown />,

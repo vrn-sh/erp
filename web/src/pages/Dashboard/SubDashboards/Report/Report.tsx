@@ -24,7 +24,7 @@ export default function Report() {
 
     return (
         <div>
-          <div style={{display: "content", float: "left"}}>
+          <div style={{display: "content"}}>
             {isMDActivated &&
               <BackButton onClick={() => {setMD(false)}} label={"BACK TO TEMPLATES"} />
             }

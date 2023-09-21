@@ -1,22 +1,23 @@
 /* Markdown Editor container */
 .markdown-editor {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   gap: 20px;
   max-width: 90%;
   margin: 0 auto;
-  padding: 20px;
+  padding-top: 20px;
 /* Markdown Editor textarea */
 textarea {
-
+  height: 400px;
   text-align: left;
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: vertical;
-  overflow-y: scroll; /* Enable vertical scrolling for overflow */
-  min-height: 400px;
+  overflow-y: scroll;
 }
 }
 
@@ -40,7 +41,21 @@ textarea {
   border-radius: 4px;
   padding: 10px;
   overflow-y: scroll; /* Enable vertical scrolling for overflow */
-  min-height: 400px;
+  height: 400px;
+  tr {
+  border-top: 1px solid #c6cbd1;
+  background: #fff;
+}
+
+th,
+td {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+table tr:nth-child(2n) {
+  background: #f6f8fa;
+}
 }
 
 /* Responsive layout adjustments */

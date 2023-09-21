@@ -31,6 +31,7 @@ export function SelectMission({setMissionId, missionId}: {setMissionId: (id: num
                     tab.push({
                         value: res.id,
                         label: res.title,
+                        key: res.id
                     });
                 }
                 tab.reverse();
@@ -53,7 +54,7 @@ export function SelectMission({setMissionId, missionId}: {setMissionId: (id: num
                         m: 1,
                         minWidth: 121,
                         fontSize: '12px',
-                        margin: '0 1em',
+                        margin: '0 2em',
                     }}
                 >
                     <InputLabel id="demo-simple-select-standard-label">
@@ -68,7 +69,7 @@ export function SelectMission({setMissionId, missionId}: {setMissionId: (id: num
                     >
                         {list.map((elem) => {
                             return (
-                                <MenuItem value={elem.value}>
+                                <MenuItem value={elem.value} key={elem.value}>
                                     {elem.label}
                                 </MenuItem>
                             );
