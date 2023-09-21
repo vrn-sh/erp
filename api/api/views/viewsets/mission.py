@@ -79,7 +79,7 @@ class NmapViewset(viewsets.ModelViewSet):
             if parser.os_details: request.data['os_details'] = parser.os_details
 
             if recon_id := request.data.get('recon_id'):
-                recon = Recon.objects.get_or_create(id=recon_id)
+                recon, _ = Recon.objects.get_or_create(id=recon_id)
                 cache.delete(f'mission_{recon.mission.id}')
 
         # this will just error in the serializer if input is not provided
