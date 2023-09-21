@@ -6,18 +6,18 @@ type MissionDetail = {
     id: number;
     name: string;
     scope: string[];
-    state: string;
+    status: string;
 };
 
 type MissionProps = {
     id: number;
-    state: string;
+    status: string;
     title: string;
     scope: string[];
     team: number;
 }[];
 
-function MissionCard({ id, name, scope, state }: MissionDetail) {
+function MissionCard({ id, name, scope, status }: MissionDetail) {
     const navigate = useNavigate();
 
     const NavMissionDetail = () => {
@@ -48,12 +48,21 @@ function MissionCard({ id, name, scope, state }: MissionDetail) {
                     }}
                 >
                     <h4>{name}</h4>
-                    <Chip
-                        label={state}
-                        color={state === 'Succeed' ? 'success' : 'warning'}
-                        variant="outlined"
-                        size="small"
-                    />
+                    {status === 'In progress' ? (
+                        <Chip
+                            label={status}
+                            color="warning"
+                            variant="outlined"
+                            size="small"
+                        />
+                    ) : (
+                        <Chip
+                            label={status}
+                            color="success"
+                            variant="outlined"
+                            size="small"
+                        />
+                    )}
                 </div>
                 <div
                     style={{
@@ -103,7 +112,7 @@ export default function TableRow(props: {
                                 id={mission.id}
                                 name={mission.title}
                                 scope={mission.scope}
-                                state={mission.state}
+                                status={mission.status}
                             />
                         );
                     })}
