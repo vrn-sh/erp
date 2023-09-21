@@ -33,8 +33,6 @@ class Recon(models.Model):
 
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
-
-
 class CrtSh(models.Model):
     """
         Model responsible for reading crt.sh API results
@@ -95,7 +93,7 @@ class Mission(models.Model):
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of')
-    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True)
+    recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True, related_name='mission')
 
     scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
 

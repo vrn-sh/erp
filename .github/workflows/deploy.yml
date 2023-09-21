@@ -3,13 +3,12 @@ name: deploy to prod or qa
 on:
   workflow_run:
     workflows: ["docker-compose-test"]
-    branches: [current, next]
+    branches: [current]
     types:
       - completed
   push:
     branches:
       - "current"
-      - "next"
 
 jobs:
 

@@ -65,7 +65,7 @@ class AuthSerializer(serializers.ModelSerializer):
             validated_data['password'] = PasswordHasher().hash(password)
 
         # temporarily set here until sendgrid is fixed
-        validated_data['is_enabled'] = True
+        # validated_data['is_enabled'] = True
         return Auth.objects.create(**validated_data)
 
     def to_representation(self, instance):

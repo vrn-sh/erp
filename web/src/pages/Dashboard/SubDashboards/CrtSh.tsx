@@ -24,13 +24,9 @@ export default function CrtSh() {
             not_after: string;
             name: string;
             ca: {
-                caid: number;
-                name: string;
-                parsed_name: {
-                    C: string;
-                    O: string;
-                    CN: string;
-                };
+                C: string;
+                O: string;
+                CN: string;
             };
         }[]
     >([
@@ -41,13 +37,9 @@ export default function CrtSh() {
             not_after: '',
             name: '',
             ca: {
-                caid: 0,
-                name: '',
-                parsed_name: {
-                    C: '',
-                    O: '',
-                    CN: '',
-                },
+                C: '',
+                O: '',
+                CN: '',
             },
         },
     ]);
@@ -88,7 +80,7 @@ export default function CrtSh() {
         axios(
             `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
@@ -97,7 +89,7 @@ export default function CrtSh() {
         )
             .then((data) => {
                 setOpen(true);
-                setCrtData(data.data.dump);
+                setCrtData(data.data);
                 setSuccess(true);
                 setMessage('Succeed to load!', 'success');
             })
@@ -216,7 +208,10 @@ export default function CrtSh() {
                                         <td>{crt.not_before}</td>
                                         <td>{crt.not_after}</td>
                                         <td>{crt.name}</td>
-                                        <td>{crt.ca?.name}</td>
+                                        <td>
+                                            C: {crt.ca?.C} | O: {crt.ca?.O} |
+                                            CN: {crt.ca?.CN}
+                                        </td>
                                     </tr>
                                 </tbody>
                             );
