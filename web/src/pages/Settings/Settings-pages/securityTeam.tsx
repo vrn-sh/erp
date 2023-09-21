@@ -148,7 +148,7 @@ export default function SecurityTeam() {
                 },
             })
             .then((data) => {
-                const res = data.data.results;
+                const res = data.data;
                 const teams = [];
                 const m = [];
                 for (let j = 0; j < res.length; j += 1) {
