@@ -225,7 +225,7 @@ class CredentialViewset(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
 
         mission_id = request.data.get('mission_id', 0)
-    
+
         creds = Credentials.objects.filter(mission=mission_id)  # type: ignore
         warn(f'creds: {creds}')
 
@@ -257,7 +257,7 @@ class CredentialViewset(viewsets.ModelViewSet):
                     description="service the credential is linked to",
                 ),
                 'mission_id': openapi.Schema(
-                    type=openapi.TYPE_INTEGER,
+                    type=openapi.TYPE_STRING,
                     description="mission ID of the related credential",
                 ),
            },
@@ -270,6 +270,7 @@ class CredentialViewset(viewsets.ModelViewSet):
                     "password": "s3cr37P4ssw0rd",
                     "service": "https://intra.epitech.eu",
                     "comment": "student account -- no admin privs",
+                    "mission_id": "0",
                 }
             )
         },
@@ -283,7 +284,7 @@ class CredentialViewset(viewsets.ModelViewSet):
             if not mission.is_member(self.request.user):
                 return Response(HTTP_403_FORBIDDEN)
 
-            request.data['mission'] = mission
+            request.data['mission'] = mission.id.__str__()
             request.data.pop('mission_id', None)
             return super().create(request, *args, **kwargs)
 

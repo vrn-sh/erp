@@ -6,8 +6,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
-import ViewTeam from '../Team/ViewTeam';
-
+import ViewTeam from './ViewTeam';
 
 export default function TeamList() {
     const [list, setList] = useState<
@@ -137,7 +136,7 @@ export default function TeamList() {
             </div>
             <div className="assigned-missions">
                 <div className="dashboard-table">
-                    <h1>Exist team</h1>
+                    <h1>Existing teams</h1>
                     {!list.length ? (
                         <button
                             type="button"

@@ -11,7 +11,7 @@ import Scope from './Scope';
 import Recon from './Recon';
 import Feedbacks from '../../component/Feedback';
 import HunterIo from './HunterIo/HunterIo';
-import Credentials from './Credential'; 
+import Credentials from './Credential';
 import config from '../../config';
 
 export default function MissionDetail() {
@@ -275,7 +275,9 @@ export default function MissionDetail() {
                                 id="credential"
                                 type="button"
                                 className={
-                                    active === 'credential' ? 'active' : undefined
+                                    active === 'credential'
+                                        ? 'active'
+                                        : undefined
                                 }
                                 onClick={handleClick}
                             >
