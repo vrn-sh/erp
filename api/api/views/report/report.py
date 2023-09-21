@@ -20,7 +20,7 @@ from api.services.s3 import S3Bucket
 
 from api.models.report.report import ReportTemplate, ReportHtml
 from api.models.report.academic_paper import AcademicTemplate
-from api.models.report.generate_html import generate_vulns_detail, generate_vuln_figures
+from api.models.report.generate_html import generate_vuln_figures
 
 DIR_STYLE = "./api/pdf-templates/hackmanit-template"
 CSS_PATH = f'{DIR_STYLE}/main.css'
@@ -67,7 +67,6 @@ class GeneratePDFReportView(APIView):
     def get(self, request):
 
         mission_id = request.query_params.get('mission')
-        print(mission_id)
         if not mission_id:
             return Response({
                 'error': 'No mission id provided. Report couldn\'t be generated',
@@ -83,27 +82,27 @@ class GeneratePDFReportView(APIView):
             version = 1.0
         download = request.query_params.get("download", False)
 
-        template_name = request.data.get("template_name", "academic")
+        template_name = request.query_params.get("template_name", "academic")
         template = ReportHtml(template=ReportTemplate.objects.get(name=template_name), mission=mission)
 
         s3 = S3Bucket()
         s3.create_bucket(mission.bucket_name)
 
         dir_path = f'/tmp/{mission.bucket_name}'
-
+        print("template name", template_name)
         if template_name == 'academic':
-            filepath = AcademicTemplate().dump_report(mission, dir_path)
+            filepath = AcademicTemplate().dump_report(mission, dir_path, download == 'true')
         else:
-            filepath = self.dump_report(dir_path, template)
+            filepath = self.dump_report(dir_path, template, download == 'true')
         object_name = f'report-{mission.title}.pdf'
 
         s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
         rmtree(dir_path)
 
         object_url = s3.get_object_url(mission.bucket_name, object_name)
-        return HttpResponseRedirect(redirect_to=object_url)
+        return Response(data=object_url, status=HTTP_200_OK)
 
-    def dump_report(self, dir_path: str, template: ReportHtml) -> str:
+    def dump_report(self, dir_path: str, template: ReportHtml, donwload: bool=True) -> str:
         """compile pages together to generate a report"""
 
         pages = [
@@ -113,7 +112,11 @@ class GeneratePDFReportView(APIView):
             (f'{dir_path}/weaknesses.html', template.generate_weaknesses())
         ]
 
-        os.mkdir(dir_path, dir_fd=None)
+        if not donwload:
+            return Response(data="".join(map(lambda a: a[1], pages)), status=HTTP_200_OK)
+        
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path, dir_fd=None)
         for path_page, html_content in pages:
             with open(path_page, 'w+') as fd:
                 fd.write(html_content)
@@ -136,7 +139,7 @@ class GeneratePDFReportView(APIView):
                 "enable-local-file-access": None,
             },
             output_path=path_to_file,
-            toc=toc,
+            toc=toc if template.template.name == 'hackmanit' else None, #TODO: fix this and have toc for every template
             cover=cover_page[0],
             cover_first=True,
         )
@@ -213,9 +216,7 @@ class GenerateMDReportView(APIView):
         os.mkdir(dir_path, dir_fd=None)
         with open(filepath, 'w+') as fd:
             fd.write(
-                self.generate_project_information(mission, version) +
-                self.generate_condition_and_scopes(mission) +
-                self.generate_weaknesses(mission)
+                md_content
             )
         object_name = f'report-{mission.title}.md'
 

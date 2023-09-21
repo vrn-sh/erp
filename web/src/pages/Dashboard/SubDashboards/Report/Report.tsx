@@ -61,28 +61,22 @@ function DocumentTemplates({setMD, setTemplate, mission}:
     }
 
     setTemplate(templateId);
-    const response = await axios.get(`${config.apiUrl}/download-report`, {
+    console.log("template id", templates[templateId].name);
+    axios.get(`${config.apiUrl}/download-report`, {
       headers: {
         'Authorization': `Token ${Cookies.get('Token')}`,
       },
       params: {
         template_name: templates[templateId].name,
-        mission: mission
+        mission: mission,
+        download: true
       },
       maxRedirects: 5,
       timeout: 10000,
+    }).then((response) => {
+      console.log(response);
+      window.open(response.data, '_blank');
     });
-      const blob = new Blob([response.data]);
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'Report.pdf'; // Set the desired filename here
-      a.style.display = 'none';
-      document.body.appendChild(a);
-
-      a.click();
-      window.URL.revokeObjectURL(url);
   }
 
 
