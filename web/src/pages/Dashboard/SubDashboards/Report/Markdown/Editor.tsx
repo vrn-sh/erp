@@ -5,6 +5,8 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import Markdown from 'markdown-to-jsx';
 import DownloadIcon from '@mui/icons-material/Download';
+import Tooltip from '../../../../../component/Tooltip/Tooltip';
+import MarkdownHelper from './MarkdownHelper';
 
 function MarkdownEditor({mission}: {mission: number}) {
   const [markdownText, setMarkdownText] = useState('# Loading from backend...');
@@ -104,6 +106,7 @@ function MarkdownEditor({mission}: {mission: number}) {
         <DownloadIcon onClick={handleDownload} sx={{fontSize: "1em", paddingTop: "4px", color: "white"}} />
         DOWNLOAD
       </button>
+      <Tooltip tip={<MarkdownHelper />} />
     </>
   );
 }
