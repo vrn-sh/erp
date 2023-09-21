@@ -34,13 +34,10 @@ class Recon(models.Model):
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        if self.pk is not None:
+        if self.pk is not None and self.mission is not None:
             id = self.mission.id
             cache.delete(f'mission_{id}')  # type: ignore
         super().save(*args, **kwargs)
-
-
-
 
 
 class CrtSh(models.Model):
@@ -58,7 +55,7 @@ class CrtSh(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.pk is not None:
+        if self.pk is not None and self.mission is not None:
             id = self.recon.mission.id
             cache.delete(f'mission_{id}')  # type: ignore
         super().save(*args, **kwargs)
@@ -89,7 +86,7 @@ class NmapScan(models.Model):
     scan_date = models.CharField(max_length=32, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.pk is not None:
+        if self.pk is not None and self.recon.mission is not None:
             id = self.recon.mission.id
             cache.delete(f'mission_{id}')  # type: ignore
         super().save(*args, **kwargs)
