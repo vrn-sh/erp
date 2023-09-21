@@ -33,13 +33,6 @@ class Recon(models.Model):
 
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        if self.pk is not None and self.mission is not None:
-            id = self.mission.id
-            cache.delete(f'mission_{id}')  # type: ignore
-        super().save(*args, **kwargs)
-
-
 class CrtSh(models.Model):
     """
         Model responsible for reading crt.sh API results
@@ -52,13 +45,6 @@ class CrtSh(models.Model):
 
     dump = models.TextField()
     recon = models.ForeignKey(Recon, on_delete=models.CASCADE, related_name='crtsh_runs')
-
-
-    def save(self, *args, **kwargs):
-        if self.pk is not None and self.mission is not None:
-            id = self.recon.mission.id
-            cache.delete(f'mission_{id}')  # type: ignore
-        super().save(*args, **kwargs)
 
 
 class NmapScan(models.Model):
@@ -84,12 +70,6 @@ class NmapScan(models.Model):
 
     nmap_version = models.CharField(max_length=32, null=True, blank=True)
     scan_date = models.CharField(max_length=32, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if self.pk is not None and self.recon.mission is not None:
-            id = self.recon.mission.id
-            cache.delete(f'mission_{id}')  # type: ignore
-        super().save(*args, **kwargs)
 
 
 class Mission(models.Model):
