@@ -48,7 +48,6 @@ function SearchModal({ exit }: SearchModalProps) {
                 navigate('/mission/detail', {
                     state: {
                         missionId: info.id,
-                        scopeList: [],
                     },
                 });
                 break;
@@ -286,6 +285,7 @@ export default function TopBar() {
                         placeholder="Search"
                         className="scope-form-control"
                         name="searchword"
+                        readOnly
                         onClick={() => {
                             setIsOpen(true);
                         }}
