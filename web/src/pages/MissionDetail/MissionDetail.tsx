@@ -180,7 +180,10 @@ export default function MissionDetail() {
 
     useEffect(() => {
         getUserInfo();
-        getMissionInfo();
+        console.log("========detail=========")
+        console.log(id)
+        if (id != 0)
+            getMissionInfo();
     }, [id]);
 
     useEffect(() => {

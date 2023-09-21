@@ -16,9 +16,7 @@ type TmpScope = {
 }[];
 
 export default function Scope(/* need to add list as a param here */) {
-    const [keyword, setKeyword] = useState('');
-    const [scope, setScope] = useState([]);
-    const [tmpScope, setTmpScope] = useState<TmpScope>([]);
+    const [scope, setScope] = useState<TmpScope>([]);
     const [missionId, setMissionId] = useState(0);
     const [Title, setTitle] = useState('');
     const [Team, setTeam] = useState(0);
@@ -74,19 +72,6 @@ export default function Scope(/* need to add list as a param here */) {
         setCurrentPage(n);
     };
 
-    const getOriginalScope = () => {
-        setKeyword('');
-        const res: TmpScope = [];
-        for (let i = 0; i < scope.length; i += 1) {
-            const tmp = {
-                scope: scope[i],
-                index: i,
-            };
-            res.push(tmp);
-        }
-        setTmpScope(res);
-    };
-
     const delScope = async (index: number) => {
         const newScope = scope.filter((s, i) => i !== index);
         await axios
@@ -112,7 +97,6 @@ export default function Scope(/* need to add list as a param here */) {
                 setOpen(true);
                 setMessage('Deleted !', 'success');
                 setScope(newScope);
-                getOriginalScope();
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -141,11 +125,6 @@ export default function Scope(/* need to add list as a param here */) {
             });
     };
 
-    const searchKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        setKeyword(event.target.value);
-    };
-
     const getReport = async () => {
         await axios({
             method: 'get',
@@ -156,7 +135,7 @@ export default function Scope(/* need to add list as a param here */) {
                 Authorization: `Token ${Cookies.get('Token')}`,
             },
         })
-            .then(() => {
+            .then((data) => {
                 // here to open a link in new tab, replace google link by our url
                 window.open('https://google.fr', '_blank', 'noreferrer');
                 setMessage('Created!', 'success');
@@ -166,40 +145,20 @@ export default function Scope(/* need to add list as a param here */) {
             });
     };
 
-    const searchScope = () => {
-        let find = false;
-        const res: TmpScope = [];
-
-        for (let i = 0; i < tmpScope.length; i += 1) {
-            if (tmpScope[i].scope.indexOf(keyword) !== -1) {
-                find = true;
-                const p = Math.floor(i / recordsPerPage) + 1;
-                if (i % 5 === 0) setCurrentPage(p - 1);
-                else setCurrentPage(p);
-                res.push(tmpScope[i]);
-            }
-            setTmpScope(res);
-        }
-        if (find === true) setTmpScope(res);
-        else getOriginalScope();
-        setCurrentPage(1);
-    };
-
     useEffect(() => {
         setMissionId(location.state.missionId);
     }, []);
 
     useEffect(() => {
-        getOriginalScope();
-    }, [scope]);
-
+        console.log("========scope=========")
+        console.log(missionId)
+        if (missionId != 0)
+            getMission();
+            
+    }, [missionId]);
+    
     useEffect(() => {
-        getMission();
-        setRecord(tmpScope.slice(firstIndex, lastIndex));
-    }, [missionId, tmpScope]);
-
-    useEffect(() => {
-        setNPage(Math.ceil(tmpScope.length / recordsPerPage));
+        setNPage(Math.ceil(scope.length / recordsPerPage));
         const n = [...Array(npage + 1).keys()].slice(1);
         setNums(n);
     }, [record]);
@@ -207,7 +166,7 @@ export default function Scope(/* need to add list as a param here */) {
     useEffect(() => {
         lastIndex = currentPage * recordsPerPage;
         firstIndex = lastIndex - recordsPerPage;
-        setRecord(tmpScope.slice(firstIndex, lastIndex));
+        setRecord(scope.slice(firstIndex, lastIndex));
     }, [currentPage]);
 
     return (
@@ -221,33 +180,6 @@ export default function Scope(/* need to add list as a param here */) {
                 />
             )}
             <div className="mission-tool-line">
-                <div className="search-name">
-                    <div className="mission-input-block">
-                        <input
-                            type="text"
-                            placeholder="Search by name"
-                            className="scope-form-control"
-                            name="searchword"
-                            onChange={searchKeyword}
-                            value={keyword}
-                        />
-                    </div>
-                    <button
-                        type="button"
-                        className="searchBtn"
-                        onClick={searchScope}
-                    >
-                        Search
-                    </button>
-                    <button
-                        type="button"
-                        className="searchBtn"
-                        onClick={getOriginalScope}
-                    >
-                        Clear
-                    </button>
-                </div>
-
                 <button
                     type="button"
                     onClick={getReport}
