@@ -16,6 +16,7 @@ import config from '../../config';
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
     const [id, setId] = useState(0);
+    const [Title, setTitle] = useState('');
     const location = useLocation();
     const [isFavory, setIsFavory] = useState(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
@@ -84,13 +85,14 @@ export default function MissionDetail() {
                 handleAdd(val!);
             } else {
                 setMess({
-                    mess: 'limite atteinte veuillez supprimer des favoris',
+                    mess: 'Limit reached please remove from favorites',
                     color: 'error',
                 });
                 setOpen(true);
             }
         } else {
-            val = val === undefined ? [id.toString()] : [id.toString(), ...val];
+            // eslint-disable-next-line
+             val = [id.toString()];
             setIsFavory(true);
             setOpen(true);
             handleAdd(val!);
@@ -133,16 +135,30 @@ export default function MissionDetail() {
         }
     };
 
+    const getMissionInfo = async () => {
+        await axios
+            .get(`${config.apiUrl}/mission/${id}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setTitle(data.data.title);
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
     const close = () => {
         setOpen(false);
     };
 
     const handleFavory = () => {
         if (isFavory) {
-            console.log('delete');
             deleteFavory();
         } else {
-            console.log('add');
             addFavory();
         }
     };
@@ -150,7 +166,8 @@ export default function MissionDetail() {
     const checkFavory = () => {
         if (userInfo) {
             for (let i = 0; i < userInfo.length; i += 1) {
-                if (Number(userInfo[i]) === id) {
+                // eslint-disable-next-line
+                if (Number(userInfo[i]) == id) {
                     setIsFavory(true);
                 }
             }
@@ -163,7 +180,7 @@ export default function MissionDetail() {
 
     useEffect(() => {
         getUserInfo();
-        checkFavory();
+        getMissionInfo();
     }, [id]);
 
     useEffect(() => {
@@ -190,7 +207,7 @@ export default function MissionDetail() {
                 <TopBar />
                 <div className="mission-detail-container">
                     <h1>
-                        Fame mission web
+                        {Title}
                         {isFavory ? (
                             <AiIcons.AiFillStar
                                 className="scope-action-icons"
@@ -215,7 +232,7 @@ export default function MissionDetail() {
 
                     <div className="subHeader">
                         <div className="submenu-mission">
-                            {/* <button
+                            <button
                                 key={1}
                                 id="scope"
                                 type="button"
@@ -225,7 +242,7 @@ export default function MissionDetail() {
                                 onClick={handleClick}
                             >
                                 Scope
-                            </button> */}
+                            </button>
                             <button
                                 key={2}
                                 id="recon"
