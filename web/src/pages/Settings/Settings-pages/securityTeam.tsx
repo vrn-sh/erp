@@ -141,7 +141,7 @@ export default function SecurityTeam() {
 
     const getTeams = async () => {
         await axios
-            .get(`${config.apiUrl}/team?/page=1`, {
+            .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
