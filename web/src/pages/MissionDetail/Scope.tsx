@@ -10,13 +10,8 @@ import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
 
-type TmpScope = {
-    scope: string;
-    index: number;
-}[];
-
 export default function Scope(/* need to add list as a param here */) {
-    const [scope, setScope] = useState<TmpScope>([]);
+    const [scope, setScope] = useState([]);
     const [missionId, setMissionId] = useState(0);
     const [Title, setTitle] = useState('');
     const [Team, setTeam] = useState(0);
@@ -49,7 +44,7 @@ export default function Scope(/* need to add list as a param here */) {
 
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
-    const [record, setRecord] = useState<TmpScope>([]);
+    const [record, setRecord] = useState([]);
     const [npage, setNPage] = useState(0);
     const [nums, setNums] = useState<any[]>([]);
     let lastIndex = currentPage * recordsPerPage;
@@ -97,6 +92,7 @@ export default function Scope(/* need to add list as a param here */) {
                 setOpen(true);
                 setMessage('Deleted !', 'success');
                 setScope(newScope);
+                setRecord(newScope.slice(firstIndex, lastIndex));
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -119,6 +115,7 @@ export default function Scope(/* need to add list as a param here */) {
                 setTeam(data.data.team);
                 setCreateBy(data.data.created_by);
                 setLastEdit(data.data.last_updated_by);
+                setRecord(data.data.scope.slice(firstIndex, lastIndex));
             })
             .catch((e) => {
                 throw e;
@@ -135,7 +132,7 @@ export default function Scope(/* need to add list as a param here */) {
                 Authorization: `Token ${Cookies.get('Token')}`,
             },
         })
-            .then((data) => {
+            .then(() => {
                 // here to open a link in new tab, replace google link by our url
                 window.open('https://google.fr', '_blank', 'noreferrer');
                 setMessage('Created!', 'success');
@@ -150,13 +147,10 @@ export default function Scope(/* need to add list as a param here */) {
     }, []);
 
     useEffect(() => {
-        console.log("========scope=========")
-        console.log(missionId)
-        if (missionId != 0)
-            getMission();
-            
+        // eslint-disable-next-line
+        if (missionId != 0) getMission();
     }, [missionId]);
-    
+
     useEffect(() => {
         setNPage(Math.ceil(scope.length / recordsPerPage));
         const n = [...Array(npage + 1).keys()].slice(1);
@@ -195,25 +189,35 @@ export default function Scope(/* need to add list as a param here */) {
                         <th className="md-5">Name</th>
                         {!isPentester && <th className="md-2">Actions</th>}
                     </tr>
-                    {record.map((s_list) => {
+                    {record.map((s_list, index) => {
                         return (
                             <tr>
                                 <td style={{ fontSize: '18px' }}>
-                                    {s_list.scope ? (
-                                        <AiIcons.AiOutlineCheckCircle size={'25px'} style={{marginLeft : '8px', color:'grey'}}/>
+                                    {s_list ? (
+                                        <AiIcons.AiOutlineCheckCircle
+                                            size="25px"
+                                            style={{
+                                                marginLeft: '8px',
+                                                color: 'grey',
+                                            }}
+                                        />
                                     ) : (
-                                        <AiIcons.AiOutlineCloseCircle size={'25px'} style={{marginLeft : '8px', color:'grey' }} />
+                                        <AiIcons.AiOutlineCloseCircle
+                                            size="25px"
+                                            style={{
+                                                marginLeft: '8px',
+                                                color: 'grey',
+                                            }}
+                                        />
                                     )}
                                 </td>
-                                <td id="name">{s_list.scope}</td>
+                                <td id="name">{s_list}</td>
                                 {!isPentester && (
                                     <td className="scope-table-action">
                                         <AiIcons.AiFillDelete
                                             className="scope-action-icons"
                                             style={{ color: 'red' }}
-                                            onClick={() =>
-                                                delScope(s_list.index)
-                                            }
+                                            onClick={() => delScope(index)}
                                         />
                                     </td>
                                 )}

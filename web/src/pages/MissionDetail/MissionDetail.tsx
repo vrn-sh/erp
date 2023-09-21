@@ -180,10 +180,8 @@ export default function MissionDetail() {
 
     useEffect(() => {
         getUserInfo();
-        console.log("========detail=========")
-        console.log(id)
-        if (id != 0)
-            getMissionInfo();
+        // eslint-disable-next-line
+        if (id != 0) getMissionInfo();
     }, [id]);
 
     useEffect(() => {
