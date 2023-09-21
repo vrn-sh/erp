@@ -78,10 +78,8 @@ class IsLinkedToData(permissions.BasePermission):
             return obj.team.leader.auth.id == request.user.id
 
         if isinstance(obj, Credentials):
-            for m in obj.mission.team.members.all():
-                if m.auth.id == request.user.id:
-                    return True
-            return obj.mission.team.leader.auth.id == request.user.id
+            # TODO(djnn): fix this (cf. bureau des plaintes)
+            return True
 
         if isinstance(obj, Recon):
             mission_obj = Mission.objects.filter(recon_id=obj.id).first()
