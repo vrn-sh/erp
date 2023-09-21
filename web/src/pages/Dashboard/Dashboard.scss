@@ -24,17 +24,28 @@ $opacity-transition: opacity;
 }
 
 
-
+.small-row {
+    font-family: 'Poppins-Medium';
+}
 
 .form-row {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+
+}
+
+.columnTitle {
+    flex: 1;
+    padding: 5px;
+    font-family: 'Poppins-Medium';
+
 }
 
 .column {
     flex: 1;
-    padding: 5px;
+    padding: 0px;
+
 }
 
 .form-header {

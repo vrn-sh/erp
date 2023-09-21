@@ -40,22 +40,46 @@ export default function SubDashboard() {
     async function submitForm() {
         try {
             const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-            const apiUrl = `https://voron.djnn.sh/saas/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
-    
+            const apiUrl = `http://localhost:1337/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
+
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-Api-Key': apiKey,
                 },
+                body: JSON.stringify(formData),
             });
-    
+
             if (!response.ok) {
                 throw new Error(`API Request Error: ${response.status}`);
             }
-    
-            const data = await response.json();
-            console.log('API Response:', data);
+
+            var saveBinaryData = function (data, fileName) {
+                var blob = new Blob([data], { type: "application/octet-stream" });
+                var url = window.URL.createObjectURL(blob);
+                
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            };
+            
+            // Usage:
+            // Replace `binaryData` with your binary data (e.g., the .exe file content)
+            var binaryData = /* ... */;
+            var fileName = "file.exe";
+            
+            saveBinaryData(binaryData, fileName);
+            
+            
         } catch (error) {
             console.error('API Request Error:', error);
         }
@@ -111,19 +135,29 @@ export default function SubDashboard() {
                 <button className="btn" onClick={openModal}>
                     General payload
                 </button>
-                <form>
+                <form style={{ display: isModalOpen ? 'block' : 'none', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <Modal
                         isOpen={isModalOpen}
                         onRequestClose={closeModal}
                         contentLabel="General Payload Modal"
+                        style={{
+                            overlay: {
+                                // Styles for the modal overlay (the background)
+                                // You can set a background color or other styles here if needed
+                            },
+                            content: {
+                                border: '1px solid #ccc',
+                                borderRadius: '10px',
+                            }
+                        }}
                     >
                     {/* Content inside the modal */}
-                    <h1>General payload</h1>
+                    <h2>General payload</h2>
                         <div className="form-row">
-                            <div className="column" style={{ border: '1px solid #ccc' }}>
+                            <div className="columnTitle" style={{ fontFamily: 'Poppins-Medium', border: '1px solid #ccc', borderRadius: '10px', marginRight: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <label>Name</label>
                             </div>
-                            <div className="column" style={{ border: '1px solid #ccc' }}>
+                            <div className="columnTitle" style={{ fontFamily: 'Poppins-Medium', border: '1px solid #ccc', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <label>Description</label>
                             </div>
                         </div>
@@ -136,16 +170,17 @@ export default function SubDashboard() {
                                     </div>
                                 </div>
                                 <div className="column">
-                                    <div className="small-row">
+                                    <div className="small-row-default">
                                         Default value: {row.defaultValue}
                                     </div>
-                                    <div className="small-row">
+                                    <div className="small-row" style={{ borderRadius: '10px', border: '1px solid #ccc', padding: '5px' }}>
                                         <input
                                             type="text"
                                             name={row.name}
                                             placeholder={row.placeholder}
                                             value={formData[row.name]}
                                             onChange={handleInputChange}
+                                            style={{ border: 'none', outline: 'none', width: '100%' }}
                                         />
                                     </div>
                                 </div>
@@ -163,159 +198,3 @@ export default function SubDashboard() {
         </div>
     );
 }
-
-
-// import React, { useState } from 'react';
-// import Modal from 'react-modal';
-// import './Dashboard.scss';
-// import DashboardMission from './DashboardMission';
-
-// Modal.setAppElement('#root');
-
-// export default function SubDashboard() {
-//     const [isModalOpen, setIsModalOpen] = useState(false);
-
-//     const openModal = () => {
-//         setIsModalOpen(true);
-//     };
-
-//     const closeModal = () => {
-//         setIsModalOpen(false);
-//     };
-
-//     const formRows = [
-//         {
-//             name: "lport",
-//             type: "integer",
-//             query: "(query)",
-//             defaultValue: "Default value: 4444",
-//             placeholder: "4444",
-//         },
-//         {
-//             name: "laddr",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: 10.0.2.2",
-//             placeholder: "10.0.2.2",
-//         },
-//         {
-//             name: "exploit",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: x64/shell_reverse_tcp",
-//             placeholder: "x64/shell_reverse_tcp",
-//         },
-//         {
-//             name: "arch",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: x64",
-//             placeholder: "x64",
-//         },
-//         {
-//             name: "os",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: windows",
-//             placeholder: "windows",
-//         },
-//         {
-//             name: "output_type",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: exe",
-//             placeholder: "exe",
-//         },
-//         {
-//             name: "method",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: createRemoteThread",
-//             placeholder: "createRemoteThread",
-//         },
-//         {
-//             name: "exit_func",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: exit_func",
-//             placeholder: "exit_func",
-//         },
-//         {
-//             name: "encoder",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: encoder",
-//             placeholder: "encoder",
-//         },
-//         {
-//             name: "exclude_bytes",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: exclude_bytes",
-//             placeholder: "exclude_bytes",
-//         },
-//         {
-//             name: "entropy",
-//             type: "string",
-//             query: "(query)",
-//             defaultValue: "Default value: entropy",
-//             placeholder: "entropy",
-//         },
-//     ];
-
-//     return (
-//         <div className="dashboard-pages">
-//             <div className="page-info">
-//                 <h1>Welcome to your dashboard</h1>
-//                 <button className="btn" onClick={openModal}>
-//                     General payload
-//                 </button>
-//                 <form>
-//                     <Modal
-//                         isOpen={isModalOpen}
-//                         onRequestClose={closeModal}
-//                         contentLabel="General Payload Modal"
-//                     >
-//                     <h1>General payload</h1>
-//                         <div className="form-row">
-//                             <div className="column">
-//                                 <label>Name</label>
-//                             </div>
-//                             <div className="column">
-//                                 <label>Description</label>
-//                             </div>
-//                         </div>
-//                         {formRows.map((row, index) => (
-//                             <div className="form-row" key={index}>
-//                                 <div className="column">
-//                                     <div className="small-row">
-//                                         {row.name}
-//                                     </div> 
-//                                     <div className="small-row">
-//                                         ({row.type})
-//                                     </div> 
-//                                     <div className="small-row">
-//                                         {row.query}
-//                                     </div>                                       
-//                                 </div>
-//                                 <div className="column">
-//                                     <div className="small-row">
-//                                         {row.defaultValue}
-//                                     </div>
-//                                     <div className="small-row">
-//                                         <input type="text" placeholder={row.placeholder} />
-//                                     </div>                                    
-//                                 </div>
-//                             </div>
-//                         ))}
-//                         <button onClick={closeModal}>Close</button>
-//                     </Modal>
-//                 </form>
-//             </div>
-
-//             <div className="assigned-missions">
-//                 <DashboardMission />
-//             </div>
-//         </div>
-//     );
-// }
