@@ -52,6 +52,7 @@ python manage.py migrate
 
 python manage.py init_builtin_vuln_types
 python manage.py init_bucket
+python manage.py init_templates
 
 echo "$(date) - Starting task"
 exec gunicorn core.wsgi --config gunicorn.conf.py

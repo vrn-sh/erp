@@ -66,7 +66,8 @@ class GeneratePDFReportView(APIView):
     )
     def get(self, request):
 
-        mission_id = request.data.get("mission")
+        mission_id = request.query_params.get('mission')
+        print(mission_id)
         if not mission_id:
             return Response({
                 'error': 'No mission id provided. Report couldn\'t be generated',
@@ -77,6 +78,10 @@ class GeneratePDFReportView(APIView):
             return Response({
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
+        version = request.query_params.get("version")
+        if not version:
+            version = 1.0
+        download = request.query_params.get("download", False)
 
         template_name = request.data.get("template_name", "academic")
         template = ReportHtml(template=ReportTemplate.objects.get(name=template_name), mission=mission)
@@ -125,27 +130,24 @@ class GeneratePDFReportView(APIView):
             list(
                 map(
                     lambda a: a[0], pages
-                    )
-                ),
-                options={
-                    "enable-local-file-access": None,
-                },
-                output_path=path_to_file,
-                toc=toc,
-                cover=cover_page[0],
-                cover_first=True,
+                )
+            ),
+            options={
+                "enable-local-file-access": None,
+            },
+            output_path=path_to_file,
+            toc=toc,
+            cover=cover_page[0],
+            cover_first=True,
         )
 
         return path_to_file
 
 
-
-
-
 class GenerateMDReportView(APIView):
-
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
+
     @swagger_auto_schema(
         operation_description="Get the mission report in Markdown generated with the mission' data.",
         manual_parameters=[
@@ -198,11 +200,11 @@ class GenerateMDReportView(APIView):
         download = request.query_params.get("download", False)
 
         md_content = self.generate_project_information(mission, version) + \
-                self.generate_condition_and_scopes(mission) + \
-                self.generate_weaknesses(mission)
+                     self.generate_condition_and_scopes(mission) + \
+                     self.generate_weaknesses(mission)
         if not download or download == 'false':
             return Response(data=md_content, status=HTTP_200_OK)
-        
+
         s3 = S3Bucket()
         s3.create_bucket(mission.bucket_name)
 
@@ -223,7 +225,7 @@ class GenerateMDReportView(APIView):
         object_url = s3.get_object_url(mission.bucket_name, object_name)
         print("object url", object_url)
         return HttpResponseRedirect(redirect_to=object_url)
-        
+
     def generate_project_information(self, mission: Mission, version):
         return f'''
 # Project information

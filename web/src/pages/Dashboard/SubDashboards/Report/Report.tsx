@@ -3,12 +3,14 @@ import './Report.scss';
 import NewTemplate from '../../../../../public/templates/template_0.png';
 import AcademicTemplate from '../../../../../public/templates/template_1.png';
 import Red4SecTemplate from '../../../../../public/templates/template_2.png';
-import HackmanitTemplate from '../../../../../public/templates/template_3.png';
-import NASATemplate from '../../../../../public/templates/template_4.png';
+import NASATemplate from '../../../../../public/templates/template_3.png';
+import HackmanitTemplate from '../../../../../public/templates/template_4.png';
 import MarkdownEditor from './Markdown/Editor';
 import { SelectMission } from '../../../../component/SelectMission';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { BackButton } from '../../../../component/BackButton';
+import axios from 'axios';
+import config from '../../../../config';
+import Cookies from 'js-cookie';
 
   const templates = [
     { id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
@@ -39,14 +41,49 @@ export default function Report() {
             {isMDActivated ? 
                 <MarkdownEditor mission={mission} />
                  :
-                <DocumentTemplates setMD={setMD} setTemplate={setTemplate} />
+                <DocumentTemplates setMD={setMD} setTemplate={setTemplate} mission={mission} />
             }
         </div>
     );
 }
 
 // type for setMD and setTemplate
-function DocumentTemplates({setMD, setTemplate}: {setMD: Dispatch<SetStateAction<boolean>>, setTemplate: Dispatch<SetStateAction<number>>}) {
+function DocumentTemplates({setMD, setTemplate, mission}:
+    {setMD: Dispatch<SetStateAction<boolean>>,
+      setTemplate: Dispatch<SetStateAction<number>>,
+      mission: number}) {
+
+  const handleTemplateSelection = async (templateId: number) => {
+
+    if (mission === -1) {
+      alert("Please select a mission first!"); // TODO replace by popup like in Tooltip.
+      return;
+    }
+
+    setTemplate(templateId);
+    const response = await axios.get(`${config.apiUrl}/download-report`, {
+      headers: {
+        'Authorization': `Token ${Cookies.get('Token')}`,
+      },
+      params: {
+        template_name: templates[templateId].name,
+        mission: mission
+      },
+      maxRedirects: 5,
+      timeout: 10000,
+    });
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Report.pdf'; // Set the desired filename here
+      a.style.display = 'none';
+      document.body.appendChild(a);
+
+      a.click();
+      window.URL.revokeObjectURL(url);
+  }
 
 
   return (
@@ -56,7 +93,7 @@ function DocumentTemplates({setMD, setTemplate}: {setMD: Dispatch<SetStateAction
       <h2 style={{textAlign: "left"}}>Templates</h2>
       <div className="template-row">
         {templates.map((template) => (
-          <div key={template.id} className="template" onClick={() => {setTemplate(template.id)}}>
+          <div key={template.id} className="template" onClick={() => {handleTemplateSelection(template.id)}}>
             <img src={template.thumbnail} alt={template.name} />
             <p className="template-name">{template.name}</p>
             <p className="template-subtitle">{template.subtitle}</p>
