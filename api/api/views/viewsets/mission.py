@@ -79,7 +79,7 @@ class NmapViewset(viewsets.ModelViewSet):
             if parser.os_details: request.data['os_details'] = parser.os_details
 
             if recon_id := request.data.get('recon_id'):
-                recon = Recon.objects.get_or_create(id=recon_id)
+                recon, _ = Recon.objects.get_or_create(id=recon_id)
                 cache.delete(f'mission_{recon.mission.id}')
 
         # this will just error in the serializer if input is not provided
@@ -368,12 +368,15 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def list(self, request, *args, **kwargs):
         name_query = request.query_params.get('search', None)
 
-        if name_query:
-            teams = self.get_queryset().filter(Q(title=name_query))
-            serializer = self.get_serializer(teams, many=True)
-            return Response(serializer.data)
+        if request.user.role == 2:
+            missions = Mission.objects.filter(created_by=request.user.id)
+        else:
+            missions = Mission.objects.filter(team__members__auth__id=request.user.id)
 
-        # If no query, just do the normal `list()`
+        if name_query:
+            missions = missions.filter(title=name_query)
+
+        self.queryset = missions
         return super().list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
