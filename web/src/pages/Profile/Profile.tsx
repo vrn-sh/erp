@@ -113,7 +113,7 @@ export default function ProfilePage() {
                 },
             })
             .then((data) => {
-                const res = data.data.results;
+                const res = data.data;
                 const t = [];
                 for (let j = 0; j < res.length; j += 1) {
                     let f = false;
