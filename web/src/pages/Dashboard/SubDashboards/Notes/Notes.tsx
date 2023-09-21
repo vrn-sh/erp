@@ -2,13 +2,22 @@ import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import '../../Dashboard.scss';
-import { Stack, Divider } from '@mui/material';
+import {
+    Stack,
+    Divider,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+} from '@mui/material';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { IDashboardNotes } from '../../DashBoardNote.type';
 import AddNote from './AddNote';
 import ViewNote from './ViewNote';
 import config from '../../../../config';
+import Team from '../../../Team/Team';
 
 interface NoteGridProps {
     list: {
@@ -74,6 +83,7 @@ function Notes() {
     const isPentester = Cookies.get('Role') === '1';
     const [count, setCount] = useState(0);
     const navigate = useNavigate();
+    const [currentMission, setCurrentMission] = useState(1);
 
     const changeMission = (state: string) => {
         if (state === 'plus') {
@@ -90,6 +100,10 @@ function Notes() {
                 setCount(count - 1);
             }
         }
+    };
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setCurrentMission(Number(event.target.value));
     };
 
     const getMission = async () => {
@@ -146,6 +160,26 @@ function Notes() {
             });
     };
 
+    const findMission = () => {
+        let find: any = null;
+
+        for (let i = 0; i < idMission.length; i += 1) {
+            find = idMission.filter((elem: any) => elem.id === currentMission);
+        }
+        return find[0];
+    };
+
+    const findCount = () => {
+        let value = 0;
+
+        for (let i = 0; i < list.length; i += 1) {
+            if (list[i].id === currentMission) {
+                value = i;
+            }
+        }
+        return value;
+    };
+
     useEffect(() => {
         getMission();
     }, []);
@@ -192,6 +226,47 @@ function Notes() {
                 </Stack>
             ) : (
                 <div>
+                    <FormControl
+                        sx={{
+                            paddingY: 2,
+                            width: '100%',
+                            marginTop: '10px',
+                        }}
+                        size="small"
+                    >
+                        <InputLabel
+                            id="Team"
+                            sx={{
+                                fontFamily: 'Poppins-Regular',
+                                fontSize: '14px',
+                            }}
+                        >
+                            Team
+                        </InputLabel>
+                        <Select
+                            labelId="Mission"
+                            id="Mission-select"
+                            value={currentMission.toString()}
+                            required
+                            label="Mission"
+                            onChange={handleChange}
+                        >
+                            {idMission!.map((current) => {
+                                return (
+                                    <MenuItem
+                                        sx={{
+                                            fontFamily: 'Poppins-Regular',
+                                            fontSize: '14px',
+                                        }}
+                                        value={current.id}
+                                    >
+                                        {current.title}
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                    {/* </FormControl>
                     <Stack
                         direction="row"
                         justifyContent="start"
@@ -225,7 +300,7 @@ function Notes() {
                                 color="rebeccapurple"
                             />
                         </a>
-                    </Stack>
+                    </Stack> */}
                     <Divider variant="middle" />
                     <div className="container-note cards">
                         {isPentester && (
@@ -252,14 +327,13 @@ function Notes() {
                         {modal && (
                             <AddNote
                                 func={modalClick}
-                                count={count}
-                                idMission={idMission}
+                                mission={findMission()}
                             />
                         )}
                         {list[count].notes !== undefined && (
                             <NoteGrid
                                 list={list}
-                                count={count}
+                                count={findCount()}
                                 displayed={displayed}
                                 viewClick={viewClick}
                             />

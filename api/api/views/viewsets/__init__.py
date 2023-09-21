@@ -26,6 +26,8 @@ from api.models import USER_ROLES, Manager, Pentester, Team, get_user_model
 from api.permissions import IsManager, IsLinkedToData, IsPentester, PostOnly, ReadOnly
 from api.services.s3 import S3Bucket
 
+from django.db.models import Q
+
 
 class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     """
@@ -57,21 +59,35 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         security=['Bearer'],
         tags=['Team'],
     )
+    def get_queryset(self):
+        owner = EmailBackend().get_user_by_email(self.request.user.email)
+        if owner is None:
+            return Team.objects.none()
+
+        owner_model = get_user_model(owner)
+        if USER_ROLES[owner.role] == 'manager':
+            queryset = Team.objects.filter(leader=owner_model.id)
+        else:
+            queryset = Team.objects.filter(members__in=[owner_model.id])
+
+        return queryset
+
     def list(self, request, *args, **kwargs):
         owner = EmailBackend().get_user_by_email(request.user.email)
+        name_query = request.query_params.get('search', None)
+
         if owner is None:
             return Response({
                 'error': 'user does not exist',
             }, status=HTTP_400_BAD_REQUEST)
 
-        owner_model = get_user_model(owner)
-        if USER_ROLES[owner.role] == 'manager':
-            teams = Team.objects.filter(leader=owner_model.id)
-            self.queryset = teams
-            return super().list(request, *args, **kwargs)
-        teams = Team.objects.filter(members__in=[owner_model.id])
-        self.queryset = teams
-        return super().list(request, *args, **kwargs)
+        queryset = self.get_queryset()
+
+        if name_query:
+            queryset = queryset.filter(Q(name=name_query))
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         operation_description="Creates a team. Must be done by a Manager.",
@@ -182,6 +198,17 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     permission_classes = [permissions.IsAuthenticated, IsManager | IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
+    
+    def list(self, request, *args, **kwargs):
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            teams = self.get_queryset().filter(Q(auth__username=name_query))
+            serializer = self.get_serializer(teams, many=True)
+            return Response(serializer.data)
+
+        # If no query, just do the normal `list()`
+        return super().list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
@@ -203,6 +230,17 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
     permission_classes = [permissions.IsAuthenticated & IsManager]
     authentication_classes = [TokenAuthentication]
     serializer_class = ManagerSerializer
+
+    def list(self, request, *args, **kwargs):
+        name_query = request.query_params.get('search', None)
+
+        if name_query:
+            teams = self.get_queryset().filter(Q(auth__username=name_query))
+            serializer = self.get_serializer(teams, many=True)
+            return Response(serializer.data)
+
+        # If no query, just do the normal `list()`
+        return super().list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:

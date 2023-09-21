@@ -160,3 +160,26 @@
 .modal-card-secu {
     max-width: 700px !important;
 }
+
+.subHeader {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.submenu-security button {
+    min-width: 2rem;
+    background-color: transparent;
+    text-transform: uppercase;
+    color: var(--gray-btn);
+    font-family: 'Poppins-medium';
+    font-size: 16px;
+    border-radius: 0;
+}
+
+.submenu-security button:hover, button.active {
+    color: var(--primary-hover-btn);
+    border-bottom: 1px var(--primary-hover-btn) solid;
+    transition: 0.5s ease-in-out;
+}

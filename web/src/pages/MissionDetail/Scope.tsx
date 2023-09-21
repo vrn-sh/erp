@@ -128,6 +128,7 @@ export default function Scope(/* need to add list as a param here */) {
                 },
             })
             .then((data) => {
+                setScope(data.data.scope);
                 setTitle(data.data.title);
                 setEnd(dayjs(data.data.end));
                 setStart(dayjs(data.data.start));
@@ -186,7 +187,6 @@ export default function Scope(/* need to add list as a param here */) {
 
     useEffect(() => {
         setMissionId(location.state.missionId);
-        // setScope(location.state.scopeList);
     }, []);
 
     useEffect(() => {
