@@ -4,7 +4,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: start;
+    text-align: center;
     margin: 10%;
     height: 100vh;
     z-index: 10;
@@ -12,7 +12,7 @@
 
 .about-main-row {
     display: flex;
-    width: 90%;
+    width: 100%;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -24,7 +24,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50%;
     margin-right: 2vw;
     text-decoration: none;
 }
@@ -69,8 +68,8 @@
 }
 
 .about-more {
-    width: 90%;
-    margin-top: 1rem;
+    // width: 90%;
+    // margin-top: 1rem;
 }
 
 .about-more h2 {
@@ -92,7 +91,7 @@
 
 @media only screen and (max-width: 700px) {
     .about-more {
-        display: none;
+
     }
     .about-main-row {
         flex-direction: column;
@@ -122,4 +121,8 @@
     .about-bullets {
         // display: none;
     }
+}
+
+.title {
+    color: var(--primary-btn);
 }
