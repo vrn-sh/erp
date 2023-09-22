@@ -33,7 +33,7 @@ const [formData, setFormData] = useState<{
     });
 
     // Function to handle form input changes
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
@@ -43,7 +43,7 @@ const [formData, setFormData] = useState<{
         console.log("submitForm");
         try {
             const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-            const apiUrl = `http://localhost:5600/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
+            const apiUrl = `http://voron.djnn.sh/saas/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
     
             console.log("Before fetch");
     
@@ -190,7 +190,6 @@ const [formData, setFormData] = useState<{
                     </Modal>
                 </form>
             </div>
-
             <div className="assigned-missions">
                 <DashboardMission />
             </div>
