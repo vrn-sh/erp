@@ -30,39 +30,37 @@ interface NoteGridProps {
 }
 
 function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
-
-    if (list[count].notes) 
-    return list[count].notes.map((note: IDashboardNotes, index: number) => {
-        return (
-            <div className="card" key={`component-${note.id}`}>
-                <div>
-                    <h2 className="heading">{note.title}</h2>
-                    <p className="card-content">{note.content}</p>
+    if (list[count].notes)
+        return list[count].notes.map((note: IDashboardNotes, index: number) => {
+            return (
+                <div className="card" key={`component-${note.id}`}>
+                    <div>
+                        <h2 className="heading">{note.title}</h2>
+                        <p className="card-content">{note.content}</p>
+                    </div>
+                    <footer>
+                        {/* {note.author !== null ? note.author.toString() : 1} */}
+                        <a
+                            role="button"
+                            className="button__link"
+                            onKeyDown={() => {
+                                viewClick(index);
+                            }}
+                            tabIndex={0}
+                            onClick={() => {
+                                viewClick(index);
+                            }}
+                            color="rebeccapurple"
+                        >
+                            View more
+                        </a>
+                    </footer>
+                    {displayed === index && (
+                        <ViewNote note={note} func={() => viewClick(note.id)} />
+                    )}
                 </div>
-                <footer>
-                    {/* {note.author !== null ? note.author.toString() : 1} */}
-                    <a
-                        role="button"
-                        className="button__link"
-                        onKeyDown={() => {
-                            viewClick(index);
-                        }}
-                        tabIndex={0}
-                        onClick={() => {
-                            viewClick(index);
-                        }}
-                        color="rebeccapurple"
-                    >
-                        View more
-                    </a>
-                </footer>
-                {displayed === index && (
-                    <ViewNote note={note} func={() => viewClick(note.id)} />
-                )}
-            </div>
-        );
-    });
-    else <></>
+            );
+        });
 }
 
 function Notes() {
