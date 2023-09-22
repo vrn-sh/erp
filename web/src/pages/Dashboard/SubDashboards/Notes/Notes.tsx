@@ -30,6 +30,8 @@ interface NoteGridProps {
 }
 
 function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
+
+    if (list[count].notes) 
     return list[count].notes.map((note: IDashboardNotes, index: number) => {
         return (
             <div className="card" key={`component-${note.id}`}>
@@ -60,6 +62,7 @@ function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
             </div>
         );
     });
+    else <></>
 }
 
 function Notes() {
@@ -210,7 +213,7 @@ function Notes() {
 
     return (
         <div>
-            {!idMission[count].title ? (
+            {!idMission ? (
                 <Stack spacing={4}>
                     <h2>Create a mission to add a note</h2>
                     <button
@@ -330,7 +333,7 @@ function Notes() {
                                 mission={findMission()}
                             />
                         )}
-                        {list[count].notes !== undefined && (
+                        {findCount() !== 0 && (
                             <NoteGrid
                                 list={list}
                                 count={findCount()}
