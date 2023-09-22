@@ -137,7 +137,7 @@ export default function SubDashboard() {
             <div className="page-info">
                 <h1>Welcome to your dashboard</h1>
                 {/* Render a button to open the modal */}
-                <button className="btn" onClick={openModal}>
+                <button type="button" className="btn" onClick={openModal}>
                     General payload
                 </button>
                 <form
@@ -195,8 +195,8 @@ export default function SubDashboard() {
                             </div>
                         </div>
                         {/* Map over the formRows array to generate form rows */}
-                        {formRows.map((row, index) => (
-                            <div className="form-row" key={index}>
+                        {formRows.map((row) => (
+                            <div className="form-row">
                                 <div className="column">
                                     <div className="small-row">{row.label}</div>
                                 </div>
@@ -228,8 +228,12 @@ export default function SubDashboard() {
                                 </div>
                             </div>
                         ))}
-                        <button onClick={submitForm}>Submit</button>
-                        <button onClick={closeModal}>Close</button>
+                        <button type="button" onClick={submitForm}>
+                            Submit
+                        </button>
+                        <button type="button" onClick={closeModal}>
+                            Close
+                        </button>
                     </Modal>
                 </form>
             </div>
