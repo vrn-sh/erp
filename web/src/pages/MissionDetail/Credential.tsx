@@ -139,11 +139,11 @@ export default function Credentials({ idMission }: CredentialsProps) {
             console.error(error);
         }
     };
-    
-    function renderCredentialRows(credentials) {
+
+    function renderCredentialRows() {
         const credentialRows: JSX.Element[] = []; // Specify the type explicitly
 
-        for (let i = 0; i < credentials.length; i++) {
+        for (let i = 0; i < credentials.length; i += 1) {
             const credential = credentials[i] as Credential;
 
             credentialRows.push(
@@ -213,7 +213,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            renderCredentialRows(credentials)
+                            renderCredentialRows()
                         )}
                     </TableBody>
                 </Table>
