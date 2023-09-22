@@ -7,11 +7,12 @@ from api.models.mission import Mission
 from api.models.report.generate_html import generate_vulns_detail
 from rest_framework.response import Response
 from api.models.report.report import ReportTemplate
+from rest_framework.status import HTTP_200_OK
 
 
 class AcademicTemplate:
     
-    def dump_report(self,  mission: Mission, dir_path: str, download: bool=True) -> str:
+    def dump_report(self,  mission: Mission, dir_path: str, download: bool=True) -> str | Response:
         template = \
         '''
             <!DOCTYPE html>
@@ -55,7 +56,7 @@ class AcademicTemplate:
                    css_style=ReportTemplate.objects.get(name='academic').css_style)
         
         if not download:
-            return Response(template, status=status.HTTP_200_OK)
+            return Response(template, status=HTTP_200_OK)
 
         os.mkdir(dir_path, dir_fd=None)
         path_to_file = f'{dir_path}/report.pdf'
