@@ -15,24 +15,24 @@ import config from '../../../../config';
 const templates = [
     // { id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
     {
-        id: 1,
+        id: 0,
         name: 'academic',
         subtitle: 'Academic Style',
         thumbnail: AcademicTemplate,
     },
     {
-        id: 2,
+        id: 1,
         name: 'red4sec',
         subtitle: 'Red4Sec Style',
         thumbnail: Red4SecTemplate,
     },
     {
-        id: 3,
+        id: 2,
         name: 'hackmanit',
         subtitle: 'Hackmanit Style',
         thumbnail: HackmanitTemplate,
     },
-    { id: 4, name: 'NASA', subtitle: 'NASA Style', thumbnail: NASATemplate },
+    { id: 3, name: 'NASA', subtitle: 'NASA Style', thumbnail: NASATemplate },
 ];
 
 // type for setMD and setTemplate
@@ -78,6 +78,7 @@ function DocumentTemplates({
             <div className="template-row">
                 {templates.map((template) => (
                     <button
+                        style={{ minWidth: '0%' }}
                         type="button"
                         onKeyDown={() => {
                             handleTemplateSelection(template.id);

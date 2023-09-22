@@ -230,7 +230,7 @@ class ReportHtml(models.Model):
             
         }
         ]
-        return list(filter(lambda a: a['template_id'] == self.template.pk, header_templates))[0]['html_header']
+        return list(filter(lambda a: a['name'] == self.template.name, header_templates))[0]['html_header']
 
     def generate_project_info(self):
 

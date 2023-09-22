@@ -8,8 +8,6 @@ from api.models.report.report import ReportTemplate
 class Command(BaseCommand):
     """Command creating report templates information"""
     def handle(self, *_, **__):
-
-        if ReportTemplate.objects.count() == 0:
             templates = [
                 ('red4sec',
                  self.read_css('./api/pdf-templates/red4sec-template/main.css'),
@@ -74,19 +72,6 @@ class Command(BaseCommand):
                  '''
     <div class="cover-page">
         <header>
-            <style>
-                header .identity {
-                    display: flex;
-                }
-
-                header .identity .info p:first-child {
-                    font-size: 2.5rem;
-                }
-
-                header .identity .info p {
-                    font-size: 1.5rem;
-                }
-            </style>
             <div class="identity">
                 <img class="logo"
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAEN65TxlSnQM7q0XFcfdpqZkxhnIWs4BUqg&usqp=CAU"
@@ -117,8 +102,6 @@ class Command(BaseCommand):
                 ReportTemplate(name=name, css_style=css, cover_html=cover_html).save()
                 print('[+] All report templates created.')
 
-        else:
-            print('[!] All report templates have already been created.')
 
     def read_css(self, css_relative_path) -> str:
         absolute_path = os.path.abspath(css_relative_path.replace("api/", ""))
