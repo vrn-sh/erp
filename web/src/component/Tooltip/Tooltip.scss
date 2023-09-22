@@ -1,0 +1,64 @@
+/* Tooltip container positioned at the bottom right */
+.tooltip-container {
+  position: absolute;
+   top: 0; /* Adjust as needed */
+  left: 0; /* Adjust as needed */
+  //width: 100%; /* Make sure it covers the entire screen */
+  //height: 100%;
+  display: flex;
+  align-items: center;
+
+  /* Question mark icon */
+  .question-mark {
+    padding: 4px;
+    font-weight: bold;
+    position: fixed;
+    top: 90%;
+    left: 90%;
+    font-size: 24px;
+    margin-right: 8px;
+    background-color: var(--primary-btn);
+    color: white;
+    width: 45px;
+    height: 45px;
+    // border radius to make it a circle
+    border-radius: 100%;
+    &:hover {
+        background-color: var(--primary-hover-btn);
+    }
+  }
+
+  /* Tooltip (initially hidden) */
+  .tooltip {
+    animation: fadeIn 0.3s ease-in-out;
+    display: none;
+    position: fixed;
+    width: 25em;
+    background-color: #fff;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    padding: 2em;
+    z-index: 5;
+      top: 32%;
+      left: 42%;
+
+    /* Tooltip content */
+    .tooltip-content {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+}
