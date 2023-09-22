@@ -139,6 +139,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
             console.error(error);
         }
     };
+    
     function renderCredentialRows(credentials) {
         const credentialRows: JSX.Element[] = []; // Specify the type explicitly
 
