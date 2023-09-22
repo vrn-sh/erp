@@ -72,22 +72,6 @@ class Command(BaseCommand):
                 ('NASA',
                  self.read_css('./api/pdf-templates/NASA-template/main.css'),
                  '''
-    <style>
-        body {
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            padding: 2em 6.5em;
-            margin: 30px;
-        }
-
-        .divider-x {
-            border-bottom: 6px solid rgb(241, 47, 73);
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            top: 0;
-            left: 0;
-        }
-    </style>
     <div class="cover-page">
         <header>
             <style>
@@ -113,30 +97,12 @@ class Command(BaseCommand):
             </div>
         </header>
         <div class="title">
-            <style>
-                .title {
-                    padding-top: 8em;
-                }
-
-                .title h1 {
-                    font-variant: small-caps;
-                    font-size: 3em;
-                }
-            </style>
             <div class="divider-x"></div>
             <h1>{mission_title}</h1>
             <h2>{report_date}</h2>
             <div class="divider-x"></div>
         </div>
         <footer id="footer">
-            <style>
-                #footer p {
-                    position: absolute;
-                    bottom: 0;
-                    width: 100%;
-                    height: 2.5rem;  
-                }
-            </style>
             <p>Report No. {report_version}</p>
         </footer>
     </div>

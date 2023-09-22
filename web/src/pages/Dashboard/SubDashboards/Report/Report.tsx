@@ -13,7 +13,7 @@ import config from '../../../../config';
 import Cookies from 'js-cookie';
 
   const templates = [
-    { id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
+    //{ id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
     { id: 1, name: 'academic', subtitle: 'Academic Style', thumbnail: AcademicTemplate },
     { id: 2, name: 'red4sec', subtitle: 'Red4Sec Style', thumbnail: Red4SecTemplate },
     { id: 3, name: 'hackmanit', subtitle: 'Hackmanit Style', thumbnail: HackmanitTemplate },
