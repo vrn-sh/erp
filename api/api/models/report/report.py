@@ -36,12 +36,20 @@ class ReportHtml(models.Model):
         if self.template.name == "academic":
             raise Exception("Academic posses its own class to generate Cover page.")
         if self.template:
-            return self.template.cover_html.format(
+            cover_html = self.template.cover_html.format(
                 mission_title=self.mission.title,
                 report_version=self.version,
                 report_date=date.today().strftime('%Y-%m-%d'),
                 team_name=self.mission.team.name
             )
+            return '''
+            <body>
+                <style>
+                {css_style}
+                </style>
+            {cover}
+            </body>
+            '''.format(cover=cover_html, css_style=self.template.css_style)
 
     def gen_header(self, title: str) -> str:
 
