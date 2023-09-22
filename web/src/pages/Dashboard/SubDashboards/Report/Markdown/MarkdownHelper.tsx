@@ -31,7 +31,6 @@ export default function MarkdownHelper() {
                     <p className="help-text">
                         This makes the content between the ** bold
                     </p>
-
                 </li>
             </ul>
             <ul>
@@ -48,7 +47,6 @@ export default function MarkdownHelper() {
                     <p className="help-text">
                         Putting one * in front of a line makes a list
                     </p>
-
                 </li>
             </ul>
             <ul>
@@ -58,7 +56,6 @@ export default function MarkdownHelper() {
                         This one is to generate a whole new page
                     </p>
                 </li>
-
             </ul>
         </div>
     );

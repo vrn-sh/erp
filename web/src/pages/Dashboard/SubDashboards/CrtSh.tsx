@@ -4,7 +4,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
-import { SelectMission } from '../../../component/SelectMission';
+import SelectMission from '../../../component/SelectMission';
 
 export default function CrtSh() {
     const [open, setOpen] = useState(false);
@@ -43,7 +43,6 @@ export default function CrtSh() {
             },
         },
     ]);
-
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTmpIdentity(inputIdentity);
@@ -158,7 +157,10 @@ export default function CrtSh() {
     return (
         <>
             <div className="crt_input">
-                <SelectMission setMissionId={setMissionId} missionId={missionId} />
+                <SelectMission
+                    setMissionId={setMissionId}
+                    missionId={missionId}
+                />
                 <input
                     className="crt-form-control"
                     placeholder="Enter an Identity"
