@@ -110,9 +110,18 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5ed
 DEBUG = is_localhost(DOMAIN_NAME)                                           # returns true if not in production
 ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 
-CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
-CORS_ORIGIN_ALLOW_ALL = is_localhost(DOMAIN_NAME)                           # returns true if not in production
+# CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
+# CORS_ORIGIN_ALLOW_ALL = is_localhost(DOMAIN_NAME)                           # returns true if not in production
+CORS_ALLOW_ALL_ORIGINS = True if is_localhost(DOMAIN_NAME) else False
 
+# Whitelist specific origins if CORS_ALLOW_ALL_ORIGINS is set to False
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',  # Update with the address of your React app in development
+    # Add other origins as needed for your application
+]
+
+# Allow credentials (cookies, authorization headers) to be sent with the CORS request.
+CORS_ALLOW_CREDENTIALS = True
 
 
 if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0') == '1':
