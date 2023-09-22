@@ -25,7 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import config from '../../config';
 
 interface Credential {
-    id: number; // Ajout de l'ID pour identifier chaque credential
+    id: number;
     service: string;
     login: string;
     password: string;
@@ -34,12 +34,14 @@ interface Credential {
 }
 
 interface CredentialsProps {
-    idMission: number; // Assurez-vous que idMission est de type number
+    idMission: number;
 }
 
 export default function Credentials({ idMission }: CredentialsProps) {
     const [credentials, setCredentials] = useState<Credential[]>([]);
-    const [newCredential, setNewCredential] = useState<Omit<Credential, 'id'>>({
+    const [newCredential, setNewCredential] = useState<Credential>({
+        // Changed the type to Credential
+        id: 0, // Assign a temporary ID for the new credential
         service: '',
         login: '',
         password: '',
@@ -53,15 +55,13 @@ export default function Credentials({ idMission }: CredentialsProps) {
 
     const addCredential = async () => {
         try {
-            const chaine = String(idMission);
-            console.log(chaine);
             const response = await axios.post(
                 `${config.apiUrl}/credentials`,
                 {
                     login: newCredential.login,
                     password: newCredential.password,
                     service: newCredential.service,
-                    mission_id: chaine.toString(),
+                    mission_id: idMission, // Use the actual ID, no need to convert to a string
                 },
                 {
                     headers: {
@@ -75,12 +75,13 @@ export default function Credentials({ idMission }: CredentialsProps) {
 
             // Mettre à jour la liste des credentials avec la nouvelle credential ajoutée
             setCredentials((prevCredentials) => [
-                ...prevCredentials,
+                ...(Array.isArray(prevCredentials) ? prevCredentials : []),
                 addedCredential,
             ]);
 
             // Réinitialiser le formulaire
             setNewCredential({
+                id: 0,
                 service: '',
                 login: '',
                 password: '',
@@ -92,6 +93,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
             console.error(error);
         }
     };
+
     const handleCredentialChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -100,10 +102,15 @@ export default function Credentials({ idMission }: CredentialsProps) {
             [event.target.name]: event.target.value,
         }));
     };
-
     const togglePasswordVisibility = (index: number) => {
-        setCredentials((prevCredentials) =>
-            prevCredentials.map((credential, i) => {
+        setCredentials((prevCredentials) => {
+            if (!Array.isArray(prevCredentials)) {
+                // If prevCredentials is not an array, return an empty array as a fallback
+                return [];
+            }
+
+            // Create a new array with updated credentials
+            return prevCredentials.map((credential, i) => {
                 if (i === index) {
                     return {
                         ...credential,
@@ -111,14 +118,14 @@ export default function Credentials({ idMission }: CredentialsProps) {
                     };
                 }
                 return credential;
-            })
-        );
+            });
+        });
     };
 
     const fetchCredentials = async () => {
         try {
             const response = await axios.get(
-                `${config.apiUrl}/credentials?mission_id=${idMission}`, // Utilisation de la requête avec des paramètres de requête
+                `${config.apiUrl}/credentials?mission_id=${idMission}`,
                 {
                     headers: {
                         'Content-type': 'application/json',
@@ -132,6 +139,38 @@ export default function Credentials({ idMission }: CredentialsProps) {
             console.error(error);
         }
     };
+
+    function renderCredentialRows(credentials) {
+        const credentialRows: JSX.Element[] = []; // Specify the type explicitly
+
+        for (let i = 0; i < credentials.length; i++) {
+            const credential = credentials[i] as Credential;
+
+            credentialRows.push(
+                <TableRow key={credential.id}>
+                    <TableCell>{credential.service}</TableCell>
+                    <TableCell>{credential.login}</TableCell>
+                    <TableCell>
+                        {credential.passwordVisible
+                            ? credential.password
+                            : '********'}
+                    </TableCell>
+                    <TableCell>
+                        <IconButton onClick={() => togglePasswordVisibility(i)}>
+                            {credential.passwordVisible ? (
+                                <AiOutlineEyeInvisible />
+                            ) : (
+                                <AiOutlineEye />
+                            )}
+                        </IconButton>
+                    </TableCell>
+                    <TableCell>{credential.comments}</TableCell>
+                </TableRow>
+            );
+        }
+
+        return credentialRows;
+    }
 
     useEffect(() => {
         fetchCredentials();
@@ -167,64 +206,15 @@ export default function Credentials({ idMission }: CredentialsProps) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            <TableCell>{newCredential.service}</TableCell>
-                            <TableCell>{newCredential.login}</TableCell>
-                            <TableCell>
-                                {newCredential.passwordVisible
-                                    ? newCredential.password
-                                    : '********'}
-                            </TableCell>
-                            <TableCell>
-                                <IconButton
-                                    onClick={() =>
-                                        setNewCredential((prevCredential) => ({
-                                            ...prevCredential,
-                                            passwordVisible:
-                                                !prevCredential.passwordVisible,
-                                        }))
-                                    }
-                                >
-                                    {newCredential.passwordVisible ? (
-                                        <AiOutlineEyeInvisible />
-                                    ) : (
-                                        <AiOutlineEye />
-                                    )}
-                                </IconButton>
-                            </TableCell>
-                            <TableCell>{newCredential.comments}</TableCell>
-                        </TableRow>
-                        {/*
-              credentials.length === 0 ?(
-                <TableRow>
-                  <TableCell colSpan={5}>No credentials available.</TableCell>
-                </TableRow>
-              ):(
-                credentials.map((credential, index) => (
-                  <TableRow key={credential.id}>
-                    <TableCell>{credential.service}</TableCell>
-                    <TableCell>{credential.login}</TableCell>
-                    <TableCell>
-                      {credential.passwordVisible
-                        ? credential.password
-                        : '********'}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={() => togglePasswordVisibility(index)}
-                      >
-                        {credential.passwordVisible ? (
-                          <AiOutlineEyeInvisible />
+                        {credentials.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5}>
+                                    No credentials available.
+                                </TableCell>
+                            </TableRow>
                         ) : (
-                          <AiOutlineEye />
+                            renderCredentialRows(credentials)
                         )}
-                      </IconButton>
-                    </TableCell>
-                    <TableCell>{credential.comments}</TableCell>
-                  </TableRow>
-                ))
-              )
-                        */}
                     </TableBody>
                 </Table>
             </TableContainer>
