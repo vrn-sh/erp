@@ -50,10 +50,10 @@ export default function CreateMission() {
             })
             .then((data) => {
                 const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
+                for (let i = 0; i < data.data.length; i += 1) {
                     tab.push({
-                        id: data.data.results[i].id,
-                        name: data.data.results[i].name,
+                        id: data.data[i].id,
+                        name: data.data[i].name,
                     });
                 }
                 setTeamList(tab);
