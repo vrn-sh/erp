@@ -75,10 +75,10 @@ export default function Mission() {
             .then(async (data) => {
                 const tab = [];
                 const newData = await data.data;
-                for (let i = 0; i < newData.results.length; i += 1) {
+                for (let i = 0; i < newData.length; i += 1) {
                     tab.push({
-                        id: data.data.results[i].id,
-                        name: data.data.results[i].name,
+                        id: data.data[i].id,
+                        name: data.data[i].name,
                     });
                 }
                 setTeamList(tab);
@@ -204,11 +204,10 @@ export default function Mission() {
         });
     };
 
-    const NavMissionDetail = (id: number, scope: any) => {
+    const NavMissionDetail = (id: number) => {
         navigate('/mission/detail', {
             state: {
                 missionId: id,
-                scopeList: scope,
             },
         });
     };
@@ -319,10 +318,7 @@ export default function Mission() {
                                                 value="Open"
                                                 className="openBtn"
                                                 onClick={() =>
-                                                    NavMissionDetail(
-                                                        mission.id,
-                                                        mission.scope
-                                                    )
+                                                    NavMissionDetail(mission.id)
                                                 }
                                             />
                                             {isPentester && (

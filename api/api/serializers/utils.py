@@ -6,7 +6,7 @@ import base64
 import re
 from django.db.models import Model
 from rest_framework.serializers import ModelSerializer, Serializer
-from typing import Any, Callable, List, Optional, OrderedDict
+from typing import Any, List, Optional, OrderedDict
 
 
 def create_instance(
@@ -15,8 +15,8 @@ def create_instance(
         object_name: str,
         ) -> Model:
     """create a single instance of a Class from an object, using a serializers's validated_data"""
-    object_data: dict[str, str] = data.pop(object_name)
-    serializer: Serializer = class_serializer(data=object_data)
+    object_data: dict[str, str] = data.pop(object_name)  # type: ignore
+    serializer: Serializer = class_serializer(data=object_data)  # type: ignore
 
     if serializer.is_valid():
         return serializer.create(object_data)
@@ -30,9 +30,9 @@ def get_instance(
         ) -> OrderedDict[Any, Any]:
     """get a single instance of a Class from object, using a serializer's validated_data"""
     if data_id is None:
-        return {}
-    obj = instance_class.objects.get(pk=data_id)
-    return class_serializer(read_only=True, many=False, data=obj).data
+        return {}  # type: ignore
+    obj = instance_class.objects.get(pk=data_id)  # type: ignore
+    return class_serializer(read_only=True, many=False, data=obj).data  # type: ignore
 
 
 def get_serialized(class_serializer: ModelSerializer, ids: List[int], obj_type: Model) -> Serializer:
@@ -40,11 +40,11 @@ def get_serialized(class_serializer: ModelSerializer, ids: List[int], obj_type: 
 
     objects = []
     for i in ids:
-        obj = obj_type.objects.get(pk=i)
+        obj = obj_type.objects.get(pk=i)  # type: ignore
         objects.append(obj)
 
     # now, we serialize this
-    sr: Serializer = class_serializer(objects, many=True)
+    sr: Serializer = class_serializer(objects, many=True)  # type: ignore
     return sr
 
 
@@ -59,7 +59,7 @@ def get_multiple_instances(
     objects: List[Model] = []
 
     for o in object_data:
-        model.objects.get_or_create(**o)
+        model.objects.get_or_create(**o)  # type: ignore
         objects.append(model)
 
     return objects

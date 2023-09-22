@@ -1,87 +1,296 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 import './Profile.scss';
 import '../Settings/Settings.scss';
+import { useNavigate } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
+import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
+import TableSection from './TableSection';
 
-type InputSizes = 'small' | 'medium' | 'large';
-
-type InputProps = {
-    label: string;
-    size: InputSizes;
+type InfoProps = {
+    t1: string;
+    t2: string;
+    c1: string;
+    c2: string;
 };
 
-function Input({ label, size }: InputProps) {
-    const [value, setValue] = useState('');
-
+function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
     return (
-        <div className={`input input-${size}`}>
-            <label htmlFor={`input-${label}`}>{label}</label>
-            <input
-                id={`input-${label}`}
-                type="text"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-            />
+        <div>
+            <div className="profile-infos">
+                <p>{t1}</p>
+                <span>{c1}</span>
+            </div>
+            <div className="profile-infos">
+                <p>{t2}</p>
+                <span>{c2}</span>
+            </div>
         </div>
     );
 }
 
 export default function ProfilePage() {
+    const role = Cookies.get('Role');
+    const navigate = useNavigate();
+    const [NumMission, setNumMission] = useState(0);
+    const [coworker, setCowoker] = useState(0);
+    const [userInfos, setUserInfos] = useState({
+        username: '',
+        email: '',
+        first_name: '',
+        last_name: '',
+        profile_image: '',
+        phone_number: '',
+    });
+
+    const [teamList, setTeamList] = useState<
+        {
+            id: number;
+            leader: {
+                id: number;
+                auth: {
+                    username: string;
+                    email: string;
+                    first_name: string;
+                    last_name: string;
+                    last_login: string;
+                    date_joined: string;
+                    password: string;
+                    phone_number: string | null;
+                    role: number;
+                    favorites: string | null;
+                    profile_image: string | null;
+                };
+                creation_date: string;
+            };
+            name: string;
+            people: number;
+        }[]
+    >([]);
+
+    const [missionList, setMissionList] = useState<
+        {
+            id: number;
+            status: string;
+            title: string;
+            scope: string[];
+            team: number;
+        }[]
+    >([]);
+
+    const goToSetting = () => {
+        navigate('/settings');
+    };
+
+    const getUserInfos = async () => {
+        let url = `${config.apiUrl}/`;
+        if (role === '2') url += 'manager';
+        else url += 'pentester';
+        await axios
+            .get(`${url}/${Cookies.get('Id')}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setUserInfos(data.data.auth);
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
+    const getTeams = async () => {
+        await axios
+            .get(`${config.apiUrl}/team?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const res = data.data;
+                const t = [];
+                for (let j = 0; j < res.length; j += 1) {
+                    let f = false;
+                    if (res[j].leader.auth.email === userInfos.email) f = true;
+                    for (let i = 0; i < res[j].members.length; i += 1) {
+                        if (res[j].members[i].auth.email === userInfos.email)
+                            f = true;
+                    }
+                    if (f === true) {
+                        const member = res[j].members.length;
+                        const sum = coworker + member;
+                        delete res[j].members;
+                        res[j].people = member;
+                        setCowoker(sum);
+                        t.push(res[j]);
+                    }
+                }
+                setTeamList(t);
+            });
+    };
+
+    const getMission = async () => {
+        await axios
+            .get(`${config.apiUrl}/mission?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                const res = data.data.results;
+                for (let i = 0; i < res.length; i += 1) {
+                    delete res[i].start;
+                    delete res[i].end;
+                    delete res[i].recon;
+                    delete res[i].bucket_name;
+                    delete res[i].creation_date;
+                    delete res[i].last_updated;
+                    delete res[i].created_by;
+                    delete res[i].last_updated_by;
+                }
+                setMissionList(res);
+                setNumMission(data.data.count);
+            });
+    };
+
+    useEffect(() => {
+        getUserInfos();
+    }, []);
+
+    useEffect(() => {
+        getTeams();
+    }, [userInfos]);
+
+    useEffect(() => {
+        getMission();
+    }, [teamList]);
+
     return (
         <div className="dashboard">
             <SideBar />
             <div className="dashboard_container">
                 <TopBar />
-                <div className="profile-container">
-                    <div className="profile-infos">
-                        <h1>General Infos</h1>
-                        <div className="input-group">
-                            <Input label="First Name" size="medium" />
-                            <Input label="Last Name *" size="medium" />
-                        </div>
-                        <div className="input-group">
-                            <Input label="Age" size="medium" />
-                            <Input label="Gender *" size="medium" />
-                        </div>
-                        <div className="input-group">
-                            <Input label="Email" size="medium" />
-                            <Input label="Phone *" size="medium" />
-                        </div>
-                        <h1>Skills</h1>
-                        <Input label="Skills" size="large" />
-                        <Input label="Certificates" size="medium" />
-                        <Input label="Teams" size="medium" />
-                        <div className="buttons-container">
-                            <button type="submit" className="submit-button">
-                                Update
-                            </button>
+                <div className="dashboard-pages">
+                    <div className="page-info">
+                        <h1>Profile</h1>
+                    </div>
+
+                    <div className="assigned-missions">
+                        <div className="profile-container">
+                            <div className="mainInfo-container">
+                                {/* <img
+                                    className="profile-photo"
+                                    alt="profile"
+                                    src={userInfos.profile_image}
+                                /> */}
+                                {userInfos.profile_image ? (
+                                    <img
+                                        src={userInfos.profile_image} // Affichez l'image depuis l'état local
+                                        alt="Profile"
+                                        className="profile-photo"
+                                    />
+                                ) : (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <FaUser size={32} />
+                                    </div>
+                                )}
+                                <div className="profile-username">
+                                    <h5>{userInfos.username}</h5>
+                                    <p>
+                                        {role === '1' ? 'Pentester' : 'Manager'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <GroupInfo
+                                t1="First name"
+                                t2="Email"
+                                c1={
+                                    userInfos.first_name.length === 0
+                                        ? '-'
+                                        : userInfos.first_name
+                                }
+                                c2={
+                                    userInfos.email.length === 0
+                                        ? '-'
+                                        : userInfos.email
+                                }
+                            />
+
+                            <GroupInfo
+                                t1="Last name"
+                                t2="Co-workers"
+                                c1={
+                                    userInfos.last_name.length === 0
+                                        ? '-'
+                                        : userInfos.last_name
+                                }
+                                c2={String(coworker)}
+                            />
+                            <GroupInfo
+                                t1="Missions"
+                                t2="Teams"
+                                c1={String(NumMission)}
+                                c2={String(teamList.length)}
+                            />
+
+                            <div className="btn-container">
+                                <button
+                                    type="button"
+                                    onClick={goToSetting}
+                                    className="set-button"
+                                >
+                                    Set general informations
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="profile-pic">
-                        <div className="cover-img">
-                            <img
-                                src="../../assets/logo.svg"
-                                alt=""
+                    <div className="page-info">
+                        <h1>Teams</h1>
+                    </div>
+
+                    <div className="assigned-missions">
+                        <div className="profile-container">
+                            <table
                                 style={{
-                                    width: '150px',
-                                    height: '150px',
-                                    marginTop: '100px',
-                                    borderRadius: '50%',
-                                    backgroundColor: 'white',
+                                    textAlign: 'left',
+                                    justifyContent: 'space-between',
                                 }}
-                            />
+                            >
+                                <tbody>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Manager</th>
+                                        <th>Created date</th>
+                                        <th>Members</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    {teamList.map((teamInfo) => {
+                                        return (
+                                            <TableSection
+                                                teamInfo={teamInfo}
+                                                missionList={missionList}
+                                            />
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
-                        <h1>Camelia Sama</h1>
-                        <h3>Pentester Senior</h3>
-                        <p>
-                            Lorem ipsum dolor sit amet,ecenas a eleifend elit.
-                            Curabitur ac vulputate mauris, ut consequat ex.
-                            Phasellus vel justo laoreet, pharetra ex non,
-                            ultricies eros. Suspendisse mollis bibendum justo,
-                            sit amet mattis massa fermentu.
-                        </p>
                     </div>
                 </div>
             </div>

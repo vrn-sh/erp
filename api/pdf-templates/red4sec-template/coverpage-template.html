@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Test Report: DENIC ID Relying Party - Member Login</title>
+</head>
+
+<body>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+             height: 20mm;
+        }
+        .cover-page {
+            width: 100%;
+            display: block;
+            justify-content: space-around;
+            position: relative;
+        }
+
+        .cover-page h1 {
+            position: fixed;
+            top: 550px;
+            width: 100%;
+            font-size: 5.75em;
+            color: rgb(77, 76, 76);
+            text-align: center;
+            margin: auto;
+            z-index: 5;
+        }
+
+        .cover-page h1 span {
+            color: rgba(243, 62, 136, 1) !important;
+        }
+
+        .cover-page svg#wave-bottom {
+            position: fixed;
+            left: 0;
+            top: 1000px;
+            width: 100%;
+            height: 600px;
+        }
+        .cover-page svg#wave-top {
+            position: fixed;
+            left: 0;
+            top: -200px;
+            width: 100%;
+            height: 600px;
+        }
+
+        .bandeau {
+            position: fixed;
+            top: 800px;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            background-color: white;
+        }
+
+        .bandeau h2 {
+            width: 100%;
+            padding: .75rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 3em;
+            color: rgba(255, 85, 11, 1) !important;
+        }
+
+        .bandeau h2 span {
+            font-style: italic;
+        }
+
+        .report-info {
+            text-align: center;
+            color: gray;
+            font-weight: 400;
+            font-size: 1em;
+        }
+    </style>
+
+    <div class="cover-page">
+        <svg id="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <defs>
+                <linearGradient id="url(#sw-gradient-1)" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(243, 62, 172, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path fill="url(#sw-gradient-1)" fill-opacity="0.7" d="M0,160L180,96L360,192L540,224L720,288L900,0L1080,128L1260,128L1440,192L1440,0L1260,0L1080,0L900,0L720,0L540,0L360,0L180,0L0,0Z"></path>
+            <defs>
+                <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(243, 62, 142, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(255, 85, 11, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path fill="url(#sw-gradient-0)" fill-opacity="0.7" d="M0,192L180,192L360,32L540,96L720,64L900,96L1080,224L1260,160L1440,96L1440,0L1260,0L1080,0L900,0L720,0L540,0L360,0L180,0L0,0Z"></path>        </svg>
+        <h1>RED<span>4</span>SEC</h1>
+
+        <svg id="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <defs>
+                <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(243, 62, 142, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(255, 85, 11, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path fill="url(#sw-gradient-0)" fill-opacity="1" d="M0,64L205.7,128L411.4,32L617.1,192L822.9,128L1028.6,160L1234.3,32L1440,288L1440,320L1234.3,320L1028.6,320L822.9,320L617.1,320L411.4,320L205.7,320L0,320Z"></path>
+
+            <defs>
+                <linearGradient id="sw-gradient-1" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(243, 62, 172, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path fill="url(#sw-gradient-1)" fill-opacity="0.7" d="M0,64L205.7,224L411.4,256L617.1,256L822.9,224L1028.6,224L1234.3,32L1440,256L1440,320L1234.3,320L1028.6,320L822.9,320L617.1,320L411.4,320L205.7,320L0,320Z"></path></svg>
+        <div class="bandeau">
+            <h2 id="mission-title">Smart Security Contract Audit</h2>
+            <div class="report-info">
+                <p id="version">Version: 1.2</p>
+                <p id="report-date">25.07.2019</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import '../EditMission/Mission.scss';
 import '../Settings/Settings.scss';
 import {
+    Tooltip,
     FormControl,
     InputLabel,
     Select,
@@ -166,10 +167,6 @@ export default function CreateTeam() {
                             Create new team
                         </h2>
                     </div>
-                    <div className="page-searcher">
-                        <label>Search on page</label>
-                        <input type="text" placeholder="Search..." />
-                    </div>
                 </div>
                 <div className="edit-container">
                     <div
@@ -186,7 +183,7 @@ export default function CreateTeam() {
                     </div>
                     <div className="edit-form">
                         <Input
-                            label="Title"
+                            label="Team Name"
                             labelState={Title}
                             setLabel={setTitle}
                             size="medium"
@@ -206,6 +203,7 @@ export default function CreateTeam() {
                                 value={manager}
                                 label="Manager"
                                 onChange={handleChangeMana}
+                                title="Select the manager for the team"
                             >
                                 {managerList.map((name) => (
                                     <MenuItem key={name.id} value={name.id}>
@@ -214,6 +212,7 @@ export default function CreateTeam() {
                                 ))}
                             </Select>
                         </FormControl>
+
                         <FormControl
                             sx={{ paddingY: 2, width: '100%' }}
                             size="small"
@@ -224,6 +223,7 @@ export default function CreateTeam() {
                                     fontFamily: 'Poppins-Regular',
                                     fontSize: '14px',
                                 }}
+                                title="Select team members"
                             >
                                 Member
                             </InputLabel>
@@ -247,7 +247,7 @@ export default function CreateTeam() {
                                             gap: 0.5,
                                         }}
                                     >
-                                        {Team!.map((value) => (
+                                        {Team?.map((value) => (
                                             <Chip
                                                 key={value}
                                                 variant="outlined"
@@ -258,6 +258,7 @@ export default function CreateTeam() {
                                     </Box>
                                 )}
                                 MenuProps={MenuProps}
+                                title="Select team members"
                             >
                                 {penList.map((name) => (
                                     <MenuItem

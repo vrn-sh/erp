@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
+import SelectMission from '../../../component/SelectMission';
 
 export default function CrtSh() {
     const [open, setOpen] = useState(false);
@@ -27,13 +24,9 @@ export default function CrtSh() {
             not_after: string;
             name: string;
             ca: {
-                caid: number;
-                name: string;
-                parsed_name: {
-                    C: string;
-                    O: string;
-                    CN: string;
-                };
+                C: string;
+                O: string;
+                CN: string;
             };
         }[]
     >([
@@ -44,22 +37,12 @@ export default function CrtSh() {
             not_after: '',
             name: '',
             ca: {
-                caid: 0,
-                name: '',
-                parsed_name: {
-                    C: '',
-                    O: '',
-                    CN: '',
-                },
+                C: '',
+                O: '',
+                CN: '',
             },
         },
     ]);
-    const [list, setList] = useState<
-        {
-            value: number;
-            label: string;
-        }[]
-    >([]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTmpIdentity(inputIdentity);
@@ -96,7 +79,7 @@ export default function CrtSh() {
         axios(
             `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
@@ -105,7 +88,7 @@ export default function CrtSh() {
         )
             .then((data) => {
                 setOpen(true);
-                setCrtData(data.data.dump);
+                setCrtData(data.data);
                 setSuccess(true);
                 setMessage('Succeed to load!', 'success');
             })
@@ -124,7 +107,7 @@ export default function CrtSh() {
         setMessage('Loading...', 'info');
         setOpen(true);
         axios(
-            `http://127.0.0.1:8000/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
+            `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
                 method: 'PATCH',
                 headers: {
@@ -143,34 +126,6 @@ export default function CrtSh() {
                 setMessage(e.response.data.dump[0].error, 'error');
             });
     };
-
-    const getMission = async () => {
-        await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((data) => {
-                const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
-                    const res = data.data.results[i];
-                    tab.push({
-                        value: res.id,
-                        label: res.title,
-                    });
-                }
-                tab.reverse();
-                setList(tab);
-            })
-            .catch((e) => {
-                throw e.message;
-            });
-    };
-    useEffect(() => {
-        getMission();
-    }, []);
 
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 4;
@@ -199,42 +154,13 @@ export default function CrtSh() {
     const changePage = (e: string) => {
         setCurrentPage(parseInt(e, 10));
     };
-    const handleMissionSelect = (event: SelectChangeEvent) => {
-        setMissionId(parseInt(event.target.value, 10));
-    };
-
     return (
         <>
             <div className="crt_input">
-                <FormControl
-                    variant="standard"
-                    sx={{
-                        m: 1,
-                        minWidth: 100,
-                        fontSize: '12px',
-                        margin: '0 1rem',
-                    }}
-                >
-                    <InputLabel id="demo-simple-select-standard-label">
-                        Choose a mission
-                    </InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={JSON.stringify(missionId)}
-                        label="mission"
-                        onChange={handleMissionSelect}
-                    >
-                        {list.map((elem) => {
-                            return (
-                                <MenuItem value={elem.value}>
-                                    {elem.label}
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-
+                <SelectMission
+                    setMissionId={setMissionId}
+                    missionId={missionId}
+                />
                 <input
                     className="crt-form-control"
                     placeholder="Enter an Identity"
@@ -247,6 +173,7 @@ export default function CrtSh() {
                     type="button"
                     onClick={searchIdentity}
                     className="searchBtn"
+                    onKeyDown={handleKeyDown}
                 >
                     Search
                 </button>
@@ -283,7 +210,10 @@ export default function CrtSh() {
                                         <td>{crt.not_before}</td>
                                         <td>{crt.not_after}</td>
                                         <td>{crt.name}</td>
-                                        <td>{crt.ca?.name}</td>
+                                        <td>
+                                            C: {crt.ca?.C} | O: {crt.ca?.O} |
+                                            CN: {crt.ca?.CN}
+                                        </td>
                                     </tr>
                                 </tbody>
                             );

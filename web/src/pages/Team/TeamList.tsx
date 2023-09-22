@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import '../Dashboard/Dashboard.scss';
 import axios from 'axios';
@@ -88,19 +88,18 @@ export default function TeamList() {
             })
             .then((data) => {
                 const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
-                    getMission(data.data.results[i].id);
+                for (let i = 0; i < data.data.length; i += 1) {
+                    getMission(data.data[i].id);
                     tab.push({
-                        id: data.data.results[i].id,
-                        name: data.data.results[i].name,
-                        nbMember: data.data.results[i].members.length,
+                        id: data.data[i].id,
+                        name: data.data[i].name,
+                        nbMember: data.data[i].members.length,
                         nbMission: mission, // get info
-                        manager: data.data.results[i].leader.auth.username, // get info
+                        manager: data.data[i].leader.auth.username, // get info
                     });
                 }
                 tab.reverse();
                 setList(tab);
-                console.log(tab);
             })
             .catch((e) => {
                 throw e.message;
@@ -167,7 +166,13 @@ export default function TeamList() {
                                     return (
                                         <tbody key={team.id}>
                                             <tr key={team.id}>
-                                                <td>{team.name}</td>
+                                                <td>
+                                                    <Link
+                                                        to={`/team/view/${team.id}`}
+                                                    >
+                                                        {team.name}
+                                                    </Link>
+                                                </td>
                                                 <td>{team.manager}</td>
                                                 <td>{team.nbMember}</td>
                                                 <td>{team.nbMission}</td>
