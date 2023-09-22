@@ -30,36 +30,37 @@ interface NoteGridProps {
 }
 
 function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
-    return list[count].notes.map((note: IDashboardNotes, index: number) => {
-        return (
-            <div className="card" key={`component-${note.id}`}>
-                <div>
-                    <h2 className="heading">{note.title}</h2>
-                    <p className="card-content">{note.content}</p>
+    if (list[count].notes)
+        return list[count].notes.map((note: IDashboardNotes, index: number) => {
+            return (
+                <div className="card" key={`component-${note.id}`}>
+                    <div>
+                        <h2 className="heading">{note.title}</h2>
+                        <p className="card-content">{note.content}</p>
+                    </div>
+                    <footer>
+                        {/* {note.author !== null ? note.author.toString() : 1} */}
+                        <a
+                            role="button"
+                            className="button__link"
+                            onKeyDown={() => {
+                                viewClick(index);
+                            }}
+                            tabIndex={0}
+                            onClick={() => {
+                                viewClick(index);
+                            }}
+                            color="rebeccapurple"
+                        >
+                            View more
+                        </a>
+                    </footer>
+                    {displayed === index && (
+                        <ViewNote note={note} func={() => viewClick(note.id)} />
+                    )}
                 </div>
-                <footer>
-                    {/* {note.author !== null ? note.author.toString() : 1} */}
-                    <a
-                        role="button"
-                        className="button__link"
-                        onKeyDown={() => {
-                            viewClick(index);
-                        }}
-                        tabIndex={0}
-                        onClick={() => {
-                            viewClick(index);
-                        }}
-                        color="rebeccapurple"
-                    >
-                        View more
-                    </a>
-                </footer>
-                {displayed === index && (
-                    <ViewNote note={note} func={() => viewClick(note.id)} />
-                )}
-            </div>
-        );
-    });
+            );
+        });
 }
 
 function Notes() {
@@ -210,7 +211,7 @@ function Notes() {
 
     return (
         <div>
-            {!idMission[count].title ? (
+            {!idMission ? (
                 <Stack spacing={4}>
                     <h2>Create a mission to add a note</h2>
                     <button
@@ -330,7 +331,7 @@ function Notes() {
                                 mission={findMission()}
                             />
                         )}
-                        {list[count].notes !== undefined && (
+                        {findCount() !== 0 && (
                             <NoteGrid
                                 list={list}
                                 count={findCount()}
