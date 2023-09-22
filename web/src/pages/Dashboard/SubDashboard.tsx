@@ -20,8 +20,10 @@ export default function SubDashboard() {
         setIsModalOpen(false);
     };
 
-    // State to store form data
-    const [formData, setFormData] = useState({
+// State to store form data
+const [formData, setFormData] = useState<{
+    [key: string]: string;
+    }>({
         lport: '4444',
         laddr: '10.0.2.2',
         exploit: 'x64/shell_reverse_tcp',
@@ -38,10 +40,13 @@ export default function SubDashboard() {
 
     // Function to submit the form data to the specified URL using curl
     async function submitForm() {
+        console.log("submitForm");
         try {
             const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-            const apiUrl = `http://localhost:1337/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
-
+            const apiUrl = `http://localhost:5600/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
+    
+            console.log("Before fetch");
+    
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -51,39 +56,33 @@ export default function SubDashboard() {
                 },
                 body: JSON.stringify(formData),
             });
-
-            if (!response.ok) {
-                throw new Error(`API Request Error: ${response.status}`);
-            }
-
-            var saveBinaryData = function (data, fileName) {
-                var blob = new Blob([data], { type: "application/octet-stream" });
-                var url = window.URL.createObjectURL(blob);
-                
-                var a = document.createElement("a");
-                document.body.appendChild(a);
-                a.style = "display: none";
-                
+    
+            console.log("Response Status Code:", response.status);
+    
+            // Check if the response status is in the success range (e.g., 200-299)
+            if (response.status >= 200 && response.status < 300) {
+                // Read the response body as a blob
+                const fileBlob = await response.blob();
+                console.log("After fetch");
+    
+                const url = window.URL.createObjectURL(fileBlob);
+    
+                const a = document.createElement('a');
                 a.href = url;
-                a.download = fileName;
+                a.download = 'file.exe';
+    
                 a.click();
-                
+    
                 window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            };
-            
-            // Usage:
-            // Replace `binaryData` with your binary data (e.g., the .exe file content)
-            var binaryData = /* ... */;
-            var fileName = "file.exe";
-            
-            saveBinaryData(binaryData, fileName);
-            
-            
+            } else {
+                // Handle error status code (e.g., display an error message)
+                console.error('API Request Error: Status Code ' + response.status);
+            }
         } catch (error) {
             console.error('API Request Error:', error);
         }
     }
+    
     
 
     // Data for the form rows
