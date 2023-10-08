@@ -40,6 +40,10 @@ export default function AddNote({ func, mission }: AddNoteProps) {
     const handleSubmit = async (
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
+        if (title.length === 0 || content.length === 0) {
+            setMessage('Please fill the required contents', 'error');
+            return;
+        }
         await axios
             .post(
                 `${config.apiUrl}/note`,
@@ -80,7 +84,7 @@ export default function AddNote({ func, mission }: AddNoteProps) {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Title</label>
+                        <label>Title *</label>
                         <input
                             type="text"
                             required
@@ -91,7 +95,7 @@ export default function AddNote({ func, mission }: AddNoteProps) {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Content</label>
+                        <label>Content *</label>
                         <textarea
                             rows={8}
                             required

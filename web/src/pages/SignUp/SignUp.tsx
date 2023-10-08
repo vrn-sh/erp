@@ -181,6 +181,20 @@ export default function SignUp() {
         }
     };
 
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [state]);
+
     return (
         <section className="signup-container">
             <div className="signup-text" id="signup-text">
