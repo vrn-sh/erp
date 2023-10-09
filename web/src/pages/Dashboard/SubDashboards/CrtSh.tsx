@@ -76,7 +76,7 @@ export default function CrtSh() {
             return;
         }
         setMessage('Loading...', 'info');
-        axios(
+        await axios(
             `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
                 method: 'GET',
@@ -98,6 +98,7 @@ export default function CrtSh() {
                 setMessage(e.response.data.dump[0].error, 'error');
             });
     };
+
     const updateIdentity = async () => {
         setOpen(true);
         if (missionId === -1 || tmpIdentity.length === 0) {
@@ -106,7 +107,7 @@ export default function CrtSh() {
         }
         setMessage('Loading...', 'info');
         setOpen(true);
-        axios(
+        await axios(
             `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
                 method: 'PATCH',
@@ -154,6 +155,20 @@ export default function CrtSh() {
     const changePage = (e: string) => {
         setCurrentPage(parseInt(e, 10));
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                searchIdentity();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [missionId, tmpIdentity]);
+
     return (
         <>
             <div className="crt_input">

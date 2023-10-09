@@ -76,6 +76,7 @@ export default function Login() {
                         }
                     )
                     .then((e) => {
+                        setMessage('Connecting...', 'success');
                         navigate('/dashboard');
                         Cookies.set('Token', e.data.token, {
                             expires: Date.parse(e.data.expiry),
@@ -89,7 +90,6 @@ export default function Login() {
                         Cookies.set('Fav', '', {
                             expires: Date.parse(e.data.expiry),
                         });
-                        setMessage('connecting...', 'success');
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
