@@ -123,6 +123,7 @@ export default function EditMission() {
     };
 
     const UpdateMission = async () => {
+        setOpen(true);
         if (Team === 0) {
             setMessage('Please choose a team', 'error');
             return;
@@ -172,6 +173,19 @@ export default function EditMission() {
         getTeam();
         getMission();
     }, [id]);
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                UpdateMission();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [Title, start, end, Team, scope]);
 
     return (
         <div className="dashboard">
@@ -313,7 +327,6 @@ export default function EditMission() {
                                 type="submit"
                                 className="submit-button"
                                 onClick={() => {
-                                    setOpen(true);
                                     UpdateMission();
                                 }}
                             >

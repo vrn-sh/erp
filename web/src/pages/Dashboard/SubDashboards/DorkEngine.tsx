@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
 import DorkList from '../../../assets/strings/en/dorks.json';
 import Feedbacks from '../../../component/Feedback';
@@ -48,6 +48,19 @@ export default function DorkEngine() {
         setInputDomain(tmpDomain);
         setMessage('Searching domain', 'success');
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                searchDomain();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [tmpDomain]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 5;
