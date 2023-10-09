@@ -94,6 +94,7 @@ export default function CreateMission() {
     };
 
     const handleSubmit = async () => {
+        setOpen(true);
         if (Team === 0) {
             setMessage('Please choose a team', 'error');
             return;
@@ -133,6 +134,19 @@ export default function CreateMission() {
     useEffect(() => {
         getTeam();
     }, []);
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [Title, start, end, Team, scope]);
 
     return (
         <div className="dashboard">
@@ -292,7 +306,6 @@ export default function CreateMission() {
                                 className="submit-button"
                                 onClick={() => {
                                     handleSubmit();
-                                    setOpen(true);
                                 }}
                             >
                                 Save

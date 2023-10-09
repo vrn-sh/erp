@@ -71,7 +71,6 @@ export default function SecurityUser() {
     };
 
     const handleSubmit = async () => {
-        setOpen(true);
         await axios
             .patch(
                 `${url}/${id}`,
@@ -124,21 +123,19 @@ export default function SecurityUser() {
     };
 
     const submitChangePwd = async () => {
+        setOpen(true);
         if (
             !newPassword ||
             !confirmPassword ||
             newPassword !== confirmPassword
         ) {
-            setOpen(true);
             setMessage(
                 'Please check all the password were filled correctly',
                 'error'
             );
         } else if (newPassword.length < 8 || confirmPassword.length < 8) {
-            setOpen(true);
             setMessage('A password should have at least 8 characters', 'error');
         } else if (await CheckCurrentPassword()) {
-            setOpen(true);
             setMessage('Your current password is not correct', 'error');
         } else handleSubmit();
     };
@@ -146,6 +143,20 @@ export default function SecurityUser() {
     useEffect(() => {
         getUserInfo();
     }, []);
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                setOpen(true);
+                submitChangePwd();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [newPassword, confirmPassword]);
 
     return (
         <div>
