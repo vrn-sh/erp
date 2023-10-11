@@ -54,24 +54,27 @@ export default function Plan() {
             threshold: 0.1,
         };
 
-        const handleIntersect = (entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting && !stoppedCards.includes(entry.target.dataset.index)) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        };
-
-        const observer = new IntersectionObserver((entries) => handleIntersect(entries, observer), observerOptions);
-
-        cardRefs.current.forEach((card, index) => {
-            observer.observe(card);
+    const handleIntersect = (
+        entries: IntersectionObserverEntry[], 
+        observer: IntersectionObserver
+    ) => {
+        entries.forEach((entry: IntersectionObserverEntry) => {
+        if (entry.isIntersecting && !stoppedCards.includes(Number(entry.target.dataset.index) as number)) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
         });
+    };
 
-        return () => {
-            observer.disconnect();
-        };
+    const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => handleIntersect(entries, observer), observerOptions);
+
+    cardRefs.current.forEach((card, index) => {
+        observer.observe(card);
+    });
+
+    return () => {
+        observer.disconnect();
+    };
     }, [stoppedCards]);
 
 
