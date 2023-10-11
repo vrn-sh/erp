@@ -128,13 +128,6 @@ self.assertEqual(
             expected.replace('\t', '')
         )
         '''
-        
-        # Yes there is no tests bc I'm lazy but just to make sure it does not throw any error
-        pages = [
-            (report.generate_cover()),
-            (report.generate_project_info()),
-            (report.generate_condition_and_scope()),
-            (report.generate_weaknesses())
-        ]
+
         # AcademicTemplate().dump_report(Mission.objects.get(pk=mission_id), dir_path="/tmp/test-lol")
         # rmtree("/tmp/test-lol")
