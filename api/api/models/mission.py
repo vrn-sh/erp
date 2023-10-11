@@ -152,4 +152,4 @@ class Credentials(models.Model):
     password: models.CharField = models.CharField(max_length=128)
     service: models.CharField = models.CharField(max_length=128)
     comment: models.CharField = models.CharField(max_length=128, blank=True, null=True)
-    mission: models.ForeignKey = models.ForeignKey(Mission, on_delete=models.CASCADE)
+    mission: models.CharField = models.CharField(max_length=128, blank=True, null=True)

@@ -95,7 +95,6 @@ export default function SecurityTeam() {
     };
 
     const pwdChangeApi = async () => {
-        setOpen(true);
         await axios
             .patch(
                 `${config.apiUrl}/pentester/${MemberSelected}`,
@@ -171,29 +170,40 @@ export default function SecurityTeam() {
     };
 
     const submitChangePwd = async () => {
+        setOpen(true);
         if (
             !newPassword ||
             !confirmPassword ||
             newPassword !== confirmPassword
         ) {
-            setOpen(true);
             setMessage(
                 'Please check all the password were filled correctly',
                 'error'
             );
         } else if (MemberSelected === 0 || Team === 0) {
-            setOpen(true);
             setMessage(
                 'Please select a team then select a member correctly',
                 'error'
             );
         } else if (newPassword.length < 8 || confirmPassword.length < 8) {
-            setOpen(true);
             setMessage('A password should have at least 8 characters', 'error');
         } else pwdChangeApi();
         // Si les mot de passes sont correctes, alors faire la demande d'api pour
         // reset le mot de passe
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                submitChangePwd();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [MemberSelected, newPassword, confirmPassword]);
 
     const handleChange = (event: SelectChangeEvent) => {
         setTeam(Number(event.target.value));
