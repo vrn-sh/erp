@@ -5,6 +5,9 @@ import { useDrawingArea } from '@mui/x-charts/hooks';
 import { styled } from '@mui/material/styles';
 import { Chip } from '@mui/material';
 import * as AiIcons from 'react-icons/ai';
+import Popover from '@mui/material/Popover';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import pp from '../../assets/testpp2.jpg';
 
 type SevProps = {
@@ -89,14 +92,39 @@ function TeamListContainer({ teamTitle }: TeamProps) {
 }
 
 function MissionList({ title, Vuln, date, progressValue }: MissionProps) {
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+        null
+    );
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    const BootstrapButton = styled(Button)({
+        boxShadow: 'none',
+        textTransform: 'none',
+        fontSize: 14,
+        padding: '6px 12px',
+        lineHeight: 1.5,
+        backgroundColor: 'white',
+        fontFamily: 'Poppins-Regular',
+        color: '#7c44f3',
+        '&:hover': {
+            backgroundColor: '#edecee',
+            boxShadow: 'none',
+            color: '#7c44f3',
+        },
+    });
+
     return (
-        <div
-            style={{
-                marginLeft: '15px',
-                marginRight: '10px',
-                marginBottom: '1rem',
-            }}
-        >
+        <div className="accueil-mission-container">
             <div
                 style={{
                     display: 'flex',
@@ -131,7 +159,27 @@ function MissionList({ title, Vuln, date, progressValue }: MissionProps) {
                         <p>{date}</p>
                         <p>Preview date</p>
                     </div>
-                    <AiIcons.AiOutlineMore />
+                    <div className="accueil-mission-more">
+                        <IconButton aria-describedby={id} onClick={handleClick}>
+                            <AiIcons.AiOutlineMore />
+                        </IconButton>
+                        <Popover
+                            id={id}
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            className="Popover"
+                        >
+                            <BootstrapButton size="small">Open</BootstrapButton>
+                            <BootstrapButton size="small">Edit</BootstrapButton>
+                        </Popover>
+                    </div>
+
+                    <div />
                 </div>
             </div>
             <LinearProgressBar percent={progressValue} />

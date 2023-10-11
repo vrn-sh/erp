@@ -1,3 +1,8 @@
+h5, p {
+    cursor: default;
+    user-select: none; 
+}
+
 .accueil {
     &-container {
         display: flex;
@@ -37,7 +42,7 @@
         background-color: white;
         border-radius: 6px;
         box-shadow: 2px 2px 2px var(--light-gray);
-        width: 75%;
+        width: 90%;
         height: 90%;
         margin-bottom: 1.5rem;
         display: flex;
@@ -54,59 +59,85 @@
         }
     }
 
-    &-team-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: start;
-        margin-right: 2px;
+    &-mission {
+        &-container {
+            padding-left: 15px;
+            padding-right: 10px;
+            padding-top: .5rem;
+            padding-bottom: .5rem;
+        }
+    
+        &-container:hover {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 2px 2px 2px 2px var(--light-gray);
+            transition: .5s ease-in-out;
+        }
+
+        &-more:hover {
+            transform: scale(1.1);
+            transition: .5s ease-in-out;
+        }
     }
 
-    &-team-title {
-        font-size: 10px;
-        color: var(--gray-secondary-font);
-        font-family: "Poppins-Regular";
-        text-align: left;
-        margin: 0;
-        padding: 0;
-        padding-left: 15px;
-        margin-bottom: 0.5rem;
+    &-team {
+        &-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: start;
+            margin-right: 2px;
+        }
+    
+        &-title {
+            font-size: 10px;
+            color: var(--gray-secondary-font);
+            font-family: "Poppins-Regular";
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            padding-left: 15px;
+            margin-bottom: 0.5rem;
+        }
+    
+        &-member-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            width: 100%;
+            align-items: center;
+            padding: 8px 8px 8px 23px;
+            margin-bottom: .4rem;
+        }
+    
+        &-member-container p {
+            margin: 0;
+            font-family: "Poppins-Regular";
+            font-size: 14px;
+            margin-left: 1rem;
+        }
+    
+        &-member-container:hover {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 2px 2px 2px 2px var(--light-gray);
+            transition: .5s ease-in-out;
+        }
+    
+        &-pp {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
     }
 
-    &-team-member-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: start;
-        width: 100%;
-        align-items: center;
-        padding: 8px 8px 8px 23px;
-        margin-bottom: .4rem;
-    }
 
-    &-team-member-container p {
-        margin: 0;
-        font-family: "Poppins-Regular";
-        font-size: 14px;
-        margin-left: 1rem;
-    }
-
-    &-team-member-container:hover {
-        background-color: white;
-        border-radius: 6px;
-        box-shadow: 2px 2px 2px 2px var(--light-gray);
-        transition: .5s ease-in-out;
-    }
-
-    &-team-pp {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-    }
 }
 
 .rect-scroll {
     overflow-y: scroll;
 }
+
 .mission-left-half {
     display: flex;
     width: 50%;
@@ -158,4 +189,13 @@
     justify-content: center;
     flex-direction: column;
 }
-  
+
+.Popover {
+    display: flex;
+    flex-direction: column;
+}
+
+.more-btn {
+    text-decoration: none;
+    text-transform: none;
+}
