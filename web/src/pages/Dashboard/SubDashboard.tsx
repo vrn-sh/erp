@@ -40,54 +40,42 @@ export default function SubDashboard() {
 
     // Function to submit the form data to the specified URL using curl
     async function submitForm() {
-        console.log('submitForm');
-        try {
-            const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-            const apiUrl = `http://voron.djnn.sh/saas/load_shellcode?lport=${
-                formData.lport
-            }&laddr=${formData.laddr}&exploit=${encodeURIComponent(
-                formData.exploit
-            )}&arch=${formData.arch}&os=${formData.os}&output_type=${
-                formData.output_type
-            }`;
+        const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
+        const apiUrl = `http://voron.djnn.sh/saas/load_shellcode?lport=${
+            formData.lport
+        }&laddr=${formData.laddr}&exploit=${encodeURIComponent(
+            formData.exploit
+        )}&arch=${formData.arch}&os=${formData.os}&output_type=${
+            formData.output_type
+        }`;
 
-            console.log('Before fetch');
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-Api-Key': apiKey,
+            },
+            body: JSON.stringify(formData),
+        });
 
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'X-Api-Key': apiKey,
-                },
-                body: JSON.stringify(formData),
-            });
+        // Check if the response status is in the success range (e.g., 200-299)
+        if (response.status >= 200 && response.status < 300) {
+            // Read the response body as a blob
+            const fileBlob = await response.blob();
 
-            console.log('Response Status Code:', response.status);
+            const url = window.URL.createObjectURL(fileBlob);
 
-            // Check if the response status is in the success range (e.g., 200-299)
-            if (response.status >= 200 && response.status < 300) {
-                // Read the response body as a blob
-                const fileBlob = await response.blob();
-                console.log('After fetch');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'file.exe';
 
-                const url = window.URL.createObjectURL(fileBlob);
+            a.click();
 
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'file.exe';
-
-                a.click();
-
-                window.URL.revokeObjectURL(url);
-            } else {
-                // Handle error status code (e.g., display an error message)
-                console.error(
-                    `API Request Error: Status Code ${response.status}`
-                );
-            }
-        } catch (error) {
-            console.error('API Request Error:', error);
+            window.URL.revokeObjectURL(url);
+        } else {
+            // Handle error status code (e.g., display an error message)
+            console.error(`API Request Error: Status Code ${response.status}`);
         }
     }
 
