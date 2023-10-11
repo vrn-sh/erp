@@ -55,7 +55,7 @@ urlpatterns = [
     path('reset', ResetPasswordView.as_view()),
     path('register', RegisterViewset.as_view({'post': 'create'})),
     re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path(r'download-report', GeneratePDFReportView.as_view()),
+    path(r'download-report', GeneratePDFReportView.as_view({'post': 'create'})),
     path(r'markdown-report', GenerateMDReportView.as_view()),
     path('search', SearchView.as_view()),
     path(r'hunt', HunterView.as_view()),

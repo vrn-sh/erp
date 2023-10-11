@@ -1,7 +1,6 @@
 import base64
 import os
 from typing import Type, List
-import pdfkit
 from django.http import HttpResponseRedirect
 from shutil import rmtree
 
@@ -10,8 +9,10 @@ from knox.auth import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from api.serializers.report import ReportHtmlSerializer
 
 from api.models import Team, Manager
 from api.models.mission import Mission
@@ -35,7 +36,7 @@ def get_image_file_as_base64_data(path: str) -> bytes:
         return base64.b64encode(image_file.read())
 
 
-class GeneratePDFReportView(APIView):
+class GeneratePDFReportView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
 
@@ -54,6 +55,13 @@ class GeneratePDFReportView(APIView):
                 in_="body",
                 type=openapi.TYPE_INTEGER,
                 description="name of the template. We have: 'NASA', 'hackmanit', 'academic', 'red4sec'."
+            ),
+            openapi.Parameter(
+                "logo",
+                "body",
+                required=False,
+                type=openapi.TYPE_OBJECT,
+                description="logo in base64"
             )
         ],
         responses={
@@ -64,9 +72,8 @@ class GeneratePDFReportView(APIView):
         security=['Bearer'],
         tags=['Report'],
     )
-    def get(self, request):
-
-        mission_id = request.query_params.get('mission')
+    def create(self, request, *args, **kwargs):
+        mission_id = request.data.get('mission')
         if not mission_id:
             return Response({
                 'error': 'No mission id provided. Report couldn\'t be generated',
@@ -77,74 +84,12 @@ class GeneratePDFReportView(APIView):
             return Response({
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
-        version = request.query_params.get("version")
-        if not version:
-            version = 1.0
-        download = request.query_params.get("download", False)
+        request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
+        template_name = request.data.pop('template_name')
+        request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
+        self.serializer_class = ReportHtmlSerializer
+        return super().create(request, *args, **kwargs)
 
-        template_name = request.query_params.get("template_name", "academic")
-        template = ReportHtml(template=ReportTemplate.objects.get(name=template_name), mission=mission)
-
-        s3 = S3Bucket()
-        s3.create_bucket(mission.bucket_name)
-
-        dir_path = f'/tmp/{mission.bucket_name}'
-        print("template name", template_name)
-        if template_name == 'academic':
-            filepath = AcademicTemplate().dump_report(mission, dir_path, download == 'true')
-        else:
-            filepath = self.dump_report(dir_path, template, download == 'true')
-        object_name = f'report-{mission.title}.pdf'
-
-        s3.upload_file(mission.bucket_name, file_path=filepath, file_name=object_name)
-        rmtree(dir_path)
-
-        object_url = s3.get_object_url(mission.bucket_name, object_name)
-        return Response(data=object_url, status=HTTP_200_OK)
-
-    def dump_report(self, dir_path: str, template: ReportHtml, donwload: bool=True) -> str:
-        """compile pages together to generate a report"""
-
-        pages = [
-            (f'{dir_path}/coverpage.html', template.generate_cover()),
-            (f'{dir_path}/projectinfo.html', template.generate_project_info()),
-            (f'{dir_path}/generalconditionsandscope.html', template.generate_condition_and_scope()),
-            (f'{dir_path}/weaknesses.html', template.generate_weaknesses())
-        ]
-
-        if not donwload:
-            return Response(data="".join(map(lambda a: a[1], pages)), status=HTTP_200_OK)
-        
-        if not os.path.exists(dir_path):
-            os.mkdir(dir_path, dir_fd=None)
-        for path_page, html_content in pages:
-            with open(path_page, 'w+') as fd:
-                fd.write(html_content)
-
-        path_to_file = f'{dir_path}/report.pdf'
-
-        toc = {
-            "toc-header-text": "Table of Contents",
-            'xsl-style-sheet': f'{ABSOLUTE_DIR_STYLE}/toc.xsl'
-        }
-
-        cover_page = pages.pop(0)
-        pdfkit.from_file(
-            list(
-                map(
-                    lambda a: a[0], pages
-                )
-            ),
-            options={
-                "enable-local-file-access": None,
-            },
-            output_path=path_to_file,
-            toc=toc if template.template.name == 'hackmanit' else None, #TODO: fix this and have toc for every template
-            cover=cover_page[0],
-            cover_first=True,
-        )
-
-        return path_to_file
 
 
 class GenerateMDReportView(APIView):

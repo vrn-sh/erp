@@ -24,6 +24,9 @@ function Tooltip({ tip }: { tip: React.ReactNode }) {
                 <div className="tooltip-content">
                     {tip}
                     <button
+                        style={{
+                            minWidth: '45px',
+                        }}
                         type="button"
                         className="close-button"
                         onClick={handleQuestionMarkClick}
