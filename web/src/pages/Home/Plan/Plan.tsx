@@ -1,12 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Plan.scss';
+import { Link } from 'react-router-dom';
+
+function CustomLink({
+    to,
+    children,
+    className,
+    ...props
+}: {
+    to: string;
+    children: string;
+    className: string;
+}) {
+    return (
+        <button className={className} onClick={() => window.location.href = to} {...props}>
+            {children}
+        </button>
+    );
+}
+
 
 const subscriptions = [
     {
         type: 'Abonnement',
         price: '400 euros / mois',
         recurrence: 'Par mission',
-        hypothesis: 'Entreprises de services de type ESN',
+        hypothesis: '', // Entreprises de services de type ESN
     },
     {
         type: 'Abonnement',
@@ -79,7 +98,7 @@ export default function Plan() {
             </div>
             <h3 className='pro'>Besoin d'un contrat pro ?</h3>
             <div className='button-with'>
-                <button className="contact-button">Contacter Voron</button>
+                <CustomLink to="#contact" className="contact-button">Contacter Voron</CustomLink>
             </div>
         </div>
     );
