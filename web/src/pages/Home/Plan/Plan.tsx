@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Plan.scss';
 
-// Sample subscription data
 const subscriptions = [
     {
         type: 'Abonnement',
@@ -33,14 +32,14 @@ export default function Plan() {
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1, // Trigger when 20% of the element is visible
+            threshold: 0.1,
         };
 
         const handleIntersect = (entries, observer) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting && !stoppedCards.includes(entry.target.dataset.index)) {
                     entry.target.classList.add('visible');
-                    observer.unobserve(entry.target); // Stop observing the card once it's visible
+                    observer.unobserve(entry.target);
                 }
             });
         };
@@ -51,7 +50,6 @@ export default function Plan() {
             observer.observe(card);
         });
 
-        // Cleanup observer on component unmount
         return () => {
             observer.disconnect();
         };
@@ -72,6 +70,9 @@ export default function Plan() {
                 <h2>{subscription.type}</h2>
                 <p>{subscription.price}</p>
                 <p>{subscription.recurrence}</p>
+                <div className='button-with'>    
+                    <button className="souscrire-button">S'ouscrire</button>
+                </div>
                 <p>{subscription.hypothesis}</p>
                 </div>
             ))}
