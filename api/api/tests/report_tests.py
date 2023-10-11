@@ -15,8 +15,6 @@ from api.tests.helpers import create_random_pentester, create_random_manager, de
 from api.models.mission import Mission
 from api.models.report.report import ReportHtml, ReportTemplate
 
-from api.models.report.academic_paper import AcademicTemplate
-
 
 class TeamTestCase(TransactionTestCase):
     title = 'ERP - EIP Team'
