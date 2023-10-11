@@ -1,0 +1,149 @@
+/* Plan.scss */
+
+@media (max-width: 768px) {
+    .subscription-card {
+        width: calc(50% - 40px);
+        /* Show 2 cards in a row on smaller screens */
+        margin: 200px;
+        /* Add margin to create space between the cards */
+    }
+}
+
+@media (max-width: 480px) {
+    .subscription-card {
+        width: calc(100% - 40px);
+        /* Show 1 card in a row on even smaller screens */
+        margin: 200px;
+        /* Add margin to create space between the cards */
+    }
+}
+@keyframes float {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+
+    50% {
+        transform: translateY(-4px) translateX(2px);
+    }
+
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.plan {
+    max-width: 1200px; /* Set a maximum width for the .plan section */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 10% auto; /* Center the .plan section and add vertical margin */
+    max-height: 100rem; /* Set a maximum height for the .plan section */
+    z-index: 10;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--primary-btn);
+}
+
+.contact-button {
+    width: 30%;
+    font-size: 1.5rem;
+    border: none;
+    background-color: var(--primary-btn);
+    color: white;
+    font-family: 'Poppins';
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.subscription-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    /* Set the background color for the card container */
+    padding: 20px;
+    /* Add some padding to create space between the cards and the background */
+}
+
+.subscription-card {
+    width: 15rem;
+    height: 20rem;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    background-color: white;
+    /* Set the background color for the cards */
+    box-shadow: 0 0 20px 5px #9480D4;
+    /* Add glow effect using box-shadow */
+    transition: box-shadow 0.3s ease;
+    /* Add transition for smooth effect */
+    border: 1px solid black;
+    &:hover {
+        box-shadow: 0 0 40px 10px #9480D4;
+        /* Increase glow effect on hover */
+    }
+
+    /* Rest of your styles remain unchanged */
+}
+
+.subscription-card.visible {
+        animation: fadeInDown 2s ease forwards, fadeIn 2s ease forwards, float 2s ease infinite;
+    }
+
+
+.subscription-card.stopped {
+    animation-play-state: paused;
+}
+
+.subscription-card:hover {
+    animation-play-state: paused;
+    /* Pause the animation when hovering */
+}
+.subscription-card h2 {
+    position: relative;
+    /* Make the h2 element a positioned container */
+}
+
+.subscription-card h2::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    /* Move the line 2px below the h2 text */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+}
