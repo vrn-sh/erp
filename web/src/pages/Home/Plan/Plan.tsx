@@ -40,6 +40,7 @@ const subscriptions = [
         hypothesis: '',
     },
 ];
+
 const cardColors = ['#CAB9FF', '#B299FF', '#A385FF'];
 
 export default function Plan() {
@@ -53,20 +54,26 @@ export default function Plan() {
             rootMargin: '0px',
             threshold: 0.1,
         };
-
     const handleIntersect = (
         entries: IntersectionObserverEntry[], 
         observer: IntersectionObserver
     ) => {
         entries.forEach((entry: IntersectionObserverEntry) => {
-        if (entry.isIntersecting && !stoppedCards.includes(Number(entry.target.dataset.index) as number)) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+            if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+                const dataIndex = entry.target.dataset.index;
+                if (dataIndex && typeof dataIndex === 'string') {
+                    const index = Number(dataIndex);
+                    if (!isNaN(index) && !stoppedCards.includes(index)) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                }
             }
         });
     };
 
-    const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => handleIntersect(entries, observer), observerOptions);
+
+    const observer: IntersectionObserver = new IntersectionObserver((entries) => handleIntersect(entries, observer), observerOptions);
 
     cardRefs.current.forEach((card, index) => {
         observer.observe(card);
