@@ -31,10 +31,11 @@ export default function Input({
     );
 }
 
-export const FileInput = ({ setImage }: { setImage: (file: any) => void }) => {
-
+export function FileInput({ setImage }: { setImage: (file: any) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [fileName, setFileName] = React.useState<string | undefined>(undefined);
+    const [fileName, setFileName] = React.useState<string | undefined>(
+        undefined
+    );
 
     const handleFileInputChange = () => {
         // Trigger a click event on the hidden file input when the custom button is clicked
@@ -62,11 +63,14 @@ export const FileInput = ({ setImage }: { setImage: (file: any) => void }) => {
                     display: 'flex',
                 }}
                 type="button"
-                className='btn'
-                onClick={handleFileInputChange}>
-                    <MdUploadFile size={30} />
-                    <span style={{ marginLeft: '10px' }}>{fileName ? fileName : 'UPLOAD LOGO'}</span>
-                </button>
+                className="btn"
+                onClick={handleFileInputChange}
+            >
+                <MdUploadFile size={30} />
+                <span style={{ marginLeft: '10px' }}>
+                    {fileName || 'UPLOAD LOGO'}
+                </span>
+            </button>
 
             <input
                 type="file"
@@ -77,5 +81,4 @@ export const FileInput = ({ setImage }: { setImage: (file: any) => void }) => {
             />
         </div>
     );
-
 }

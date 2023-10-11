@@ -41,12 +41,12 @@ function DocumentTemplates({
     setMD,
     setTemplate,
     mission,
-    logo
+    logo,
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
     setTemplate: Dispatch<SetStateAction<number>>;
     mission: number;
-    logo:string | null;
+    logo: string | null;
 }) {
     const handleTemplateSelection = async (templateId: number) => {
         if (mission === -1) {
@@ -57,12 +57,14 @@ function DocumentTemplates({
         setTemplate(templateId);
         console.log('Token', Cookies.get('Token'));
         axios
-            .post(`${config.apiUrl}/download-report`,
+            .post(
+                `${config.apiUrl}/download-report`,
                 {
                     template_name: templates[templateId].name,
                     mission,
-                    logo: logo
-                }, {
+                    logo,
+                },
+                {
                     headers: {
                         Authorization: `Token ${Cookies.get('Token')}`,
                     },
@@ -118,20 +120,19 @@ export default function Report() {
     const [mission, setMissionId] = React.useState(-1);
     const [logo, setBase64Image] = React.useState<string | null>(null);
 
-  const handleImageUpload = (file: any) => {
+    const handleImageUpload = (file: any) => {
+        if (file) {
+            const reader = new FileReader();
 
-    if (file) {
-      const reader = new FileReader();
+            reader.onload = (event) => {
+                // The result property contains the base64-encoded image data
+                const base64 = event.target?.result as string;
+                setBase64Image(base64);
+            };
 
-      reader.onload = (event) => {
-        // The result property contains the base64-encoded image data
-        const base64 = event.target?.result as string;
-        setBase64Image(base64);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
+            reader.readAsDataURL(file);
+        }
+    };
     console.log('logo', logo);
 
     return (
@@ -147,11 +148,19 @@ export default function Report() {
                 )}
                 {!isMDActivated && <div style={{ height: '50px' }} />}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
-                <SelectMission setMissionId={setMissionId} missionId={mission} />
-                {!isMDActivated && 
-                    <FileInput setImage={handleImageUpload} />
-                }
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'flex-end',
+                }}
+            >
+                <SelectMission
+                    setMissionId={setMissionId}
+                    missionId={mission}
+                />
+                {!isMDActivated && <FileInput setImage={handleImageUpload} />}
             </div>
 
             {isMDActivated ? (
