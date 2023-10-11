@@ -14,13 +14,11 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from api.serializers.report import ReportHtmlSerializer
 
-from api.models import Team, Manager
 from api.models.mission import Mission
 from api.models.vulns import Vulnerability
 from api.services.s3 import S3Bucket
 
 from api.models.report.report import ReportTemplate, ReportHtml
-from api.models.report.academic_paper import AcademicTemplate
 from api.models.report.generate_html import generate_vuln_figures
 
 DIR_STYLE = "./api/pdf-templates/hackmanit-template"
