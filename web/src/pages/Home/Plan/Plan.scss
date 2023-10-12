@@ -1,18 +1,5 @@
 /* Plan.scss */
 
-@media (max-width: 768px) {
-    .subscription-card {
-        width: calc(50% - 40px);
-        margin: 200px;
-    }
-}
-
-@media (max-width: 480px) {
-    .subscription-card {
-        width: calc(100% - 40px);
-        margin: 200px;
-    }
-}
 @keyframes float {
     0% {
         transform: translateY(0) translateX(0);
@@ -24,6 +11,20 @@
 
     100% {
         transform: translateY(0) translateX(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .subscription-card {
+        width: calc(50% - 40px);
+        margin: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .subscription-card {
+        width: calc(100% - 40px);
+        margin: 200px;
     }
 }
 
@@ -49,7 +50,7 @@
     }
 }
 
-.plan {
+.plan-title {
     max-width: 1200px;
     width: 100%;
     display: flex;
@@ -60,8 +61,9 @@
     margin: 10% auto;
     max-height: 100rem;
     z-index: 10;
-}
 
+
+}
 .title {
     font-size: 2rem;
     margin-bottom: 20px;
@@ -90,7 +92,7 @@
     border: 1px solid black;
 }
 
-.subscription-container {
+.plan-subscription-container {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;

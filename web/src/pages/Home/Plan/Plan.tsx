@@ -87,9 +87,9 @@ export default function Plan() {
     }, [stoppedCards]);
 
     return (
-        <div id="plan" className="plan">
+        <div id="plan" className="plan-title">
             <h1 className='title'>Ready to start your journey ?</h1>
-            <div className="subscription-container">
+            <div className="plan-subscription-container">
                 {subscriptions.map((subscription, index) => (
                     <div
                         className={`subscription-card ${stoppedCards.includes(index) ? 'stopped' : ''}`}
