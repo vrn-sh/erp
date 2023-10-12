@@ -23,6 +23,7 @@ import EditVulnerability from './pages/Vulnerability/EditVuln';
 import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
 import PrivateRoute from './pages/TokenVerification/TokenVerification';
 import ViewTeamDetails from './pages/Team/ViewTeam';
+import Accueil from './pages/Dashboard/Accueil';
 
 function App() {
     return (
@@ -57,6 +58,7 @@ function App() {
                     <Route path="/team/edit" element={<EditTeam />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
+                <Route path="/new_accueil" element={<Accueil />} />
             </Routes>
         </div>
     );
