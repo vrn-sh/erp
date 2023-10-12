@@ -1,5 +1,4 @@
 /* Plan.scss */
-@import '../../../global-variable.scss';
 
 @keyframes float {
     0% {
@@ -62,83 +61,98 @@
     margin: 10% auto;
     max-height: 100rem;
     z-index: 10;
-    font-family: 'Poppins';
+    font-family: 'Poppins-Regular';
 
 }
 .plan-title {
     font-size: 2rem;
     margin-bottom: 20px;
     color: var(--primary-btn);
-    font-family: 'Poppins';
+    font-family: 'Poppins-Regular';
 }
 
-.contact-button {
+.plan-contact-button {
+    font-family: 'Poppins-Regular';
     width: 30%;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     border: none;
     background-color: var(--primary-btn);
     color: white;
-    font-family: 'Poppins';
     padding: 0.5rem;
     border-radius: 5px;
 }
 
 .souscrire-button {
-    font-size: 1rem;
-    border: none;
+    font-size: 14px;
     background-color: var(--primary-btn);
     color: white;
-    font-family: 'Poppins';
+    font-family: 'Poppins-Regular';
+    letter-spacing: 1px;
     padding: 0.5rem;
-    border-radius: 20px;
-    border: 1px solid black;
+    border-radius: 6px;
+    margin-top: 1rem;
 }
 
 .plan-subscription-container {
     display: flex;
+    flex-direction: row;
+    width: 90%;
     justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 20px;
-    font-family: 'Poppins';
 }
 
 .subscription-card {
     color: black;
-    font-family: 'Poppins';
     width: 15rem;
-    height: 20rem;
+    height: 70%;
     margin: 20px;
     padding: 10px;
-    border-radius: 20px;
+    padding-left: 15px;
+    border-radius: 6px;
     font-size: 1rem;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     position: relative;
     background-color: white;
     box-shadow: 0 0 20px 5px #9480D4;
     transition: box-shadow 0.3s ease;
-    border: 1px solid black;
+
     &:hover {
         box-shadow: 0 0 40px 10px #9480D4;
     }
     &.primary-color {
-        background-color: $primary-color;
+        background-color: var(--plan-primary-color);
     }
-
     &.secondary-color {
-        background-color: $secondary-color;
+        background-color: var(--plan-secondary-color);
+    }
+    & label {
+        text-align: left;
+        background-color: transparent;
+        font-family: "Poppins-Bold";
+        font-size: 18px;
+        letter-spacing: 1.5px;
+        margin: 0;
+        padding: 0;
+    }
+    & h2, p {
+        font-family: "Poppins-Regular";
     }
 
-    &.tertiary-color {
-        background-color: $tertiary-color;
+    & h2 {
+        text-align: left;
     }
 }
 
+.plan-small-des {
+    text-align: left;
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
 .subscription-card.visible {
-        animation: fadeInDown 2s ease forwards, fadeIn 2s ease forwards, float 2s ease infinite;
-    }
+    animation: fadeInDown 2s ease forwards, fadeIn 2s ease forwards, float 2s ease infinite;
+}
 
 
 .subscription-card.stopped {
@@ -148,6 +162,7 @@
 .subscription-card:hover {
     animation-play-state: paused;
 }
+
 .subscription-card h2 {
     position: relative;
 }
@@ -159,13 +174,25 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: black;
 }
 
 .button-with {
     width: auto;
 }
 
-.pro {
-    font-family: 'Poppins';
+.plan-pro {
+    font-family: 'Poppins-Regular';
+    margin-bottom: 10px
+}
+
+.plan-service-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    & p {
+        margin: 0;
+        margin-left: 10px;
+        padding: 0;
+    }
 }

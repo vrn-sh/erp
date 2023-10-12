@@ -1,20 +1,44 @@
 [
     {
-        "type": "Abonnement",
-        "price": "400 euros / mois",
-        "recurrence": "Par mission",
-        "hypothesis": ""
+        "type": "Basic",
+        "price": "400",
+        "price_month": "400 euro / month",
+        "recurrence": "By mission",
+        "service": [
+            "Basic servcies",
+            "Certificate search",
+            "Vulnerability check",
+            "Recon record",
+            "Report generation"
+        ]
     },
     {
-        "type": "Abonnement",
-        "price": "1050 euros (350 / mois)",
-        "recurrence": "Par trimestre",
-        "hypothesis": ""
+        "type": "Freelancer",
+        "price": "1050",
+        "price_month":  "350 euro / month)",
+        "recurrence": "Every season(3 months)",
+        "service": [
+            "Basic servcies",
+            "Certificate search",
+            "Vulnerability check",
+            "Report generation",
+            "Recon record",
+            "Email finder"
+        ]
     },
     {
-        "type": "Abonnement",
-        "price": "3800 euros (~316 / mois)",
-        "recurrence": "Par an",
-        "hypothesis": ""
+        "type": "Business",
+        "price": "3800",
+        "price_month":  "316 euros / month)",
+        "recurrence": "Per year",
+        "service": [
+            "Basic servcies",
+            "Certificate search",
+            "Vulnerability check",
+            "Report generation",
+            "Recon record",
+            "Email finder",
+            "Application analyzer"
+        ]
     }
 ]

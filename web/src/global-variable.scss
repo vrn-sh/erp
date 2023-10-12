@@ -11,6 +11,8 @@
     --gray-btn: #8a8a8a;
     --primary-hover-btn: #632add;
     --colorful-yellow: #FFBA4A;
+    --plan-primary-color: #D9CDF2;
+    --plan-secondary-color: #C5B0F0;
 }
 
 //FONT
@@ -42,22 +44,4 @@
     font-family: 'Poppins-Light';
     src: local('Poppins-Light'),
         url('./fonts/poppins/Poppins-Light.ttf') format('truetype');
-}
-
-// global-variable.scss
-
-$primary-color: #CAB9FF;
-$secondary-color: #B299FF;
-$tertiary-color: #A385FF;
-
-.primary-color {
-    background-color: $primary-color;
-}
-
-.secondary-color {
-    background-color: $secondary-color;
-}
-
-.tertiary-color {
-    background-color: $tertiary-color;
 }
