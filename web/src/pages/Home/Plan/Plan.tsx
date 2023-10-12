@@ -55,7 +55,6 @@ export default function Plan() {
         };
 
     const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-        console.log('Intersection Observer triggered');
         entries.forEach((entry: IntersectionObserverEntry) => {
             if (entry.isIntersecting && entry.target instanceof HTMLElement) {
                 const dataIndex = entry.target.dataset.index;
