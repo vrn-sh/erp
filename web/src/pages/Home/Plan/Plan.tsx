@@ -54,23 +54,25 @@ export default function Plan() {
             threshold: 0.1,
         };
 
-        const handleIntersect = (
-            entries: IntersectionObserverEntry[],
-            observer: IntersectionObserver
-        ) => {
-            entries.forEach((entry: IntersectionObserverEntry) => {
-                if (entry.isIntersecting && entry.target instanceof HTMLElement) {
-                    const dataIndex = entry.target.dataset.index;
-                    if (dataIndex && typeof dataIndex === 'string') {
-                        const index = Number(dataIndex);
-                        if (!isNaN(index) && !stoppedCards.includes(index)) {
-                            entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
-                        }
+    const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+        console.log('Intersection Observer triggered');
+        entries.forEach((entry: IntersectionObserverEntry) => {
+            if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+                const dataIndex = entry.target.dataset.index;
+                if (dataIndex && typeof dataIndex === 'string') {
+                    const index = Number(dataIndex);
+                    if (!isNaN(index) && !stoppedCards.includes(index)) {
+                        entry.target.classList.add('visible');
+                        entry.target.classList.remove('stopped');
+                        observer.unobserve(entry.target);
                     }
                 }
-            });
-        };
+            } else {
+                entry.target.classList.add('stopped');
+            }
+        });
+    };
+
 
         const observer: IntersectionObserver = new IntersectionObserver((entries) => handleIntersect(entries, observer), observerOptions);
 
@@ -100,7 +102,7 @@ export default function Plan() {
                         <p>{subscription.price}</p>
                         <p>{subscription.recurrence}</p>
                         <div className='button-with'>
-                            <button className="souscrire-button">S'ouscrire</button>
+                            <button className="souscrire-button">Souscrire</button>
                         </div>
                         <p>{subscription.hypothesis}</p>
                     </div>
