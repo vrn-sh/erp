@@ -232,7 +232,10 @@ export default function Accueil() {
                     </div>
                     <div className="accueil-container">
                         <div className="accueil-grid-3">
-                            <div className="accueil-rect" style={{ height: '30vh' }}>
+                            <div
+                                className="accueil-rect"
+                                style={{ height: '30vh' }}
+                            >
                                 <h5>Projects analytics</h5>
                                 <div
                                     style={{
@@ -242,7 +245,11 @@ export default function Accueil() {
                                     }}
                                 >
                                     <PieChart
-                                        colors={['#A687E9', '#55D872', '#EAEBEE']}
+                                        colors={[
+                                            '#A687E9',
+                                            '#55D872',
+                                            '#EAEBEE',
+                                        ]}
                                         series={[
                                             {
                                                 data,
@@ -252,8 +259,10 @@ export default function Accueil() {
                                         ]}
                                         sx={{
                                             '--ChartsLegend-itemWidth': '30px',
-                                            '--ChartsLegend-itemMarkSize': '10px',
-                                            '--ChartsLegend-rootSpacing': '30px',
+                                            '--ChartsLegend-itemMarkSize':
+                                                '10px',
+                                            '--ChartsLegend-rootSpacing':
+                                                '30px',
                                         }}
                                         margin={{ left: 80, top: -10 }}
                                         {...size}
@@ -274,13 +283,22 @@ export default function Accueil() {
                                     </PieChart>
                                 </div>
                             </div>
-                            <div className="accueil-rect" style={{ height: '35vh' }}>
+                            <div
+                                className="accueil-rect"
+                                style={{ height: '35vh' }}
+                            >
                                 <h5 style={{ marginBottom: '15px' }}>
                                     Top severity of Vulnerability
                                 </h5>
                                 <div className="rect-scroll">
-                                    <SeverityVuln title="XSS-Medium" value={76} />
-                                    <SeverityVuln title="Insecure Design" value={45} />
+                                    <SeverityVuln
+                                        title="XSS-Medium"
+                                        value={76}
+                                    />
+                                    <SeverityVuln
+                                        title="Insecure Design"
+                                        value={45}
+                                    />
                                     <SeverityVuln title="Injection" value={5} />
                                 </div>
                             </div>
@@ -288,7 +306,9 @@ export default function Accueil() {
 
                         <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
-                                <h5 style={{ marginBottom: '15px' }}>My mission</h5>
+                                <h5 style={{ marginBottom: '15px' }}>
+                                    My mission
+                                </h5>
                                 <div className="rect-scroll">
                                     <MissionList
                                         title="Voron"
@@ -315,7 +335,10 @@ export default function Accueil() {
                         <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
                                 <h5
-                                    style={{ marginBottom: '15px', position: 'sticky' }}
+                                    style={{
+                                        marginBottom: '15px',
+                                        position: 'sticky',
+                                    }}
                                 >
                                     Co-workers
                                 </h5>
