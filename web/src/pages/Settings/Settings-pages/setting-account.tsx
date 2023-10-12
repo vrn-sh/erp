@@ -6,6 +6,7 @@ import { FaUser, FaCamera } from 'react-icons/fa';
 import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
 import '../Settings.scss';
+import { getCookiePart } from '../../../crypto-utils';
 
 export default function SettingAccount() {
     const [userInfos, setUserInfos] = useState({
@@ -21,17 +22,17 @@ export default function SettingAccount() {
     });
     const [open, setOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null); // Nouvel état pour le fichier sélectionné
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role');
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
         if (role === '2') url += 'manager';
         else url += 'pentester';
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -114,7 +115,7 @@ export default function SettingAccount() {
 
         await axios
             .patch(
-                `${url}/${Cookies.get('Id')}`,
+                `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
                 {
                     auth: {
                         first_name: userInfos.first_name,
@@ -125,7 +126,7 @@ export default function SettingAccount() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )

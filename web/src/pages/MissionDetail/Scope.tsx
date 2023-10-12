@@ -9,6 +9,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function Scope(/* need to add list as a param here */) {
     const [scope, setScope] = useState([]);
@@ -40,7 +41,7 @@ export default function Scope(/* need to add list as a param here */) {
         setOpen(false);
     };
 
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
 
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
@@ -84,7 +85,7 @@ export default function Scope(/* need to add list as a param here */) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )
@@ -104,7 +105,7 @@ export default function Scope(/* need to add list as a param here */) {
             .get(`${config.apiUrl}/mission/${missionId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -129,7 +130,7 @@ export default function Scope(/* need to add list as a param here */) {
             data: { mission: missionId },
             headers: {
                 'Content-type': 'application/json',
-                Authorization: `Token ${Cookies.get('Token')}`,
+                Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
             },
         })
             .then(() => {

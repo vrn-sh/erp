@@ -6,10 +6,11 @@ import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
+import { getCookiePart } from '../../../crypto-utils';
 
 export default function SecurityUser() {
-    const role = Cookies.get('Role');
-    const id = Cookies.get('Id');
+    const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const id = getCookiePart(Cookies.get('Token')!, 'id');
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',
         color: 'success',
@@ -59,7 +60,7 @@ export default function SecurityUser() {
             .get(`${urltmp}/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -83,7 +84,7 @@ export default function SecurityUser() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )

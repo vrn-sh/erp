@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { SecondaryButton, PrimaryButton } from '../../component/Button';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
+import { getCookiePart } from '../../crypto-utils';
 
 interface AddNmapProps {
     idRecon: number;
@@ -45,7 +46,7 @@ export default function AddNMAP({ idRecon, func }: AddNmapProps) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )

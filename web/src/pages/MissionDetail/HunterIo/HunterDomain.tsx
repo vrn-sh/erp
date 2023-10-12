@@ -14,6 +14,7 @@ import * as BsIcons from 'react-icons/bs';
 import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
 import './Hunter.scss';
+import { getCookiePart } from '../../../crypto-utils';
 
 export interface IHunter {
     domain: string;
@@ -158,7 +159,7 @@ export default function HunterDomain() {
             .get(`${config.apiUrl}/hunt?domain=${domain}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {

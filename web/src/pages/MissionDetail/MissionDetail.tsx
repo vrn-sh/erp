@@ -13,6 +13,7 @@ import Feedbacks from '../../component/Feedback';
 import HunterIo from './HunterIo/HunterIo';
 import Credentials from './Credential';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function MissionDetail() {
     const [active, setActive] = useState('scope');
@@ -27,7 +28,7 @@ export default function MissionDetail() {
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
     const url =
-        Cookies.get('Role') === '2'
+        getCookiePart(Cookies.get('Token')!, 'role') === '2'
             ? `${config.apiUrl}/manager`
             : `${config.apiUrl}/pentester`;
 
@@ -37,10 +38,10 @@ export default function MissionDetail() {
 
     const getUserInfo = async () => {
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -54,7 +55,7 @@ export default function MissionDetail() {
     const handleAdd = async (val: string[]) => {
         await axios
             .patch(
-                `${url}/${Cookies.get('Id')}`,
+                `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
                 JSON.stringify({
                     auth: {
                         favorites: val,
@@ -63,7 +64,7 @@ export default function MissionDetail() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )
@@ -113,7 +114,7 @@ export default function MissionDetail() {
             setOpen(true);
             await axios
                 .patch(
-                    `${url}/${Cookies.get('Id')}`,
+                    `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
                     JSON.stringify({
                         auth: {
                             favorites: val,
@@ -122,7 +123,7 @@ export default function MissionDetail() {
                     {
                         headers: {
                             'Content-type': 'application/json',
-                            Authorization: `Token ${Cookies.get('Token')}`,
+                            Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                         },
                     }
                 )
@@ -141,7 +142,7 @@ export default function MissionDetail() {
             .get(`${config.apiUrl}/mission/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {

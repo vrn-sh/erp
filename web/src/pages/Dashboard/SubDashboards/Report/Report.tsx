@@ -11,6 +11,7 @@ import MarkdownEditor from './Markdown/Editor';
 import SelectMission from '../../../../component/SelectMission';
 import BackButton from '../../../../component/BackButton';
 import config from '../../../../config';
+import { getCookiePart } from '../../../../crypto-utils';
 
 const templates = [
     // { id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
@@ -56,7 +57,7 @@ function DocumentTemplates({
         axios
             .get(`${config.apiUrl}/download-report`, {
                 headers: {
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
                 params: {
                     template_name: templates[templateId].name,

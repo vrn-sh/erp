@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
 import ViewTeam from './ViewTeam';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function TeamList() {
     const [list, setList] = useState<
@@ -26,7 +27,7 @@ export default function TeamList() {
     }>();
     const [currentPage, setCurrentPage] = useState(1);
     const [mission, setMission] = useState(0);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
     const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
@@ -56,7 +57,7 @@ export default function TeamList() {
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -84,7 +85,7 @@ export default function TeamList() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {

@@ -6,6 +6,7 @@ import { RiEyeLine, RiUserFill } from 'react-icons/ri';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 interface Member {
     id: number;
@@ -50,7 +51,7 @@ export default function ViewTeamDetails() {
         const response = await axios.get(`${config.apiUrl}/team/${teamId}`, {
             headers: {
                 'Content-type': 'application/json',
-                Authorization: `Token ${Cookies.get('Token')}`,
+                Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
             },
         });
         const team = response.data;

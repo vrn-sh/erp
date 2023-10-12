@@ -18,6 +18,7 @@ import AddNote from './AddNote';
 import ViewNote from './ViewNote';
 import config from '../../../../config';
 import Team from '../../../Team/Team';
+import { getCookiePart } from '../../../../crypto-utils';
 
 interface NoteGridProps {
     list: {
@@ -81,7 +82,7 @@ function Notes() {
         [{ id: 0, title: '' }]
     );
     const [max, setMax] = useState(0);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
     const [count, setCount] = useState(0);
     const navigate = useNavigate();
     const [currentMission, setCurrentMission] = useState(1);
@@ -112,7 +113,7 @@ function Notes() {
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -141,7 +142,7 @@ function Notes() {
             .get(`${config.apiUrl}/note?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((e) => {

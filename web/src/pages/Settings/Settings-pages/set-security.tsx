@@ -3,10 +3,11 @@ import '../Settings.scss';
 import Cookies from 'js-cookie';
 import SecurityTeam from './securityTeam';
 import SecurityUser from './securityUser';
+import { getCookiePart } from '../../../crypto-utils';
 
 export default function SecurityDetail() {
     const [active, setActive] = useState('pwdUser');
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role');
 
     const handleClick = (event: any) => {
         setActive(event.target.id);

@@ -5,10 +5,11 @@ import * as AiIcons from 'react-icons/ai';
 import * as BsIcons from 'react-icons/bs';
 import * as IoIcons from 'react-icons/io';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 const SideBarData = function SideBarDataF() {
     const [id, setId] = useState(0);
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role');
     const [tab, setTab] = useState<
         { path: string; title: string; idNav: string }[]
     >([]);
@@ -23,7 +24,7 @@ const SideBarData = function SideBarDataF() {
             .get(`${config.apiUrl}/mission/${Number(idMission)}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -40,10 +41,10 @@ const SideBarData = function SideBarDataF() {
         if (role === '2') url += 'manager';
         else url += 'pentester';
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -72,7 +73,7 @@ const SideBarData = function SideBarDataF() {
     };
 
     useEffect(() => {
-        setId(Number(Cookies.get('Id')));
+        setId(Number(getCookiePart(Cookies.get('Token')!, 'id')));
     }, []);
 
     useEffect(() => {

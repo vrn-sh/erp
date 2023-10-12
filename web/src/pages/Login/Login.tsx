@@ -5,6 +5,7 @@ import axios from 'axios';
 import './Login.scss';
 import Cookies from 'js-cookie';
 import config from '../../config';
+import { createCookie } from '../../crypto-utils';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -63,16 +64,8 @@ export default function Login() {
                     )
                     .then((e) => {
                         navigate('/dashboard');
-                        Cookies.set('Token', e.data.token, {
-                            expires: Date.parse(e.data.expiry),
-                        });
-                        Cookies.set('Role', e.data.role, {
-                            expires: Date.parse(e.data.expiry),
-                        });
-                        Cookies.set('Id', e.data.id, {
-                            expires: Date.parse(e.data.expiry),
-                        });
-                        Cookies.set('Fav', '', {
+
+                        Cookies.set('Token', createCookie(e.data.id, e.data.token, e.data.role), {
                             expires: Date.parse(e.data.expiry),
                         });
                     })

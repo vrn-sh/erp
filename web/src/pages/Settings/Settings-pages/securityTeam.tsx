@@ -13,6 +13,7 @@ import * as AiIcons from 'react-icons/ai';
 import config from '../../../config';
 import '../Settings.scss';
 import Feedbacks from '../../../component/Feedback';
+import { getCookiePart } from '../../../crypto-utils';
 
 type TeamType = {
     id: number;
@@ -69,7 +70,7 @@ export default function SecurityTeam() {
         setMess({ mess, color });
     };
 
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role');
     const [userInfos, setUserInfos] = useState({
         username: '',
         email: '',
@@ -107,7 +108,7 @@ export default function SecurityTeam() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )
@@ -125,10 +126,10 @@ export default function SecurityTeam() {
         if (role === '2') url += 'manager';
         else url += 'pentester';
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {
@@ -144,7 +145,7 @@ export default function SecurityTeam() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then((data) => {

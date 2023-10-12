@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
 import config from '../../../../config';
 import Feedbacks from '../../../../component/Feedback';
+import { getCookiePart } from '../../../../crypto-utils';
 
 interface AddNoteProps {
     func: React.MouseEventHandler<HTMLButtonElement>;
@@ -51,7 +52,7 @@ export default function AddNote({ func, mission }: AddNoteProps) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )

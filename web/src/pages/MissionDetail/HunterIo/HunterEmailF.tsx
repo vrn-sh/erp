@@ -5,6 +5,7 @@ import * as MdIcons from 'react-icons/md';
 import { Chip } from '@mui/material';
 import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
+import { getCookiePart } from '../../../crypto-utils';
 
 export interface IEmailF {
     first_name: string;
@@ -72,7 +73,7 @@ export default function HunterEmailF() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )

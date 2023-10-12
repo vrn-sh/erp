@@ -7,6 +7,7 @@ import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
 import { IDashboardNotes } from '../../DashBoardNote.type';
 import config from '../../../../config';
 import Feedbacks from '../../../../component/Feedback';
+import { getCookiePart } from '../../../../crypto-utils';
 
 interface ViewNoteProps {
     note: IDashboardNotes;
@@ -21,7 +22,7 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
         mess: '',
         color: 'success',
     });
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
 
     const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(event.target.value);
@@ -44,7 +45,7 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
             .delete(`${config.apiUrl}/note/${note.id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
             })
             .then(() => {
@@ -73,7 +74,7 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                     },
                 }
             )

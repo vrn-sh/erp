@@ -7,6 +7,7 @@ import CrtSh from './SubDashboards/CrtSh';
 import Notes from './SubDashboards/Notes/Notes';
 import Vulnerability from './SubDashboards/Vulnerability';
 import Report from './SubDashboards/Report/Report';
+import { getCookiePart } from '../../crypto-utils';
 
 function MissionSubMenu(props: any) {
     const tmp = props;
@@ -26,7 +27,7 @@ function MissionSubMenu(props: any) {
 
 function DashboardMission() {
     const [active, setActive] = useState('main');
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
