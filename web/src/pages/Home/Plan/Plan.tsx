@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './Plan.scss'; // Import your SCSS file
+import './Plan.scss';
 import * as AiIcons from 'react-icons/ai';
 import subscriptions from '../../../assets/strings/en/subscriptions.json';
 
 export default function Plan() {
     const [stoppedCards, setStoppedCards] = useState<number[]>([]);
-    const cardColors = ['primary-color', 'secondary-color', 'primary-color']; // Define your color classes
+    const cardColors = ['primary-color', 'secondary-color', 'primary-color'];
 
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
