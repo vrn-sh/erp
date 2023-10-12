@@ -12,12 +12,17 @@ function CustomLink({
     children: string;
     className: string;
 }) {
+    const buttonStyle = {
+        fontFamily: 'Poppins',
+    };
+
     return (
-        <button className={className} onClick={() => window.location.href = to} {...props}>
+        <button className={className} onClick={() => window.location.href = to} style={buttonStyle} {...props}>
             {children}
         </button>
     );
 }
+
 
 const subscriptions = [
     {
