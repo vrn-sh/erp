@@ -1,0 +1,20 @@
+[
+    {
+        "type": "Abonnement",
+        "price": "400 euros / mois",
+        "recurrence": "Par mission",
+        "hypothesis": ""
+    },
+    {
+        "type": "Abonnement",
+        "price": "1050 euros (350 / mois)",
+        "recurrence": "Par trimestre",
+        "hypothesis": ""
+    },
+    {
+        "type": "Abonnement",
+        "price": "3800 euros (~316 / mois)",
+        "recurrence": "Par an",
+        "hypothesis": ""
+    }
+]

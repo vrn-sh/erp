@@ -1,4 +1,5 @@
 /* Plan.scss */
+@import '../../../global-variable.scss';
 
 @keyframes float {
     0% {
@@ -64,7 +65,7 @@
     font-family: 'Poppins';
 
 }
-.title {
+.plan-title {
     font-size: 2rem;
     margin-bottom: 20px;
     color: var(--primary-btn);
@@ -102,6 +103,7 @@
 }
 
 .subscription-card {
+    color: black;
     font-family: 'Poppins';
     width: 15rem;
     height: 20rem;
@@ -120,6 +122,17 @@
     border: 1px solid black;
     &:hover {
         box-shadow: 0 0 40px 10px #9480D4;
+    }
+    &.primary-color {
+        background-color: $primary-color;
+    }
+
+    &.secondary-color {
+        background-color: $secondary-color;
+    }
+
+    &.tertiary-color {
+        background-color: $tertiary-color;
     }
 }
 

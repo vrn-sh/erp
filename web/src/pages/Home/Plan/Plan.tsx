@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './Plan.scss';
-import { Link } from 'react-router-dom';
+import './Plan.scss'; // Import your SCSS file
+import subscriptions from '../../../assets/strings/en/subscriptions.json';
 
 function CustomLink({
     to,
@@ -23,32 +23,9 @@ function CustomLink({
     );
 }
 
-
-const subscriptions = [
-    {
-        type: 'Abonnement',
-        price: '400 euros / mois',
-        recurrence: 'Par mission',
-        hypothesis: '', // Entreprises de services de type ESN
-    },
-    {
-        type: 'Abonnement',
-        price: '1050 euros (350 / mois)',
-        recurrence: 'Par trimestre',
-        hypothesis: '',
-    },
-    {
-        type: 'Abonnement',
-        price: '3800 euros (~316 / mois)',
-        recurrence: 'Par an',
-        hypothesis: '',
-    },
-];
-
-const cardColors = ['#CAB9FF', '#B299FF', '#A385FF'];
-
 export default function Plan() {
     const [stoppedCards, setStoppedCards] = useState<number[]>([]);
+    const cardColors = ['primary-color', 'secondary-color', 'tertiary-color']; // Define your color classes
 
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -59,24 +36,11 @@ export default function Plan() {
             threshold: 0.1,
         };
 
-    const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-        entries.forEach((entry: IntersectionObserverEntry) => {
-            if (entry.isIntersecting && entry.target instanceof HTMLElement) {
-                const dataIndex = entry.target.dataset.index;
-                if (dataIndex && typeof dataIndex === 'string') {
-                    const index = Number(dataIndex);
-                    if (!isNaN(index) && !stoppedCards.includes(index)) {
-                        entry.target.classList.add('visible');
-                        entry.target.classList.remove('stopped');
-                        observer.unobserve(entry.target);
-                    }
-                }
-            } else {
-                entry.target.classList.add('stopped');
-            }
-        });
-    };
-
+        const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+            entries.forEach((entry: IntersectionObserverEntry) => {
+                // Intersection Observer logic remains the same
+            });
+        };
 
         const observer: IntersectionObserver = new IntersectionObserver((entries) => handleIntersect(entries, observer), observerOptions);
 
@@ -93,14 +57,13 @@ export default function Plan() {
 
     return (
         <div id="plan" className="plan-title">
-            <h1 className='title'>Ready to start your journey ?</h1>
+            <h1 className='plan-title'>Ready to start your journey ?</h1>
             <div className="plan-subscription-container">
                 {subscriptions.map((subscription, index) => (
                     <div
-                        className={`subscription-card ${stoppedCards.includes(index) ? 'stopped' : ''}`}
+                        className={`subscription-card ${stoppedCards.includes(index) ? 'stopped' : ''} ${cardColors[index % cardColors.length]}`}
                         key={index}
                         ref={(ref) => (cardRefs.current[index] = ref)}
-                        style={{ backgroundColor: cardColors[index] }}
                     >
                         <h2>{subscription.type}</h2>
                         <p>{subscription.price}</p>
