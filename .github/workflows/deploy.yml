@@ -3,12 +3,13 @@ name: deploy to prod or qa
 on:
   workflow_run:
     workflows: ["docker-compose-test"]
-    branches: [current]
+    branches: [current, next]
     types:
       - completed
   push:
     branches:
       - "current"
+      - "next"
 
 jobs:
 
@@ -16,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: deploy to prod (if branch == canon)
+    - name: deploy to prod (if branch == current)
       uses: appleboy/ssh-action@master
 
-      if: github.ref == 'refs/heads/canon'
+      if: github.ref == 'refs/heads/current'
       with:
         host: ${{ secrets.HOST_PROD }}
         username: ${{ secrets.USERNAME_PROD }}
@@ -40,7 +41,6 @@ jobs:
     - name: deploy to QA (if branch == next)
       uses: appleboy/ssh-action@master
 
-
       if: github.ref == 'refs/heads/next'
       with:
         host: ${{ secrets.HOST }}
@@ -48,16 +48,16 @@ jobs:
         port: ${{ secrets.PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          cd erp-preprod
+          cd erp
 
           git switch next
           git checkout .
 
           git pull origin next
 
-          # FIXME(clara): main address should come from domain name, not this
+          # FIXME(clara): main address should come from domain name env value, not this xD
           find . -type f -name "config.ts" -print0 | xargs -0 sed -i "s/voron/v0ron/g"
 
-          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env down
-          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S rm -rf ./volumes && docker erp-api erp-web # will be removed once ready for production
-          printf '%s\n' ${{ secrets.PASSWORD }} | sudo -p "" -S docker compose --env-file api/.env up -d --force-recreate
+          docker compose --env-file api/.env down
+          docker rmi -f erp-api erp-web
+          docker compose --env-file api/.env up -d --force-recreate
