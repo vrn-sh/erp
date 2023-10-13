@@ -1,10 +1,70 @@
+from rest_framework.compat import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from api.services.hunter import Hunter
 
+import os
+
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+
+class SaasProxyView(APIView):
+    """
+        view that calls saas using API key
+
+        TODO(clara): to be used once saas uploads binaries to S3
+    """
+
+    def post(self, request, *args, **kwargs):
+
+        params = request.query_params
+
+        api_key = os.environ.get('SAAS_API_KEY')
+        api_url = os.environ.get('SAAS_API_URL')
+
+        if not api_key or not api_url:
+            return Response({
+                'error': 'please set SAAS env values in your back-end',
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Api-Key': api_key,
+        }
+
+        result = requests.post(api_url, headers=headers, params=params)
+        return Response(result.json(), status=status.HTTP_200_OK)
+
+
+
+class WappProxyView(APIView):
+    """View that calls proxy to our fingerprinting service"""
+
+    def get(self, request, *args, **kwargs):
+
+        if target_url := request.query_params.get('target_url', None):
+
+            api_key = os.environ.get('WAPP_API_KEY')
+            api_url = os.environ.get('WAPP_API_URL')
+
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Api-Key': api_key,
+            }
+
+            result = requests.get(f'{api_url}?target_url={target_url}', headers=headers)
+            return Response({
+                'data': result.json(),
+            }, status=status.HTTP_200_OK)
+
+
+        return Response({
+            'error': 'please specify target url',
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class HunterView(APIView):
