@@ -36,21 +36,21 @@ function DashboardMission() {
         if (active === 'main') {
             return <Mission />;
         }
-        if (active === 'dork') {
-            return <DorkEngine />;
-        }
-        if (active === 'note') {
-            return <Notes />;
-        }
-        if (active === 'crt') {
-            return <CrtSh />;
-        }
-        if (active === 'vuln') {
-            return <Vulnerability />;
-        }
-        if (active === 'report') {
-            return <Report />;
-        }
+        // if (active === 'dork') {
+        //     return <DorkEngine />;
+        // }
+        // if (active === 'note') {
+        //     return <Notes />;
+        // }
+        // if (active === 'crt') {
+        //     return <CrtSh />;
+        // }
+        // if (active === 'vuln') {
+        //     return <Vulnerability />;
+        // }
+        // if (active === 'report') {
+        //     return <Report />;
+        // }
         return null;
     };
 
@@ -60,18 +60,17 @@ function DashboardMission() {
 
     return (
         <div className="dashboard-table">
-            <h1>Assigned missions</h1>
             <div className="dashboard-content">
                 <div className="subHeader">
                     <div className="submenu-mission">
-                        <MissionSubMenu
+                        {/* <MissionSubMenu
                             key_p="1"
                             id_p="main"
                             active={active}
                             handleClick={handleClick}
                             title="Main"
-                        />
-                        <MissionSubMenu
+                        /> */}
+                        {/* <MissionSubMenu
                             key_p="2"
                             id_p="note"
                             active={active}
@@ -109,7 +108,7 @@ function DashboardMission() {
                                 handleClick={handleClick}
                                 title="Report"
                             />
-                        )}
+                        )} */}
                     </div>
                 </div>
                 {getSubDashboard()}

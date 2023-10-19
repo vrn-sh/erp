@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Accueil.scss';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import { styled } from '@mui/material/styles';
 import { Chip } from '@mui/material';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import config from '../../config';
 import pp from '../../assets/testpp2.jpg';
-import SideBar from '../../component/SideBar/SideBar';
-import TopBar from '../../component/SideBar/TopBar';
 
 type SevProps = {
     title: string;
@@ -18,7 +19,26 @@ type SevProps = {
 };
 
 type TeamProps = {
-    teamTitle: string;
+    team: {
+        id: number;
+        members: {
+            id: number;
+            auth: {
+                username: string;
+                email: string;
+                first_name: string;
+                last_name: string;
+                last_login: string;
+                date_joined: string;
+                phone_number: string;
+                role: number;
+                favorites: string;
+                profile_image: string;
+            };
+            creation_date: string;
+        }[];
+        name: string;
+    };
 };
 
 type MissionProps = {
@@ -81,11 +101,13 @@ function TeamMemberContainer({ name }: MemberProps) {
     );
 }
 
-function TeamListContainer({ teamTitle }: TeamProps) {
+function TeamListContainer({ team }: TeamProps) {
     return (
         <div className="accueil-team-container">
-            <p className="accueil-team-title">{teamTitle}</p>
-            <TeamMemberContainer name="co-worker1" />
+            <p className="accueil-team-title">{team.name}</p>
+            {team.members.map((member) => {
+                return <TeamMemberContainer name={member.auth.username} />;
+            })}
             <TeamMemberContainer name="co-worker2" />
             <TeamMemberContainer name="co-worker3" />
             <TeamMemberContainer name="co-worker4" />
@@ -191,6 +213,28 @@ function MissionList({ title, Vuln, date, progressValue }: MissionProps) {
 
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(3);
+    const [teamList, setTeamList] = useState<
+        {
+            id: number;
+            members: {
+                id: number;
+                auth: {
+                    username: string;
+                    email: string;
+                    first_name: string;
+                    last_name: string;
+                    last_login: string;
+                    date_joined: string;
+                    phone_number: string;
+                    role: number;
+                    favorites: string;
+                    profile_image: string;
+                };
+                creation_date: string;
+            }[];
+            name: string;
+        }[]
+    >([]);
 
     const data = [
         { value: 5, label: 'in progress' }, // purple
@@ -221,133 +265,127 @@ export default function Accueil() {
         );
     }
 
+    const getTeamList = async () => {
+        await axios
+            .get(`${config.apiUrl}/team?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((res) => {
+                setTeamList(res.data);
+            })
+            .catch((e) => {
+                throw e.message;
+            });
+    };
+
+    useEffect(() => {
+        getTeamList();
+    }, []);
+
     return (
-        <div className="dashboard">
-            <SideBar />
-            <div className="dashboard_container">
-                <TopBar />
-                <div className="dashboard-pages">
-                    <div className="page-info">
-                        <h1>Overviews</h1>
+        <div className="dashboard-pages">
+            <div className="page-info">
+                <h1>Overviews</h1>
+            </div>
+            <div className="accueil-container">
+                <div className="accueil-grid-3">
+                    <div className="accueil-rect" style={{ height: '30vh' }}>
+                        <h5>Projects analytics</h5>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <PieChart
+                                colors={['#A687E9', '#55D872', '#EAEBEE']}
+                                series={[
+                                    {
+                                        data,
+                                        innerRadius: 70,
+                                        outerRadius: 50,
+                                    },
+                                ]}
+                                sx={{
+                                    '--ChartsLegend-itemWidth': '30px',
+                                    '--ChartsLegend-itemMarkSize': '10px',
+                                    '--ChartsLegend-rootSpacing': '30px',
+                                }}
+                                margin={{ left: 80, top: -10 }}
+                                {...size}
+                                slotProps={{
+                                    legend: {
+                                        direction: 'row',
+                                        position: {
+                                            vertical: 'bottom',
+                                            horizontal: 'middle',
+                                        },
+                                    },
+                                }}
+                                legend={{ hidden: true }}
+                            >
+                                <PieCenterLabel>
+                                    {numProjects} projects
+                                </PieCenterLabel>
+                            </PieChart>
+                        </div>
                     </div>
-                    <div className="accueil-container">
-                        <div className="accueil-grid-3">
-                            <div
-                                className="accueil-rect"
-                                style={{ height: '30vh' }}
-                            >
-                                <h5>Projects analytics</h5>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <PieChart
-                                        colors={[
-                                            '#A687E9',
-                                            '#55D872',
-                                            '#EAEBEE',
-                                        ]}
-                                        series={[
-                                            {
-                                                data,
-                                                innerRadius: 70,
-                                                outerRadius: 50,
-                                            },
-                                        ]}
-                                        sx={{
-                                            '--ChartsLegend-itemWidth': '30px',
-                                            '--ChartsLegend-itemMarkSize':
-                                                '10px',
-                                            '--ChartsLegend-rootSpacing':
-                                                '30px',
-                                        }}
-                                        margin={{ left: 80, top: -10 }}
-                                        {...size}
-                                        slotProps={{
-                                            legend: {
-                                                direction: 'row',
-                                                position: {
-                                                    vertical: 'bottom',
-                                                    horizontal: 'middle',
-                                                },
-                                            },
-                                        }}
-                                        legend={{ hidden: true }}
-                                    >
-                                        <PieCenterLabel>
-                                            {numProjects} projects
-                                        </PieCenterLabel>
-                                    </PieChart>
-                                </div>
-                            </div>
-                            <div
-                                className="accueil-rect"
-                                style={{ height: '35vh' }}
-                            >
-                                <h5 style={{ marginBottom: '15px' }}>
-                                    Top severity of Vulnerability
-                                </h5>
-                                <div className="rect-scroll">
-                                    <SeverityVuln
-                                        title="XSS-Medium"
-                                        value={76}
-                                    />
-                                    <SeverityVuln
-                                        title="Insecure Design"
-                                        value={45}
-                                    />
-                                    <SeverityVuln title="Injection" value={5} />
-                                </div>
-                            </div>
+                    <div className="accueil-rect" style={{ height: '35vh' }}>
+                        <h5 style={{ marginBottom: '15px' }}>
+                            Top severity of Vulnerability
+                        </h5>
+                        <div className="rect-scroll">
+                            <SeverityVuln title="XSS-Medium" value={76} />
+                            <SeverityVuln title="Insecure Design" value={45} />
+                            <SeverityVuln title="Injection" value={5} />
                         </div>
+                    </div>
+                </div>
 
-                        <div className="accueil-grid-3">
-                            <div className="accueil-rect-long">
-                                <h5 style={{ marginBottom: '15px' }}>
-                                    My mission
-                                </h5>
-                                <div className="rect-scroll">
-                                    <MissionList
-                                        title="Voron"
-                                        Vuln="XSS-Medium"
-                                        date="01/11/2023"
-                                        progressValue={45}
-                                    />
-                                    <MissionList
-                                        title="test"
-                                        Vuln="Insecure design"
-                                        date="12/10/2023"
-                                        progressValue={100}
-                                    />
-                                    <MissionList
-                                        title="test2"
-                                        Vuln="XSS-Medium"
-                                        date="30/10/2023"
-                                        progressValue={80}
-                                    />
-                                </div>
-                            </div>
+                <div className="accueil-grid-3">
+                    <div className="accueil-rect-long">
+                        <h5 style={{ marginBottom: '15px' }}>My mission</h5>
+                        <div className="rect-scroll">
+                            <MissionList
+                                title="Voron"
+                                Vuln="XSS-Medium"
+                                date="01/11/2023"
+                                progressValue={45}
+                            />
+                            <MissionList
+                                title="test"
+                                Vuln="Insecure design"
+                                date="12/10/2023"
+                                progressValue={100}
+                            />
+                            <MissionList
+                                title="test2"
+                                Vuln="XSS-Medium"
+                                date="30/10/2023"
+                                progressValue={80}
+                            />
                         </div>
+                    </div>
+                </div>
 
-                        <div className="accueil-grid-3">
-                            <div className="accueil-rect-long">
-                                <h5
-                                    style={{
-                                        marginBottom: '15px',
-                                        position: 'sticky',
-                                    }}
-                                >
-                                    Co-workers
-                                </h5>
-                                <div className="rect-scroll">
-                                    <TeamListContainer teamTitle="Team test" />
-                                    <TeamListContainer teamTitle="Voron" />
-                                    <TeamListContainer teamTitle="SG groupe" />
-                                </div>
-                            </div>
+                <div className="accueil-grid-3">
+                    <div className="accueil-rect-long">
+                        <h5
+                            style={{
+                                marginBottom: '15px',
+                                position: 'sticky',
+                            }}
+                        >
+                            Co-workers
+                        </h5>
+                        <div className="rect-scroll">
+                            {teamList.map((t) => {
+                                return <TeamListContainer team={t} />;
+                            })}
                         </div>
                     </div>
                 </div>
