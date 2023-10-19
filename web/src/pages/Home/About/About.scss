@@ -1,7 +1,7 @@
 // About
 
 .about {
-    min-height: 1300px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,19 +32,20 @@
 
 .about-catch h1 {
     color: var(--primary-btn);
-    font-family: 'Poppins';
-    font-size: 3rem;
+    font-family: 'Poppins-Regular';
+    font-size: 2rem;
     width: fit-content;
     margin: 0;
 }
 
 .about-catch button {
+    font-family: 'Poppins-Regular';
+    min-width: 30%;
     width: 30%;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     border: none;
     background-color: var(--primary-btn);
     color: white;
-    font-family: 'Poppins';
     padding: 0.5rem;
     border-radius: 5px;
 }
@@ -83,7 +84,7 @@
 }
 
 .about-more p {
-    font-family: 'Poppins-Medium';
+    font-family: 'Poppins-Regular';
     font-size: 1.2rem;
 }
 

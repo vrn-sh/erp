@@ -76,17 +76,15 @@ export default function Plan() {
                 ))}
             </div>
             <h5 className="plan-pro">Need a plan more personalised?</h5>
-            <div className="button-with">
-                <button
-                    type="button"
-                    className="plan-contact-button"
-                    onClick={() => {
-                        window.location.href = '#contact';
-                    }}
-                >
-                    Contact us
-                </button>
-            </div>
+            <button
+                type="button"
+                className="plan-contact-button"
+                onClick={() => {
+                    window.location.href = '#contact';
+                }}
+            >
+                Contact us
+            </button>
         </div>
     );
 }
