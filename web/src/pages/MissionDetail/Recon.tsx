@@ -10,6 +10,7 @@ import {
     Chip,
     Stack,
     Tooltip,
+    CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -72,6 +73,7 @@ export default function Recon(idMission: any) {
     const [wappDomain, setWappDomain] = useState('');
     const [wappaOk, setWappaOk] = useState(false);
     const [wappRes, setWappRes] = useState<IWapp>([]);
+    const [searching, setSearching] = useState(false);
     const [tech, setTech] = useState<ITech>([]);
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
@@ -147,6 +149,7 @@ export default function Recon(idMission: any) {
     };
 
     const getWappa = async () => {
+        setSearching(true);
         setWappaOk(false);
         setOpen(true);
         setMessage('Loading...', 'info');
@@ -475,7 +478,15 @@ export default function Recon(idMission: any) {
                             ) : null}
                         </div>
                     ) : (
-                        <h5 className="error_msg">Please enter a right url</h5>
+                        <div className="wappa_res_container">
+                            {searching ? (
+                                <CircularProgress sx={{ color: '#7c44f3' }} />
+                            ) : (
+                                <h5 className="error_msg">
+                                    Please enter a right url
+                                </h5>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>
