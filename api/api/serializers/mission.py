@@ -76,6 +76,12 @@ class MissionSerializer(serializers.ModelSerializer):
             return cached
 
         repr = super().to_representation(instance)
+        if instance.logo is not None:
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                return repr
+
+            s3_client = S3Bucket()
+            repr['logo'] = s3_client.get_object_url('rootbucket', instance.logo)
         repr['status'] = instance.status
         cache.set(f'mission_{instance.pk}', repr)
         return repr

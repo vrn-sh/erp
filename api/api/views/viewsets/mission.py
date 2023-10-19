@@ -19,6 +19,7 @@ from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer
 from api.models.utils import NmapParser, minimal_nmap_output
+from api.services.s3 import S3Bucket
 
 from django.http import JsonResponse
 from api.services.crtsh import crtshAPI
@@ -379,6 +380,12 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
             request.data.pop("created_by")
+        if "logo" in request.data:
+            token = S3Bucket().upload_single_image_if_exists(
+                'logo',
+                request.data
+            )
+            request.data['logo'] = token
         request.data["last_updated_by"] = request.user.id
         return super().update(request, *args, **kwargs)
 
