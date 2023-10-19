@@ -91,6 +91,7 @@ class Mission(models.Model):
 
     last_updated_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_updated_missions')
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
+    description = models.TextField(blank=True, null=True, default="")
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of')
     recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True, related_name='mission')
