@@ -60,6 +60,8 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
         tags=['Team'],
     )
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return Team.objects.none()
         owner = EmailBackend().get_user_by_email(self.request.user.email)
         if owner is None:
             return Team.objects.none()

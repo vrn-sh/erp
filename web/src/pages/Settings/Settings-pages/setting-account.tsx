@@ -101,16 +101,11 @@ export default function SettingAccount() {
     // Utilisez un effet secondaire pour surveiller les changements de userInfos.profile_image
     useEffect(() => {}, [userInfos.profile_image]);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        setOpen(true);
         let url = `${config.apiUrl}/`;
         if (role === '2') url += 'manager';
         else url += 'pentester';
-
-        console.log(
-            'UserInfos.profile_image juste avant lenvoi:',
-            userInfos.profile_image
-        );
 
         await axios
             .patch(
@@ -136,6 +131,19 @@ export default function SettingAccount() {
                 setMessage(error.message, 'error');
             });
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [userInfos]);
 
     return (
         <div className="container">
@@ -253,9 +261,8 @@ export default function SettingAccount() {
                 <button
                     type="submit"
                     className="submit-button"
-                    onClick={(e) => {
-                        setOpen(true);
-                        handleSubmit(e);
+                    onClick={() => {
+                        handleSubmit();
                     }}
                 >
                     Save Changes

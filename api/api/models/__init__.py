@@ -71,6 +71,8 @@ class Auth(AbstractUser):
     password: models.CharField = models.CharField(max_length=128)
     phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
     email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
+    first_name: models.CharField = models.CharField(max_length=NAME_LENGTH, null=True, blank=True)
+    last_name: models.CharField = models.CharField(max_length=NAME_LENGTH, null=True, blank=True)
     is_enabled: models.BooleanField = models.BooleanField(default=False)  # type: ignore
     favorites: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)  # type: ignore
 

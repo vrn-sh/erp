@@ -31,11 +31,8 @@ install_postgresql () {
 ## SCRIPT ##
 ############
 
-# necessary know dependencies
-sudo apt-get install build-essential libssl-dev libffi-dev python3-dev python-dev || true
-
-sh ./scripts/wkhtmltopdf.sh
-
+# necessary known dependencies
+sudo apt-get install build-essential python3-dev python-dev || true
 
 install_postgresql
 

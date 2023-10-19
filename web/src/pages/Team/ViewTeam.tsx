@@ -209,15 +209,7 @@ export default function ViewTeamDetails() {
             <div className="dashboard_container">
                 <TopBar />
                 <div className="page-info">
-                    <div>
-                        <h2 style={{ fontSize: '28px', fontFamily: 'Arial' }}>
-                            Meet our Team
-                        </h2>
-                    </div>
-                    <div className="page-searcher">
-                        <label>Search on page</label>
-                        <input type="text" placeholder="Search..." />
-                    </div>
+                    <h1>Meet our Team</h1>
                 </div>
                 <div className="edit-container">
                     {teamData ? (
@@ -234,15 +226,27 @@ export default function ViewTeamDetails() {
                                     padding: '10px',
                                 }}
                             >
-                                <h3 style={{ margin: '5px' }}>
+                                <h4
+                                    style={{
+                                        margin: '5px',
+                                        fontFamily: 'Poppins-Regular',
+                                    }}
+                                >
                                     Team Name: {teamData.name}
-                                </h3>
+                                </h4>
                                 <p style={{ margin: '5px', fontSize: '15px' }}>
                                     Leader: {teamData.manager}
                                 </p>
                             </div>
                             <br />
-                            <h4 style={{ margin: '5px' }}>Members:</h4>
+                            <h4
+                                style={{
+                                    margin: '5px',
+                                    fontFamily: 'Poppins-Regular',
+                                }}
+                            >
+                                Members:
+                            </h4>
                             {renderMembers()}
                         </div>
                     ) : (

@@ -11,6 +11,7 @@ import MarkdownEditor from './Markdown/Editor';
 import SelectMission from '../../../../component/SelectMission';
 import BackButton from '../../../../component/BackButton';
 import config from '../../../../config';
+import { FileInput } from '../../../../component/Input';
 
 const templates = [
     // { id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
@@ -40,10 +41,12 @@ function DocumentTemplates({
     setMD,
     setTemplate,
     mission,
+    logo,
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
     setTemplate: Dispatch<SetStateAction<number>>;
     mission: number;
+    logo: string | null;
 }) {
     const handleTemplateSelection = async (templateId: number) => {
         if (mission === -1) {
@@ -52,23 +55,24 @@ function DocumentTemplates({
         }
 
         setTemplate(templateId);
-        console.log('template id', templates[templateId].name);
+        console.log('Token', Cookies.get('Token'));
         axios
-            .get(`${config.apiUrl}/download-report`, {
-                headers: {
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-                params: {
+            .post(
+                `${config.apiUrl}/download-report`,
+                {
                     template_name: templates[templateId].name,
                     mission,
-                    download: true,
+                    logo,
                 },
-                maxRedirects: 5,
-                timeout: 10000,
-            })
+                {
+                    headers: {
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
             .then((response) => {
                 console.log(response);
-                window.open(response.data, '_blank');
+                window.open(response.data.html_file, '_blank');
             });
     };
 
@@ -114,6 +118,22 @@ export default function Report() {
     const [template, setTemplate] = React.useState(-1);
     const [isMDActivated, setMD] = React.useState(false);
     const [mission, setMissionId] = React.useState(-1);
+    const [logo, setBase64Image] = React.useState<string | null>(null);
+
+    const handleImageUpload = (file: any) => {
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                // The result property contains the base64-encoded image data
+                const base64 = event.target?.result as string;
+                setBase64Image(base64);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
+    console.log('logo', logo);
 
     return (
         <div>
@@ -128,13 +148,26 @@ export default function Report() {
                 )}
                 {!isMDActivated && <div style={{ height: '50px' }} />}
             </div>
-
-            <SelectMission setMissionId={setMissionId} missionId={mission} />
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'flex-end',
+                }}
+            >
+                <SelectMission
+                    setMissionId={setMissionId}
+                    missionId={mission}
+                />
+                {!isMDActivated && <FileInput setImage={handleImageUpload} />}
+            </div>
 
             {isMDActivated ? (
                 <MarkdownEditor mission={mission} />
             ) : (
                 <DocumentTemplates
+                    logo={logo}
                     setMD={setMD}
                     setTemplate={setTemplate}
                     mission={mission}
