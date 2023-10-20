@@ -123,7 +123,7 @@ export default function SubDashboard() {
     return (
         <div className="dashboard-pages">
             <div className="page-info">
-                <h1>Welcome to your dashboard</h1>
+                <h1>Assigned Missions</h1>
                 {/* Render a button to open the modal */}
                 <button type="button" className="btn" onClick={openModal}>
                     Generate payload
@@ -141,10 +141,6 @@ export default function SubDashboard() {
                         onRequestClose={closeModal}
                         contentLabel="General Payload Modal"
                         style={{
-                            overlay: {
-                                // Styles for the modal overlay (the background)
-                                // You can set a background color or other styles here if needed
-                            },
                             content: {
                                 border: '1px solid #ccc',
                                 borderRadius: '10px',

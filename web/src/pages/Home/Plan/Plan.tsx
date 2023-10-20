@@ -65,7 +65,7 @@ export default function Plan() {
                                     <AiIcons.AiOutlineCheck
                                         style={{ color: 'green' }}
                                     />
-                                    <p>{s}</p>
+                                    <p style={{ textAlign: 'left' }}>{s}</p>
                                 </div>
                             );
                         })}
