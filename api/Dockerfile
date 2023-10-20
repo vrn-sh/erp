@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+
 FROM python:3.11
 
 RUN apt-get update \
@@ -7,20 +8,11 @@ RUN apt-get update \
     apt-utils \
     postgresql-client \
     build-essential \
-    libssl-dev \
     libffi-dev \
     python3-dev \
-    software-properties-common
-
-RUN apt-get update && apt-get install -y \
-    pdftk
-
-RUN wget -O wkhtmltox https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb
-
-RUN dpkg -i wkhtmltox; apt-get install -y -f
-
-RUN apt-get clean all \
-	&& rm -rf -rvf /var/lib/Apt/lists/*
+    software-properties-common && \
+    apt-get clean all && \
+	rm -rf -rvf /var/lib/apt/lists/*
 
 WORKDIR /api
 

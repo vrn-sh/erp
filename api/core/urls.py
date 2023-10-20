@@ -12,7 +12,7 @@ from knox.views import LogoutView
 
 from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.report.report import GeneratePDFReportView, GenerateMDReportView
-from api.views.hunter import HunterView
+from api.views.hunter import HunterView, SaasProxyView, WappProxyView
 from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 from api.views.viewsets.mission import CredentialViewset, MissionViewset, NmapViewset, CrtShView, WappalyzerRequestView
@@ -23,7 +23,7 @@ from api.views.viewsets.client_info import ClientInfoViewset
 SchemaView = get_schema_view(
    openapi.Info(
       title="voron API",
-      default_version='0.1.4',
+      default_version='0.2.0',
       description="API storing and managing notes, users, and stuff",
       terms_of_service="https://github.com/vrn-sh/erp/blob/current/LICENSE",
       contact=openapi.Contact(email="voron@djnn.sh"),
@@ -59,5 +59,6 @@ urlpatterns = [
     path(r'markdown-report', GenerateMDReportView.as_view()),
     path('search', SearchView.as_view()),
     path(r'hunt', HunterView.as_view()),
-    path('wappa', WappalyzerRequestView.as_view())
+    path(r'wapp', WappProxyView.as_view()),
+    path(r'saas', SaasProxyView.as_view())
 ] + router.urls

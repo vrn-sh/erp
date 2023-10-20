@@ -126,7 +126,7 @@ export default function SubDashboard() {
                 <h1>Assigned Missions</h1>
                 {/* Render a button to open the modal */}
                 <button type="button" className="btn" onClick={openModal}>
-                    General payload
+                    Generate payload
                 </button>
                 <form
                     style={{

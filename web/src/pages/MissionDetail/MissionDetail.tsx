@@ -233,7 +233,6 @@ export default function MissionDetail() {
                             />
                         )}
                     </h1>
-                    <p>Additional description if required</p>
 
                     <div className="subHeader">
                         <div className="submenu-mission">
@@ -281,7 +280,7 @@ export default function MissionDetail() {
                                 }
                                 onClick={handleClick}
                             >
-                                Credential
+                                Credentials
                             </button>
                         </div>
                     </div>

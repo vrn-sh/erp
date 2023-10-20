@@ -62,11 +62,11 @@ export default function AddNMAP({ idRecon, func }: AddNmapProps) {
         <div className="modal-wrapper">
             <div className="modal-card ">
                 <div className="modal centered">
-                    <h2 className="heading">Add a nmap file</h2>
+                    <h2 className="heading">Add an nmap scan trace</h2>
                     <textarea
                         rows={8}
                         required
-                        placeholder="Put your nmap here"
+                        placeholder="Put your nmap trace here"
                         className="popup-textarea"
                         onChange={takeContent}
                         value={content}
