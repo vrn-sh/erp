@@ -32,51 +32,47 @@ export default function SubDashboard() {
         output_type: 'exe',
     });
 
-    // Function to handle form input changes
-    const handleInputChange = (e) => {
+    // Function to handle form input changes with type safety for event object
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
     // Function to submit the form data to the specified URL using curl
     async function submitForm() {
-        console.log("submitForm");
+        const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
+        const apiUrl = `http://voron.djnn.sh/saas/load_shellcode?lport=${
+            formData.lport
+        }&laddr=${formData.laddr}&exploit=${encodeURIComponent(
+            formData.exploit
+        )}&arch=${formData.arch}&os=${formData.os}&output_type=${
+            formData.output_type
+        }`;
+
         try {
-            const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-            const apiUrl = `http://localhost:5600/load_shellcode?lport=${formData.lport}&laddr=${formData.laddr}&exploit=${encodeURIComponent(formData.exploit)}&arch=${formData.arch}&os=${formData.os}&output_type=${formData.output_type}`;
-    
-            console.log("Before fetch");
-    
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
+                    Accept: 'application/json',
                     'X-Api-Key': apiKey,
                 },
                 body: JSON.stringify(formData),
             });
-    
-            console.log("Response Status Code:", response.status);
-    
-            // Check if the response status is in the success range (e.g., 200-299)
+
             if (response.status >= 200 && response.status < 300) {
-                // Read the response body as a blob
                 const fileBlob = await response.blob();
-                console.log("After fetch");
-    
                 const url = window.URL.createObjectURL(fileBlob);
-    
+
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = 'file.exe';
-    
+
                 a.click();
-    
+
                 window.URL.revokeObjectURL(url);
             } else {
-                // Handle error status code (e.g., display an error message)
-                console.error('API Request Error: Status Code ' + response.status);
+                console.error(`API Request Error: Status Code ${response.status}`);
             }
         } catch (error) {
             console.error('API Request Error:', error);
@@ -129,10 +125,17 @@ export default function SubDashboard() {
             <div className="page-info">
                 <h1>Welcome to your dashboard</h1>
                 {/* Render a button to open the modal */}
-                <button className="btn" onClick={openModal}>
+                <button type="button" className="btn" onClick={openModal}>
                     General payload
                 </button>
-                <form style={{ display: isModalOpen ? 'block' : 'none', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <form
+                    style={{
+                        display: isModalOpen ? 'block' : 'none',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
                     <Modal
                         isOpen={isModalOpen}
                         onRequestClose={closeModal}
@@ -145,16 +148,37 @@ export default function SubDashboard() {
                             content: {
                                 border: '1px solid #ccc',
                                 borderRadius: '10px',
-                            }
+                            },
                         }}
                     >
                         {/* Content inside the modal */}
                         <h2>General payload</h2>
                         <div className="form-row">
-                            <div className="columnTitle" style={{ fontFamily: 'Poppins-Medium', border: '1px solid #ccc', borderRadius: '10px', marginRight: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div
+                                className="columnTitle"
+                                style={{
+                                    fontFamily: 'Poppins-Medium',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '10px',
+                                    marginRight: '10px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
                                 <label>Name</label>
                             </div>
-                            <div className="columnTitle" style={{ fontFamily: 'Poppins-Medium', border: '1px solid #ccc', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div
+                                className="columnTitle"
+                                style={{
+                                    fontFamily: 'Poppins-Medium',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '10px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
                                 <label>Description</label>
                             </div>
                         </div>
@@ -162,33 +186,45 @@ export default function SubDashboard() {
                         {formRows.map((row, index) => (
                             <div className="form-row" key={index}>
                                 <div className="column">
-                                    <div className="small-row">
-                                        {row.label}
-                                    </div>
+                                    <div className="small-row">{row.label}</div>
                                 </div>
                                 <div className="column">
                                     <div className="small-row-default">
                                         Default value: {row.defaultValue}
                                     </div>
-                                    <div className="small-row" style={{ borderRadius: '10px', border: '1px solid #ccc', padding: '5px' }}>
+                                    <div
+                                        className="small-row"
+                                        style={{
+                                            borderRadius: '10px',
+                                            border: '1px solid #ccc',
+                                            padding: '5px',
+                                        }}
+                                    >
                                         <input
                                             type="text"
                                             name={row.name}
                                             placeholder={row.placeholder}
                                             value={formData[row.name]}
                                             onChange={handleInputChange}
-                                            style={{ border: 'none', outline: 'none', width: '100%' }}
+                                            style={{
+                                                border: 'none',
+                                                outline: 'none',
+                                                width: '100%',
+                                            }}
                                         />
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        <button onClick={submitForm}>Submit</button>
-                        <button onClick={closeModal}>Close</button>
+                        <button type="button" onClick={submitForm}>
+                            Submit
+                        </button>
+                        <button type="button" onClick={closeModal}>
+                            Close
+                        </button>
                     </Modal>
                 </form>
             </div>
-
             <div className="assigned-missions">
                 <DashboardMission />
             </div>
