@@ -20,9 +20,9 @@ export default function SubDashboard() {
         setIsModalOpen(false);
     };
 
-// State to store form data
-const [formData, setFormData] = useState<{
-    [key: string]: string;
+    // State to store form data
+    const [formData, setFormData] = useState<{
+        [key: string]: string;
     }>({
         lport: '4444',
         laddr: '10.0.2.2',
@@ -82,8 +82,6 @@ const [formData, setFormData] = useState<{
             console.error('API Request Error:', error);
         }
     }
-    
-    
 
     // Data for the form rows
     const formRows = [
@@ -150,8 +148,8 @@ const [formData, setFormData] = useState<{
                             }
                         }}
                     >
-                    {/* Content inside the modal */}
-                    <h2>General payload</h2>
+                        {/* Content inside the modal */}
+                        <h2>General payload</h2>
                         <div className="form-row">
                             <div className="columnTitle" style={{ fontFamily: 'Poppins-Medium', border: '1px solid #ccc', borderRadius: '10px', marginRight: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <label>Name</label>
