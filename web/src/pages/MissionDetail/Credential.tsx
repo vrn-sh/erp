@@ -190,7 +190,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                     }}
                     onClick={() => setShowAddForm(true)}
                 >
-                    Add Credentials
+                    Add test credentials
                 </Button>
             </div>
 

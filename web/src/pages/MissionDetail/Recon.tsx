@@ -542,7 +542,7 @@ export default function Recon(idMission: any) {
 
                             {tech.tech && tech.tech.length > 0 ? (
                                 <div className="wappa_res_info">
-                                    <h5>Technologie stacks</h5>
+                                    <h5>Technology stacks</h5>
                                     {tech.tech.map((o) => {
                                         return (
                                             <>
@@ -569,7 +569,9 @@ export default function Recon(idMission: any) {
                             ) : null}
                         </div>
                     ) : (
-                        <h5 className="error_msg">Please enter a right url</h5>
+                        <h5 className="error_msg">
+                            Please enter an url to scrape
+                        </h5>
                     )}
                 </div>
             </div>
