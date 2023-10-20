@@ -225,9 +225,9 @@ export default function Recon(idMission: any) {
                             Nothing to show
                         </h3>
                     ) : (
-                        <>
+                        <div className="recon_scroll">
                             <table className="no_center_container">
-                                <tbody>
+                                <tbody className="width_fix">
                                     {records.map((s_list) => {
                                         return (
                                             <Accordion
@@ -239,6 +239,7 @@ export default function Recon(idMission: any) {
                                                 onChange={handleChange(
                                                     `panel${s_list.id}`
                                                 )}
+                                                style={{ width: '30%' }}
                                             >
                                                 <AccordionSummary
                                                     expandIcon={
@@ -358,7 +359,7 @@ export default function Recon(idMission: any) {
                                     })}
                                 </tbody>
                             </table>
-                            <nav>
+                            {/* <nav>
                                 <ul className="pagination">
                                     <li className="page-item">
                                         <a
@@ -401,14 +402,11 @@ export default function Recon(idMission: any) {
                                         </a>
                                     </li>
                                 </ul>
-                            </nav>
-                        </>
+                            </nav> */}
+                        </div>
                     )}
                 </div>
-                <div
-                    className="recon_info"
-                    style={{ justifyContent: 'center' }}
-                >
+                <div className="recon_info">
                     <div className="wappa_input_container">
                         <input
                             placeholder="Enter a domain name"

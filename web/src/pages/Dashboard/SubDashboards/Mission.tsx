@@ -39,7 +39,7 @@ export default function Mission() {
     ]);
     const [vulSuccess, setVulSuccess] = useState(false);
     const isPentester = Cookies.get('Role') === '1';
-    const recordsPerPage = 8;
+    const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
     const records = list.slice(firstIndex, lastIndex);

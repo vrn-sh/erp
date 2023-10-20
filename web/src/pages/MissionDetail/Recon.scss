@@ -22,9 +22,10 @@
 }
 
 .recon_container {
-    width: 100%;
+    width: 155vh;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 }
 
 .wappa_input_container {
@@ -151,4 +152,7 @@
 .wappa_tech_case:hover {
     box-shadow: 2px 2px 2px var(--light-gray);
     transition: .5s ease-in-out;
+}
+.width_fix {
+    width: 50vh !important;
 }

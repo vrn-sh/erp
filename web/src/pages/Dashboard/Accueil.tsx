@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Accueil.scss';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDrawingArea } from '@mui/x-charts/hooks';
@@ -6,6 +7,7 @@ import { styled } from '@mui/material/styles';
 import { Chip } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import dayjs from 'dayjs';
 import * as AiIcons from 'react-icons/ai';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
@@ -45,7 +47,7 @@ type TeamProps = {
 
 type MissionProps = {
     title: string;
-    Vuln: string;
+    mission_id: number;
     date: string;
     progressValue: number;
 };
@@ -117,7 +119,7 @@ function TeamListContainer({ team }: TeamProps) {
     );
 }
 
-function MissionList({ title, Vuln, date, progressValue }: MissionProps) {
+function MissionList({ title, mission_id, date, progressValue }: MissionProps) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
         null
     );
@@ -161,7 +163,7 @@ function MissionList({ title, Vuln, date, progressValue }: MissionProps) {
             >
                 <div className="mission-left-half">
                     <label style={{ padding: 0, margin: 0 }}>{title}</label>
-                    <Chip
+                    {/* <Chip
                         label={Vuln}
                         color="warning"
                         variant="outlined"
@@ -170,7 +172,7 @@ function MissionList({ title, Vuln, date, progressValue }: MissionProps) {
                             margin: 0,
                             fontSize: '10px',
                         }}
-                    />
+                    /> */}
                 </div>
 
                 <div className="mission-right-half">
@@ -215,6 +217,7 @@ function MissionList({ title, Vuln, date, progressValue }: MissionProps) {
 
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(3);
+    const navigate = useNavigate();
     const [teamList, setTeamList] = useState<
         {
             id: number;
@@ -237,6 +240,23 @@ export default function Accueil() {
             name: string;
         }[]
     >([]);
+    const [list, setList] = useState<
+        {
+            name: string;
+            id: number;
+            status: number;
+            end: string;
+            vuln: string;
+        }[]
+    >([]);
+    const [vulnType, setVulnType] = useState<
+        {
+            id: number;
+            name: string;
+            description: string;
+        }[]
+    >([]);
+    const currentDay = dayjs();
 
     const data = [
         { value: 5, label: 'in progress' }, // purple
@@ -283,7 +303,100 @@ export default function Accueil() {
             });
     };
 
+    const setStatus = (end: string, start: string) => {
+        if (currentDay.isAfter(dayjs(end))) return 100;
+        const duration = dayjs(end).diff(dayjs(start), 'days');
+        const toToday = dayjs(end).diff(currentDay, 'days');
+        const progress = Math.floor((toToday / duration) * 100);
+        console.log(duration, toToday, progress);
+        return progress;
+    };
+
+    const getVulData = (newData: any) => {
+        const vulnty: string[] = [];
+
+        for (let a = 0; a < newData.length; a += 1) {
+            const tmp = vulnType.find((obj) => {
+                return obj.id === newData[a];
+            });
+            if (tmp && vulnty.indexOf(tmp.name) === -1) vulnty.push(tmp.name);
+        }
+        return vulnty[0];
+    };
+
+    const getMission = async () => {
+        await axios
+            .get(`${config.apiUrl}/mission?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then(async (data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    let VulnData: any = [];
+                    await axios
+                        .get(
+                            `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
+                            {
+                                headers: {
+                                    'Content-type': 'application/json',
+                                    Authorization: `Token ${Cookies.get(
+                                        'Token'
+                                    )}`,
+                                },
+                            }
+                        )
+                        .then(async (res) => {
+                            VulnData = await res.data;
+                        })
+                        .catch((e) => {
+                            throw e.message;
+                        });
+                    const array = [];
+                    for (let j = 0; j < VulnData.length; j += 1) {
+                        if (VulnData[j].mission === data.data.results[i].id) {
+                            array.push(VulnData[j].vuln_type);
+                        }
+                    }
+                    tab.push({
+                        id: data.data.results[i].id,
+                        name: data.data.results[i].title,
+                        status: setStatus(
+                            data.data.results[i].end,
+                            data.data.results[i].start
+                        ),
+                        end: data.data.results[i].end,
+                        vuln: getVulData(array),
+                    });
+                }
+                tab.reverse();
+                setList(tab);
+            })
+            .catch((e) => {
+                throw e.message;
+            });
+    };
+
+    const NavEditMission = (id: number) => {
+        navigate('/mission/edit', {
+            state: {
+                missionId: id,
+            },
+        });
+    };
+
+    const NavMissionDetail = (id: number) => {
+        navigate('/mission/detail', {
+            state: {
+                missionId: id,
+            },
+        });
+    };
+
     useEffect(() => {
+        getMission();
         getTeamList();
     }, []);
 
@@ -376,24 +489,17 @@ export default function Accueil() {
                                     My mission
                                 </h5>
                                 <div className="rect-scroll">
-                                    <MissionList
-                                        title="Voron"
-                                        Vuln="XSS-Medium"
-                                        date="01/11/2023"
-                                        progressValue={45}
-                                    />
-                                    <MissionList
-                                        title="test"
-                                        Vuln="Insecure design"
-                                        date="12/10/2023"
-                                        progressValue={100}
-                                    />
-                                    <MissionList
-                                        title="test2"
-                                        Vuln="XSS-Medium"
-                                        date="30/10/2023"
-                                        progressValue={80}
-                                    />
+                                    {list.map((mission) => {
+                                        return (
+                                            <MissionList
+                                                title={mission.name}
+                                                mission_id={mission.id}
+                                                // Vuln={mission.vuln}
+                                                date={mission.end}
+                                                progressValue={mission.status}
+                                            />
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>

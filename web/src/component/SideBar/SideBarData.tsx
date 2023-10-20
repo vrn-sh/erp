@@ -108,7 +108,7 @@ const SideBarData = function SideBarDataF() {
         {
             title: 'Dashboard',
             path: '/accueil',
-            icon: <AiIcons.AiOutlineHome />,
+            icon: <AiIcons.AiOutlineHome color="#7c44f3" />,
             iconClosed: <IoIcons.IoIosArrowForward />,
             iconOpened: <IoIcons.IoIosArrowDown />,
             isForManager: false,
