@@ -65,8 +65,8 @@
 
             header img {
                 float: right;
-                object-fit: cover;
-                height: 20px;
+                object-fit: contain;
+                height: 70px;
             }
 
             .project-info-table {

@@ -37,6 +37,7 @@ def get_image_file_as_base64_data(path: str) -> bytes:
 class GeneratePDFReportView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
+    serializer_class = ReportHtmlSerializer
 
     @swagger_auto_schema(
         operation_description="Get the mission report generated with the mission' data.",
@@ -85,7 +86,7 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
         request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
         template_name = request.data.pop('template_name')
         request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
-        self.serializer_class = ReportHtmlSerializer
+        print("hello", request.data['logo'])
         return super().create(request, *args, **kwargs)
 
 

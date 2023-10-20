@@ -25,9 +25,6 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         representation['logo'] = ''
         representation['html_file'] = ''
 
-        if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
-            return representation
-
         if not instance.logo:
             return representation
         if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
@@ -232,9 +229,8 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
 
               img {
                   float: right;
-                  height: 10%;
-                  width: 15%;
-                  object-fit: cover;
+                  height: 70px;
+                  object-fit: contain;
               }
 
               .inline-title-logo {
