@@ -38,6 +38,7 @@ function App() {
                 <Route path="/confirm" element={<ConfirmEmail />} />
                 <Route element={<PrivateRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/accueil" element={<Accueil />} />
                     <Route path="/vuln/add" element={<AddVulnerability />} />
                     <Route path="/vuln/edit" element={<EditVulnerability />} />
                     <Route
@@ -58,7 +59,6 @@ function App() {
                     <Route path="/team/edit" element={<EditTeam />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
-                <Route path="/new_accueil" element={<Accueil />} />
             </Routes>
         </div>
     );

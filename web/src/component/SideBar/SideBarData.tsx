@@ -87,23 +87,10 @@ const SideBarData = function SideBarDataF() {
     }, [userInfo.favorites]);
 
     return [
-        // {
-        //     title: 'Dashboard',
-        //     path: '/dashboard',
-        //     icon: <AiIcons.AiOutlineHome />,
-        //     iconClosed: <IoIcons.IoIosArrowForward />,
-        //     iconOpened: <IoIcons.IoIosArrowDown />,
-        //     subNav: [
-        //         {
-        //             title: 'List item',
-        //             path: '/dashboard', // can be changed later
-        //         },
-        //     ],
-        // },
         {
             title: 'Create a Mission',
             path: '/mission/create', // change when build client page
-            icon: <AiIcons.AiOutlineStar />,
+            icon: <AiIcons.AiOutlineStar color="#7c44f3" />,
             iconClosed: <IoIcons.IoIosArrowForward />,
             iconOpened: <IoIcons.IoIosArrowDown />,
             isForManager: true,
@@ -112,16 +99,25 @@ const SideBarData = function SideBarDataF() {
         {
             title: 'Create a team',
             path: '/team/create', // change when build client page
-            icon: <BsIcons.BsPeople />,
+            icon: <BsIcons.BsPeople color="#7c44f3" />,
             iconClosed: <IoIcons.IoIosArrowForward />,
             iconOpened: <IoIcons.IoIosArrowDown />,
             isForManager: true,
             subNav: [],
         },
         {
+            title: 'Dashboard',
+            path: '/accueil',
+            icon: <AiIcons.AiOutlineHome />,
+            iconClosed: <IoIcons.IoIosArrowForward />,
+            iconOpened: <IoIcons.IoIosArrowDown />,
+            isForManager: false,
+            subNav: [],
+        },
+        {
             title: 'Missions',
             path: '/dashboard', // change when build client page
-            icon: <BsIcons.BsJournals />,
+            icon: <BsIcons.BsJournals color="#7c44f3" />,
             iconClosed: <IoIcons.IoIosArrowForward />,
             iconOpened: <IoIcons.IoIosArrowDown />,
             isForManager: false,
@@ -130,7 +126,7 @@ const SideBarData = function SideBarDataF() {
         {
             title: 'Teams',
             path: '/team', // change when build client page
-            icon: <BsIcons.BsJournals />,
+            icon: <AiIcons.AiOutlineTeam color="#7c44f3" />,
             iconClosed: <IoIcons.IoIosArrowForward />,
             iconOpened: <IoIcons.IoIosArrowDown />,
             isForManager: false,
