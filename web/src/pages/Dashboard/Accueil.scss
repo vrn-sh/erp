@@ -80,6 +80,13 @@ h5, p {
             transform: scale(1.1);
             transition: .5s ease-in-out;
         }
+
+        &-vuln {
+            display: flex;
+            flex-direction: row;
+            overflow: scroll;
+            margin-bottom: 1rem;
+        }
     }
 
     &-team {

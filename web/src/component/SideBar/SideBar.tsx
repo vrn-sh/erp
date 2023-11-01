@@ -77,7 +77,7 @@ export default function SideBar() {
 
     return (
         <div className="sidebar">
-            <Link to="/dashboard" className="sidebar-logo">
+            <Link to="/accueil" className="sidebar-logo">
                 <img src={icon} alt="icon" className="nav-logo" />
                 <h1 className="sidebar-site-title">voron</h1>
             </Link>
