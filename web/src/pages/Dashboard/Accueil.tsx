@@ -9,6 +9,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import dayjs from 'dayjs';
 import * as AiIcons from 'react-icons/ai';
+import * as FaIcons from 'react-icons/fa';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -48,12 +49,14 @@ type TeamProps = {
 type MissionProps = {
     title: string;
     mission_id: number;
+    vuln_list: string[];
     date: string;
     progressValue: number;
 };
 
 type MemberProps = {
     name: string;
+    photo: string;
 };
 
 type ILinearProgressBar = {
@@ -96,10 +99,14 @@ function SeverityVuln({ title, value }: SevProps) {
     );
 }
 
-function TeamMemberContainer({ name }: MemberProps) {
+function TeamMemberContainer({ name, photo }: MemberProps) {
     return (
         <div className="accueil-team-member-container">
-            <img src={pp} alt="profile-pp" className="accueil-team-pp" />
+            {photo ? (
+                <img src={photo} alt="Profile" className="accueil-team-pp" />
+            ) : (
+                <FaIcons.FaUserCircle size="24px" color="#8A8A8A" />
+            )}
             <p>{name}</p>
         </div>
     );
@@ -110,16 +117,24 @@ function TeamListContainer({ team }: TeamProps) {
         <div className="accueil-team-container">
             <p className="accueil-team-title">{team.name}</p>
             {team.members.map((member) => {
-                return <TeamMemberContainer name={member.auth.username} />;
+                return (
+                    <TeamMemberContainer
+                        name={member.auth.username}
+                        photo={member.auth.profile_image}
+                    />
+                );
             })}
-            <TeamMemberContainer name="co-worker2" />
-            <TeamMemberContainer name="co-worker3" />
-            <TeamMemberContainer name="co-worker4" />
         </div>
     );
 }
 
-function MissionList({ title, mission_id, date, progressValue }: MissionProps) {
+function MissionList({
+    title,
+    mission_id,
+    vuln_list,
+    date,
+    progressValue,
+}: MissionProps) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
         null
     );
@@ -131,7 +146,7 @@ function MissionList({ title, mission_id, date, progressValue }: MissionProps) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+    const navigate = useNavigate();
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
@@ -151,6 +166,22 @@ function MissionList({ title, mission_id, date, progressValue }: MissionProps) {
         },
     });
 
+    const NavEditMission = (missionId: number) => {
+        navigate('/mission/edit', {
+            state: {
+                missionId,
+            },
+        });
+    };
+
+    const NavMissionDetail = (missionId: number) => {
+        navigate('/mission/detail', {
+            state: {
+                missionId,
+            },
+        });
+    };
+
     return (
         <div className="accueil-mission-container">
             <div
@@ -158,21 +189,10 @@ function MissionList({ title, mission_id, date, progressValue }: MissionProps) {
                     display: 'flex',
                     flexDirection: 'row',
                     textAlign: 'left',
-                    marginBottom: '1rem',
                 }}
             >
                 <div className="mission-left-half">
                     <label style={{ padding: 0, margin: 0 }}>{title}</label>
-                    {/* <Chip
-                        label={Vuln}
-                        color="warning"
-                        variant="outlined"
-                        size="small"
-                        style={{
-                            margin: 0,
-                            fontSize: '10px',
-                        }}
-                    /> */}
                 </div>
 
                 <div className="mission-right-half">
@@ -202,13 +222,37 @@ function MissionList({ title, mission_id, date, progressValue }: MissionProps) {
                             }}
                             className="Popover"
                         >
-                            <BootstrapButton size="small">Open</BootstrapButton>
-                            <BootstrapButton size="small">Edit</BootstrapButton>
+                            <BootstrapButton
+                                size="small"
+                                onClick={() => NavMissionDetail(mission_id)}
+                            >
+                                Open
+                            </BootstrapButton>
+                            <BootstrapButton
+                                size="small"
+                                onClick={() => NavEditMission(mission_id)}
+                            >
+                                Edit
+                            </BootstrapButton>
                         </Popover>
                     </div>
-
-                    <div />
                 </div>
+            </div>
+            <div className="accueil-mission-vuln">
+                {vuln_list.map((vuln) => {
+                    return (
+                        <Chip
+                            label={vuln}
+                            color="warning"
+                            variant="outlined"
+                            size="small"
+                            style={{
+                                marginRight: '10px',
+                                fontSize: '10px',
+                            }}
+                        />
+                    );
+                })}
             </div>
             <LinearProgressBar percent={progressValue} />
         </div>
@@ -216,8 +260,7 @@ function MissionList({ title, mission_id, date, progressValue }: MissionProps) {
 }
 
 export default function Accueil() {
-    const [numProjects, setNumProjects] = useState(3);
-    const navigate = useNavigate();
+    const [numProjects, setNumProjects] = useState(0);
     const [teamList, setTeamList] = useState<
         {
             id: number;
@@ -240,13 +283,24 @@ export default function Accueil() {
             name: string;
         }[]
     >([]);
+    const [data, setData] = useState([
+        { value: 0, label: 'in progress' }, // purple
+        { value: 10, label: 'finished' }, // green
+        { value: 2, label: 'on hold' }, // gray
+    ]);
     const [list, setList] = useState<
         {
             name: string;
             id: number;
             status: number;
             end: string;
-            vuln: string;
+            vuln: string[];
+        }[]
+    >([]);
+    const [vulnImport, setVulnImport] = useState<
+        {
+            name: string;
+            value: number;
         }[]
     >([]);
     const [vulnType, setVulnType] = useState<
@@ -257,12 +311,6 @@ export default function Accueil() {
         }[]
     >([]);
     const currentDay = dayjs();
-
-    const data = [
-        { value: 5, label: 'in progress' }, // purple
-        { value: 10, label: 'finished' }, // green
-        { value: 15, label: 'on hold' }, // gray
-    ];
 
     const size = {
         width: 200,
@@ -287,6 +335,23 @@ export default function Accueil() {
         );
     }
 
+    const getVulType = async () => {
+        await axios
+            .get(`${config.apiUrl}/vuln-type?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then(async (vulnT) => {
+                const newData = await vulnT.data;
+                setVulnType(newData.results);
+            })
+            .catch((e) => {
+                throw e.message;
+            });
+    };
+
     const getTeamList = async () => {
         await axios
             .get(`${config.apiUrl}/team?page=1`, {
@@ -308,7 +373,6 @@ export default function Accueil() {
         const duration = dayjs(end).diff(dayjs(start), 'days');
         const toToday = dayjs(end).diff(currentDay, 'days');
         const progress = Math.floor((toToday / duration) * 100);
-        console.log(duration, toToday, progress);
         return progress;
     };
 
@@ -321,10 +385,33 @@ export default function Accueil() {
             });
             if (tmp && vulnty.indexOf(tmp.name) === -1) vulnty.push(tmp.name);
         }
-        return vulnty[0];
+
+        return vulnty;
+    };
+
+    const getVulnSev = (vulnImp: any, vul: []) => {
+        for (let x = 0; x < vul.length; x += 1) {
+            let found = false;
+            for (let y = 0; y < vulnImp.length; y += 1) {
+                if (vulnImp[y].name === vul[x]) {
+                    found = true;
+                    // eslint-disable-next-line
+                    vulnImp[y].value += 1;
+                }
+            }
+            if (found === false) {
+                vulnImp.push({
+                    value: 1,
+                    name: vul[x],
+                });
+            }
+        }
+        return vulnImp;
     };
 
     const getMission = async () => {
+        let vulnImp: any = [];
+        let vulnLenth = 0;
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
@@ -332,73 +419,81 @@ export default function Accueil() {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
-            .then(async (data) => {
+            .then(async (missions) => {
                 const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
+                const project = {
+                    'In progress': 0,
+                    Succeeded: 0,
+                    'On hold': 0,
+                };
+                const missionData = missions.data.results;
+                // number of projects to show
+                setNumProjects(missionData.length);
+                for (let i = 0; i < missionData.length; i += 1) {
                     let VulnData: any = [];
+                    const array = [];
                     await axios
-                        .get(
-                            `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
-                            {
-                                headers: {
-                                    'Content-type': 'application/json',
-                                    Authorization: `Token ${Cookies.get(
-                                        'Token'
-                                    )}`,
-                                },
-                            }
-                        )
+                        .get(`${config.apiUrl}/vulnerability?page=1`, {
+                            headers: {
+                                'Content-type': 'application/json',
+                                Authorization: `Token ${Cookies.get('Token')}`,
+                            },
+                        })
                         .then(async (res) => {
-                            VulnData = await res.data;
+                            VulnData = await res.data.results;
                         })
                         .catch((e) => {
                             throw e.message;
                         });
-                    const array = [];
                     for (let j = 0; j < VulnData.length; j += 1) {
-                        if (VulnData[j].mission === data.data.results[i].id) {
+                        if (VulnData[j].mission === missionData[i].id) {
                             array.push(VulnData[j].vuln_type);
                         }
                     }
+                    const vul: any = getVulData(array);
                     tab.push({
-                        id: data.data.results[i].id,
-                        name: data.data.results[i].title,
+                        id: missionData[i].id,
+                        name: missionData[i].title,
                         status: setStatus(
-                            data.data.results[i].end,
-                            data.data.results[i].start
+                            missionData[i].end,
+                            missionData[i].start
                         ),
-                        end: data.data.results[i].end,
-                        vuln: getVulData(array),
+                        end: missionData[i].end,
+                        vuln: vul,
                     });
+                    const s = missionData[i].status;
+                    if (s === 'In progress') project['In progress'] += 1;
+                    else project.Succeeded += 1;
+                    vulnLenth += vul.length;
+                    vulnImp = getVulnSev(vulnImp, vul);
                 }
                 tab.reverse();
                 setList(tab);
+                vulnImp.push({
+                    value: vulnLenth,
+                    name: 'total',
+                });
+                setVulnImport(vulnImp);
+                // set for piechart
+                setData([
+                    { value: project['In progress'], label: 'In progress' },
+                    { value: project.Succeeded, label: 'Succeeded' },
+                    { value: project['On hold'], label: 'On hold' },
+                ]);
             })
             .catch((e) => {
                 throw e.message;
             });
     };
 
-    const NavEditMission = (id: number) => {
-        navigate('/mission/edit', {
-            state: {
-                missionId: id,
-            },
-        });
-    };
-
-    const NavMissionDetail = (id: number) => {
-        navigate('/mission/detail', {
-            state: {
-                missionId: id,
-            },
-        });
-    };
+    useEffect(() => {
+        getVulType();
+    }, []);
 
     useEffect(() => {
         getMission();
         getTeamList();
-    }, []);
+    }, [vulnType.length]);
 
     return (
         <div className="dashboard">
@@ -470,15 +565,18 @@ export default function Accueil() {
                                     Top severity of Vulnerability
                                 </h5>
                                 <div className="rect-scroll">
-                                    <SeverityVuln
-                                        title="XSS-Medium"
-                                        value={76}
-                                    />
-                                    <SeverityVuln
-                                        title="Insecure Design"
-                                        value={45}
-                                    />
-                                    <SeverityVuln title="Injection" value={5} />
+                                    {vulnImport && vulnImport.map((vul) => {
+                                        return (
+                                            vul.name !== 'total' && (
+                                                <SeverityVuln
+                                                    title={vul.name}
+                                                    value={
+                                                        (100 / 8) * vul.value
+                                                    }
+                                                />
+                                            )
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -494,7 +592,7 @@ export default function Accueil() {
                                             <MissionList
                                                 title={mission.name}
                                                 mission_id={mission.id}
-                                                // Vuln={mission.vuln}
+                                                vuln_list={mission.vuln}
                                                 date={mission.end}
                                                 progressValue={mission.status}
                                             />
