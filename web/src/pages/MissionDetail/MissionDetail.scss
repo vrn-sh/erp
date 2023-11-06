@@ -5,18 +5,35 @@
     margin: 20px;
     padding: 10px;
     line-height: 160%;
-
     & h1 {
         text-align: left;
         font-size: 24px;
         font-family: "Poppins-Regular";
+        margin-right: 1rem;
     }
-
     & p {
         text-align: left;
         font-size: 14px;
         font-family: "Poppins-Regular";
         color: var(--gray-btn);
+    }
+}
+
+.mission-detail-topline {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mission-detail-team {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    & p {
+        margin: 0;
+        margin-left: 1rem;
+        color: black;
     }
 }
 
