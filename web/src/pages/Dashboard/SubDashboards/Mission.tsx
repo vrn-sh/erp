@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
+import * as AiIcons from 'react-icons/ai';
 import '../Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -14,6 +15,7 @@ export default function Mission() {
         {
             name: string;
             id: number;
+            des: string;
             team: string;
             status: { color: string; text: string };
             scope: any;
@@ -29,6 +31,8 @@ export default function Mission() {
     >([]);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [popup, setPopup] = useState(false);
+    const [poptxt, setPoptxt] = useState('');
     const [item, setItem] = useState<{
         id: number;
         title: string;
@@ -179,6 +183,7 @@ export default function Mission() {
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].title,
+                        des: data.data.results[i].description,
                         team: getName(data.data.results[i].team),
                         status: setStatus(
                             data.data.results[i].end,
@@ -274,10 +279,11 @@ export default function Mission() {
                         >
                             <thead>
                                 <tr>
-                                    <th className="md-2">Mission name</th>
+                                    <th className="md-1">Mission name</th>
                                     <th className="md-1">Team</th>
-                                    <th className="md-3">Badges</th>
+                                    <th className="md-2">Badges</th>
                                     <th className="md-1">State</th>
+                                    <th className="md-2">Description</th>
                                     <th className="md-3">Actions</th>
                                 </tr>
                             </thead>
@@ -313,6 +319,26 @@ export default function Mission() {
                                                     }
                                                     variant="outlined"
                                                 />
+                                            </td>
+                                            <td>
+                                                <p className="des-overflow">
+                                                    {mission.des}
+                                                </p>
+                                                {mission.des.length > 10 && (
+                                                    <a
+                                                        onClick={() => {
+                                                            setPopup(true);
+                                                            setPoptxt(
+                                                                mission.des
+                                                            );
+                                                        }}
+                                                        role="presentation"
+                                                        onKeyDown={() => {}}
+                                                        className="des-a"
+                                                    >
+                                                        more
+                                                    </a>
+                                                )}
                                             </td>
                                             <td>
                                                 <input
@@ -416,6 +442,21 @@ export default function Mission() {
                     </>
                 )}
                 {open && <DeleteConfirm item={item!} func={modalClick} />}
+                {popup && (
+                    <div className="modal-wrapper-mission">
+                        <div className="modal-card-mission">
+                            <a
+                                onClick={() => setPopup(false)}
+                                style={{ cursor: 'pointer' }}
+                                role="presentation"
+                                onKeyDown={() => {}}
+                            >
+                                <AiIcons.AiOutlineClose />
+                            </a>
+                            {poptxt}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

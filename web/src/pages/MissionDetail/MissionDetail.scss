@@ -1,3 +1,4 @@
+$opacity-transition: opacity;
 .mission-detail-container {
     background-color: var(--basic-bg);
     border: 1px solid #ccc;
@@ -34,6 +35,21 @@
         margin: 0;
         margin-left: 1rem;
         color: black;
+        max-width: 30%;
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+    }
+
+    & a {
+        color: var(--gray-btn);
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    & a:hover {
+        color: var(--primary-btn);
+        transition: .5s;
     }
 }
 
@@ -123,4 +139,39 @@
     margin: .3rem;
     border-radius: 15px;
     background-color: var(--colorful-yellow);
+}
+
+
+.modal-wrapper-mission {
+    z-index: 99;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.219);
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+.modal-card-mission {
+    max-width: 500px;
+    opacity: 1;
+    transform: translateY(-100px);
+    transition: $opacity-transition;
+    width: 100%;
+    z-index: 1;
+    text-align: start;
+    padding: 16px;
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+
+    & a {
+        display: flex;
+        width: 100%;
+        justify-content: end;
+    }
 }

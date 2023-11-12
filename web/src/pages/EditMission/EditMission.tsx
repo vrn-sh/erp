@@ -26,6 +26,7 @@ import Input from '../../component/Input';
 
 export default function EditMission() {
     const [Title, setTitle] = useState('');
+    const [Des, setDes] = useState('');
     const [Team, setTeam] = useState(0);
     const [start, setStart] = useState<Dayjs>(dayjs());
     const [end, setEnd] = useState<Dayjs>(dayjs());
@@ -140,6 +141,7 @@ export default function EditMission() {
                 `${config.apiUrl}/mission/${id}`,
                 {
                     title: Title,
+                    description: Des,
                     end: end.format('YYYY-MM-DD'),
                     start: start.format('YYYY-MM-DD'),
                     team: Team,
@@ -217,6 +219,12 @@ export default function EditMission() {
                             label="Title"
                             labelState={Title}
                             setLabel={setTitle}
+                            size="medium"
+                        />
+                        <Input
+                            label="Description"
+                            labelState={Des}
+                            setLabel={setDes}
                             size="medium"
                         />
                         <div
