@@ -77,7 +77,7 @@ export default function SideBar() {
 
     return (
         <div className="sidebar">
-            <Link to="/dashboard" className="sidebar-logo">
+            <Link to="/accueil" className="sidebar-logo">
                 <img src={icon} alt="icon" className="nav-logo" />
                 <h1 className="sidebar-site-title">voron</h1>
             </Link>
@@ -95,7 +95,7 @@ export default function SideBar() {
             <div className="sidebar-tool">
                 <Link to="/settings" className="sidebar-link-bottom">
                     <div className="sidebar-item">
-                        <FiIcons.FiSettings />
+                        <FiIcons.FiSettings color="#7c44f3" />
                         <span className="menu-txt">Settings</span>
                     </div>
                 </Link>

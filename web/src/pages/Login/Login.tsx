@@ -77,7 +77,7 @@ export default function Login() {
                     )
                     .then((e) => {
                         setMessage('Connecting...', 'success');
-                        navigate('/dashboard');
+                        navigate('/accueil');
                         Cookies.set('Token', e.data.token, {
                             expires: Date.parse(e.data.expiry),
                         });

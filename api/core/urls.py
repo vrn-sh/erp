@@ -23,7 +23,7 @@ from api.views.viewsets.client_info import ClientInfoViewset
 SchemaView = get_schema_view(
    openapi.Info(
       title="voron API",
-      default_version='0.1.5',
+      default_version='0.2.0',
       description="API storing and managing notes, users, and stuff",
       terms_of_service="https://github.com/vrn-sh/erp/blob/current/LICENSE",
       contact=openapi.Contact(email="voron@djnn.sh"),

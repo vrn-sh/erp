@@ -5,10 +5,8 @@
         "price_month": "400 euro / month",
         "recurrence": "By mission",
         "service": [
-            "Basic servcies",
-            "Certificate search",
-            "Vulnerability check",
-            "Recon record",
+            "Basic services",
+            "Automated recon",
             "Report generation"
         ]
     },
@@ -18,12 +16,10 @@
         "price_month":  "350 euro / month)",
         "recurrence": "Every season(3 months)",
         "service": [
-            "Basic servcies",
-            "Certificate search",
-            "Vulnerability check",
+            "Basic services",
+            "Automated recon",
             "Report generation",
-            "Recon record",
-            "Email finder"
+            "OSINT tooling access"
         ]
     },
     {
@@ -32,13 +28,11 @@
         "price_month":  "316 euros / month)",
         "recurrence": "Per year",
         "service": [
-            "Basic servcies",
-            "Certificate search",
-            "Vulnerability check",
+            "Basic services",
+            "Automated recon",
             "Report generation",
-            "Recon record",
-            "Email finder",
-            "Application analyzer"
+            "OSINT tooling access",
+            "Private PE Loader access"
         ]
     }
 ]

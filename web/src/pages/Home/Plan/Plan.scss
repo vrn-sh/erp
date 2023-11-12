@@ -73,7 +73,7 @@
 
 .plan-contact-button {
     font-family: 'Poppins-Regular';
-    width: 30%;
+    min-width: 30%;
     font-size: 1.2rem;
     border: none;
     background-color: var(--primary-btn);
@@ -194,5 +194,25 @@
         margin: 0;
         margin-left: 10px;
         padding: 0;
+    }
+}
+
+@media only screen and (max-width: 580px) {
+    .plan-service-container {
+        display: none;
+    }
+
+    .plan-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    .subscription-card h2{
+        font-size: 16px;
+    }
+    .souscrire-button {
+        font-size: 12px;
+        background-color: var(--primary-btn);
+        color: white;
+        font-family: 'Poppins-Regular';
     }
 }

@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 70%;
+  width: 65%;
   height: auto;
   padding: 0;
 }
@@ -43,11 +43,12 @@
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid var(--gray-btn);
+  border: none;
+  box-shadow: 2px 2px 2px var(--light-gray);
   border-radius: 5px;
   &:focus {
     outline: none;
-    border-color: var(--primary-btn);
+    box-shadow: 2px 2px 2px var(--plan-secondary-color);
   }
 }
 
@@ -55,12 +56,13 @@
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid var(--gray-btn);
+  border: none;
+  box-shadow: 2px 2px 2px var(--light-gray);
   border-radius: 5px;
   resize: vertical;
   &:focus {
     outline: none;
-    border-color: var(--primary-btn);
+    box-shadow: 2px 2px 2px var(--plan-secondary-color);
   }
 }
 

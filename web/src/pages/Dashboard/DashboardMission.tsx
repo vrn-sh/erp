@@ -60,7 +60,6 @@ function DashboardMission() {
 
     return (
         <div className="dashboard-table">
-            <h1>Assigned missions</h1>
             <div className="dashboard-content">
                 <div className="subHeader">
                     <div className="submenu-mission">
