@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import '../../Dashboard.scss';
-import { Stack, Divider } from '@mui/material';
+import { Stack } from '@mui/material';
 import Cookies from 'js-cookie';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IDashboardNotes } from '../../DashBoardNote.type';

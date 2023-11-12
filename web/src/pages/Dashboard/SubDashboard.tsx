@@ -1,10 +1,8 @@
-// Import necessary libraries
 import React from 'react';
 import Modal from 'react-modal';
 import './Dashboard.scss';
 import Mission from './SubDashboards/Mission';
 
-// Initialize react-modal
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
 export default function SubDashboard() {
