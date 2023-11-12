@@ -565,18 +565,20 @@ export default function Accueil() {
                                     Top severity of Vulnerability
                                 </h5>
                                 <div className="rect-scroll">
-                                    {vulnImport && vulnImport.map((vul) => {
-                                        return (
-                                            vul.name !== 'total' && (
-                                                <SeverityVuln
-                                                    title={vul.name}
-                                                    value={
-                                                        (100 / 8) * vul.value
-                                                    }
-                                                />
-                                            )
-                                        );
-                                    })}
+                                    {vulnImport &&
+                                        vulnImport.map((vul) => {
+                                            return (
+                                                vul.name !== 'total' && (
+                                                    <SeverityVuln
+                                                        title={vul.name}
+                                                        value={
+                                                            (100 / 8) *
+                                                            vul.value
+                                                        }
+                                                    />
+                                                )
+                                            );
+                                        })}
                                 </div>
                             </div>
                         </div>

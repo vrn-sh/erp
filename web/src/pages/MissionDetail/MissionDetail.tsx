@@ -214,13 +214,13 @@ export default function MissionDetail() {
                 <TopBar />
                 <div className="mission-detail-container">
                     <h1>
-                        { logo &&
+                        {logo && (
                             <img
                                 src={logo}
                                 alt="logo"
                                 className="mission-detail-logo"
                             />
-                        }
+                        )}
                         {Title}
                         {isFavory ? (
                             <AiIcons.AiFillStar

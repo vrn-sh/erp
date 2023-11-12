@@ -112,7 +112,7 @@ export default function CreateMission() {
                 `${config.apiUrl}/mission`,
                 {
                     title: Title,
-                    logo: logo,
+                    logo,
                     start: start.format('YYYY-MM-DD'),
                     end: end.format('YYYY-MM-DD'),
                     team: Team,
