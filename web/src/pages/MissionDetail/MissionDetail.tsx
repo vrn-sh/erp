@@ -18,6 +18,7 @@ export default function MissionDetail() {
     const [active, setActive] = useState('scope');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
+    const [logo, setLogo] = useState('');
     const location = useLocation();
     const [isFavory, setIsFavory] = useState(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
@@ -146,6 +147,7 @@ export default function MissionDetail() {
             })
             .then((data) => {
                 setTitle(data.data.title);
+                setLogo(data.data.logo);
             })
             .catch((e) => {
                 throw e;
@@ -212,6 +214,13 @@ export default function MissionDetail() {
                 <TopBar />
                 <div className="mission-detail-container">
                     <h1>
+                        { logo &&
+                            <img
+                                src={logo}
+                                alt="logo"
+                                className="mission-detail-logo"
+                            />
+                        }
                         {Title}
                         {isFavory ? (
                             <AiIcons.AiFillStar

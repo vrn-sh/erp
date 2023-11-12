@@ -24,6 +24,7 @@ import config from '../../config';
 
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
+    const [logo, setLogo] = useState('');
     const [Team, setTeam] = useState(0);
     const [start, setStart] = useState<Dayjs>(dayjs());
     const [end, setEnd] = useState<Dayjs>(dayjs());
@@ -111,6 +112,7 @@ export default function CreateMission() {
                 `${config.apiUrl}/mission`,
                 {
                     title: Title,
+                    logo: logo,
                     start: start.format('YYYY-MM-DD'),
                     end: end.format('YYYY-MM-DD'),
                     team: Team,
@@ -123,12 +125,36 @@ export default function CreateMission() {
                     },
                 }
             )
-            .then(() => {
+            .then((data) => {
+                console.log(data);
                 setMessage('Created!', 'success');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
             });
+    };
+
+    const convertImageToBase64 = (file: File) => {
+        return new Promise<string | ArrayBuffer | null>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+
+        if (file) {
+            const base64Image = await convertImageToBase64(file);
+            if (typeof base64Image === 'string') {
+                setLogo(base64Image);
+            } else {
+                console.error('La conversion en base64 a échoué.');
+            }
+        }
     };
 
     useEffect(() => {
@@ -184,6 +210,18 @@ export default function CreateMission() {
                                 onChange={(e) => setTitle(e.target.value)}
                                 value={Title}
                                 title="Enter the name for the mission"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="logo">Logo</label>
+                            <input
+                                type="file"
+                                id="logo"
+                                accept="image/*"
+                                className="form-control"
+                                title="Upload a logo for the mission"
+                                onChange={(e) => handleFileUpload(e)}
                             />
                         </div>
 
