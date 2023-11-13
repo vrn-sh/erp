@@ -321,7 +321,6 @@ export default function MissionDetail() {
                             </a>
                         )}
                     </div>
-
                     <div className="subHeader">
                         <div className="submenu-mission">
                             <button
