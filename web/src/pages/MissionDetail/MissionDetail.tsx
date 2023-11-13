@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
+import * as TbIcons from 'react-icons/tb';
 import { Chip } from '@mui/material';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
@@ -28,6 +29,8 @@ export default function MissionDetail() {
     const [status, setStatus] = useState('');
     const [Team, setTeam] = useState(0);
     const [TeamName, setTeamName] = useState('');
+    const [missionDes, setMissionDes] = useState('');
+    const [popup, setPopup] = useState(false);
     const location = useLocation();
     const [isFavory, setIsFavory] = useState(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
@@ -158,6 +161,7 @@ export default function MissionDetail() {
                 setTitle(data.data.title);
                 setStatus(data.data.status);
                 setTeam(data.data.team);
+                setMissionDes(data.data.description);
             })
             .catch((e) => {
                 throw e;
@@ -304,7 +308,19 @@ export default function MissionDetail() {
                         <AiIcons.AiOutlineTeam size={20} color="#7c44f3" />
                         <p>{TeamName}</p>
                     </div>
-
+                    <div className="mission-detail-team">
+                        <TbIcons.TbFileDescription size={20} color="#7c44f3" />
+                        <p>{missionDes}</p>
+                        {missionDes.length > 60 && (
+                            <a
+                                role="presentation"
+                                onClick={() => setPopup(true)}
+                                onKeyDown={() => {}}
+                            >
+                                Read more
+                            </a>
+                        )}
+                    </div>
                     <div className="subHeader">
                         <div className="submenu-mission">
                             <button
@@ -425,6 +441,20 @@ export default function MissionDetail() {
                         close={close}
                         open={open}
                     />
+                )}
+                {popup && (
+                    <div className="modal-wrapper-mission">
+                        <div className="modal-card-mission">
+                            <a
+                                role="presentation"
+                                onKeyDown={() => {}}
+                                onClick={() => setPopup(false)}
+                            >
+                                <AiIcons.AiOutlineClose />
+                            </a>
+                            {missionDes}
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
