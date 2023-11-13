@@ -21,8 +21,8 @@ from knox.auth import TokenAuthentication
 
 from api.backends import EmailBackend
 
-from api.serializers import ManagerSerializer, PentesterSerializer, TeamSerializer
-from api.models import USER_ROLES, Manager, Pentester, Team, get_user_model
+from api.serializers import FreelancerSerializer, ManagerSerializer, PentesterSerializer, TeamSerializer
+from api.models import USER_ROLES, Manager, Pentester, Freelancer, Team, get_user_model
 from api.permissions import IsManager, IsLinkedToData, IsPentester, PostOnly, ReadOnly
 from api.services.s3 import S3Bucket
 
@@ -200,7 +200,7 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     permission_classes = [permissions.IsAuthenticated, IsManager | IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
-    
+
     def list(self, request, *args, **kwargs):
         name_query = request.query_params.get('search', None)
 
@@ -211,6 +211,27 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
 
         # If no query, just do the normal `list()`
         return super().list(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if 'auth' in request.data:
+            token = S3Bucket().upload_single_image_if_exists(
+                'profile_image',
+                request.data['auth'],
+            )
+            request.data['auth']['profile_image'] = token
+        return super().update(request, *args, **kwargs)
+
+
+class FreelancerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+    """
+       FreelancerViewset
+            CRUD operations for Freelancer model (encompasses Auth model as well)
+    """
+
+    queryset = Freelancer.objects.all()  # type: ignore
+    permission_classes = [permissions.IsAuthenticated & IsLinkedToData]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = FreelancerSerializer
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
