@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
+import { Chip } from '@mui/material';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import '../Dashboard/Dashboard.scss';
@@ -13,11 +14,20 @@ import Feedbacks from '../../component/Feedback';
 import HunterIo from './HunterIo/HunterIo';
 import Credentials from './Credential';
 import config from '../../config';
+import DorkEngine from '../Dashboard/SubDashboards/DorkEngine';
+import CrtSh from '../Dashboard/SubDashboards/CrtSh';
+import Notes from '../Dashboard/SubDashboards/Notes/Notes';
+import Report from '../Dashboard/SubDashboards/Report/Report';
+import Vulnerability from '../Dashboard/SubDashboards/Vulnerability';
 
 export default function MissionDetail() {
-    const [active, setActive] = useState('scope');
+    const isPentester = Cookies.get('Role') === '1';
+    const [active, setActive] = useState('detail');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
+    const [status, setStatus] = useState('');
+    const [Team, setTeam] = useState(0);
+    const [TeamName, setTeamName] = useState('');
     const location = useLocation();
     const [isFavory, setIsFavory] = useState(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
@@ -146,9 +156,30 @@ export default function MissionDetail() {
             })
             .then((data) => {
                 setTitle(data.data.title);
+                setStatus(data.data.status);
+                setTeam(data.data.team);
             })
             .catch((e) => {
                 throw e;
+            });
+    };
+
+    const getTeam = async () => {
+        await axios
+            .get(`${config.apiUrl}/team?page=1`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then(async (data) => {
+                const newData = await data.data;
+                for (let i = 0; i < newData.length; i += 1)
+                    if (data.data[i].id === Team)
+                        setTeamName(data.data[i].name);
+            })
+            .catch((e) => {
+                throw e.message;
             });
     };
 
@@ -182,16 +213,28 @@ export default function MissionDetail() {
     useEffect(() => {
         getUserInfo();
         // eslint-disable-next-line
-        if (id != 0) getMissionInfo();
+        if (id != 0) {
+            getMissionInfo();
+        }
     }, [id]);
+
+    useEffect(() => {
+        getTeam();
+    }, [Team]);
 
     useEffect(() => {
         checkFavory();
     }, [userInfo]);
 
     const getSubMissionDetail = () => {
-        if (active === 'scope') {
+        if (active === 'detail') {
             return <Scope />;
+        }
+        if (active === 'note') {
+            return <Notes />;
+        }
+        if (active === 'vuln') {
+            return <Vulnerability />;
         }
         if (active === 'recon') {
             return <Recon id={id} />;
@@ -202,6 +245,15 @@ export default function MissionDetail() {
         if (active === 'credential') {
             return <Credentials idMission={id} />;
         }
+        if (active === 'dork') {
+            return <DorkEngine />;
+        }
+        if (active === 'crt') {
+            return <CrtSh />;
+        }
+        if (active === 'report') {
+            return <Report />;
+        }
         return null;
     };
 
@@ -211,44 +263,85 @@ export default function MissionDetail() {
             <div className="dashboard_container">
                 <TopBar />
                 <div className="mission-detail-container">
-                    <h1>
-                        {Title}
-                        {isFavory ? (
-                            <AiIcons.AiFillStar
-                                className="scope-action-icons"
-                                style={{ color: 'orange' }}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleFavory();
-                                }}
-                            />
-                        ) : (
-                            <AiIcons.AiOutlineStar
-                                className="scope-action-icons"
-                                style={{ color: 'orange' }}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleFavory();
-                                }}
-                            />
-                        )}
-                    </h1>
+                    <div className="mission-detail-topline">
+                        <h1>
+                            {Title}
+                            {isFavory ? (
+                                <AiIcons.AiFillStar
+                                    className="scope-action-icons"
+                                    style={{ color: 'orange' }}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleFavory();
+                                    }}
+                                />
+                            ) : (
+                                <AiIcons.AiOutlineStar
+                                    className="scope-action-icons"
+                                    style={{ color: 'orange' }}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleFavory();
+                                    }}
+                                />
+                            )}
+                        </h1>
+
+                        <Chip
+                            label={status}
+                            color={
+                                status === 'In progress' ? 'warning' : 'success'
+                            }
+                            variant="outlined"
+                            size="medium"
+                            style={{
+                                marginRight: '10px',
+                                fontSize: '12px',
+                            }}
+                        />
+                    </div>
+                    <div className="mission-detail-team">
+                        <AiIcons.AiOutlineTeam size={20} color="#7c44f3" />
+                        <p>{TeamName}</p>
+                    </div>
 
                     <div className="subHeader">
                         <div className="submenu-mission">
                             <button
                                 key={1}
-                                id="scope"
+                                id="detail"
                                 type="button"
                                 className={
-                                    active === 'scope' ? 'active' : undefined
+                                    active === 'detail' ? 'active' : undefined
                                 }
                                 onClick={handleClick}
                             >
-                                Scope
+                                Detail
                             </button>
                             <button
                                 key={2}
+                                id="note"
+                                type="button"
+                                className={
+                                    active === 'note' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Note
+                            </button>
+                            <button
+                                key={3}
+                                id="vuln"
+                                type="button"
+                                className={
+                                    active === 'vuln' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Vulnerability
+                            </button>
+                            <button
+                                key={4}
                                 id="recon"
                                 type="button"
                                 className={
@@ -259,7 +352,7 @@ export default function MissionDetail() {
                                 Recon
                             </button>
                             <button
-                                key={3}
+                                key={5}
                                 id="hunter"
                                 type="button"
                                 className={
@@ -270,7 +363,7 @@ export default function MissionDetail() {
                                 Hunter IO
                             </button>
                             <button
-                                key={4}
+                                key={6}
                                 id="credential"
                                 type="button"
                                 className={
@@ -282,6 +375,45 @@ export default function MissionDetail() {
                             >
                                 Credentials
                             </button>
+                            <button
+                                key={7}
+                                id="dork"
+                                type="button"
+                                className={
+                                    active === 'dork' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Dork Engine
+                            </button>
+                            {isPentester && (
+                                <button
+                                    key={8}
+                                    id="crt"
+                                    type="button"
+                                    className={
+                                        active === 'crt' ? 'active' : undefined
+                                    }
+                                    onClick={handleClick}
+                                >
+                                    Crtsh
+                                </button>
+                            )}
+                            {isPentester && (
+                                <button
+                                    key={9}
+                                    id="report"
+                                    type="button"
+                                    className={
+                                        active === 'report'
+                                            ? 'active'
+                                            : undefined
+                                    }
+                                    onClick={handleClick}
+                                >
+                                    Report
+                                </button>
+                            )}
                         </div>
                     </div>
                     {getSubMissionDetail()}

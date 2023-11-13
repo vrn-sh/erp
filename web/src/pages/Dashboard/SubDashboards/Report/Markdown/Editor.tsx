@@ -8,7 +8,7 @@ import config from '../../../../../config';
 import Tooltip from '../../../../../component/Tooltip/Tooltip';
 import MarkdownHelper from './MarkdownHelper';
 
-function MarkdownEditor({ mission }: { mission: number }) {
+function MarkdownEditor({ missionid }: { missionid: number }) {
     const [markdownText, setMarkdownText] = useState(
         '# Loading from backend...'
     );
@@ -19,7 +19,7 @@ function MarkdownEditor({ mission }: { mission: number }) {
                 Authorization: `Token ${Cookies.get('Token')}`,
             },
             params: {
-                mission,
+                missionid,
                 download: false,
             },
         });
@@ -28,7 +28,7 @@ function MarkdownEditor({ mission }: { mission: number }) {
     };
 
     useEffect(() => {
-        if (mission === -1) {
+        if (missionid === -1) {
             setMarkdownText(
                 '# Please select a mission with the Select button above.'
             );
@@ -48,7 +48,7 @@ function MarkdownEditor({ mission }: { mission: number }) {
     };
 
     const handleDownload = async () => {
-        if (mission === -1) {
+        if (missionid === -1) {
             alert('Please select a mission with the Select button above.');
             return;
         }
@@ -58,7 +58,7 @@ function MarkdownEditor({ mission }: { mission: number }) {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
                 params: {
-                    mission,
+                    missionid,
                     download: true,
                 },
                 maxRedirects: 5,

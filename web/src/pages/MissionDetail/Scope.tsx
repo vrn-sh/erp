@@ -10,11 +10,10 @@ import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
 
-export default function Scope(/* need to add list as a param here */) {
+export default function Scope() {
     const [scope, setScope] = useState([]);
     const [missionId, setMissionId] = useState(0);
     const [Title, setTitle] = useState('');
-    const [Team, setTeam] = useState(0);
     const [createBy, setCreateBy] = useState();
     const [lastEdit, setLastEdit] = useState();
     const [start, setStart] = useState<Dayjs>(dayjs());
@@ -76,7 +75,6 @@ export default function Scope(/* need to add list as a param here */) {
                     title: Title,
                     end: end.format('YYYY-MM-DD'),
                     start: start.format('YYYY-MM-DD'),
-                    team: Team,
                     scope: newScope,
                     created_by: createBy,
                     last_updated_by: lastEdit,
@@ -112,30 +110,9 @@ export default function Scope(/* need to add list as a param here */) {
                 setTitle(data.data.title);
                 setEnd(dayjs(data.data.end));
                 setStart(dayjs(data.data.start));
-                setTeam(data.data.team);
                 setCreateBy(data.data.created_by);
                 setLastEdit(data.data.last_updated_by);
                 setRecord(data.data.scope.slice(firstIndex, lastIndex));
-            })
-            .catch((e) => {
-                throw e;
-            });
-    };
-
-    const getReport = async () => {
-        await axios({
-            method: 'get',
-            url: `${config.apiUrl}/download-report`,
-            data: { mission: missionId },
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Token ${Cookies.get('Token')}`,
-            },
-        })
-            .then(() => {
-                // here to open a link in new tab, replace google link by our url
-                window.open('https://google.fr', '_blank', 'noreferrer');
-                setMessage('Created!', 'success');
             })
             .catch((e) => {
                 throw e;
@@ -147,8 +124,9 @@ export default function Scope(/* need to add list as a param here */) {
     }, []);
 
     useEffect(() => {
-        // eslint-disable-next-line
-        if (missionId != 0) getMission();
+        if (missionId !== 0) {
+            getMission();
+        }
     }, [missionId]);
 
     useEffect(() => {
@@ -173,15 +151,6 @@ export default function Scope(/* need to add list as a param here */) {
                     close={handleClose}
                 />
             )}
-            <div className="mission-tool-line">
-                <button
-                    type="button"
-                    onClick={getReport}
-                    className="input_btn mission-borderBtn"
-                >
-                    GET REPORT
-                </button>
-            </div>
             <table className="no_center_container">
                 <tbody>
                     <tr>
