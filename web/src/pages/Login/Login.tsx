@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
 import Cookies from 'js-cookie';
 import config from '../../config';
-import Feedbacks from '../../component/Feedback';
+import Modal from 'react-modal';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -15,17 +15,28 @@ export default function Login() {
     const [pwdType, setPwdType] = useState('password');
     const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
     const navigate = useNavigate();
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
+    const [resetFeedback, setResetFeedback] = useState(''); // State to store feedback message
 
-    const [open, setOpen] = useState(false);
-    const [message, setMess] = useState<{ mess: string; color: string }>({
-        mess: '',
-        color: 'success',
-    });
-    const close = () => {
-        setOpen(false);
+    // Function to handle password reset submission
+    const handlePasswordReset = async () => {
+        try {
+            const response = await axios.put(`${config.apiUrl}/reset`, {
+                email: resetEmail
+            });
+
+            // Display feedback based on the response
+            setResetFeedback(response.data.message);
+            console.log(response.data.message);
+        } catch (error) {
+            // Handle error scenario
+            setResetFeedback('Error sending reset instructions. Please try again.');
+        }
     };
-    const setMessage = (mess: string, color: string) => {
-        setMess({ mess, color });
+
+    const toggleResetModal = () => {
+        setIsResetModalOpen(!isResetModalOpen);
     };
 
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +70,6 @@ export default function Login() {
     };
 
     const submit = async () => {
-        setOpen(true);
         if (email !== '' && pwd.length > 7) {
             try {
                 await axios
@@ -76,8 +86,7 @@ export default function Login() {
                         }
                     )
                     .then((e) => {
-                        setMessage('Connecting...', 'success');
-                        navigate('/accueil');
+                        navigate('/dashboard');
                         Cookies.set('Token', e.data.token, {
                             expires: Date.parse(e.data.expiry),
                         });
@@ -87,9 +96,6 @@ export default function Login() {
                         Cookies.set('Id', e.data.id, {
                             expires: Date.parse(e.data.expiry),
                         });
-                        Cookies.set('Fav', '', {
-                            expires: Date.parse(e.data.expiry),
-                        });
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
@@ -97,25 +103,8 @@ export default function Login() {
             } catch (error) {
                 setErrorEmail('Invalid email or password!');
             }
-        } else {
-            setMessage('Invalid email or password!', 'error');
         }
     };
-
-    // Handle submit when click 'enter' on keyboard
-    useEffect(() => {
-        const keyDownHandler = async (event: any) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                submit();
-            }
-        };
-
-        document.addEventListener('keydown', keyDownHandler);
-        return () => {
-            document.removeEventListener('keydown', keyDownHandler);
-        };
-    }, [email, pwd]);
 
     return (
         <section className="login-container">
@@ -158,7 +147,39 @@ export default function Login() {
                                 {errorPwd} {errorEmail}
                             </p>
                             <div className="login-submit">
-                                {/* <p>Forgot password ? </p> */}
+                                <div className="forgot-password log-box" onClick={toggleResetModal}>
+                                    <span className="txt-color">
+                                        reset my password
+                                    </span>
+                            </div>
+                            <Modal
+                                isOpen={isResetModalOpen}
+                                onRequestClose={toggleResetModal}
+                                contentLabel="Reset Password Modal"
+                                style={{
+                                    overlay: {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.75)', // This will create a semi-transparent black background
+                                        zIndex: 1000, // This will bring the modal to the front
+                                    },
+                                    content: {
+                                        // Add your content styles here
+                                    },
+                                }}
+                            >
+                                <h2>Reset Password</h2>
+                                <p>Please enter your email address to reset your password.</p>
+                                <input
+                                    type="email"
+                                    value={resetEmail}
+                                    onChange={(e) => setResetEmail(e.target.value)}
+                                    placeholder="Enter your email"
+                                    // Add any additional input styles
+                                />
+                                <button onClick={handlePasswordReset}>Send Email</button>
+                                <p>{resetFeedback}</p> {/* Feedback message */}
+                                <button onClick={toggleResetModal}>Close</button>
+                            </Modal>
+
                                 <button type="button" onClick={submit}>
                                     LOGIN
                                 </button>
@@ -173,14 +194,6 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-            {open && (
-                <Feedbacks
-                    mess={message.mess}
-                    color={message.color}
-                    close={close}
-                    open={open}
-                />
-            )}
         </section>
     );
 }
