@@ -544,6 +544,10 @@ class FreelancerTestCase(APITestCase):
         # 4. Add vulns to the mission
         #
 
+
+        # ensure vuln types are in database
+        call_command('init_builtin_vuln_types')
+
         mission_id = response.data['id']  # type: ignore
         response = api.post(
             '/vulnerability',
@@ -612,6 +616,6 @@ class FreelancerTestCase(APITestCase):
         # 6. request pdf generation
         #
 
-        response = api.post(f'/markdown-report?mission={mission_id}', format='json')
+        response = api.get(f'/markdown-report?mission={mission_id}', format='json')
         self.assertEqual(response.status_code, 200)  # type: ignore
 

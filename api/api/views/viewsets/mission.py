@@ -16,7 +16,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 from api.models import Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
-from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
+from api.permissions import IsFreelancer, IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer
 from api.models.utils import NmapParser, minimal_nmap_output
 
@@ -32,7 +32,7 @@ class NmapViewset(viewsets.ModelViewSet):
     queryset = NmapScan.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
-    permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester]
+    permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester | IsFreelancer]
 
     @swagger_auto_schema(
         operation_description="Creates and parses an NMAP output object.",
@@ -131,7 +131,7 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     queryset = Recon.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester | IsFreelancer]
 
 class CrtShView(APIView):
     CACHE_TIMEOUT = 3600  # Set your desired cache timeout in seconds
@@ -299,7 +299,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     """
 
     queryset = Mission.objects.all()  # type: ignore
-    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager | IsFreelancer]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
 
@@ -361,7 +361,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
 
         if not 'team' in request.data:
             if request.user.role == 3:
-                request.params['team'] = None
+                request.data['team'] = None
             else:
                 return Response({
                     'error': 'please specify team',

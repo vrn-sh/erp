@@ -8,7 +8,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import Response
 
 from api.models.vulns import Notes, VulnType, Vulnerability
-from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
+from api.permissions import IsFreelancer, IsManager, IsLinkedToData, IsPentester, ReadOnly
 
 from api.serializers.vulns import NotesSerializer, VulnTypeSerializer, VulnerabilitySerializer
 from api.services.s3 import S3Bucket
@@ -98,7 +98,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     permissions = [
         permissions.IsAuthenticated,
         IsLinkedToData,
-        IsPentester | IsManager & ReadOnly,
+        IsFreelancer | IsPentester | IsManager & ReadOnly,
     ]
     authentication_classes = [TokenAuthentication]
     serializer_class = VulnerabilitySerializer

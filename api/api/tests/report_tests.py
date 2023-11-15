@@ -28,9 +28,6 @@ class TeamTestCase(TransactionTestCase):
         self.user: Pentester = create_random_pentester()
         self.manager: Manager = create_random_manager()
 
-        warnings.warn(f'manager email: {self.manager.auth.email} (role == {self.manager.auth.role}) -- {self.user.auth.email} is pentester')
-        warnings.warn(f'manager type: {type(self.manager)} ')
-
         self.fake_name: str = Faker().name()
 
         # creating a team
