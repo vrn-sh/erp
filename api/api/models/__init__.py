@@ -10,6 +10,7 @@ The following models are present here:
 import uuid
 from logging import info, warning
 import os
+from warnings import warn
 from django.contrib.postgres.fields import ArrayField
 from typing import List, Optional
 from rest_framework.serializers import CharField
@@ -234,20 +235,11 @@ class Team(models.Model):
         return self.leader.auth == user or user in members_auth  # type: ignore
 
 
-AuthenticatedUser = Pentester | Manager
+AuthenticatedUser = Pentester | Manager | Freelancer
 
 
 def get_user_model(auth: Auth) -> AuthenticatedUser:
     """fetches User model from base authentication model"""
 
-    roles_to_fetch = {
-        'pentester': Pentester,
-        'manager': Manager,
-        'freelancer': Freelancer,
-    }
-
-    if auth.role in roles_to_fetch:
-        return roles_to_fetch[auth.role].objects.get(auth_id=auth.id)
-
-    # should never happen
-    return None  # type: ignore
+    roles_to_fetch = [Auth, Pentester, Manager, Freelancer]
+    return roles_to_fetch[auth.role].objects.get(auth_id=auth.id)  # type: ignore

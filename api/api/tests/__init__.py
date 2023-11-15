@@ -519,9 +519,9 @@ class FreelancerTestCase(APITestCase):
         # 2. Freelancer can login
         #
 
-        freelancer.is_enabled = True
-        freelancer.set_password(passwd)
-        freelancer.save()
+        freelancer.auth.is_enabled = True
+        freelancer.auth.set_password(passwd)
+        freelancer.auth.save()
 
         auth_token = login_as(email, passwd)
         api.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')

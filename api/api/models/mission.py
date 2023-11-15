@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta, date
 from os import environ
+import os
 from typing import Optional
 from django.db import models
 from django.core.cache import cache
@@ -140,11 +141,16 @@ class Mission(models.Model):
             self.recon = Recon.objects.create()  # type: ignore
             self.bucket_name = uuid.uuid4().hex  # type: ignore
 
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                return super().save(*args, **kwargs)
+
             if environ.get('IN_CONTAINER', '0') == '1':
                 S3Bucket().create_bucket(self.bucket_name)
 
-        else: cache.delete(f'mission_{self.pk}')  # type: ignore
-        super().save(*args, **kwargs)
+        else:
+            if '1' not in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                cache.delete(f'mission_{self.pk}')  # type: ignore
+        return super().save(*args, **kwargs)
 
 
 

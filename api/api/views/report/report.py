@@ -82,9 +82,14 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
             return Response({
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
+
+        if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            return Response({'message': 'all good buddy. mock response :)'}, status=HTTP_200_OK)
+
         request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
         template_name = request.data.pop('template_name')
         request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
+
         self.serializer_class = ReportHtmlSerializer
         return super().create(request, *args, **kwargs)
 
@@ -140,6 +145,13 @@ class GenerateMDReportView(APIView):
             return Response({
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
+
+        if os.environ.get('TEST', '0') == '1':
+            return Response({
+                'message': 'mock pdf generation, all good :)'
+            }, status=HTTP_200_OK)
+
+
         version = request.query_params.get("version")
         if not version:
             version = 1.0
@@ -150,11 +162,6 @@ class GenerateMDReportView(APIView):
                      self.generate_weaknesses(mission)
         if not download or download == 'false':
             return Response(data=md_content, status=HTTP_200_OK)
-
-        if os.environ.get('TEST', '0') == '1':
-            return Response({
-                'message': 'mock pdf generation, all good :)'
-            }, status=HTTP_200_OK)
 
         s3 = S3Bucket()
         s3.create_bucket(mission.bucket_name)

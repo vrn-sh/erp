@@ -79,8 +79,10 @@ class NmapViewset(viewsets.ModelViewSet):
             if parser.os_details: request.data['os_details'] = parser.os_details
 
             if recon_id := request.data.get('recon_id'):
-                recon, _ = Recon.objects.get_or_create(id=recon_id)
-                cache.delete(f'mission_{recon.mission.id}')
+                recon, _ = Recon.objects.get_or_create(id=recon_id)  # type: ignore
+
+                if '1' not in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
+                    cache.delete(f'mission_{recon.mission.id}')
 
         # this will just error in the serializer if input is not provided
         request.data['recon'] = request.data.get('recon_id', 0)
@@ -356,12 +358,14 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
 
-        if not 'team' in request.params and request.user.role == 3:
-            request.params['team'] = None
-        else:
-            return Response({
-                'error': 'please specify team',
-            }, status=HTTP_400_BAD_REQUEST)
+
+        if not 'team' in request.data:
+            if request.user.role == 3:
+                request.params['team'] = None
+            else:
+                return Response({
+                    'error': 'please specify team',
+                }, status=HTTP_400_BAD_REQUEST)
 
         return super().create(request, *args, **kwargs)
 
