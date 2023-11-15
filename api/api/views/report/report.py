@@ -146,7 +146,7 @@ class GenerateMDReportView(APIView):
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
 
-        if os.environ.get('TEST', '0') == '1':
+        if '1' in  (os.environ.get('TEST', '0') == '1', os.environ.get('CI', '0')):
             return Response({
                 'message': 'mock pdf generation, all good :)'
             }, status=HTTP_200_OK)
