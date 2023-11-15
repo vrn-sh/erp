@@ -329,7 +329,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 'scope': openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     description="list of IP addresses or domain names",
-                )
+                ),
             },
         ),
         responses={
@@ -356,9 +356,12 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
 
-        recon = Recon.objects.create()
-        recon.save()
-        request.data['recon_id'] = recon.id
+        if not 'team' in request.params and request.user.role == 3:
+            request.params['team'] = None
+        else:
+            return Response({
+                'error': 'please specify team',
+            }, status=HTTP_400_BAD_REQUEST)
 
         return super().create(request, *args, **kwargs)
 

@@ -180,12 +180,20 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
         auth = self.request.data.get('auth')  # type: ignore
         if auth and auth.get('role', 'manager') == 'manager':  # type: ignore
             return Manager.objects.all()  # type: ignore
+
+        if auth and auth.get('role') == 'freelancer':  # type: ignore
+            return Freelancer.objects.all()  # type: ignore
+
         return Pentester.objects.all()  # type: ignore
 
     def get_serializer_class(self):
         auth = self.request.data.get('auth')  # type: ignore
         if auth and auth.get('role', 'manager') == 'manager':  # type: ignore
             return ManagerSerializer
+
+        if auth and auth.get('role') == 'freelancer':  # type: ignore
+            return FreelancerSerializer
+
         return PentesterSerializer
 
 

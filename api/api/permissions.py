@@ -62,32 +62,32 @@ class IsLinkedToData(permissions.BasePermission):
             return obj.auth.id == request.user.id # type: ignore
 
         if isinstance(obj, (Notes, Vulnerability)):
-            # FIXME: this should check for if user is member of related team (or related freelancer)
-            return obj.author.id == request.user.id
+            # FIXME: this should check for if user is member of related team
+            return obj.author.id == request.user.id  # type: ignore
 
         if isinstance(obj, Team):
-            for m in obj.members.all():
+            for m in obj.members.all():  # type: ignore
                 if request.user.id == m.auth.id:
                     return True
-            return obj.leader.auth.id == request.user.id
+            return obj.leader.auth.id == request.user.id  # type: ignore
 
         if isinstance(obj, Mission):
             if obj.freelance_member:
-                return request.user.id == obj.freelance_member.id
+                return request.user.id == obj.freelance_member.id  # type: ignore
 
-            for m in obj.team.members.all():
+            for m in obj.team.members.all():  # type: ignore
                 if m.auth.id == request.user.id:
                     return True
-            return obj.team.leader.auth.id == request.user.id
+            return obj.team.leader.auth.id == request.user.id  # type: ignore
 
         if isinstance(obj, Credentials):
             # TODO(djnn): fix this (cf. bureau des plaintes)
             return True
 
         if isinstance(obj, Recon):
-            mission_obj = Mission.objects.filter(recon_id=obj.id).first()
+            mission_obj = Mission.objects.filter(recon_id=obj.id).first()  # type: ignore
             if not mission_obj:
-                logging.warning('Recon <%d> has no team', obj.id)
+                logging.warning('Recon <%d> has no team', obj.id)  # type: ignore
                 return False
 
             if mission_obj.freelance_member:
@@ -99,9 +99,9 @@ class IsLinkedToData(permissions.BasePermission):
             return mission_obj.team.leader.auth.id == request.user.id
 
         if isinstance(obj, NmapScan):
-            mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()
+            mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()  # type: ignore
             if not mission_obj:
-                logging.warning('NmapScan <%d> has no team', obj.id)
+                logging.warning('NmapScan <%d> has no team', obj.id)  # type: ignore
                 return False
 
             if mission_obj.freelance_member:
@@ -118,7 +118,7 @@ class IsLinkedToData(permissions.BasePermission):
 
 
 def user_has_role(request, role: str) -> bool:
-    """checks if a user has the appropriate role (being 1 or 2)"""
+    """checks if a user has the appropriate role (being 1, 2 or 3)"""
     user_roles = ['placeholder', 'pentester', 'manager', 'freelancer']
     return user_roles[request.user.role] == role
 

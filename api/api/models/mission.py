@@ -96,7 +96,7 @@ class Mission(models.Model):
 
     freelance_member = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='missions', null=True, blank=True)
 
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of')
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of', blank=True, null=True)
     recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True, related_name='mission')
 
     scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
