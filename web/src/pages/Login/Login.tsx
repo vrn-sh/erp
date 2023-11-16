@@ -32,17 +32,18 @@ export default function Login() {
     const [isResetModalOpen, setIsResetModalOpen] = useState(false);
     const [resetEmail, setResetEmail] = useState('');
     const [resetFeedback, setResetFeedback] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const handlePasswordReset = async () => {
         try {
-            const response = await axios.put(`${config.apiUrl}/reset`, {
+            const response = await axios.put(`${config.apiUrl}reset`, {
                 email: resetEmail
             });
-
             setResetFeedback(response.data.message);
-            console.log(response.data.message);
+            setIsSuccess(true);
         } catch (error) {
-            setResetFeedback('Error sending reset instructions. Please try again.');
+            setResetFeedback('Error this email does\'t exist. Please try again.');
+            setIsSuccess(false);
         }
     };
 
@@ -199,15 +200,28 @@ export default function Login() {
                             >
                                 <h2>Reset Password</h2>
                                 <p>Please enter your email address to reset your password.</p>
-                                <input
-                                    type="email"
-                                    value={resetEmail}
-                                    onChange={(e) => setResetEmail(e.target.value)}
-                                    placeholder="Enter your email"
-                                />
-                                <button onClick={handlePasswordReset}>Send Email</button>
-                                <p>{resetFeedback}</p>
-                                <button onClick={toggleResetModal}>Close</button>
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                }}>
+                                    <input
+                                        style={{margin: '10px'}}
+                                        type="email"
+                                        value={resetEmail}
+                                        onChange={(e) => setResetEmail(e.target.value)}
+                                        placeholder="Enter your email"
+                                        />
+                                    <div style={{width: '300px'}}>
+                                        <button onClick={handlePasswordReset}>Send Email</button>
+                                        <p style={{display: 'flex',
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center', color: isSuccess ? 'green' : 'red'}}>{resetFeedback}</p>
+                                        <button onClick={toggleResetModal}>Close</button>                                        
+                                    </div>                                        
+                                </div>
                             </Modal>
                                 <button type="button" onClick={submit}>
                                     LOGIN
