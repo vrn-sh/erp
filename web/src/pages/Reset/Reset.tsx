@@ -10,6 +10,7 @@ export default function Reset() {
     const token = urlParams.get('token');
 
     console.log(token);
+
     const handlePasswordReset = async () => {
         try {
             const response = await axios.post(
@@ -32,12 +33,14 @@ export default function Reset() {
         <>
             <h2>Reset Password</h2>
             <p>Please enter your new password.</p>
-            <div style={{
+            <div
+                style={{
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                }}>
+                }}
+            >
                 <input
                     style={{ margin: '10px' }}
                     type="password"
@@ -49,13 +52,15 @@ export default function Reset() {
                     <button onClick={handlePasswordReset} type="button">
                         Reset password
                     </button>
-                    <p style={{
+                    <p
+                        style={{
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
                             alignItems: 'center',
                             color: isSuccess ? 'green' : 'red',
-                        }}>
+                        }}
+                    >
                         {resetFeedback}
                     </p>
                     <button onClick={toggleResetModal} type="button">
