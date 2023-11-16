@@ -32,14 +32,12 @@ export default function Reset() {
         <>
             <h2>Reset Password</h2>
             <p>Please enter your new password.</p>
-            <div
-                style={{
+            <div style={{
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                }}
-            >
+                }}>
                 <input
                     style={{ margin: '10px' }}
                     type="password"
@@ -48,26 +46,21 @@ export default function Reset() {
                     placeholder="Enter your new password"
                 />
                 <div style={{ width: '300px' }}>
-                    <button
-                        onClick={handlePasswordReset}
-                        type="button">
+                    <button onClick={handlePasswordReset} type="button">
                         Reset password
                     </button>
-                    <p
-                        style={{
+                    <p style={{
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
                             alignItems: 'center',
                             color: isSuccess ? 'green' : 'red',
-                        }}
-                    >
+                        }}>
                         {resetFeedback}
                     </p>
-                    <button
-                        onClick={toggleResetModal}
-                        type="button"
-                    >Close</button>
+                    <button onClick={toggleResetModal} type="button">
+                        Close
+                    </button>
                 </div>
             </div>
         </>
