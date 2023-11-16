@@ -250,8 +250,8 @@ export default function Login() {
                                             </p>
                                             <button
                                                 onClick={toggleResetModal}
-                                                type="button">
-                                                
+                                                type="button"
+                                            >
                                                 Close
                                             </button>
                                         </div>
