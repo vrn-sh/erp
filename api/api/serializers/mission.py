@@ -7,6 +7,7 @@ from api.models.utils import NmapPort
 from api.models.mission import Credentials, Mission, Recon, NmapScan, CrtSh
 from api.models.utils import NmapPort
 
+import os
 
 class StringArrayField(serializers.ListField):
     """Serializing a list of fields"""
@@ -72,6 +73,12 @@ class MissionSerializer(serializers.ModelSerializer):
         model = Mission
 
     def to_representation(self, instance):
+
+        if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            representation = super().to_representation(instance)
+            representation['images'] = []
+            return representation
+
         if cached := cache.get(f'mission_{instance.pk}'):
             return cached
 

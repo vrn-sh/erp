@@ -21,10 +21,12 @@ import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
+import Input from '../../component/Input';
 
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
     const [logo, setLogo] = useState('');
+    const [Des, setDes] = useState('');
     const [Team, setTeam] = useState(0);
     const [start, setStart] = useState<Dayjs>(dayjs());
     const [end, setEnd] = useState<Dayjs>(dayjs());
@@ -113,6 +115,7 @@ export default function CreateMission() {
                 {
                     title: Title,
                     logo,
+                    description: Des,
                     start: start.format('YYYY-MM-DD'),
                     end: end.format('YYYY-MM-DD'),
                     team: Team,
@@ -200,18 +203,18 @@ export default function CreateMission() {
                         </p>
                     </div>
                     <div className="edit-form">
-                        <div className="form-group">
-                            <label htmlFor="title">Title</label>
-                            <input
-                                type="text"
-                                id="title"
-                                required
-                                className="form-control"
-                                onChange={(e) => setTitle(e.target.value)}
-                                value={Title}
-                                title="Enter the name for the mission"
-                            />
-                        </div>
+                        <Input
+                            label="Title"
+                            labelState={Title}
+                            setLabel={setTitle}
+                            size="medium"
+                        />
+                        <Input
+                            label="Description"
+                            labelState={Des}
+                            setLabel={setDes}
+                            size="medium"
+                        />
 
                         <div className="form-group">
                             <label htmlFor="logo">Logo</label>

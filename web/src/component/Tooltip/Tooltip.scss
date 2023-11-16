@@ -8,26 +8,6 @@
   display: flex;
   align-items: center;
 
-  /* Question mark icon */
-  .question-mark {
-    padding: 4px;
-    font-weight: bold;
-    position: fixed;
-    top: 90%;
-    left: 90%;
-    font-size: 24px;
-    margin-right: 8px;
-    background-color: var(--primary-btn);
-    color: white;
-    width: 45px;
-    height: 45px;
-    // border radius to make it a circle
-    border-radius: 100%;
-    &:hover {
-        background-color: var(--primary-hover-btn);
-    }
-  }
-
   /* Tooltip (initially hidden) */
   .tooltip {
     animation: fadeIn 0.3s ease-in-out;
