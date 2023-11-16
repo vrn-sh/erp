@@ -185,6 +185,9 @@ export default function Login() {
                                 <div
                                     className="forgot-password log-box"
                                     onClick={toggleResetModal}
+                                    onKeyPress={toggleResetModal}
+                                    role="button"
+                                    tabIndex={0}
                                 >
                                     <span className="txt-color">
                                         reset my password
@@ -228,6 +231,7 @@ export default function Login() {
                                         <div style={{ width: '300px' }}>
                                             <button
                                                 onClick={handlePasswordReset}
+                                                type="button"
                                             >
                                                 Send Email
                                             </button>
@@ -244,7 +248,10 @@ export default function Login() {
                                             >
                                                 {resetFeedback}
                                             </p>
-                                            <button onClick={toggleResetModal}>
+                                            <button
+                                                onClick={toggleResetModal}
+                                                type="button">
+                                                
                                                 Close
                                             </button>
                                         </div>
