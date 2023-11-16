@@ -26,6 +26,7 @@ export default function MissionDetail() {
     const [active, setActive] = useState('detail');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
+    const [logo, setLogo] = useState('');
     const [status, setStatus] = useState('');
     const [Team, setTeam] = useState(0);
     const [TeamName, setTeamName] = useState('');
@@ -159,6 +160,7 @@ export default function MissionDetail() {
             })
             .then((data) => {
                 setTitle(data.data.title);
+                setLogo(data.data.logo);
                 setStatus(data.data.status);
                 setTeam(data.data.team);
                 setMissionDes(data.data.description);
@@ -269,6 +271,13 @@ export default function MissionDetail() {
                 <div className="mission-detail-container">
                     <div className="mission-detail-topline">
                         <h1>
+                            {logo && (
+                                <img
+                                    src={logo}
+                                    alt="logo"
+                                    className="mission-detail-logo"
+                                />
+                            )}
                             {Title}
                             {isFavory ? (
                                 <AiIcons.AiFillStar
