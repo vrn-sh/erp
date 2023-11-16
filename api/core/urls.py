@@ -13,7 +13,7 @@ from knox.views import LogoutView
 from api.views import LoginView, PingView, ConfirmAccountView, ResetPasswordView
 from api.views.report.report import GeneratePDFReportView, GenerateMDReportView
 from api.views.hunter import HunterView, SaasProxyView, WappProxyView
-from api.views.viewsets import RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
+from api.views.viewsets import FreelancerViewset, RegisterViewset, PentesterViewset, ManagerViewset, TeamViewset
 from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTypeViewset
 from api.views.viewsets.mission import CredentialViewset, MissionViewset, NmapViewset, CrtShView, WappalyzerRequestView
 from api.views.search import SearchView
@@ -34,6 +34,7 @@ SchemaView = get_schema_view(
 )
 
 router = routers.SimpleRouter(trailing_slash=False,)
+router.register(r'freelancer', FreelancerViewset)
 router.register(r'manager', ManagerViewset)
 router.register(r'pentester', PentesterViewset)
 router.register(r'note', NotesViewset)

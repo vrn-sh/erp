@@ -42,7 +42,7 @@ class TeamTestCase(TransactionTestCase):
             "/mission",
             format='json',
             data={
-                'title': 'ERP - Eip team',
+                'title': 'ERP - eip team',
                 'start': '2022-01-01',
                 'end': '2024-01-01',
                 'team': team_id,
