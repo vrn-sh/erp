@@ -153,7 +153,6 @@ class Mission(models.Model):
         return super().save(*args, **kwargs)
 
 
-
 class Credentials(models.Model):
     """
         Model storing the information to be found in /credentials page
@@ -165,4 +164,4 @@ class Credentials(models.Model):
     password: models.CharField = models.CharField(max_length=128)
     service: models.CharField = models.CharField(max_length=128)
     comment: models.CharField = models.CharField(max_length=128, blank=True, null=True)
-    mission: models.CharField = models.CharField(max_length=128, blank=True, null=True)
+    mission: models.ForeignKey = models.ForeignKey("api.Mission", on_delete=models.CASCADE, blank=True, null=True, related_name='creds')

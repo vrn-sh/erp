@@ -226,7 +226,7 @@ class CredentialViewset(viewsets.ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
 
-        mission_id = request.data.get('mission_id', 0)
+        mission_id = request.query_params.get('mission_id', 0)
 
         creds = Credentials.objects.filter(mission=mission_id)  # type: ignore
         warn(f'creds: {creds}')
@@ -281,16 +281,15 @@ class CredentialViewset(viewsets.ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         mission_id = request.data.get('mission_id', 0)
+
         if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
             if not mission.is_member(self.request.user):
-                return Response(HTTP_403_FORBIDDEN)
-
-            request.data['mission'] = mission.id.__str__()
-            request.data.pop('mission_id', None)
+                return Response(status=HTTP_403_FORBIDDEN)
+            request.data['mission'] = mission_id
             return super().create(request, *args, **kwargs)
 
-        return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
+        return Response({'error': 'unknown mission'}, status=HTTP_404_NOT_FOUND)
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors

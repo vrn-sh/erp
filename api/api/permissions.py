@@ -81,7 +81,10 @@ class IsLinkedToData(permissions.BasePermission):
             return obj.team.leader.auth.id == request.user.id  # type: ignore
 
         if isinstance(obj, Credentials):
-            # TODO(djnn): fix this (cf. bureau des plaintes)
+            mission_obj = Mission.objects.filter(creds_id=obj.id).first()
+            if not mission_obj:
+                logging.warning('Credentials <%d> has no team', obj.id)
+                return False
             return True
 
         if isinstance(obj, Recon):
