@@ -6,10 +6,13 @@ export default function Reset() {
     const [resetPassword, setResetPassword] = useState('');
     const [resetFeedback, setResetFeedback] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
 
+    console.log(token);
     const handlePasswordReset = async () => {
         try {
-            const response = await axios.post(`${config.apiUrl}reset`, { password: resetPassword });
+            const response = await axios.post(`${config.apiUrl}reset?token=${token}`, { password: resetPassword });
             setResetFeedback(response.data.message);
             setIsSuccess(true);
         } catch (error) {
