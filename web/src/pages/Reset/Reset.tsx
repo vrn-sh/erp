@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import config from '../../config';
+import '../Login/Login.scss';
 
 export default function Reset() {
     const [resetPassword, setResetPassword] = useState('');
@@ -14,7 +15,7 @@ export default function Reset() {
     const handlePasswordReset = async () => {
         try {
             const response = await axios.post(
-                `${config.apiUrl}reset?token=${token}`,
+                `${config.apiUrl}/reset?token=${token}`,
                 { password: resetPassword }
             );
             setResetFeedback(response.data.message);
@@ -42,7 +43,8 @@ export default function Reset() {
                 }}
             >
                 <input
-                    style={{ margin: '10px' }}
+                    className="form-control"
+                    style={{ margin: '10px', width: '40em' }}
                     type="password"
                     value={resetPassword}
                     onChange={(e) => setResetPassword(e.target.value)}
