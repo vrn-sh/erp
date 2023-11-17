@@ -29,8 +29,8 @@ function ContactForm() {
     };
 
     const isValidEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
     };
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -48,14 +48,16 @@ function ContactForm() {
             );
 
             if (subscribe) {
-                const response = await axios.post(`${config.apiUrl}/mailing-list`, { email: formData.email });
+                const response = await axios.post(
+                    `${config.apiUrl}/mailing-list`,
+                    { email: formData.email }
+                );
                 console.log('Mailing List Response:', response);
             }
         } catch (error) {
             console.error('Error:', error);
         }
     };
-
 
     return (
         <div id="contact" className={styles.container}>
