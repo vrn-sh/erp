@@ -51,7 +51,7 @@ export default function Reset() {
                     placeholder="Enter your new password"
                 />
                 <div style={{ width: '300px' }}>
-                    <button onClick={handlePasswordReset} type="button">
+                    <button className="cursor-pointer" onClick={handlePasswordReset} type="button">
                         Reset password
                     </button>
                     <p
@@ -65,9 +65,6 @@ export default function Reset() {
                     >
                         {resetFeedback}
                     </p>
-                    <button onClick={toggleResetModal} type="button">
-                        Close
-                    </button>
                 </div>
             </div>
         </>
