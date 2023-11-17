@@ -28,8 +28,16 @@ function ContactForm() {
         setSubscribe(!subscribe);
     };
 
+    const isValidEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+    };
     const handleSubmit = async (e: any) => {
         e.preventDefault();
+        if (!isValidEmail(formData.email)) {
+            alert('Please enter a valid email address');
+            return;
+        }
         try {
             // Send email form
             await emailjs.sendForm(
