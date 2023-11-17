@@ -215,7 +215,8 @@ export default function Login() {
                                             transform: 'translate(-50%, -50%)',
                                             display: 'flex',
                                             flexDirection: 'column',
-                                            justifyContent: 'space-between',},
+                                            justifyContent: 'space-between',
+                                        },
                                     }}
                                 >
                                     <h2>Reset Password</h2>
@@ -245,7 +246,7 @@ export default function Login() {
                                             <button
                                                 onClick={handlePasswordReset}
                                                 type="button"
-                                                className="cursor-pointer"
+                                                className="form-control cursor-pointer"
                                             >
                                                 Send Email
                                             </button>
@@ -266,13 +267,12 @@ export default function Login() {
                                             <button
                                                 onClick={toggleResetModal}
                                                 type="button"
-                                                className="cursor-pointer"
+                                                className="form-control cursor-pointer"
                                             >
                                                 Close
                                             </button>
                                         </div>
                                     </div>
-                                    
                                 </Modal>
                                 <button type="button" onClick={submit}>
                                     LOGIN

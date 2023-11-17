@@ -51,7 +51,11 @@ export default function Reset() {
                     placeholder="Enter your new password"
                 />
                 <div style={{ width: '300px' }}>
-                    <button className="cursor-pointer" onClick={handlePasswordReset} type="button">
+                    <button
+                        className="form-control cursor-pointer"
+                        onClick={handlePasswordReset}
+                        type="button"
+                    >
                         Reset password
                     </button>
                     <p
