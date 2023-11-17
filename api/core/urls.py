@@ -19,6 +19,7 @@ from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTyp
 from api.views.viewsets.mission import CredentialViewset, MissionViewset, NmapViewset, CrtShView, WappalyzerRequestView
 from api.views.search import SearchView
 from api.views.viewsets.client_info import ClientInfoViewset
+from api.views.viewsets.mailingList import MailingListViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -45,6 +46,7 @@ router.register(r'mission', MissionViewset)
 router.register(r'nmap', NmapViewset)
 router.register(r'client-info', ClientInfoViewset)
 router.register(r'credentials', CredentialViewset)
+router.register(r'mailing-list', MailingListViewset)
 
 
 urlpatterns = [
@@ -63,5 +65,5 @@ urlpatterns = [
     path('search', SearchView.as_view()),
     path(r'hunt', HunterView.as_view()),
     path(r'wapp', WappProxyView.as_view()),
-    path(r'saas', SaasProxyView.as_view())
+    path(r'saas', SaasProxyView.as_view()),
 ] + router.urls
