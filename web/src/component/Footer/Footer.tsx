@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './Footer.scss';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/voron-logo.svg';
 import axios from 'axios';
+import logo from '../../assets/voron-logo.svg';
 import config from '../../config';
 import '../../pages/Login/Login.scss';
 
@@ -24,7 +24,7 @@ function CustomLink({
 }
 
 export default function Footer() {
-    const [mailInput, setMailInput] = useState("");
+    const [mailInput, setMailInput] = useState('');
     const isValidEmail = (email: string) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
@@ -36,10 +36,9 @@ export default function Footer() {
             return;
         }
         try {
-            const response = await axios.post(
-                `${config.apiUrl}/mailing-list`,
-                { email: mailInput }
-            );
+            const response = await axios.post(`${config.apiUrl}/mailing-list`, {
+                email: mailInput,
+            });
             console.log('Mailing List Response:', response);
         } catch (error) {
             console.error('Error:', error);
@@ -56,7 +55,13 @@ export default function Footer() {
                 voron
             </Link>
             <p>Copyright ©2023 VORON, Inc.</p>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
                 <input
                     style={{ margin: '10px' }}
                     type="email"
@@ -65,9 +70,13 @@ export default function Footer() {
                     onChange={(e) => setMailInput(e.target.value)}
                     placeholder="Enter your email"
                 />
-                <button onClick={handleSubmit} type="button" style={{ width: '3em' }}>
+                <button
+                    onClick={handleSubmit}
+                    type="button"
+                    style={{ width: '3em' }}
+                >
                     Subscribe to our newsletter
-            </button>
+                </button>
             </div>
             <p>Contact voron@djnn.sh</p>
             <div className="policy-link">
