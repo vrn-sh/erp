@@ -324,6 +324,10 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                     type=openapi.TYPE_STRING,
                     description="Title of the mission",
                 ),
+                'logo': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="token of the logo",
+                ),
                 'team': openapi.Schema(
                     type=openapi.TYPE_INTEGER,
                     description="Id of the team",
@@ -340,6 +344,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 examples={
                     "id": 1,
                     "title": "Pentest mission",
+                    "logo": "token of the logo",
                     "start": "2020-06-03",
                     "end": "2022-06-03",
                     "team": 1,
@@ -366,6 +371,12 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 return Response({
                     'error': 'please specify team',
                 }, status=HTTP_400_BAD_REQUEST)
+        if 'logo' in request.data:
+            token = S3Bucket().upload_single_image_if_exists(
+                'logo',
+                request.data
+            )
+            request.data['logo'] = token
 
         return super().create(request, *args, **kwargs)
 
