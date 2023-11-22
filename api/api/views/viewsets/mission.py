@@ -371,7 +371,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 return Response({
                     'error': 'please specify team',
                 }, status=HTTP_400_BAD_REQUEST)
-        if 'logo' in request.data:
+        if 'logo' in request.data and '1' not in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
             token = S3Bucket().upload_single_image_if_exists(
                 'logo',
                 request.data
