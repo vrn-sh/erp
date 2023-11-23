@@ -36,7 +36,7 @@ export default function Login() {
 
     const handlePasswordReset = async () => {
         try {
-            const response = await axios.put(`${config.apiUrl}reset`, {
+            const response = await axios.put(`${config.apiUrl}/reset`, {
                 email: resetEmail,
             });
             setResetFeedback(response.data.message);

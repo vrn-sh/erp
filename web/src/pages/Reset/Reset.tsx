@@ -15,7 +15,7 @@ export default function Reset() {
     const handlePasswordReset = async () => {
         try {
             const response = await axios.post(
-                `${config.apiUrl}reset?token=${token}`,
+                `${config.apiUrl}/reset?token=${token}`,
                 { password: resetPassword }
             );
             setResetFeedback(response.data.message);
