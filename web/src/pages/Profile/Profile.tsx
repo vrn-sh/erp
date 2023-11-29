@@ -219,14 +219,26 @@ export default function ProfilePage() {
                             <GroupInfo
                                 t1="First name"
                                 t2="Email"
-                                c1={userInfos.first_name !== undefined ? userInfos.first_name : '-'}
-                                c2={userInfos.email !== undefined ? userInfos.email : '-'}
+                                c1={
+                                    userInfos.first_name !== undefined
+                                        ? userInfos.first_name
+                                        : '-'
+                                }
+                                c2={
+                                    userInfos.email !== undefined
+                                        ? userInfos.email
+                                        : '-'
+                                }
                             />
 
                             <GroupInfo
                                 t1="Last name"
                                 t2="Co-workers"
-                                c1={userInfos.last_name !== undefined ? userInfos.last_name : '-'}
+                                c1={
+                                    userInfos.last_name !== undefined
+                                        ? userInfos.last_name
+                                        : '-'
+                                }
                                 c2={String(coworker)}
                             />
 
@@ -246,7 +258,6 @@ export default function ProfilePage() {
                                     Set general informations
                                 </button>
                             </div>
-
                         </div>
                     </div>
 
