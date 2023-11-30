@@ -1,7 +1,5 @@
 body {
     font-family: "Times New Roman", Times, serif;
-            padding: 2em 4.5em;
-            margin: 20px;
 }
 
 header {
@@ -10,15 +8,10 @@ header {
 }
 main {
     line-height: 1.6;
-    position: relative;
-    width: 3.5in;
-    height: 5in;
-    display: inline-block;
-    overflow: hidden;
-    vertical-align: top;
 }
 section {
-    width: 3.5in;
+    /* 2 columns */
+    column-count: 2;
 }
 
 h1 {
@@ -146,7 +139,7 @@ th {
                 display: block;
                 text-align: center;
             }
-            .figure img {
-                width: 100%;
+            img {
+                max-width: 600px;
                 object-fit: cover;
             }

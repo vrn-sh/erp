@@ -32,6 +32,7 @@ class ReportHtml(models.Model):
     mission = models.ForeignKey(to=Mission, on_delete=models.CASCADE, related_name='mission_id')
     version = models.FloatField(default=1.0)
     logo = models.CharField(max_length=255, blank=True, null=True)
-    html_file = models.CharField(max_length=255, blank=True, null=True)
+    html_file = models.CharField(max_length=255, blank=True, null=True,)
+    pdf_file = models.CharField(max_length=255, blank=True, null=True,)
 
 

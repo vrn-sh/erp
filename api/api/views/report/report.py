@@ -85,8 +85,8 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
             }, status=HTTP_404_NOT_FOUND)
         request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
         template_name = request.data.pop('template_name')
-        request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
-        print("hello", request.data['logo'])
+        if request.data.get('logo', ''):
+            request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
         return super().create(request, *args, **kwargs)
 
 

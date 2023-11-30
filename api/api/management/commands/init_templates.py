@@ -11,8 +11,9 @@ class Command(BaseCommand):
             templates = [
                 ('red4sec',
                  self.read_css('./api/pdf-templates/red4sec-template/main.css'),
-                 '''<div class="cover-page">
-<svg id="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                 '''
+                 <div class="cover-page" style="display: grid; justify-items: space-between;">
+<svg id="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 794 320" width="100%">
    <defs>
        <linearGradient id="url(#sw-gradient-1)" x1="0" x2="0" y1="1" y2="0">
            <stop stop-color="rgba(243, 62, 172, 1)" offset="0%"></stop>
@@ -27,10 +28,16 @@ class Command(BaseCommand):
        </linearGradient>
    </defs>
    <path fill="url(#sw-gradient-0)" fill-opacity="0.7" d="M0,192L180,192L360,32L540,96L720,64L900,96L1080,224L1260,160L1440,96L1440,0L1260,0L1080,0L900,0L720,0L540,0L360,0L180,0L0,0Z"></path>        </svg>
-   <img alt="logo-company" id="logo" src="{logo}" />
+   <img style="max-height: 300px;" alt="logo-company" id="logo" src="{logo}" />
 <h1>{team_name}</h1>
-
-<svg id="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+<div class="bandeau">
+   <h2 id="mission-title">{mission_title}</h2>
+   <div class="report-info">
+       <p id="version">Version: {report_version}</p>
+       <p id="report-date">{report_date}</p>
+   </div>
+</div>
+<svg id="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 794 320" width="100%">
    <defs>
        <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
            <stop stop-color="rgba(243, 62, 142, 1)" offset="0%"></stop>
@@ -46,21 +53,19 @@ class Command(BaseCommand):
        </linearGradient>
    </defs>
    <path fill="url(#sw-gradient-1)" fill-opacity="0.7" d="M0,64L205.7,224L411.4,256L617.1,256L822.9,224L1028.6,224L1234.3,32L1440,256L1440,320L1234.3,320L1028.6,320L822.9,320L617.1,320L411.4,320L205.7,320L0,320Z"></path></svg>
-<div class="bandeau">
 
-   <h2 id="mission-title">{mission_title}</h2>
-   <div class="report-info">
-       <p id="version">Version: {report_version}</p>
-       <p id="report-date">{report_date}</p>
-   </div>
-</div>
-
-</div>'''),
+'''),
                 ('hackmanit',
                  self.read_css('./api/pdf-templates/hackmanit-template/main.css'),
                  '''
+<div>
+    <header>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>{mission_title}</title>
+    </header>
     <div class="cover-page">
-        <img alt="logo-company" id="logo" src="{logo}" />
+        <img alt="logo-company" id="logo" src="{logo}" style="max-height: 300px;"/>
         <h1 id="mission-title>{mission_title}</h1>
         <div class="report-info">
             <p>{team_name}</p>
@@ -68,6 +73,7 @@ class Command(BaseCommand):
             <p id="report-date">{report_date}</p>
         </div>
     </div>
+</div>
                  '''),
                 ('NASA',
                  self.read_css('./api/pdf-templates/NASA-template/main.css'),
@@ -77,6 +83,7 @@ class Command(BaseCommand):
             <div class="identity">
                 <img class="logo"
                     src="{logo}"
+                    style="max-height: 300px;"
                     alt="logo" />
                 <div class="info">
                     <p>{team_name}</p>
@@ -94,6 +101,23 @@ class Command(BaseCommand):
         </footer>
     </div>
                  '''),
+                 (
+                      'yellow',
+                        self.read_css('./api/pdf-templates/yellow-template/main.css'),
+                        '''
+    <article id="cover">
+      <h1>{mission_title}</h1>
+        <img alt="logo-company" id="logo" src="{logo}" style="max-height: 300px;"/>
+      <address>
+      {team_name}
+      </address>
+      <address>
+        <strong>Version:</strong> {report_version}<br>
+        <strong>Date:</strong> {report_date}<br>
+      </address>
+    </article>
+                        '''
+                 ),
                 (
                     'academic',
                     self.read_css('./api/pdf-templates/academic-template/main.css'),

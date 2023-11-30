@@ -2,6 +2,8 @@ from datetime import date
 import os
 from rest_framework import serializers
 from django.core.cache import cache
+from weasyprint import CSS, HTML
+from weasyprint.text.fonts import FontConfiguration
 from api.models.mission import Mission
 from api.models import Team
 from api.models.report.generate_html import generate_members, generate_vulns_detail
@@ -23,28 +25,31 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         s3_client = S3Bucket()
 
         representation['logo'] = ''
-        representation['html_file'] = ''
 
-        if not instance.logo:
-            return representation
         if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
             return representation
 
         s3_client = S3Bucket()
-
-        representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
-        filename = f'report-{instance.pk}-{instance.version}.html'
+        if instance.logo:
+            representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
+        filename = f'report-{instance.pk}-{instance.version}.pdf'
         filepath = f'/tmp/{filename}'
-        with open(filepath, 'w+') as f:
-            f.write(self.dump_academic_report(instance) if instance.template.name == "academic" \
-                        else self.dump_html_report(instance, representation['logo']))
+        html_content = self.dump_academic_report(instance, representation['logo']) \
+            if instance.template.name == "academic" \
+                        else self.dump_html_report(instance, representation['logo'])
+        HTML(string=html_content).write_pdf(
+            filepath,
+            stylesheets=[CSS(string=instance.template.css_style)],
+            font_config=FontConfiguration())
+            
         s3_client.upload_file('rootbucket', filepath, filename)
-        representation['html_file'] = s3_client.get_object_url('rootbucket', filename)
+        representation['pdf_file'] = s3_client.get_object_url('rootbucket', filename)
+        print(representation['pdf_file'])
         os.remove(filepath)
         cache.set(cache_key, representation)
         return representation
 
-    def dump_academic_report(self, instance) -> str:
+    def dump_academic_report(self, instance, logo=None) -> str:
 
         def generate_members(mission: Mission) -> str:
             team: Team = mission.team
@@ -82,13 +87,10 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                 <title>{mission_title}</title>
             </head>
 
-            <style>
-                {css_style}
-            </style>
-
                 <body>
 
                 <header>
+                    <img src={logo} />
                     <h1>{mission_title}</h1>
                     <div class="authors">
                         {members}
@@ -97,31 +99,53 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                 </header>
 
                 <main>
-                    <section>
                         {scope}
-                    </section>
-                    <section>
                         {weaknesses}
-                    </section>
                 </main>
                 </body>
             </html>
-        '''.format(mission_title=instance.mission.title,
+        '''.format(logo=logo,
+                   mission_title=instance.mission.title,
                    members=generate_members(instance.mission),
                    team_name=instance.mission.team.name,
                    scope=generate_scope(instance.mission),
                    weaknesses=generate_weaknesses(instance.mission),
-                   css_style=ReportTemplate.objects.get(name='academic').css_style)
+            )
 
     def dump_html_report(self, instance, logo_url) -> str:
         """compile pages together to generate a report"""
         print("logo url", logo_url)
-        html_content = self.generate_cover(instance, logo=logo_url) +  \
-                self.generate_project_info(instance, logo=logo_url) + \
-                self.generate_condition_and_scope(instance, logo=logo_url) + \
-                self.generate_weaknesses(instance, logo=logo_url)
+        return \
+        '''
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
 
-        return html_content
+                <body style="margin: 0; padding:0;">
+                    {cover_page}
+                    <div style="page-break-after: always;"></div>
+                    <section style="margin: 40px;">
+                        {members}
+                    </section>
+                    <div style="page-break-after: always;"></div>
+                    <section style="margin: 40px;">
+                        {scope}
+                    </section>
+                    <div style="page-break-after: always;"></div>
+                    <section style="margin: 40px;">
+                        {weaknesses}
+                    </section>
+                </body>
+            </html>
+        '''.format(
+                   cover_page=self.generate_cover(instance, logo=logo_url),
+                   members = self.generate_project_info(instance, logo=logo_url),
+                   scope=self.generate_condition_and_scope(instance, logo=logo_url),
+                   weaknesses=self.generate_weaknesses(instance, logo=logo_url),)
+
 
     def generate_cover(self, instance, logo: str = ""):
         if instance.template.name == "academic":
@@ -135,13 +159,10 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                 logo=logo or instance.logo
             )
             return '''
-            <body>
-                <style>
-                {css_style}
-                </style>
+            <div>
             {cover}
-            </body>
-            '''.format(cover=cover_html, css_style=instance.template.css_style)
+            </div>
+            '''.format(cover=cover_html)
 
     def gen_header(self, instance, title: str, logo:str = "") -> str:
 
@@ -194,9 +215,10 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                   justify-content: space-between;
               }
 
-              .client-name img {
-                  object-fit: cover;
-                  width: 15%;
+              .inline-title-logo img {
+                  padding: 12px;
+                  object-fit: contain;
+                  height: 50px;
               }
               .client-name p {
                   align-self: center;
@@ -207,12 +229,10 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
           </style>
           <div class="inline-title-logo">
           ''' + f'''
-              <p id="logo">RED<span>4</span>SEC</p>
+
+              <img style="float:left;" src="{logo}">
+              <p id="logo"><span>{title[0]}</span>{title[1:]}</p>
               <div class="box"></div>
-          </div>
-          <div class="client-name">
-              <p>{title}</p>
-              <img src="{logo}">
           </div>
       </header>
                   '''
@@ -280,8 +300,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             }
 
             header .identity img {
-                object-fit: cover;
-                width: 50%;
+                object-fit: contain;
                 height: 70px;
             }
 
@@ -311,6 +330,42 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         </div>
     </header>'''
             
+        },
+        {
+            "name": "yellow",
+            "template_id": 4,
+            "html_header": '''
+<header>
+        <style>
+            header {
+                display: block;
+            }
+
+            img {
+                float: right;
+                height: 10%;
+                width: 15%;
+                object-fit: cover;
+            }
+            .heading-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            #heading-title {
+                font-size: 13px;
+                padding: 1.5em;
+                background-color: #fbc847;
+            }
+        </style>''' + '''
+        <div class="heading-info">
+            <div id="heading-title">{title}</div>
+            <img alt="logo-company" id="logo"
+                src="{logo}" />
+        </div>
+        <div class="divider-x"></div>
+</header>
+            '''
         }
         ]
         return list(filter(lambda a: a['name'] == instance.template.name, header_templates))[0]['html_header']
@@ -321,20 +376,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             raise Exception("Academic posses its own class to generate Project Info")
         team: Team = instance.mission.team
         return '''
-                <!DOCTYPE html>
-        <html lang="en">
-
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Project Information</title>
-        </head>
-        <style>
-        {css_style}
-        </style>
-
-        <body>
+        <div>
 
             {header}
             <div class="page">
@@ -391,10 +433,8 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                 </div>
             </div>
 
-        </body>
-
-        </html>
-                '''.format(header=self.gen_header(instance, 'Project Information', logo=logo or instance.logo),
+        </div>
+                '''.format(header=self.gen_header(instance, 'Project Information', logo=logo),
                            leader_first_name=team.leader.auth.first_name,
                            leader_last_name=team.leader.auth.last_name,
                            leader_phone_number=team.leader.auth.phone_number,
@@ -402,8 +442,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                            members=generate_members(team),
                            mission_start=instance.mission.start,
                            mission_end=instance.mission.end,
-                           logo_path_2="",
-                           css_style=instance.template.css_style)
+                           logo_path_2="",)
 
     def generate_condition_and_scope(self, instance, logo: str="") -> str:
 
@@ -414,51 +453,23 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                 scope_html += f"<li><code>{s}</code></li>" if "*" in s or "$" in s else f"<li>{s}</li>"
 
             return '''
-            <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>General Conditions and Scope</title>
-    </head>
-    <style>
-    {css_style}
-    </style>
-    <body>
+    <div>
         {header}
-        <main class="scopes">
+        <main class="scopes" style="margin:40px;">
             <h1>General Condition and Scope</h1>
             <div class="section-text">
                 <p>The scope allowed was the following:</p>
                 <ul>{scopes}</ul>
             </div>
         </main>
-    </body>
-
-    </html>
+    </div>
             '''.format(scopes=scope_html,
-                       header=self.gen_header(instance, 'General Scope and Conditions', logo=logo or instance.logo),
-                       css_style=instance.template.css_style)
+                       header=self.gen_header(instance, 'General Scope and Conditions', logo=logo),)
 
     def generate_weaknesses(self, instance, logo: str = "") -> str:
         return '''
-            <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Weaknesses</title>
-    </head>
-    
-    <style>
-    {css_style}
-    </style>
+    <div>
     {header}
-    <body>
         <main>
             <h1>Weaknesses</h1>
             <div class="section-text">
@@ -468,9 +479,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             </div>
             {vulnerabilities}
         </main>
-    </body>
-
-    </html>
+    </div>
             '''.format(vulnerabilities=generate_vulns_detail(instance.mission),
                        css_style=instance.template.css_style,
-                       header=self.gen_header(instance, 'Weaknesses', logo=logo or instance.logo))
+                       header=self.gen_header(instance, 'Weaknesses', logo=logo))

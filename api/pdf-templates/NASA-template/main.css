@@ -1,7 +1,5 @@
         body {
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            padding: 2em 6.5em;
-            margin: 30px;
         }
 
         .divider-x {
@@ -9,15 +7,12 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            top: 0;
-            left: 0;
         }
                 .section {
                     margin-top: 8rem;
                 }
 
                 .section h2 {
-                    margin-left: 45px;
                     font-variant: small-caps;
                     font-weight: 600;
                     font-size: 2.5rem;
@@ -30,19 +25,16 @@
                 }
 
                 .section-text {
-                    margin-left: 45px;
                     font-weight: 300;
                     margin-top: 1em;
                 }
 
                 h3 {
-                    margin-left: 45px;
                     font-weight: 600;
                     color: rgb(241, 47, 73);
                 }
 
                 h4 {
-                    margin-left: 90px;
                     font-weight: 600;
                     color: rgb(241, 47, 73);
                     font-style: italic;
@@ -53,7 +45,7 @@
                 }
 
                 .figure img {
-                    width: 100%;
+                    max-width: 600px;
                     object-fit: cover;
                 }
 
@@ -84,7 +76,6 @@
         }
 
         main {
-            padding: 2em 5em;
             margin: 30px;
         }
 
@@ -127,3 +118,6 @@
         .spacer-x {
             width: 10px;
         }
+            img {
+                max-width: 600px;
+            }

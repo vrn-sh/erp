@@ -2,11 +2,9 @@ import React, { Dispatch, SetStateAction } from 'react';
 import './Report.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import NewTemplate from '../../../../../public/templates/template_0.png';
-import AcademicTemplate from '../../../../../public/templates/template_1.png';
-import Red4SecTemplate from '../../../../../public/templates/template_2.png';
-import NASATemplate from '../../../../../public/templates/template_3.png';
-import HackmanitTemplate from '../../../../../public/templates/template_4.png';
+import AcademicTemplate from '../../../../assets/templates/template_1.png';
+import Red4SecTemplate from '../../../../assets/templates/template_2.png';
+import HackmanitTemplate from '../../../../assets/templates/template_4.png';
 import MarkdownEditor from './Markdown/Editor';
 import SelectMission from '../../../../component/SelectMission';
 import BackButton from '../../../../component/BackButton';
@@ -33,7 +31,6 @@ const templates = [
         subtitle: 'Hackmanit Style',
         thumbnail: HackmanitTemplate,
     },
-    { id: 3, name: 'NASA', subtitle: 'NASA Style', thumbnail: NASATemplate },
 ];
 
 // type for setMD and setTemplate
@@ -71,8 +68,14 @@ function DocumentTemplates({
                 }
             )
             .then((response) => {
-                console.log(response);
-                window.open(response.data.html_file, '_blank');
+                    console.log(response.data);
+                    const link = document.createElement('a');
+                    link.href = response.data['pdf_file'];
+                    link.setAttribute('download', 'report.pdf');
+                    document.body.appendChild(link);
+                    link.click();
+                    link.parentNode?.removeChild(link);
+
             });
     };
 
