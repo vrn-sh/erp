@@ -170,76 +170,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             raise Exception("Academic posses its own class to generate header.")
         header_templates = [
             {
-                "name": "red4sec",
-                "template_id": 1,
-                "html_header": '''
-                          <header>
-          <style>
-              header {
-                  display: block;
-              }
-
-              .inline-title-logo {
-                  display: flex;
-                  justify-content: space-between;
-                  background-color:  rgb(77, 76, 76);
-              }
-
-              .inline-title-logo .box {
-                  width: 15%;
-                  float: right;
-                  background-color: rgba(255, 86, 11, 1) !important;
-              }
-
-              .inline-title-logo p {
-
-                  padding: 1.5rem;
-                  font-variant: small-caps;
-                  font-weight: 400;
-                  letter-spacing: 1.5px;
-                  margin: 0;
-              }
-
-              .inline-title-logo p#logo {
-                  float: right;
-                  color: white;
-                  font-weight: bold;
-              }
-
-              .inline-title-logo p#logo span {
-                  color: rgba(255, 86, 11, 1) !important;
-              }
-
-              .client-name {
-                  display: flex;
-                  justify-content: space-between;
-              }
-
-              .inline-title-logo img {
-                  padding: 12px;
-                  object-fit: contain;
-                  height: 50px;
-              }
-              .client-name p {
-                  align-self: center;
-                  font-size: xx-large;
-                  color: gray;
-                  font-weight: medium;
-              }
-          </style>
-          <div class="inline-title-logo">
-          ''' + f'''
-
-              <img style="float:left;" src="{logo}">
-              <p id="logo"><span>{title[0]}</span>{title[1:]}</p>
-              <div class="box"></div>
-          </div>
-      </header>
-                  '''
-            },
-            {
                 "name": "hackmanit",
-                "template_id": 2,
                 "html_header": '''
                       <header>
           <style>
@@ -278,7 +209,6 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             },
         {
             "name": "NASA",
-            "template_id": 3,
             "html_header": '''    <header>
         <style>
             header .info {
@@ -333,7 +263,6 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         },
         {
             "name": "yellow",
-            "template_id": 4,
             "html_header": '''
 <header>
         <style>

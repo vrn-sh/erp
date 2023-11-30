@@ -21,8 +21,8 @@ const templates = [
     },
     {
         id: 1,
-        name: 'red4sec',
-        subtitle: 'Red4Sec Style',
+        name: 'yellow',
+        subtitle: 'Yellow Style',
         thumbnail: Red4SecTemplate,
     },
     {
