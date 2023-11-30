@@ -4,7 +4,6 @@ import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
 import Cookies from 'js-cookie';
-import Modal from 'react-modal';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
 
@@ -29,29 +28,6 @@ export default function Login() {
         setMess({ mess, color });
     };
 
-    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-    const [resetEmail, setResetEmail] = useState('');
-    const [resetFeedback, setResetFeedback] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
-
-    const handlePasswordReset = async () => {
-        try {
-            const response = await axios.put(`${config.apiUrl}reset`, {
-                email: resetEmail,
-            });
-            setResetFeedback(response.data.message);
-            setIsSuccess(true);
-        } catch (error) {
-            setResetFeedback(
-                "Error this email does't exist. Please try again."
-            );
-            setIsSuccess(false);
-        }
-    };
-
-    const toggleResetModal = () => {
-        setIsResetModalOpen(!isResetModalOpen);
-    };
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
 
@@ -84,7 +60,7 @@ export default function Login() {
 
     const submit = async () => {
         setOpen(true);
-        if (email !== '' && pwd.length > 7) {
+        if (email !== '') {
             try {
                 await axios
                     .post(
@@ -182,81 +158,7 @@ export default function Login() {
                                 {errorPwd} {errorEmail}
                             </p>
                             <div className="login-submit">
-                                <div
-                                    className="forgot-password log-box"
-                                    onClick={toggleResetModal}
-                                    onKeyPress={toggleResetModal}
-                                    role="button"
-                                    tabIndex={0}
-                                >
-                                    <span className="txt-color">
-                                        reset my password
-                                    </span>
-                                </div>
-                                <Modal
-                                    isOpen={isResetModalOpen}
-                                    onRequestClose={toggleResetModal}
-                                    contentLabel="Reset Password Modal"
-                                    style={{
-                                        overlay: {
-                                            backgroundColor:
-                                                'rgba(0, 0, 0, 0.75)',
-                                            zIndex: 1000,
-                                        },
-                                        content: {},
-                                    }}
-                                >
-                                    <h2>Reset Password</h2>
-                                    <p>
-                                        Please enter your email address to reset
-                                        your password.
-                                    </p>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <input
-                                            style={{ margin: '10px' }}
-                                            type="email"
-                                            value={resetEmail}
-                                            onChange={(e) =>
-                                                setResetEmail(e.target.value)
-                                            }
-                                            placeholder="Enter your email"
-                                        />
-                                        <div style={{ width: '300px' }}>
-                                            <button
-                                                onClick={handlePasswordReset}
-                                                type="button"
-                                            >
-                                                Send Email
-                                            </button>
-                                            <p
-                                                style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    color: isSuccess
-                                                        ? 'green'
-                                                        : 'red',
-                                                }}
-                                            >
-                                                {resetFeedback}
-                                            </p>
-                                            <button
-                                                onClick={toggleResetModal}
-                                                type="button"
-                                            >
-                                                Close
-                                            </button>
-                                        </div>
-                                    </div>
-                                </Modal>
+                                {/* <p>Forgot password ? </p> */}
                                 <button type="button" onClick={submit}>
                                     LOGIN
                                 </button>
