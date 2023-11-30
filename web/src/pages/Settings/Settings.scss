@@ -183,3 +183,10 @@
     border-bottom: 1px var(--primary-hover-btn) solid;
     transition: 0.5s ease-in-out;
 }
+
+.setting-account-form-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+}
