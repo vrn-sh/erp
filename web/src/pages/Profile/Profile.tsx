@@ -215,14 +215,18 @@ export default function ProfilePage() {
                                 t1="First name"
                                 t2="Email"
                                 c1={
-                                    userInfos.first_name !== undefined
-                                        ? '-'
-                                        : userInfos.first_name
+                                    userInfos.first_name !== null
+                                        ? userInfos.first_name.length > 0 
+                                            ? userInfos.first_name
+                                            : '-'
+                                        : '-'
                                 }
                                 c2={
-                                    userInfos.email !== undefined
-                                        ? '-'
-                                        : userInfos.email
+                                    userInfos.email !== null
+                                        ? userInfos.email.length > 0 
+                                            ? userInfos.email
+                                            : '-'
+                                        : '-'
                                 }
                             />
 
@@ -230,9 +234,11 @@ export default function ProfilePage() {
                                 t1="Last name"
                                 t2="Co-workers"
                                 c1={
-                                    userInfos.last_name !== undefined
-                                        ? '-'
-                                        : userInfos.last_name
+                                    userInfos.last_name !== null
+                                        ? userInfos.last_name.length > 0 
+                                            ? userInfos.last_name
+                                            : '-'
+                                        : '-'
                                 }
                                 c2={String(coworker)}
                             />
