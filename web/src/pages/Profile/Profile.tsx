@@ -210,46 +210,44 @@ export default function ProfilePage() {
                                     </p>
                                 </div>
                             </div>
-
+                            {/* eslint-disable */}
                             <GroupInfo
                                 t1="First name"
                                 t2="Email"
                                 c1={
                                     userInfos.first_name !== null
-                                        ? userInfos.first_name.length > 0 
+                                        ? userInfos.first_name.length > 0
                                             ? userInfos.first_name
                                             : '-'
                                         : '-'
                                 }
                                 c2={
                                     userInfos.email !== null
-                                        ? userInfos.email.length > 0 
+                                        ? userInfos.email.length > 0
                                             ? userInfos.email
                                             : '-'
                                         : '-'
                                 }
                             />
-
                             <GroupInfo
                                 t1="Last name"
                                 t2="Co-workers"
                                 c1={
                                     userInfos.last_name !== null
-                                        ? userInfos.last_name.length > 0 
+                                        ? userInfos.last_name.length > 0
                                             ? userInfos.last_name
                                             : '-'
                                         : '-'
                                 }
                                 c2={String(coworker)}
                             />
-
+                            {/* eslint-enable */}
                             <GroupInfo
                                 t1="Missions"
                                 t2="Teams"
                                 c1={String(NumMission)}
                                 c2={String(teamList.length)}
                             />
-
                             <div className="btn-container">
                                 <button
                                     type="button"
