@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { RiEyeLine, RiUserFill } from 'react-icons/ri';
+import Modal from 'react-modal';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
@@ -19,6 +20,7 @@ interface Member {
         date_joined: string;
         phone_number: string | null;
         role: number;
+        favorites: string | null;
     };
     creation_date: string;
 }
@@ -26,6 +28,14 @@ interface Member {
 export default function ViewTeamDetails() {
     const { id } = useParams<{ id?: string }>();
     const navigate = useNavigate();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
 
     const [teamData, setTeamData] = useState<{
         id: number;
@@ -168,7 +178,7 @@ export default function ViewTeamDetails() {
                         <RiEyeLine
                             style={{ marginRight: '5px', fontSize: '12px' }}
                         />
-                        <Link to="#" onClick={() => goToProfile(member.id)}>
+                        <Link to="#" onClick={openModal}>
                             <span
                                 style={{
                                     color: 'black',
@@ -179,6 +189,571 @@ export default function ViewTeamDetails() {
                                 View
                             </span>
                         </Link>
+
+                        <Modal
+                            isOpen={modalIsOpen}
+                            onRequestClose={closeModal}
+                            contentLabel="Profile Modal"
+                            style={{
+                                content: {
+                                    border: '1px solid #ccc',
+                                    borderRadius: '10px',
+                                    position: 'absolute',
+                                    top: '50%',
+                                    right: '50%',
+                                    transform: 'translate(50%, -50%)',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '10px',
+                                },
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#ccc',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginBottom: '10px',
+                                }}
+                            >
+                                {member.auth.profileImage ? (
+                                    <img
+                                        src={member.auth.profileImage}
+                                        alt="Profile"
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            borderRadius: '50%',
+                                        }}
+                                    />
+                                ) : (
+                                    <RiUserFill
+                                        style={{
+                                            fontSize: '60px',
+                                            color: 'white',
+                                        }}
+                                    />
+                                )}
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        First name
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.first_name}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Last name
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.last_name}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Username
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.username}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Email
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.email}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Role
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {roleText}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Last_login
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.last_login}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Date joined
+                                        {/* (Y-M-D) */}
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.date_joined.substring(
+                                            0,
+                                            10
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Phone number
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.phone_number}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        marginRight: 'auto',
+                                        textAlign: 'right',
+                                        paddingRight: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        Favorites
+                                    </p>
+                                </div>
+                                <p
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        fontSize: '12px',
+                                        fontFamily: 'Poppins-Regular',
+                                        margin: '0',
+                                    }}
+                                >
+                                    |
+                                </p>
+                                <div
+                                    style={{
+                                        marginLeft: 'auto',
+                                        textAlign: 'left',
+                                        paddingLeft: '10px',
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: '12px',
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: 'bold',
+                                            margin: '0',
+                                        }}
+                                    >
+                                        {member.auth.favorites}
+                                    </p>
+                                </div>
+                            </div>
+                            <button type="button" onClick={closeModal}>
+                                Close
+                            </button>
+                        </Modal>
                     </div>
                 </div>
             );
