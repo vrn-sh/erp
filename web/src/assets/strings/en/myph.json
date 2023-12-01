@@ -1,0 +1,38 @@
+[
+    {
+        "id": "output_type",
+        "name": "Output Type",
+        "type": "selection",
+        "selection": ["exe", "dll"],
+        "defaultValue": "exe"
+    },
+    {
+        "id": "technique",
+        "name": "Technique",
+        "type": "selection",
+        "selection": ["ProcessHollowing"],
+        "defaultValue": "ProcessHollowing"
+    },
+    {
+        "id": "encryption",
+        "name": "Encryption",
+        "type": "selection",
+        "selection": ["chacha20"],
+        "defaultValue": "chacha20"
+    },
+    {
+        "id": "shellcode_file",
+        "name": "Shellcode File",
+        "type": "file",
+        "selection": [],
+        "defaultValue": ""
+    },
+    {
+        "id": "entropy",
+        "name": "Entropy",
+        "type": "boolean",
+        "selection": [],
+        "defaultValue": "false"
+    }
+
+]
