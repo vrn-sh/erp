@@ -185,11 +185,6 @@ export default function ProfilePage() {
                     <div className="assigned-missions">
                         <div className="profile-container">
                             <div className="mainInfo-container">
-                                {/* <img
-                                    className="profile-photo"
-                                    alt="profile"
-                                    src={userInfos.profile_image}
-                                /> */}
                                 {userInfos.profile_image ? (
                                     <img
                                         src={userInfos.profile_image} // Affichez l'image depuis l'état local
@@ -221,13 +216,13 @@ export default function ProfilePage() {
                                 t2="Email"
                                 c1={
                                     userInfos.first_name !== undefined
-                                        ? userInfos.first_name
-                                        : '-'
+                                        ? '-'
+                                        : userInfos.first_name
                                 }
                                 c2={
                                     userInfos.email !== undefined
-                                        ? userInfos.email
-                                        : '-'
+                                        ? '-'
+                                        : userInfos.email
                                 }
                             />
 
@@ -236,8 +231,8 @@ export default function ProfilePage() {
                                 t2="Co-workers"
                                 c1={
                                     userInfos.last_name !== undefined
-                                        ? userInfos.last_name
-                                        : '-'
+                                        ? '-'
+                                        : userInfos.last_name
                                 }
                                 c2={String(coworker)}
                             />
