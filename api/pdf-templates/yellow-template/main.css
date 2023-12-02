@@ -87,7 +87,7 @@ html {
     line-height: 1.5;
 }
 
-h1 {
+.title {
     color: #fbc847;
     font-size: 38pt;
     margin: 5cm 2cm 0 2cm;
@@ -103,7 +103,7 @@ h4 {
     font-weight: 400;
 }
 
-h2 {
+h1 {
     break-before: always;
     font-size: 28pt;
     string-set: heading content();
@@ -119,13 +119,9 @@ h4 {
 }
 
 #cover {
-    background: url(https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat center;
-    background-size: cover;
+    background-image: url(https://images.unsplash.com/photo-1516641051054-9df6a1aad654?q=80&w=1856&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat;
     margin: 0;
-    align-content: space-between;
-    display: flex;
-    flex-wrap: wrap;
-    height: 297mm;
+    height: 100%;
 }
 
 #cover address {
@@ -143,6 +139,30 @@ h4 {
 .project-info-table {
     display: block;
     border: 1px solid #fbc847;
+    padding: 0.5em;
+}
+
+.project-info-table .row {
+    display: flex;
+}
+
+.project-info-table .col-left {
+    width: 25%;
+    padding: 10px;
+}
+
+.project-info-table .col-right {
+    padding: 10px;
+}
+
+.project-info-table .sub-col-left {
+    width: 25%;
+    padding: 0 0 0 10px;
+}
+
+.project-info-table .sub-col-right {
+    width: 60%;
+    padding: 0 0 0 10px;
 }
 
 header {
@@ -157,7 +177,7 @@ img {
 }
 
 .divider-x {
-    border-bottom: 5px solid #fbc847;
+    border-bottom: 2px solid #fbc847;
     width: 100%;
     margin: 0;
     left: 0;

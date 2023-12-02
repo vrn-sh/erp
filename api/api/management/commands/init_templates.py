@@ -35,8 +35,8 @@ class Command(BaseCommand):
                         '''
     <article id="cover">
       <h1 class="title">{mission_title}</h1>
-        <img alt="logo-company" id="logo" src="{logo}" style="max-height: 300px;"/>
       <address>
+        <img alt="logo-company" id="logo" src="{logo}" style="max-height: 300px;"/>
       {team_name}
       </address>
       <address>

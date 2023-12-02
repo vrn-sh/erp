@@ -59,223 +59,222 @@
 }
 
 body {
-        letter-spacing: 1.2px;
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        }
+    letter-spacing: 1.2px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
 
-        .cover-page {
-            display: block;
-            justify-content: space-around;
-        }
-        .cover-page img {
-            object-fit: cover;
-            width: 100%;
-        }
+.cover-page {
+    display: block;
+    justify-content: space-around;
+}
 
-        .cover-page h1 {
-            padding: 6rem;
-            text-align: center;
-            font-weight: 300;
-            font-size: 3em;
-        }
-        .cover-page h1 span {
-            font-style: italic;
-        }
-        .report-info {
-            text-align: center;
-            color: gray;
-            font-weight: 400;
-            font-size: 1.5em;
-        }
+.cover-page img {
+    object-fit: cover;
+    width: 100%;
+}
 
-                footer {
-                    position: fixed;
-                    bottom: 0;
-                    width: 100%;
-                }
-                footer p {
-                                     font-style: italic;
-                    text-align: center;
-                    color: gray;
-                    font-weight: 300;
-                    font-size: 1em;
-                }
-                .leader-name {
-                    color: red;
-                }
+.cover-page h1 {
+    padding: 6rem;
+    text-align: center;
+    font-weight: 300;
+    font-size: 3em;
+}
 
-        .divider-x {
-            border-bottom: 2px solid black;
-            width: 100%;
-            margin: 0;
-            padding-top: 2.5em;
-            left: 0;
-        }
+.cover-page h1 span {
+    font-style: italic;
+}
 
-        .page h1 {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 2.5em;
-        }
+.report-info {
+    text-align: center;
+    color: gray;
+    font-weight: 400;
+    font-size: 1.5em;
+}
 
-            header {
-                display: block;
-            }
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
 
-            header img {
-                float: right;
-                object-fit: contain;
-                height: 70px;
-            }
+footer p {
+    font-style: italic;
+    text-align: center;
+    color: gray;
+    font-weight: 300;
+    font-size: 1em;
+}
 
-            .project-info-table {
-                display: block;
-            }
+.leader-name {
+    color: red;
+}
 
-            .project-info-table .row:after {
-                content: "";
-                display: table;
-                clear: both;
-            }
+.divider-x {
+    border-bottom: 2px solid black;
+    width: 100%;
+    margin: 0;
+    padding-top: 2.5em;
+    left: 0;
+}
 
-            .project-info-table .col-left {
-                float: left;
-                width: 25%;
-                padding: 10px;
-            }
+.page h1 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.5em;
+}
 
-            .project-info-table .col-right {
-                float: left;
-                padding: 10px;
-            }
+header {
+    display: block;
+}
 
-            .project-info-table .sub-col-left {
-                float: left;
-                width: 25%;
-                padding: 0 0 0 10px;
-            }
+header img {
+    float: right;
+    object-fit: contain;
+    height: 70px;
+}
 
-            .project-info-table .sub-col-right {
-                float: left;
-                width: 60%;
-                padding: 0 0 0 10px;
-            }
+.project-info-table .row {
+    display: flex;
+}
 
-        .scope {
-            letter-spacing: 1.2px;
-        }
+.project-info-table .col-left {
+    width: 25%;
+    padding: 10px;
+}
 
-        .divider-x {
-            border-bottom: 2px solid black;
-            width: 100%;
-            margin: 0;
-            padding-top: 1em;
-            left: 0;
-        }
+.project-info-table .col-right {
+    padding: 10px;
+}
 
-        h1 {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 2.5em;
-        }
+.project-info-table .sub-col-left {
+    width: 25%;
+    padding: 0 0 0 10px;
+}
+
+.project-info-table .sub-col-right {
+    width: 60%;
+    padding: 0 0 0 10px;
+}
+
+.scope {
+    letter-spacing: 1.2px;
+}
+
+.divider-x {
+    border-bottom: 2px solid black;
+    width: 100%;
+    margin: 0;
+    padding-top: 1em;
+    left: 0;
+}
+
+h1 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.5em;
+}
 
 
-            .inline-title-logo {
-                display: flex;
-                justify-content: space-between;
-            }
+.inline-title-logo {
+    display: flex;
+    justify-content: space-between;
+}
 
-            .inline-title-logo p {
-                font-variant: small-caps;
-                color: red;
-                font-weight: 400;
-                letter-spacing: 1.5px;
-                margin: 0;
-            }
+.inline-title-logo p {
+    font-variant: small-caps;
+    color: red;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    margin: 0;
+}
 
-            .section-text p {
-                text-align: justify;
-            }
+.section-text p {
+    text-align: justify;
+}
 
-            .section-text p span {
-                font-weight: bold;
-                padding-right: 3px;
-            }
-            .section-text ul li {
-                margin-bottom: 6px;
-                margin-top: 1.5rem;
-            }
-            .section-text ul li code {
-                border: 1px solid rgb(109, 108, 108);
-                background-color: rgb(224, 224, 224);
-                font-family: 'Courier New', Courier, monospace;
-            }
+.section-text p span {
+    font-weight: bold;
+    padding-right: 3px;
+}
 
-            .c-wkns {
-                background-color: purple;
-            }
+.section-text ul li {
+    margin-bottom: 6px;
+    margin-top: 1.5rem;
+}
 
-            .h-wkns {
-                background-color: red;
-            }
+.section-text ul li code {
+    border: 1px solid rgb(109, 108, 108);
+    background-color: rgb(224, 224, 224);
+    font-family: 'Courier New', Courier, monospace;
+}
 
-            .m-wkns {
-                background-color: orange;
-            }
+.c-wkns {
+    background-color: purple;
+}
 
-            .l-wkns {
-                background-color: yellow;
-            }
+.h-wkns {
+    background-color: red;
+}
 
-            .r {
-                background-color: rgb(74, 207, 74);
-            }
+.m-wkns {
+    background-color: orange;
+}
 
-            .main-table {
-                border-collapse: separate;
-                border: 2px solid black;
-                border-left: 0;
-                border-right: 0;
-                border-spacing: 0;
-                text-align: left;
-                width: 100%;
-            }
+.l-wkns {
+    background-color: yellow;
+}
 
-            .main-table thead th {
-                font-size: larger;
-            }
+.r {
+    background-color: rgb(74, 207, 74);
+}
 
-            .main-table span {
-                font-weight: bold;
-            }
+.main-table {
+    border-collapse: separate;
+    border: 2px solid black;
+    border-left: 0;
+    border-right: 0;
+    border-spacing: 0;
+    text-align: left;
+    width: 100%;
+}
 
-            .main-table td:last-child,
-            th:last-child {
-                border-left: 1px solid black;
-            }
+.main-table thead th {
+    font-size: larger;
+}
 
-            .main-table td,
-            .main-table th {
-                border-bottom: 1px solid black;
-                padding: 3px;
-            }
+.main-table span {
+    font-weight: bold;
+}
 
-            .sub-table {
-                border-collapse: collapse;
-                border-left: 0;
-            }
+.main-table td:last-child,
+th:last-child {
+    border-left: 1px solid black;
+}
 
-            .sub-table td,
-            .sub-table th {
-                border-bottom: 0;
-            }
+.main-table td,
+.main-table th {
+    border-bottom: 1px solid black;
+    padding: 3px;
+}
 
-            .figure {
-                display: block;
-                text-align: center;
-            }
-            img {
-                max-width: 600px;
-            }
-            .figure img {
-                max-width: 600px;
-                object-fit: cover;
-            }
+.sub-table {
+    border-collapse: collapse;
+    border-left: 0;
+}
+
+.sub-table td,
+.sub-table th {
+    border-bottom: 0;
+}
+
+.figure {
+    display: block;
+    text-align: center;
+}
+
+img {
+    max-width: 600px;
+}
+
+.figure img {
+    max-width: 600px;
+    object-fit: cover;
+}

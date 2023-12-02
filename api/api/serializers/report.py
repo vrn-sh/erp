@@ -26,8 +26,8 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
 
         representation['logo'] = ''
 
-        if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-            return representation
+        # if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
+        #    return representation
 
         s3_client = S3Bucket()
         if instance.logo:
@@ -263,38 +263,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         },
         {
             "name": "yellow",
-            "html_header": '''
-<header>
-        <style>
-            header {
-                display: block;
-            }
-
-            img {
-                float: right;
-                height: 10%;
-                width: 15%;
-                object-fit: cover;
-            }
-            .heading-info {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            #heading-title {
-                font-size: 13px;
-                padding: 1.5em;
-                background-color: #fbc847;
-            }
-        </style>''' + '''
-        <div class="heading-info">
-            <div id="heading-title">{title}</div>
-            <img alt="logo-company" id="logo"
-                src="{logo}" />
-        </div>
-        <div class="divider-x"></div>
-</header>
-            '''
+            "html_header": ''''''
         }
         ]
         return list(filter(lambda a: a['name'] == instance.template.name, header_templates))[0]['html_header']
