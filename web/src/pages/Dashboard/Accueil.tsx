@@ -266,16 +266,24 @@ function MissionList({
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isNewModalOpen, setIsNewModalOpen] = useState(false);
 
-    // Function to open the modal
     const openModal = () => {
         setIsModalOpen(true);
     };
 
-    // Function to close the modal
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+    const openNewModal = () => {
+        setIsNewModalOpen(true);
+    };
+
+    const closeNewModal = () => {
+        setIsNewModalOpen(false);
+    };
+
     const [teamList, setTeamList] = useState<
         {
             id: number;
@@ -600,7 +608,154 @@ export default function Accueil() {
                                 }}
                             >
                                 {/* Content inside the modal (copy from old mission page) */}
-                                <h2>General payload</h2>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <h2>General payload</h2>
+                                    <button
+                                        type="button"
+                                        className="btn"
+                                        onClick={openNewModal}
+                                    >
+                                        Documentation
+                                    </button>
+                                    <Modal
+                                        isOpen={isNewModalOpen}
+                                        onRequestClose={closeNewModal}
+                                        contentLabel="Documentation Modal"
+                                        style={{
+                                            content: {
+                                                border: '1px solid #ccc',
+                                                borderRadius: '10px',
+                                                position: 'absolute',
+                                                overflow: 'scroll',
+                                            },
+                                        }}
+                                    >
+                                        <h2>saas documentation</h2>
+
+                                        <div>
+                                            <h3>Server Overview</h3>
+                                            <p>
+                                                The server is an entry point for
+                                                handling various routes related
+                                                to shellcode operations. It uses
+                                                FastAPI, a modern, fast web
+                                                framework for building APIs with
+                                                Python. CORS is enabled for all
+                                                origins.
+                                            </p>
+
+                                            <h3>Endpoints</h3>
+                                            <ul>
+                                                <li>
+                                                    <strong>GET /</strong>
+                                                    <p>
+                                                        Description: Basic root
+                                                        route that returns a
+                                                        simple greeting.
+                                                    </p>
+                                                    <p>
+                                                        Response: Returns a JSON
+                                                        object Hello: World
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <strong>
+                                                        POST /load_shellcode
+                                                    </strong>
+                                                    <p>
+                                                        Description: Main route
+                                                        to get a simple
+                                                        shellcode. This endpoint
+                                                        generates a payload
+                                                        based on the provided
+                                                        parameters.
+                                                    </p>
+                                                    <p>
+                                                        Parameters: lport,
+                                                        laddr, exploit, arch,
+                                                        os, output_type, method,
+                                                        exit_func, encoder,
+                                                        exclude_bytes, entropy.
+                                                    </p>
+                                                    <p>
+                                                        Response: Success -
+                                                        Returns a file response
+                                                        with the generated
+                                                        executable. Failure -
+                                                        Returns an error message
+                                                        in JSON format.
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <strong>
+                                                        GET /aes-revshell
+                                                    </strong>
+                                                    <p>
+                                                        Description: Loads an
+                                                        AES-over-TCP
+                                                        reverse-shell payload.
+                                                    </p>
+                                                    <p>
+                                                        Response: Returns a file
+                                                        response with a
+                                                        predefined AES
+                                                        reverse-shell
+                                                        executable.
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <strong>
+                                                        GET /tcp-revshell
+                                                    </strong>
+                                                    <p>
+                                                        Description: Loads a TCP
+                                                        reverse-shell payload.
+                                                    </p>
+                                                    <p>
+                                                        Response: Returns a file
+                                                        response with the
+                                                        generated TCP
+                                                        reverse-shell
+                                                        executable.
+                                                    </p>
+                                                </li>
+                                            </ul>
+
+                                            <h3>Running the Server</h3>
+                                            <p>
+                                                The server is configured to run
+                                                on 0.0.0.0 at port 1337. To
+                                                start the server, run the main
+                                                block which invokes uvicorn.
+                                            </p>
+
+                                            <h3>Additional Notes</h3>
+                                            <p>
+                                                The server relies on external
+                                                dependencies like MinGW and uses
+                                                subprocess calls for certain
+                                                operations. Error handling is
+                                                implemented in the
+                                                /load_shellcode route, with
+                                                checks for payload validity and
+                                                MinGW installation.
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={closeNewModal}
+                                        >
+                                            Close
+                                        </button>
+                                    </Modal>
+                                </div>
                                 <div className="form-row">
                                     <div
                                         className="columnTitle"
