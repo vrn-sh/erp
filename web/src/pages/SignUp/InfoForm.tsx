@@ -174,54 +174,21 @@ export default function InfoForm() {
                             noValidate
                             className="form-signup"
                         >
-                            <div
-                                style={{
-                                    width: '100px',
-                                    height: '100px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#ccc',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    margin: '0 auto',
-                                    position: 'relative',
-                                }}
-                            >
+                            <div className="info-profile-image-container">
                                 {userInfos.profile_image ? (
                                     <img
                                         src={userInfos.profile_image} // Affichez l'image depuis l'état local
                                         alt="Profile"
-                                        className="profile-image"
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            borderRadius: '50%',
-                                            objectFit: 'cover',
-                                        }}
+                                        className="info-form-profile-image"
                                     />
                                 ) : (
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
+                                    <div className="profile-default-user-icon">
                                         <FaUser size={32} />
                                     </div>
                                 )}
                                 <label
                                     htmlFor="upload-photo"
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: '-8px',
-                                        right: '0',
-                                        backgroundColor: '#fff',
-                                        borderRadius: '50%',
-                                        padding: '4px',
-                                        cursor: 'pointer',
-                                    }}
+                                    className="profile-image-camera-icon"
                                 >
                                     <FaCamera size={20} />
                                 </label>
