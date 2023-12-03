@@ -25,26 +25,28 @@
 }
 
 
-.team-popup-left {
-    margin: 0;
-    margin-bottom: 10px;
-    font-size: 13px;
-    font-family: 'Poppins-Regular';
-    font-weight: 900;
-}
+.team-popup {
+    &-left {
+        margin: 0;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-family: 'Poppins-Regular';
+        font-weight: 900;
+    }
 
-.team-popup-right {
-    font-size: 12px;
-    font-family: 'Poppins-Regular';
-    font-weight: 'bold';
-    margin: 0;
-    padding: 0;
-}
+    &-right {
+        font-size: 12px;
+        font-family: 'Poppins-Regular';
+        font-weight: 'bold';
+        margin: 0;
+        padding: 0;
+    }
 
-.team-popup-userinfo {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    justify-content: space-between;
-    padding: 0;
+    &-userinfo {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        justify-content: space-between;
+        padding: 0;
+    }
 }
