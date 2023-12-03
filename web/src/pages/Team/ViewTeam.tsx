@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { RiEyeLine, RiUserFill } from 'react-icons/ri';
@@ -27,43 +27,34 @@ interface Member {
 }
 interface ProfilDetailsProps {
     label: string;
-    data: string | number | null;
+    data: string | null;
 }
 export function ProfilDetails({ label, data }: ProfilDetailsProps) {
     return (
         <div
             style={{
                 display: 'flex',
-                alignItems: 'center',
-                position: 'relative',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
                 width: '100%',
             }}
         >
-            <div
-                style={{
-                    marginRight: 'auto',
-                    textAlign: 'right',
-                    paddingRight: '10px',
-                }}
-            >
-                <p className="left">{label}</p>
-            </div>
-            <div
-                style={{
-                    marginLeft: 'auto',
-                    textAlign: 'left',
-                    paddingLeft: '10px',
-                }}
-            >
-                <p className="right">{data}</p>
-            </div>
+            <p className="team-popup-left">{label}</p>
+            {/* eslint-disable */}
+            {data === null ? (
+                <p className="team-popup-right">-</p>
+            ) : data.length === 0 ? (
+                <p className="team-popup-right">-</p>
+            ) : (
+                <p className="team-popup-right">{data}</p>
+            )}
+            {/* eslint-enable */}
         </div>
     );
 }
 
 export default function ViewTeamDetails() {
     const { id } = useParams<{ id?: string }>();
-    const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const openModal = () => {
@@ -115,10 +106,6 @@ export default function ViewTeamDetails() {
         getTeamDetails();
     }, [id]); // Ajouter id comme dépendance
 
-    const goToProfile = (memberId: number) => {
-        navigate('/profile');
-    };
-
     const renderMembers = () => {
         if (!teamData) return null;
 
@@ -131,33 +118,8 @@ export default function ViewTeamDetails() {
             }
 
             return (
-                <div
-                    style={{
-                        backgroundColor: '#f4f5f8',
-                        padding: '10px',
-                        margin: '10px',
-                        width: '205px',
-                        height: '250px',
-                        border: '2px',
-                        borderRadius: '5px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                    key={member.id}
-                >
-                    <div
-                        style={{
-                            width: '100px',
-                            height: '100px',
-                            borderRadius: '50%',
-                            backgroundColor: '#ccc',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: '10px',
-                        }}
-                    >
+                <div className="team-detail-members-container" key={member.id}>
+                    <div className="team-detail-members-cart">
                         {member.auth.profileImage ? (
                             <img
                                 src={member.auth.profileImage}
@@ -235,9 +197,9 @@ export default function ViewTeamDetails() {
                                     border: '1px solid #ccc',
                                     borderRadius: '10px',
                                     position: 'absolute',
-                                    top: '50%',
+                                    top: '30%',
                                     right: '50%',
-                                    transform: 'translate(50%, -50%)',
+                                    transform: 'translate(60%, -20%)',
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
@@ -246,26 +208,15 @@ export default function ViewTeamDetails() {
                                 },
                             }}
                         >
-                            <div
-                                style={{
-                                    width: '100px',
-                                    height: '100px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#ccc',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginBottom: '10px',
-                                }}
-                            >
+                            <div className="team-detail-members-cart">
                                 {member.auth.profileImage ? (
                                     <img
                                         src={member.auth.profileImage}
                                         alt="Profile"
                                         style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            borderRadius: '50%',
+                                            width: '200px',
+                                            height: '200px',
+                                            borderRadius: '100%',
                                         }}
                                     />
                                 ) : (
@@ -277,40 +228,49 @@ export default function ViewTeamDetails() {
                                     />
                                 )}
                             </div>
-                            <ProfilDetails
-                                label="First name :"
-                                data={member.auth.first_name}
-                            />
-                            <ProfilDetails
-                                label="Last name :"
-                                data={member.auth.last_name}
-                            />
-                            <ProfilDetails
-                                label="Username :"
-                                data={member.auth.username}
-                            />
-                            <ProfilDetails
-                                label="Email :"
-                                data={member.auth.email}
-                            />
-                            <ProfilDetails label="Role :" data={roleText} />
-                            <ProfilDetails
-                                label="Last_login :"
-                                data={member.auth.last_login}
-                            />
-                            <ProfilDetails
-                                label="Date joined :"
-                                data={member.auth.date_joined.substring(0, 10)}
-                            />
-                            <ProfilDetails
-                                label="Phone number :"
-                                data={member.auth.phone_number}
-                            />
-                            <ProfilDetails
-                                label="Favorites :"
-                                data={member.auth.favorites}
-                            />
-                            <button type="button" onClick={closeModal}>
+                            <div className="team-popup-userinfo">
+                                <ProfilDetails
+                                    label="First name :"
+                                    data={member.auth.first_name}
+                                />
+                                <ProfilDetails
+                                    label="Last name :"
+                                    data={member.auth.last_name}
+                                />
+                                <ProfilDetails
+                                    label="Username :"
+                                    data={member.auth.username}
+                                />
+                                <ProfilDetails
+                                    label="Email :"
+                                    data={member.auth.email}
+                                />
+                                <ProfilDetails label="Role :" data={roleText} />
+                                <ProfilDetails
+                                    label="Last_login :"
+                                    data={member.auth.last_login}
+                                />
+                                <ProfilDetails
+                                    label="Date joined :"
+                                    data={member.auth.date_joined.substring(
+                                        0,
+                                        10
+                                    )}
+                                />
+                                <ProfilDetails
+                                    label="Phone number :"
+                                    data={member.auth.phone_number}
+                                />
+                                <ProfilDetails
+                                    label="Favorites :"
+                                    data={member.auth.favorites}
+                                />
+                            </div>
+                            <button
+                                type="button"
+                                onClick={closeModal}
+                                style={{ marginTop: '1rem' }}
+                            >
                                 Close
                             </button>
                         </Modal>
