@@ -13,6 +13,7 @@ export default function SettingAccount() {
         email: '',
         first_name: '',
         last_name: '',
+        phone_number: '',
         profile_image: '', // Assurez-vous que le nom du champ correspond à votre API
     });
     const [message, setMess] = useState<{ mess: string; color: string }>({
@@ -44,7 +45,7 @@ export default function SettingAccount() {
 
     useEffect(() => {
         getUserInfos();
-    }, []);
+    }, [role]);
 
     const close = () => {
         setOpen(false);
@@ -74,6 +75,10 @@ export default function SettingAccount() {
 
     const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUserInfos({ ...userInfos, last_name: e.target.value });
+    };
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserInfos({ ...userInfos, phone_number: e.target.value });
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +119,7 @@ export default function SettingAccount() {
                     auth: {
                         first_name: userInfos.first_name,
                         last_name: userInfos.last_name,
+                        phone_number: userInfos.phone_number,
                         profile_image: userInfos.profile_image,
                     },
                 },
@@ -206,51 +212,62 @@ export default function SettingAccount() {
                     onChange={(e) => handleFileUpload(e)}
                 />
             </div>
-            <div style={{ width: '100%' }}>
-                <Stack direction="row" spacing={2}>
-                    <div className="input input-medium">
-                        <label>First name</label>
-                        <input
-                            id="input-first_name"
-                            type="text"
-                            value={userInfos.first_name}
-                            onChange={(e) => handleFirstNameChange(e)}
-                            title="Your firstname"
-                        />
-                    </div>
-                    <div className="input input-medium">
-                        <label>Last name</label>
-                        <input
-                            id="input-last_name"
-                            type="text"
-                            value={userInfos.last_name}
-                            onChange={(e) => handleLastNameChange(e)}
-                            title="Your lastname"
-                        />
-                    </div>
-                </Stack>
-                <br />
-                <Stack direction="row" width="full" spacing={2}>
-                    <div className="input input-medium">
-                        <label>Username</label>
-                        <input
-                            id="input-username"
-                            type="text"
-                            readOnly
-                            value={userInfos.username}
-                            onChange={(e) => handleUsernameChange(e)}
-                        />
-                    </div>
-                    <div className="input input-medium">
-                        <label>Email</label>
-                        <input
-                            id="input-email"
-                            type="text"
-                            readOnly
-                            value={userInfos.email}
-                        />
-                    </div>
-                </Stack>
+            <div
+                style={{
+                    width: '100%',
+                    paddingLeft: '3rem',
+                    paddingRight: '3rem',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <div className="input input-medium">
+                    <label>First name</label>
+                    <input
+                        id="input-first_name"
+                        type="text"
+                        placeholder={userInfos.first_name}
+                        onChange={(e) => handleFirstNameChange(e)}
+                        title="Your firstname"
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Last name</label>
+                    <input
+                        id="input-last_name"
+                        type="text"
+                        placeholder={userInfos.last_name}
+                        onChange={(e) => handleLastNameChange(e)}
+                        title="Your lastname"
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Username</label>
+                    <input
+                        id="input-username"
+                        type="text"
+                        placeholder={userInfos.username}
+                        onChange={(e) => handleUsernameChange(e)}
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Email</label>
+                    <input
+                        id="input-email"
+                        type="text"
+                        readOnly
+                        placeholder={userInfos.email}
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Phone number</label>
+                    <input
+                        id="input-email"
+                        type="text"
+                        placeholder={userInfos.phone_number}
+                        onChange={(e) => handlePhoneChange(e)}
+                    />
+                </div>
             </div>
             <br />
 
