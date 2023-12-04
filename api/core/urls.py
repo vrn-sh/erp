@@ -19,7 +19,7 @@ from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTyp
 from api.views.viewsets.mission import CredentialViewset, MissionViewset, NmapViewset, CrtShView, WappalyzerRequestView
 from api.views.search import SearchView
 from api.views.viewsets.client_info import ClientInfoViewset
-from api.views.viewsets.mailingList import MailingListViewset
+from api.views.viewsets.mailing_list import MailingListViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(

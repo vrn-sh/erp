@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models.mailingList import MailingListItem
+from api.models.mailing_list import MailingListItem
 
 
 class MailingListItemSerializer(serializers.ModelSerializer):
