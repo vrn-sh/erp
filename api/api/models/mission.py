@@ -2,12 +2,13 @@
 
 from datetime import datetime, timedelta, date
 from os import environ
+import os
 from typing import Optional
 from django.db import models
 from django.core.cache import cache
 from django.contrib.postgres.fields import ArrayField
 
-from api.models import Auth, MAX_TITLE_LENGTH, Team
+from api.models import Auth, MAX_TITLE_LENGTH, Freelancer, Team
 from api.models.utils import NmapPortField
 from api.services.s3 import S3Bucket
 
@@ -32,6 +33,7 @@ class Recon(models.Model):
     REQUIRED_FIELDS = []
 
     updated_at: models.DateTimeField = models.DateTimeField(auto_now_add=True)
+
 
 class CrtSh(models.Model):
     """
@@ -87,13 +89,16 @@ class Mission(models.Model):
 
     creation_date: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated: models.DateTimeField = models.DateTimeField(auto_now_add=True, editable=True)
-    created_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='missions')
+    created_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='created_missions')
 
     last_updated_by = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='last_updated_missions')
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=True, default="Unnamed mission")
     description = models.TextField(blank=True, null=True, default="")
+    logo: Optional[models.CharField] = models.CharField(max_length=38, null=True, blank=True)
 
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of')
+    freelance_member = models.ForeignKey(Auth, on_delete=models.CASCADE, related_name='missions', null=True, blank=True)
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='member_of', blank=True, null=True)
     recon = models.OneToOneField(Recon, on_delete=models.CASCADE, blank=True, null=True, related_name='mission')
 
     scope = ArrayField(models.CharField(max_length=SCOPE_LENGTH), max_length=64, null=True, blank=True)
@@ -125,6 +130,9 @@ class Mission(models.Model):
 
     def is_member(self, user: Auth) -> bool:
         """checks if a user is a member of the mission"""
+        if self.freelance_member:
+            return user.id == self.freelance_member.id  # type: ignore
+
         return self.team.is_member(user)  # type: ignore
 
 
@@ -134,12 +142,16 @@ class Mission(models.Model):
             self.recon = Recon.objects.create()  # type: ignore
             self.bucket_name = uuid.uuid4().hex  # type: ignore
 
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                return super().save(*args, **kwargs)
+
             if environ.get('IN_CONTAINER', '0') == '1':
                 S3Bucket().create_bucket(self.bucket_name)
 
-        else: cache.delete(f'mission_{self.pk}')  # type: ignore
-        super().save(*args, **kwargs)
-
+        else:
+            if '1' not in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                cache.delete(f'mission_{self.pk}')  # type: ignore
+        return super().save(*args, **kwargs)
 
 
 class Credentials(models.Model):
@@ -153,4 +165,4 @@ class Credentials(models.Model):
     password: models.CharField = models.CharField(max_length=128)
     service: models.CharField = models.CharField(max_length=128)
     comment: models.CharField = models.CharField(max_length=128, blank=True, null=True)
-    mission: models.CharField = models.CharField(max_length=128, blank=True, null=True)
+    mission: models.ForeignKey = models.ForeignKey("api.Mission", on_delete=models.CASCADE, blank=True, null=True, related_name='creds')

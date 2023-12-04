@@ -10,6 +10,7 @@ The following models are present here:
 import uuid
 from logging import info, warning
 import os
+from warnings import warn
 from django.contrib.postgres.fields import ArrayField
 from typing import List, Optional
 from rest_framework.serializers import CharField
@@ -31,7 +32,7 @@ MAX_NOTE_LENGTH = 8186
 MAX_LINK_LENGTH = 1024
 NAME_LENGTH = 256
 
-USER_ROLES = ['unknown', 'pentester', 'manager']
+USER_ROLES = ['unknown', 'pentester', 'manager', 'freelancer']
 
 
 CONFIRM_TOKEN_TIMEOUT_SECONDS = 15 * 60 # 15 minutes
@@ -64,6 +65,7 @@ class Auth(AbstractUser):
     USER_TYPE_CHOICES = (
         (1, 'pentester'),
         (2, 'manager'),
+        (3, 'freelancer'),
     )
 
     id: models.AutoField = models.AutoField(primary_key=True)
@@ -176,6 +178,25 @@ class Manager(models.Model):
     creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
 
 
+class Freelancer(models.Model):
+    """
+        Freelancer model
+
+        a mixin of manager & pentester that can do a little bit of both
+
+        auth -> one-to-one to Auth model
+        creation_date -> read-only field expressing creation date
+    """
+    class Meta:
+        verbose_name = 'Freelancer'
+        verbose_name_plural = 'Freelancers'
+        ordering = ['creation_date']
+
+    id: models.AutoField = models.AutoField(primary_key=True)
+    auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
+    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
+
+
 class Pentester(models.Model):
     """
         Pentester model
@@ -214,14 +235,11 @@ class Team(models.Model):
         return self.leader.auth == user or user in members_auth  # type: ignore
 
 
-AuthenticatedUser = Pentester | Manager
+AuthenticatedUser = Pentester | Manager | Freelancer
 
 
 def get_user_model(auth: Auth) -> AuthenticatedUser:
     """fetches User model from base authentication model"""
 
-    roles = ['placeholder', 'pentester', 'manager']
-
-    if roles[auth.role] == 'pentester':  # type: ignore
-        return Pentester.objects.get(auth_id=auth.id)  # type: ignore
-    return Manager.objects.get(auth_id=auth.id)  # type: ignore
+    roles_to_fetch = [Auth, Pentester, Manager, Freelancer]
+    return roles_to_fetch[auth.role].objects.get(auth_id=auth.id)  # type: ignore
