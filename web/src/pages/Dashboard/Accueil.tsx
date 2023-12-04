@@ -18,6 +18,7 @@ import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import formRows from '../../assets/strings/en/payload.json';
+import GIF from '../../assets/Generate payload.gif';
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
@@ -607,7 +608,6 @@ export default function Accueil() {
                                     },
                                 }}
                             >
-                                {/* Content inside the modal (copy from old mission page) */}
                                 <div
                                     style={{
                                         display: 'flex',
@@ -633,6 +633,7 @@ export default function Accueil() {
                                                 borderRadius: '10px',
                                                 position: 'absolute',
                                                 overflow: 'scroll',
+                                                fontFamily: 'Poppins-Medium',
                                             },
                                         }}
                                     >
@@ -674,14 +675,103 @@ export default function Accueil() {
                                                         shellcode. This endpoint
                                                         generates a payload
                                                         based on the provided
-                                                        parameters.
+                                                        parameters, allowing for
+                                                        custom shellcode
+                                                        creation.
                                                     </p>
                                                     <p>
-                                                        Parameters: lport,
-                                                        laddr, exploit, arch,
-                                                        os, output_type, method,
-                                                        exit_func, encoder,
-                                                        exclude_bytes, entropy.
+                                                        Parameters:
+                                                        <ul>
+                                                            <li>
+                                                                lport (int):
+                                                                Listening
+                                                                callback port
+                                                                for a
+                                                                reverse-shell
+                                                                (default: 4444).
+                                                            </li>
+                                                            <li>
+                                                                laddr (str):
+                                                                Listening
+                                                                callback address
+                                                                for a
+                                                                reverse-shell
+                                                                (default:
+                                                                '10.0.2.2').
+                                                            </li>
+                                                            <li>
+                                                                exploit (str):
+                                                                The type of
+                                                                metasploit
+                                                                shellcode to
+                                                                embed in your
+                                                                loader (default:
+                                                                'x64/shell_reverse_tcp').
+                                                            </li>
+                                                            <li>
+                                                                arch (str):
+                                                                Target
+                                                                architecture of
+                                                                the system
+                                                                (default:
+                                                                'x64').
+                                                            </li>
+                                                            <li>
+                                                                os (str): Target
+                                                                operating system
+                                                                of the system
+                                                                (default:
+                                                                'windows').
+                                                            </li>
+                                                            <li>
+                                                                output_type
+                                                                (str): Output
+                                                                type of the
+                                                                compiled
+                                                                shellcode
+                                                                (default:
+                                                                'exe').
+                                                            </li>
+                                                            <li>
+                                                                method (str):
+                                                                Loader method
+                                                                (options:
+                                                                'CreateRemoteThread',
+                                                                'processHollowing').
+                                                            </li>
+                                                            <li>
+                                                                exit_func
+                                                                (Optional[str]):
+                                                                Metasploit
+                                                                shellcode
+                                                                EXITFUNC
+                                                                parameter.
+                                                            </li>
+                                                            <li>
+                                                                encoder
+                                                                (Optional[str]):
+                                                                Metasploit
+                                                                shellcode
+                                                                --encoder
+                                                                parameter.
+                                                            </li>
+                                                            <li>
+                                                                exclude_bytes
+                                                                (Optional[str]):
+                                                                Metasploit
+                                                                shellcode -b
+                                                                parameter.
+                                                            </li>
+                                                            <li>
+                                                                entropy
+                                                                (Optional[str]):
+                                                                Method for
+                                                                entropy
+                                                                reduction
+                                                                (default:
+                                                                Empty).
+                                                            </li>
+                                                        </ul>
                                                     </p>
                                                     <p>
                                                         Response: Success -
@@ -694,46 +784,53 @@ export default function Accueil() {
                                                 </li>
                                                 <li>
                                                     <strong>
-                                                        GET /aes-revshell
+                                                        POST /v2/load_myph
                                                     </strong>
                                                     <p>
-                                                        Description: Loads an
-                                                        AES-over-TCP
-                                                        reverse-shell payload.
+                                                        Description: This route
+                                                        allows uploading and
+                                                        processing a shellcode
+                                                        file with specified
+                                                        encryption and
+                                                        technique.
                                                     </p>
                                                     <p>
-                                                        Response: Returns a file
-                                                        response with a
-                                                        predefined AES
-                                                        reverse-shell
-                                                        executable.
-                                                    </p>
-                                                </li>
-                                                <li>
-                                                    <strong>
-                                                        GET /tcp-revshell
-                                                    </strong>
-                                                    <p>
-                                                        Description: Loads a TCP
-                                                        reverse-shell payload.
+                                                        Parameters:
+                                                        <ul>
+                                                            <li>
+                                                                shellcode_file
+                                                                (UploadFile):
+                                                                The file
+                                                                containing the
+                                                                shellcode.
+                                                            </li>
+                                                            <li>
+                                                                technique (str):
+                                                                The technique
+                                                                used for
+                                                                shellcode
+                                                                execution
+                                                                (default:
+                                                                'ProcessHollowing').
+                                                            </li>
+                                                            <li>
+                                                                encryption
+                                                                (str): Type of
+                                                                encryption to be
+                                                                applied to the
+                                                                shellcode
+                                                                (default:
+                                                                'chacha20').
+                                                            </li>
+                                                        </ul>
                                                     </p>
                                                     <p>
                                                         Response: Returns a file
                                                         response with the
-                                                        generated TCP
-                                                        reverse-shell
-                                                        executable.
+                                                        processed executable.
                                                     </p>
                                                 </li>
                                             </ul>
-
-                                            <h3>Running the Server</h3>
-                                            <p>
-                                                The server is configured to run
-                                                on 0.0.0.0 at port 1337. To
-                                                start the server, run the main
-                                                block which invokes uvicorn.
-                                            </p>
 
                                             <h3>Additional Notes</h3>
                                             <p>
@@ -746,6 +843,14 @@ export default function Accueil() {
                                                 checks for payload validity and
                                                 MinGW installation.
                                             </p>
+
+                                            <h3>Usage</h3>
+                                            <div>
+                                                <img
+                                                    src={GIF}
+                                                    alt="Generate payload demonstration"
+                                                />
+                                            </div>
                                         </div>
 
                                         <button
