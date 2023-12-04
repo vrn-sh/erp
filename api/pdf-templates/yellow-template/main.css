@@ -87,13 +87,6 @@ html {
     line-height: 1.5;
 }
 
-.title {
-    color: #fbc847;
-    font-size: 38pt;
-    margin: 5cm 2cm 0 2cm;
-    page: no-chapter;
-    width: 100%;
-}
 
 h1,
 h2,
@@ -118,17 +111,15 @@ h4 {
     font-size: 13pt;
 }
 
-#cover {
-    background-image: url(https://images.unsplash.com/photo-1516641051054-9df6a1aad654?q=80&w=1856&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) no-repeat;
-    margin: 0;
-    height: 100%;
+#cover #logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #cover address {
-    background: #fbc847;
-    flex: 1 50%;
-    margin: 0 -2cm;
-    padding: 1cm 0;
+    border: 1px solid #fbc847;
+    padding: 0.5em;
     white-space: pre-wrap;
 }
 

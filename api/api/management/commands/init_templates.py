@@ -33,13 +33,13 @@ class Command(BaseCommand):
                       'yellow',
                         self.read_css('./api/pdf-templates/yellow-template/main.css'),
                         '''
-    <article id="cover">
+    <article id="cover" style="display: block; justify-content:space-between;">
       <h1 class="title">{mission_title}</h1>
+        <div id="logo">
+            <img alt="logo-company" src="{logo}" style="max-height: 600px;"/>
+        </div>
       <address>
-        <img alt="logo-company" id="logo" src="{logo}" style="max-height: 300px;"/>
       {team_name}
-      </address>
-      <address>
         <strong>Version:</strong> {report_version}<br>
         <strong>Date:</strong> {report_date}<br>
       </address>
@@ -51,24 +51,26 @@ class Command(BaseCommand):
                  '''
     <div class="cover-page">
         <header>
-            <div class="identity">
-                <img class="logo"
-                    src="{logo}"
-                    style="max-height: 300px;"
-                    alt="logo" />
-                <div class="info">
-                    <p>{team_name}</p>
+            <div class="header-content">
+                <div id="page-title">
+                    <h2 class="page-title-name">{team_name}</h2>
+                </div>
+                <div>
+                    <img src="{logo}" alt="{team_name} logo" style="max-height:0.75cm">
                 </div>
             </div>
+
+                <div class="golden-divider"></div>
+
         </header>
         <div class="title">
-            <div class="divider-x"></div>
             <h1>{mission_title}</h1>
             <h2>{report_date}</h2>
-            <div class="divider-x"></div>
         </div>
         <footer id="footer">
-            <p>Report No. {report_version}</p>
+            <div style="display:flex;">
+                <p id="footnote">Report No. {report_version}</p>
+            </div>
         </footer>
     </div>
                  '''),

@@ -11,9 +11,7 @@
 <body>
     <style>
         body {
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            padding: 2em 6.5em;
-            margin: 30px;
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         }
 
         .divider-x {
@@ -28,27 +26,46 @@
     <div class="cover-page">
         <header>
             <style>
-                header .identity {
+                header {
                     display: flex;
+                    position: relative;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
                 }
+                #team {
 
-                header .identity .info p:first-child {
-                    font-size: 2.5rem;
+                    padding-left: 1em;
+                    width: 50%;
+                    background-color: navy;
+                    color: white;
                 }
-
-                header .identity .info p {
-                    font-size: 1.5rem;
+                .team-name {
+                    font-size: xx-large;
+                    font-weight: bold;
                 }
-            </style>
-            <div class="identity">
-                <img class="logo"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAEN65TxlSnQM7q0XFcfdpqZkxhnIWs4BUqg&usqp=CAU"
-                    alt="logo" />
-                <div class="info">
-                    <p>Office of Inspector General</p>
-                    <p>Office of Audits</p>
+                header:nth-child(2) {
+                    width: 50%;
+                    color: black;
+                    font-size: medium;
+                }
+                .golden-divider {
+                    position: absolute;
+                    bottom: 1em;
+                    width: 100%;
+                    padding-left: 1em;
+                    border-bottom: 4px solid goldenrod;
+                }
+                </style>
+                <div id="team">
+                    <h1 class="team-name">NASA OIG</h1>
                 </div>
-            </div>
+                <div>
+                    <p>Pentest Report</p>
+                </div>
+
+                <div class="golden-divider"></div>
+
         </header>
         <div class="title">
             <style>
@@ -61,21 +78,17 @@
                     font-size: 3em;
                 }
             </style>
-            <div class="divider-x"></div>
             <h1>Cybersecurity management and oversight at the jet propulsion laboratory</h1>
             <h2>June 18, 2019</h2>
-            <div class="divider-x"></div>
         </div>
         <footer id="footer">
             <style>
-                #footer p {
-                    position: absolute;
-                    bottom: 0;
-                    width: 100%;
-                    height: 2.5rem;  
-                }
+
             </style>
-            <p>Report No. IG-19-022</p>
+            <div style="display:flex;">
+                <p id="footnote">Report No. IG-19-022</p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1200px-NASA_logo.svg.png" alt="NASA logo" width="100px">
+            </div>
         </footer>
     </div>
 </body>

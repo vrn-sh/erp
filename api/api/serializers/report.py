@@ -209,56 +209,17 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             },
         {
             "name": "NASA",
-            "html_header": '''    <header>
-        <style>
-            header .info {
-                background-color: #bebebe;
-                width: 80%;
-                padding: 0px 15px 0 15px;
-            }
-
-            header h1 {
-                font-variant: small-caps;
-                font-size: 3em;
-                margin: 15px 0;
-            }
-
-            header .identity {
-                display: flex;
-                justify-content: space-between;
-
-            }
-
-            header .identity img {
-                object-fit: contain;
-                height: 70px;
-            }
-
-            header .identity .info .company-info p:first-child {
-                font-size: 1.65em;
-            }
-
-            header .identity .info .company-info p {
-                font-size: 1.5em;
-                margin: 15px 0px;
-            }
-
-            .info .report-info {
-                display: flex;
-                justify-content: space-between;
-                font-size: 1em;
-            }
-        </style>''' + f'''
-        <div class="identity">
-            <img class="logo"
+            "html_header": f'''
+        <div class="header-content">
+            <img id="header-logo"
                 src="{logo}"
-                alt="logo" />
-            <div class="spacer-x"></div>
-            <div class="info">
-                <h1><span>{title[0]}</span>{title[1:]}</h1>
+                alt="NASA logo" />
+            <div id="page-title">
+                <h2 class="page-title-name">{title}</h2>
             </div>
         </div>
-    </header>'''
+        <div class="golden-divider"></div>
+'''
             
         },
         {
