@@ -2,11 +2,15 @@ import {InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/m
 import formRows from "../../../assets/strings/en/basicpayload.json";
 import React, {ReactNode, useState} from "react";
 import FormControl from '@mui/material/FormControl';
+import LoadingButton from '@mui/lab/LoadingButton';
+import axios from "axios";
 
 export default function BasicShellcode(props: {
     closeModal: any
+    setLink: any
 }) {
 
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
         [key: string]: string;
     }>({
@@ -23,60 +27,52 @@ export default function BasicShellcode(props: {
         entropy: ''
     });
 
-    async function submitPayload() {
-
+    function submitPayload() {
+        if (loading)
+            return;
+        setLoading(true);
         const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-        const apiUrl = `http://voron.djnn.sh/saas/load_shellcode?
-        lport=${formData.lport}
-        &laddr=${formData.laddr}
-        &exploit=${encodeURIComponent(formData.exploit)}
-        &arch=${formData.arch}
-        &os=${formData.os}
-        &output_type=${formData.output_type}
-        &method=${formData.method}
-        &exit_func=${formData.exit_func}
-        &encoder=${formData.encoder}
-        &exclude_bytes=${formData.exclude_bytes}
-        &entropy=${formData.entropy}`;
 
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'X-Api-Key': apiKey,
+        axios.post(
+            `http://localhost:1337/load_shellcode`,
+            {
+                lport: formData.lport,
+                laddr: formData.laddr,
+                exploit: encodeURIComponent(formData.exploit),
+                arch: formData.arch,
+                os: formData.os,
+                output_type: formData.output_type,
+                method: formData.method,
+                exit_func: formData.exit_func,
+                encoder: formData.encoder,
+                exclude_bytes: formData.exclude_bytes,
+                enntropy: formData.entropy
             },
-            body: JSON.stringify(formData),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-Api-Key': apiKey,
+                },
+            }
+            ).then((response) => {
+                props.setLink(response.data.url);
+                navigator.clipboard.writeText(response.data.url);
+        }).catch((error) => {
+                console.error(error);
+        }).finally(() => {
+            setLoading(false);
         });
-
-        // Check if the response status is in the success range (e.g., 200-299)
-        if (response.status >= 200 && response.status < 300) {
-            // Read the response body as a blob
-            const fileBlob = await response.blob();
-
-            const url = window.URL.createObjectURL(fileBlob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'file.exe';
-
-            a.click();
-
-            window.URL.revokeObjectURL(url);
-        } else {
-            // Handle error status code (e.g., display an error message)
-            console.error(`API Request Error: Status Code ${response.status}`);
-        }
     }
 
     return (
         <div style={{
-            height: '93%'
+            height: '35em'
         }}>
             <div style={{
                 overflowX: 'hidden',
                 overflowY: 'auto',
-                height: '70%'
+                height: '93%'
             }}>
                 {formRows.map((row) => (
                     <div className="form-row">
@@ -92,6 +88,7 @@ export default function BasicShellcode(props: {
                             <FormControl fullWidth>
                                 {row.type === "text" &&
                                     <TextField
+                                        disabled={loading}
                                         id={`text-${row.id}`}
                                         variant="outlined"
                                         defaultValue={row.defaultValue}
@@ -102,6 +99,7 @@ export default function BasicShellcode(props: {
                                 }
                                 {row.type === "selection" &&
                                     <Select
+                                        disabled={loading}
                                         labelId={`select-${row.id}`}
                                         id={row.id}
                                         value={formData[row.id]}
@@ -124,7 +122,10 @@ export default function BasicShellcode(props: {
                 flexDirection: 'row',
                 width: '50%',
             }}>
-                <button type="button" onClick={submitPayload}>
+                <button
+                    type="button"
+                    onClick={submitPayload}
+                >
                     Submit
                 </button>
                 <button

@@ -4,6 +4,7 @@ import formRows from "../../../assets/strings/en/myph.json";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {styled} from "@mui/material/styles";
 import Input from "../../../component/Input";
+import axios from "axios";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -19,7 +20,10 @@ const VisuallyHiddenInput = styled('input')({
 
 export default function MyPhShellcode(props: {
     closeModal: any
+    setLink: any
 }) {
+    const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
         [key: string]: string;
     }>({
@@ -27,11 +31,35 @@ export default function MyPhShellcode(props: {
         technique: 'ProcessHollowing',
         encryption: 'chacha20',
         shellcode_file: '',
-        entropy: 'false'
+        obfuscation: 'false'
     });
 
     async function submitPayload() {
-        console.log(formData)
+        if (loading)
+            return;
+        setLoading(true);
+        axios.post(
+            `http://localhost:1337/v2/load_myph`,
+            {
+                technique: formData.technique,
+                encryption: formData.encryption,
+                shellcode_file: formData.shellcode_file
+            },
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Accept: 'application/json',
+                    'X-Api-Key': apiKey,
+                }
+            }
+        ).then((response) => {
+            props.setLink(response.data.url);
+            navigator.clipboard.writeText(response.data.url);
+        }).catch((error) => {
+            console.error(error);
+        }).finally(() => {
+            setLoading(false);
+        });
     }
 
     const convertImageToBase64 = (file: File) => {
@@ -46,6 +74,10 @@ export default function MyPhShellcode(props: {
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+        if (file)
+            setFormData({...formData, shellcode_file: file.toString()});
+
+        /*const file = e.target.files?.[0];
 
         if (file) {
             const base64 = await convertImageToBase64(file);
@@ -54,17 +86,17 @@ export default function MyPhShellcode(props: {
             } else {
                 console.error('La conversion en base64 a échoué.');
             }
-        }
+        }*/
     };
 
     return (
         <div style={{
-            height: '93%'
+            height: '35em'
         }}>
             <div style={{
                 overflowX: 'hidden',
                 overflowY: 'auto',
-                height: '70%'
+                height: '93%'
             }}>
                 {formRows.map((row) => (
                     <div className="form-row">
@@ -93,7 +125,10 @@ export default function MyPhShellcode(props: {
                                         id={`switch-${row.id}`}
                                         checked={formData[row.id] === "true"}
                                         onChange={(event) => {
-                                            setFormData({...formData, [row.id]: event.target.checked ? "true" : "false"})
+                                            setFormData({
+                                                ...formData,
+                                                [row.id]: event.target.checked ? "true" : "false"
+                                            })
                                         }}
                                         inputProps={{'aria-label': 'controlled'}}
                                     />

@@ -28,8 +28,8 @@
         "defaultValue": ""
     },
     {
-        "id": "entropy",
-        "name": "Entropy",
+        "id": "obfuscation",
+        "name": "Obfuscation",
         "type": "boolean",
         "selection": [],
         "defaultValue": "false"
