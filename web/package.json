@@ -5,7 +5,7 @@
   "version": "0.1.2",
   "type": "module",
   "scripts": {
-    "dev": "VITE_REACT_APP_NODE_ENV=development vite",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.ts,.tsx .",
@@ -24,6 +24,7 @@
     "@mui/material": "^5.10.17",
     "@mui/x-charts": "^6.0.0-alpha.14",
     "@mui/x-date-pickers": "^6.2.1",
+    "@stripe/stripe-js": "^2.2.0",
     "@types/react-vertical-timeline-component": "^3.3.3",
     "@vitejs/plugin-react": "^4.0.0",
     "axios": "^1.6.0",
