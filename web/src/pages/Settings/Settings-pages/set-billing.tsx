@@ -150,7 +150,7 @@ export default function SettingBilling() {
                             <th>Actions</th>
                         </tr>
                         {creditCards.map((card, index) => (
-                            <tr key={index}>
+                            <tr>
                                 <td>{card.bank}</td>
                                 <td>{card.cardNumber}</td>
                                 <td>
