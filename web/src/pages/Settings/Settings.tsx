@@ -11,6 +11,7 @@ import SettingSecurity from './Settings-pages/set-security';
 // import SettingNotification from './Settings-pages/set-notif';
 import SettingBilling from './Settings-pages/set-billing';
 
+
 // Interface pour les données de sous-pages
 interface SubPage {
     title: string;
