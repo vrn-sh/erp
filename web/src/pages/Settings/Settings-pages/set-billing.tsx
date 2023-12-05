@@ -1,41 +1,41 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useEffect, useState, useRef, ChangeEvent } from 'react';
 import '../Settings.scss';
-import Cookies from 'js-cookie';
-import SecurityTeam from './securityTeam';
-import SecurityUser from './securityUser';
-import { useNavigate } from 'react-router-dom';
-import ChoosePlanPage from './ChoosePlan';
-import { Stripe } from '@stripe/stripe-js';
-import { loadStripe, PaymentIntent } from '@stripe/stripe-js';
-
-
-
-type PlanId = 'basic' | 'freelancer' | 'business'; // Définir les valeurs possibles pour planId
+import * as AiIcons from 'react-icons/ai';
+import { SecondaryButton } from '../../../component/Button';
+import subscriptions from '../../../assets/strings/en/subscriptions.json';
 
 export default function SettingBilling() {
-    const [active, setActive] = useState('pwdUser');
-    const navigate = useNavigate();
-    const role = Cookies.get('Role');
-    const [creditCards, setCreditCards] = useState<{ name: string; cardNumber: string }[]>([]);
+    const cardColors = ['primary-color', 'secondary-color', 'primary-color'];
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    const [creditCards, setCreditCards] = useState<
+        { bank: string; cardNumber: string }[]
+    >([]);
     const [showAddCardForm, setShowAddCardForm] = useState(false);
     const [newCardInfo, setNewCardInfo] = useState({
-        name: '',
+        bank: '',
         cardNumber: '',
+        cvc: '',
         // Autres champs pour la carte...
     });
-    const [showSubscriptionOptions, setShowSubscriptionOptions] = useState(false);
+    const [cardBtn, setCardBtn] = useState('');
+
+    const [popup, setPopup] = useState(false);
+    const [planPrice, setPlanPrice] = useState('400€ / mois');
 
     const handlePayment = (paymentLink: string) => {
-        window.location.href = paymentLink;
+        window.open(paymentLink, '_blank');
     };
 
     const redirectToChoosePlan = () => {
-        setShowSubscriptionOptions(true);
+        setPopup(true);
     };
     const [lastPayments, setLastPayments] = useState([]);
 
     const toggleAddCardForm = () => {
         setShowAddCardForm(!showAddCardForm);
+        if (cardBtn === '') setCardBtn('None');
+        else setCardBtn('');
     };
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,11 +48,6 @@ export default function SettingBilling() {
 
     const addCreditCard = () => {
         setCreditCards([...creditCards, newCardInfo]);
-        setNewCardInfo({
-            name: '',
-            cardNumber: '',
-            // Réinitialiser les autres champs pour la carte...
-        });
         toggleAddCardForm();
     };
 
@@ -61,67 +56,51 @@ export default function SettingBilling() {
         updatedCards.splice(index, 1);
         setCreditCards(updatedCards);
     };
-    
 
-    useEffect(() => {
-        const fetchLastPayments = async () => {
-            try {
-                const response = await fetch('https://api.stripe.com/v1/payment_intents', {
-                    method: 'GET',
-                    headers: {
-                        Authorization: 'sk_test_51ODPTULCQ1iXP3QodJhJQ4aztaAWG26mZTeWRj5rvuPlac9SxRUJ4ZEOT6HKybM7csSYVOiCGouuqE3VtdfT3pJC00Qu1Ps9yG', // Remplacez par votre clé secrète
-                    },
-                });
+    // const fetchLastPayments = async () => {
+    //     await axios
+    //         .get('https://api.stripe.com/v1/payment_intents', {
+    //             headers: {
+    //                 Authorization:
+    //                     'sk_test_51ODPTULCQ1iXP3QodJhJQ4aztaAWG26mZTeWRj5rvuPlac9SxRUJ4ZEOT6HKybM7csSYVOiCGouuqE3VtdfT3pJC00Qu1Ps9yG', // Remplacez par votre clé secrète
+    //             },
+    //         })
+    //         .then(async (data) => {
+    //             const newData = await data.data;
+    //             console.log(newData)
+    //             setLastPayments(newData);
+    //         })
+    //         .catch((e) => {
+    //             throw e.message;
+    //         });
+    // };
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setLastPayments(data.data);
-                } else {
-                    throw new Error('Erreur lors de la récupération des paiements');
-                }
-            } catch (error) {
-                console.error('Erreur lors de la récupération des paiements:', error);
-            }
-        };
-
-        fetchLastPayments();
-    }, []);
-
+    // useEffect(() => {
+    //     fetchLastPayments();
+    // }, []);
 
     return (
         <div>
-            {/* Section pour afficher le plan actuel */}
-            
-            <div className="plan-section" style={{ backgroundColor: '#9747FF', display: 'flex', borderRadius:'5px' }}>
-                <div style={{ width: '80%'}}>
-                    <h2>Plan Actuel</h2>
-                    {/* D'autres détails du plan ici */}
-                    <p>Nom du plan: Plan Standard</p>
-                    <p>Prix: $XX.XX/mois</p>
-                </div>
-                {/* Bouton pour changer de plan */}
-                <div style={{ textAlign:'center', justifyContent:'center'}}>
-                    <button style={{width:'150px', height:'70px', backgroundColor:'transparent', border:'solid 2px'}} 
-                onClick={redirectToChoosePlan}>
-                Changer de Plan
-                    </button>
-                    <button onClick={() => handlePayment('https://buy.stripe.com/test_aEUaHpc3MfeUc0w8wx')}>
-                        Sélectionner Basic
-                    </button>
-                    <button onClick={() => handlePayment('https://buy.stripe.com/test_6oEdTBd7Q6Io3u0fZ0')}>
-                        Sélectionner Freelancer
-                    </button>
-                    <button onClick={() => handlePayment('https://buy.stripe.com/test_00g3eX8RA4Agd4A288')}>
-                        Sélectionner Business
-                    </button>
+            <div className="billing-plan-section">
+                <div className="billing-plan-actuel">
+                    <h3>Your plan</h3>
+                    <h2>Plan Standard</h2>
+                    <p>Prix: {planPrice}</p>
                 </div>
 
+                <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <button
+                        className="change-plan-btn"
+                        type="button"
+                        onClick={redirectToChoosePlan}
+                    >
+                        Changer de Plan
+                    </button>
+                </div>
             </div>
 
-            
-            <div className="order-history-section">
-                <h2>Historique des Commandes</h2>
-                {/* Tableau pour afficher les commandes */}
+            {/* <div className="order-history-section">
+                <h2 style={{textAlign: 'left', marginLeft: '1rem'}}>Historique des Commandes</h2>
                 <table>
                     <thead>
                         <tr>
@@ -131,83 +110,219 @@ export default function SettingBilling() {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* Résultats fictifs pour le tableau (4 éléments maximum) */}
-                        {[...Array(8)].map((_, index) => (
+                        // eslint-disable-next-line
+                        {[...Array(2)].map((_, index) => (
                             <tr key={index} style={{ display: index < 4 ? 'table-row' : 'none' }}>
                                 <td>12/0{index + 1}/2023</td>
                                 <td>Type de Commande</td>
                                 <td>
-                                    <button style={{backgroundColor:'transparent', border:'solid 2px #9747FF', color:'#9747FF'}}>Download</button>
+                                    <button type="button" style={{backgroundColor:'transparent', border:'solid 2px #9747FF', color:'#9747FF'}}>Download</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                {/* Pagination */}
-                <button className="pagination-arrow" onClick={() => { /* Code pour afficher les éléments suivants */ }}>
-                    &darr;
-                </button>
             </div>
-            <br />
+            <br /> */}
 
-            {/* ... */}
-
-            <div className="payment-method-section">
-            <h2>Méthode de Paiement</h2>
-            {/* Tableau pour afficher les cartes de crédit */}
-            <table>
-                {/* ... */}
-                <tbody>
-                    {creditCards.map((card, index) => (
-                        <tr key={index}>
-                            <td>{card.name}</td>
-                            <td>{card.cardNumber}</td>
-                            <td>
-                                <button onClick={() => deleteCreditCard(index)}>
-                                    Supprimer la Carte
-                                </button>
-                            </td>
+            <div className="billing-card-form-container">
+                <div className="billing-card-header">
+                    <h2>Payment method</h2>
+                    <button
+                        type="button"
+                        onClick={toggleAddCardForm}
+                        style={{
+                            minWidth: '20px',
+                            backgroundColor: 'transparent',
+                            border: 'solid 1px #9747FF',
+                            color: '#9747FF',
+                            display: cardBtn,
+                        }}
+                    >
+                        Add new card
+                    </button>
+                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Bank</th>
+                            <th>Card Number</th>
+                            <th>Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            {/* Bouton pour ajouter une carte */}
-            <div style={{width:'150px', height:'50px'}}>
-                <button style={{ backgroundColor:'transparent', border:'solid 2px #9747FF', color:'#9747FF'}}onClick={toggleAddCardForm}>
-                    Ajouter une Carte
-                </button>
-            </div>
-            {/* Formulaire pour ajouter une carte */}
-            {showAddCardForm && (
-                <div style={{alignItems:'center', justifyContent:'center'}}>
-                    <label>Nom:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={newCardInfo.name}
-                        onChange={handleInputChange}
-                    />
-                    <label>Numéro de Carte:</label>
-                    <input
-                        type="text"
-                        name="cardNumber"
-                        value={newCardInfo.cardNumber}
-                        onChange={handleInputChange}
-                    />
-                     <label>CVC:</label>
-                    <input
-                        type="text"
-                        name="cardNumber"
-                        value={newCardInfo.cardNumber}
-                        onChange={handleInputChange}
-                    />
-                    <div style={{width:'150px', height:'50px'}}>
-                         <button onClick={addCreditCard}>Ajouter la Carte</button>
-                    </div>      
-              </div>
-            )}
-        </div>
+                        {creditCards.map((card, index) => (
+                            <tr key={index}>
+                                <td>{card.bank}</td>
+                                <td>{card.cardNumber}</td>
+                                <td>
+                                    <button
+                                        type="button"
+                                        onClick={() => deleteCreditCard(index)}
+                                        style={{
+                                            minWidth: '20px',
+                                            backgroundColor: '#9747FF',
+                                            color: 'white',
+                                        }}
+                                    >
+                                        Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
 
+                {showAddCardForm && (
+                    <div
+                        style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <div className="input input-medium">
+                            <label>Bank:</label>
+                            <input
+                                required
+                                name="bank"
+                                type="text"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+
+                        <div className="input input-medium">
+                            <label>Card number: </label>
+                            <input
+                                required
+                                name="cardNumber"
+                                type="text"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+
+                        <div className="input input-medium">
+                            <label>CVC:</label>
+                            <input
+                                required
+                                name="cvc"
+                                type="text"
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                width: '100%',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <button
+                                type="button"
+                                onClick={addCreditCard}
+                                style={{ minWidth: '20px' }}
+                            >
+                                Submit
+                            </button>
+                            <button
+                                type="button"
+                                onClick={toggleAddCardForm}
+                                style={{
+                                    minWidth: '20px',
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid #7c44f3',
+                                    color: '#7c44f3',
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {popup && (
+                <div className="modal-wrapper">
+                    <div className="modal-card" style={{ maxWidth: '70%' }}>
+                        <div className="modal">
+                            <div
+                                style={{
+                                    textAlign: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <div className="plan-subscription-container">
+                                    {subscriptions.map(
+                                        (subscription, index) => (
+                                            <div
+                                                className={`subscription-card ${
+                                                    cardColors[
+                                                        index %
+                                                            cardColors.length
+                                                    ]
+                                                }`}
+                                                ref={(ref) => {
+                                                    cardRefs.current[index] =
+                                                        ref;
+                                                }}
+                                            >
+                                                <h2>{subscription.type}</h2>
+                                                <label>
+                                                    € {subscription.price}
+                                                </label>
+                                                <p className="plan-small-des">
+                                                    {subscription.recurrence}
+                                                </p>
+                                                {subscription.service.map(
+                                                    (s) => {
+                                                        return (
+                                                            <div className="plan-service-container">
+                                                                <AiIcons.AiOutlineCheck
+                                                                    style={{
+                                                                        color: 'green',
+                                                                    }}
+                                                                />
+                                                                <p
+                                                                    style={{
+                                                                        textAlign:
+                                                                            'left',
+                                                                    }}
+                                                                >
+                                                                    {s}
+                                                                </p>
+                                                            </div>
+                                                        );
+                                                    }
+                                                )}
+                                                <button
+                                                    className="souscrire-button"
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setPlanPrice(
+                                                            subscription.price_month
+                                                        );
+                                                        handlePayment(
+                                                            subscription[
+                                                                'stripe-link'
+                                                            ]
+                                                        );
+                                                    }}
+                                                >
+                                                    Select
+                                                </button>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+
+                                <SecondaryButton
+                                    variant="outlined"
+                                    onClick={() => setPopup(false)}
+                                >
+                                    Close
+                                </SecondaryButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

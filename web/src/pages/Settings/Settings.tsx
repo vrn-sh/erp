@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
-import { BsFillShieldLockFill } from 'react-icons/bs';
-// import { IoIosNotifications } from 'react-icons/io';
-import { BsCreditCard } from 'react-icons/bs';
+import { BsFillShieldLockFill, BsCreditCard } from 'react-icons/bs';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import './Settings.scss';
@@ -45,12 +43,12 @@ const subPagesData: SubPage[] = [
         icon: <BsCreditCard style={{ fontSize: '22px' }} />,
         key: 2,
     },
-  /* {
+    /* {
          title: 'Billing',
          content: <SettingBilling />,
          icon: <BsCreditCard style={{ fontSize: '22px' }} />,
          key: 2,
-     },*/
+     }, */
     // {
     //     title: 'Team',
     //     content: <SettingTeam userId={0} userRole="Manager" />, // TOFIX, Idk what role to put
