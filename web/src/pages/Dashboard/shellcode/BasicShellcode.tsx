@@ -4,6 +4,7 @@ import React, {ReactNode, useState} from "react";
 import FormControl from '@mui/material/FormControl';
 import LoadingButton from '@mui/lab/LoadingButton';
 import axios from "axios";
+import Button from "@mui/material/Button";
 
 export default function BasicShellcode(props: {
     closeModal: any
@@ -118,23 +119,37 @@ export default function BasicShellcode(props: {
                 ))}
             </div>
             <div style={{
+                marginTop: '1%',
                 display: 'flex',
                 flexDirection: 'row',
                 width: '50%',
             }}>
-                <button
-                    type="button"
+                <LoadingButton
+                    loading={loading}
                     onClick={submitPayload}
+                    size="medium"
+                    style={{
+                        backgroundColor: '#7c44f3',
+                        color: '#ffffff',
+                        minWidth: '100%',
+                        marginRight: '1%'
+                    }}
                 >
-                    Submit
-                </button>
-                <button
-                    type="submit"
-                    className="cancel-btn"
+                    {!loading && "Submit"}
+                </LoadingButton>
+                <Button
                     onClick={props.closeModal}
+                    size="medium"
+                    variant="outlined"
+                    style={{
+                        backgroundColor: 'rgba(255,255,255,0)',
+                        color: '#7c44f3',
+                        minWidth: '100%',
+                        marginLeft: '1%'
+                    }}
                 >
                     Cancel
-                </button>
+                </Button>
             </div>
         </div>
     )

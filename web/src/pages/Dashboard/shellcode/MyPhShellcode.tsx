@@ -5,6 +5,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {styled} from "@mui/material/styles";
 import Input from "../../../component/Input";
 import axios from "axios";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -47,7 +48,7 @@ export default function MyPhShellcode(props: {
             },
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'application/json',
                     Accept: 'application/json',
                     'X-Api-Key': apiKey,
                 }
@@ -74,8 +75,9 @@ export default function MyPhShellcode(props: {
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+        console.log(file);
         if (file)
-            setFormData({...formData, shellcode_file: file.toString()});
+            setFormData({...formData, shellcode_file: await convertImageToBase64(file) as string});
 
         /*const file = e.target.files?.[0];
 
@@ -115,6 +117,7 @@ export default function MyPhShellcode(props: {
                                         id={`text-${row.id}`}
                                         variant="outlined"
                                         defaultValue={row.defaultValue}
+                                        disabled={loading}
                                         onChange={(event) => {
                                             setFormData({...formData, [row.id]: event.target.value})
                                         }}
@@ -124,6 +127,7 @@ export default function MyPhShellcode(props: {
                                     <Switch
                                         id={`switch-${row.id}`}
                                         checked={formData[row.id] === "true"}
+                                        disabled={loading}
                                         onChange={(event) => {
                                             setFormData({
                                                 ...formData,
@@ -138,6 +142,7 @@ export default function MyPhShellcode(props: {
                                         <input
                                             type="file"
                                             id={`file-${row.id}`}
+                                            disabled={loading}
                                             className="form-control"
                                             title="Upload your shellcode file"
                                             onChange={(e) => handleFileUpload(e)}
@@ -148,6 +153,7 @@ export default function MyPhShellcode(props: {
                                     <Select
                                         labelId={`select-${row.id}`}
                                         id={row.id}
+                                        disabled={loading}
                                         value={formData[row.id]}
                                         onChange={(event) => {
                                             setFormData({...formData, [row.id]: event.target.value})
@@ -164,20 +170,37 @@ export default function MyPhShellcode(props: {
                 ))}
             </div>
             <div style={{
+                marginTop: '1%',
                 display: 'flex',
                 flexDirection: 'row',
                 width: '50%',
             }}>
-                <button type="button" onClick={submitPayload}>
-                    Submit
-                </button>
-                <button
-                    type="submit"
-                    className="cancel-btn"
+                <LoadingButton
+                    loading={loading}
+                    onClick={submitPayload}
+                    size="medium"
+                    style={{
+                        backgroundColor: '#7c44f3',
+                        color: '#ffffff',
+                        minWidth: '100%',
+                        marginRight: '1%'
+                    }}
+                >
+                    {!loading && "Submit"}
+                </LoadingButton>
+                <Button
                     onClick={props.closeModal}
+                    size="medium"
+                    variant="outlined"
+                    style={{
+                        backgroundColor: 'rgba(255,255,255,0)',
+                        color: '#7c44f3',
+                        minWidth: '100%',
+                        marginLeft: '1%'
+                    }}
                 >
                     Cancel
-                </button>
+                </Button>
             </div>
         </div>
     )
