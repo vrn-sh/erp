@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
 import ViewTeam from './ViewTeam';
+import { genericRequest } from '../TokenVerification/TokenVerification';
 
 export default function TeamList() {
     const [list, setList] = useState<
@@ -52,59 +53,45 @@ export default function TeamList() {
     };
 
     const getMission = async (idTeam: number) => {
-        await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
+        try {
+            const missionResponse = await axios.get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
-            })
-            .then((data) => {
-                const tab: any = [];
-                const missions = data.data.results;
-                for (let i = 0; i < missions.length; i += 1) {
-                    const find = missions.filter(
-                        (elem: any) => elem.team === idTeam
-                    );
-                    tab.push(find);
-                }
-                setMission(tab.length);
-            })
-            .catch((e) => {
-                throw e.message;
             });
+    
+            const missions = missionResponse.data.results.filter((elem: any) => elem.team === idTeam);
+            setMission(missions.length);
+        } catch (error) {
+            throw error;
+        }
     };
+    
 
     const addTeam = () => {
         navigate('/team/create');
     };
 
     const getTeamList = async () => {
-        await axios
-            .get(`${config.apiUrl}/team?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((data) => {
-                const tab = [];
-                for (let i = 0; i < data.data.length; i += 1) {
-                    getMission(data.data[i].id);
+        try{
+            const teamResponse = await genericRequest('GET', '/team?page=1', {}, navigate);
+            const tab = [];
+                for (let i = 0; i < teamResponse.length; i += 1) {
+                    getMission(teamResponse[i].id);
                     tab.push({
-                        id: data.data[i].id,
-                        name: data.data[i].name,
-                        nbMember: data.data[i].members.length,
+                        id: teamResponse[i].id,
+                        name: teamResponse[i].name,
+                        nbMember: teamResponse[i].members.length,
                         nbMission: mission, // get info
-                        manager: data.data[i].leader.auth.username, // get info
+                        manager: teamResponse[i].leader.auth.username, // get info
                     });
                 }
                 tab.reverse();
                 setList(tab);
-            })
-            .catch((e) => {
+        } catch(e:any)  {
                 throw e.message;
-            });
+            };
     };
 
     const NavEditTeam = (id: number) => {

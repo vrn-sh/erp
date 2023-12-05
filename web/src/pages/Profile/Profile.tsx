@@ -9,6 +9,7 @@ import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import TableSection from './TableSection';
+import { genericRequest } from '../TokenVerification/TokenVerification';
 
 type InfoProps = {
     t1: string;
@@ -86,79 +87,67 @@ export default function ProfilePage() {
     };
 
     const getUserInfos = async () => {
-        let url = `${config.apiUrl}/`;
+    try {
+        let url = '';
         if (role === '2') url += 'manager';
         else url += 'pentester';
-        await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((data) => {
-                setUserInfos(data.data.auth);
-            })
-            .catch((e) => {
-                throw e;
-            });
-    };
 
-    const getTeams = async () => {
-        await axios
-            .get(`${config.apiUrl}/team?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((data) => {
-                const res = data.data;
-                const t = [];
-                for (let j = 0; j < res.length; j += 1) {
-                    let f = false;
-                    if (res[j].leader.auth.email === userInfos.email) f = true;
-                    for (let i = 0; i < res[j].members.length; i += 1) {
-                        if (res[j].members[i].auth.email === userInfos.email)
-                            f = true;
-                    }
-                    if (f === true) {
-                        const member = res[j].members.length;
-                        const sum = coworker + member;
-                        delete res[j].members;
-                        res[j].people = member;
-                        setCowoker(sum);
-                        t.push(res[j]);
-                    }
-                }
-                setTeamList(t);
-            });
-    };
+        const response = await genericRequest('GET', `/${url}/${Cookies.get('Id')}`, {}, navigate);
+        setUserInfos(response.auth);
+    } catch (error) {
+        throw error;
+    }
+};
 
-    const getMission = async () => {
-        await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((data) => {
-                const res = data.data.results;
-                for (let i = 0; i < res.length; i += 1) {
-                    delete res[i].start;
-                    delete res[i].end;
-                    delete res[i].recon;
-                    delete res[i].bucket_name;
-                    delete res[i].creation_date;
-                    delete res[i].last_updated;
-                    delete res[i].created_by;
-                    delete res[i].last_updated_by;
-                }
-                setMissionList(res);
-                setNumMission(data.data.count);
-            });
-    };
+const getTeams = async () => {
+    try {
+        const response = await genericRequest('GET', '/team?page=1', {}, navigate);
+        const res = response;
+
+        const t = [];
+        for (let j = 0; j < res.length; j += 1) {
+            let f = false;
+            if (res[j].leader.auth.email === userInfos.email) f = true;
+            for (let i = 0; i < res[j].members.length; i += 1) {
+                if (res[j].members[i].auth.email === userInfos.email)
+                    f = true;
+            }
+            if (f === true) {
+                const member = res[j].members.length;
+                const sum = coworker + member;
+                delete res[j].members;
+                res[j].people = member;
+                setCowoker(sum);
+                t.push(res[j]);
+            }
+        }
+        setTeamList(t);
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getMission = async () => {
+    try {
+        const response = await genericRequest('GET', '/mission?page=1', {}, navigate);
+        const res = response.results || [];
+        res.forEach((item: { [key: string]: any }) => {
+            delete item.start;
+            delete item.end;
+            delete item.recon;
+            delete item.bucket_name;
+            delete item.creation_date;
+            delete item.last_updated;
+            delete item.created_by;
+            delete item.last_updated_by;
+        });
+        setMissionList(res);
+        setNumMission(response.count || 0);
+    } catch (error) {
+        throw error;
+    }
+};
+
 
     useEffect(() => {
         getUserInfos();

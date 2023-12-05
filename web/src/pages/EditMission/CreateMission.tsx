@@ -22,6 +22,7 @@ import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
 import Input from '../../component/Input';
+import { genericRequest } from '../TokenVerification/TokenVerification';
 
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
@@ -65,6 +66,7 @@ export default function CreateMission() {
                 throw e;
             });
     };
+      
 
     const close = () => {
         setOpen(false);
