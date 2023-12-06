@@ -22,6 +22,7 @@ export default function PayLoadForm(props: {
     const [error, setError] = useState('');
 
     const handleChange = (event: SelectChangeEvent) => {
+        setError('');
         setPayloadType(event.target.value as string);
     };
 

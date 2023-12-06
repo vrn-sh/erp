@@ -32,7 +32,6 @@ export default function BasicShellcode(props: {
     function submitPayload() {
         if (loading) return;
         setLoading(true);
-        const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
 
         axios
             .post(
@@ -54,7 +53,7 @@ export default function BasicShellcode(props: {
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
-                        'X-Api-Key': apiKey,
+                        'X-Api-Key': import.meta.env.VITE_REACT_APP_SAAS_KEY,
                     },
                 }
             )

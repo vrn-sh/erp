@@ -18,7 +18,6 @@ export default function MyPhShellcode(props: {
     setError: any;
 }) {
     const { setLink, closeModal, setError } = props;
-    const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
         [key: string]: any;
@@ -43,7 +42,7 @@ export default function MyPhShellcode(props: {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         Accept: 'application/json',
-                        'X-Api-Key': apiKey,
+                        'X-Api-Key': import.meta.env.VITE_REACT_APP_SAAS_KEY,
                     },
                 }
             )
