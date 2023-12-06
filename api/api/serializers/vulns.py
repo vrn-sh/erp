@@ -28,17 +28,18 @@ class VulnerabilitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def to_representation(self, instance):
+
+        if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            representation = super().to_representation(instance)
+            representation['images'] = []
+            return representation
+
         cache_key = f'vulnerability_{instance.pk}'
         if cached := cache.get(cache_key):
             return cached
 
         representation = super().to_representation(instance)
-        s3_client = S3Bucket()
-
         representation['images'] = []
-
-        if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
-            return representation
 
         if not instance.images:
             return representation

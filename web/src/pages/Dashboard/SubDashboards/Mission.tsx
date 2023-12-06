@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as IoIcons from 'react-icons/io';
-import '../Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import * as IoIcons from 'react-icons/io';
+import * as AiIcons from 'react-icons/ai';
+import '../Dashboard.scss';
 import { AlertColor, Chip } from '@mui/material';
 import dayjs from 'dayjs';
 import config from '../../../config';
@@ -14,6 +15,7 @@ export default function Mission() {
         {
             name: string;
             id: number;
+            des: string;
             team: string;
             status: { color: string; text: string };
             scope: any;
@@ -29,6 +31,8 @@ export default function Mission() {
     >([]);
     const [open, setOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [popup, setPopup] = useState(false);
+    const [poptxt, setPoptxt] = useState('');
     const [item, setItem] = useState<{
         id: number;
         title: string;
@@ -179,6 +183,7 @@ export default function Mission() {
                     tab.push({
                         id: data.data.results[i].id,
                         name: data.data.results[i].title,
+                        des: data.data.results[i].description,
                         team: getName(data.data.results[i].team),
                         status: setStatus(
                             data.data.results[i].end,
@@ -245,171 +250,214 @@ export default function Mission() {
     };
 
     return (
-        <>
-            {!list.length && vulSuccess ? (
-                <>
-                    {isPentester ? (
-                        <h3 style={{ fontFamily: 'Poppins-Regular' }}>
-                            Nothing to show
-                        </h3>
-                    ) : (
-                        <button
-                            type="button"
-                            style={{
-                                width: 'fit-content',
-                            }}
-                            className="mission_create centered"
-                            onClick={addMission}
+        <div className="dashboard-table">
+            <div className="dashboard-content">
+                {!list.length && vulSuccess ? (
+                    <>
+                        {isPentester ? (
+                            <h3 style={{ fontFamily: 'Poppins-Regular' }}>
+                                Nothing to show
+                            </h3>
+                        ) : (
+                            <button
+                                type="button"
+                                style={{
+                                    width: 'fit-content',
+                                }}
+                                className="mission_create centered"
+                                onClick={addMission}
+                            >
+                                Create a mission
+                            </button>
+                        )}{' '}
+                    </>
+                ) : (
+                    <>
+                        <table
+                            style={{ marginTop: '10px' }}
+                            className="no_center_container"
                         >
-                            Create a mission
-                        </button>
-                    )}{' '}
-                </>
-            ) : (
-                <>
-                    <table
-                        style={{ marginTop: '10px' }}
-                        className="no_center_container"
-                    >
-                        <thead>
-                            <tr>
-                                <th className="md-2">Mission name</th>
-                                <th className="md-1">Team</th>
-                                <th className="md-3">Badges</th>
-                                <th className="md-1">State</th>
-                                <th className="md-3">Actions</th>
-                            </tr>
-                        </thead>
-                        {records.map((mission) => {
-                            return (
-                                <tbody key={mission.id}>
-                                    <tr key={mission.id}>
-                                        <td>{mission.name}</td>
-                                        <td>{mission.team}</td>
-                                        <td>
-                                            {mission.vuln.map((m) => {
-                                                return (
-                                                    <Chip
-                                                        label={m}
-                                                        color="warning"
-                                                        variant="filled"
-                                                        style={{
-                                                            marginRight:
-                                                                '0.5rem',
-                                                            marginBottom: '2px',
+                            <thead>
+                                <tr>
+                                    <th className="md-1">Mission name</th>
+                                    <th className="md-1">Team</th>
+                                    <th className="md-2">Badges</th>
+                                    <th className="md-1">State</th>
+                                    <th className="md-2">Description</th>
+                                    <th className="md-3">Actions</th>
+                                </tr>
+                            </thead>
+                            {records.map((mission) => {
+                                return (
+                                    <tbody key={mission.id}>
+                                        <tr key={mission.id}>
+                                            <td>{mission.name}</td>
+                                            <td>{mission.team}</td>
+                                            <td>
+                                                {mission.vuln.map((m) => {
+                                                    return (
+                                                        <Chip
+                                                            label={m}
+                                                            color="warning"
+                                                            variant="filled"
+                                                            style={{
+                                                                marginRight:
+                                                                    '0.5rem',
+                                                                marginBottom:
+                                                                    '2px',
+                                                            }}
+                                                        />
+                                                    );
+                                                })}
+                                            </td>
+                                            <td>
+                                                <Chip
+                                                    label={mission.status.text}
+                                                    color={
+                                                        mission.status
+                                                            .color as AlertColor
+                                                    }
+                                                    variant="outlined"
+                                                />
+                                            </td>
+                                            <td>
+                                                <p className="des-overflow">
+                                                    {mission.des}
+                                                </p>
+                                                {mission.des.length > 10 && (
+                                                    <a
+                                                        onClick={() => {
+                                                            setPopup(true);
+                                                            setPoptxt(
+                                                                mission.des
+                                                            );
                                                         }}
-                                                    />
-                                                );
-                                            })}
-                                        </td>
-                                        <td>
-                                            <Chip
-                                                label={mission.status.text}
-                                                color={
-                                                    mission.status
-                                                        .color as AlertColor
-                                                }
-                                                variant="outlined"
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="button"
-                                                value="Open"
-                                                className="openBtn"
-                                                onClick={() =>
-                                                    NavMissionDetail(mission.id)
-                                                }
-                                            />
-                                            {isPentester && (
+                                                        role="presentation"
+                                                        onKeyDown={() => {}}
+                                                        className="des-a"
+                                                    >
+                                                        more
+                                                    </a>
+                                                )}
+                                            </td>
+                                            <td>
                                                 <input
                                                     type="button"
-                                                    value="Add vuln"
-                                                    className="borderBtn"
+                                                    value="Open"
+                                                    className="openBtn"
                                                     onClick={() =>
-                                                        NavAddVul(
-                                                            mission.id,
-                                                            mission.name
+                                                        NavMissionDetail(
+                                                            mission.id
                                                         )
                                                     }
                                                 />
-                                            )}
-                                            {!isPentester && (
-                                                <>
+                                                {isPentester && (
                                                     <input
                                                         type="button"
-                                                        value="Edit"
+                                                        value="Add vuln"
                                                         className="borderBtn"
                                                         onClick={() =>
-                                                            NavEditMission(
-                                                                mission.id
+                                                            NavAddVul(
+                                                                mission.id,
+                                                                mission.name
                                                             )
                                                         }
                                                     />
-                                                    <input
-                                                        type="button"
-                                                        value="Delete"
-                                                        className="borderBtnError"
-                                                        onClick={() => {
-                                                            setItem({
-                                                                id: mission.id,
-                                                                title: mission.name,
-                                                                type: 'mission',
-                                                            });
-                                                            setOpen(true);
-                                                        }}
-                                                    />
-                                                </>
-                                            )}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            );
-                        })}
-                    </table>
-                    <nav>
-                        <ul className="pagination">
-                            <li className="page-item">
-                                <a
-                                    href="#"
-                                    className="page-link"
-                                    onClick={prePage}
-                                >
-                                    <IoIcons.IoIosArrowBack />
-                                </a>
-                            </li>
-                            {nums.map((n) => {
-                                return (
-                                    <li
-                                        key={n}
-                                        className={`page-item ${
-                                            currentPage === n ? 'active' : ''
-                                        }`}
-                                    >
-                                        <a
-                                            href="#"
-                                            className="page-link"
-                                            onClick={() => changePage(n)}
-                                        >
-                                            {n}
-                                        </a>
-                                    </li>
+                                                )}
+                                                {!isPentester && (
+                                                    <>
+                                                        <input
+                                                            type="button"
+                                                            value="Edit"
+                                                            className="borderBtn"
+                                                            onClick={() =>
+                                                                NavEditMission(
+                                                                    mission.id
+                                                                )
+                                                            }
+                                                        />
+                                                        <input
+                                                            type="button"
+                                                            value="Delete"
+                                                            className="borderBtnError"
+                                                            onClick={() => {
+                                                                setItem({
+                                                                    id: mission.id,
+                                                                    title: mission.name,
+                                                                    type: 'mission',
+                                                                });
+                                                                setOpen(true);
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 );
                             })}
-                            <li className="page-item">
-                                <a
-                                    href="#"
-                                    className="page-link"
-                                    onClick={nextPage}
-                                >
-                                    <IoIcons.IoIosArrowForward />
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </>
-            )}
-            {open && <DeleteConfirm item={item!} func={modalClick} />}
-        </>
+                        </table>
+                        <nav>
+                            <ul className="pagination">
+                                <li className="page-item">
+                                    <a
+                                        href="#"
+                                        className="page-link"
+                                        onClick={prePage}
+                                    >
+                                        <IoIcons.IoIosArrowBack />
+                                    </a>
+                                </li>
+                                {nums.map((n) => {
+                                    return (
+                                        <li
+                                            key={n}
+                                            className={`page-item ${
+                                                currentPage === n
+                                                    ? 'active'
+                                                    : ''
+                                            }`}
+                                        >
+                                            <a
+                                                href="#"
+                                                className="page-link"
+                                                onClick={() => changePage(n)}
+                                            >
+                                                {n}
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+                                <li className="page-item">
+                                    <a
+                                        href="#"
+                                        className="page-link"
+                                        onClick={nextPage}
+                                    >
+                                        <IoIcons.IoIosArrowForward />
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </>
+                )}
+                {open && <DeleteConfirm item={item!} func={modalClick} />}
+                {popup && (
+                    <div className="modal-wrapper-mission">
+                        <div className="modal-card-mission">
+                            <a
+                                onClick={() => setPopup(false)}
+                                style={{ cursor: 'pointer' }}
+                                role="presentation"
+                                onKeyDown={() => {}}
+                            >
+                                <AiIcons.AiOutlineClose />
+                            </a>
+                            {poptxt}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }

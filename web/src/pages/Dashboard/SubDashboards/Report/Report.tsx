@@ -1,19 +1,20 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Report.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import AcademicTemplate from '../../../../assets/templates/template_1.png';
 import Red4SecTemplate from '../../../../assets/templates/template_2.png';
+import NASATemplate from '../../../../assets/templates/template_3.png';
 import HackmanitTemplate from '../../../../assets/templates/template_4.png';
 import MarkdownEditor from './Markdown/Editor';
-import SelectMission from '../../../../component/SelectMission';
 import BackButton from '../../../../component/BackButton';
 import config from '../../../../config';
 import { FileInput } from '../../../../component/Input';
 import PdfViewerComponent from './PDFEditor/PDFEditor';
+import SelectMission from '../../../../component/SelectMission';
 
 const templates = [
-    // { id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
     {
         id: 0,
         name: 'academic',
@@ -32,36 +33,36 @@ const templates = [
         subtitle: 'Hackmanit Style',
         thumbnail: HackmanitTemplate,
     },
+    {
+        id: 3,
+        name: 'NASA',
+        subtitle: 'NASA Style',
+        thumbnail: NASATemplate,
+    },
 ];
 
 // type for setMD and setTemplate
 function DocumentTemplates({
     setMD,
     setTemplate,
-    mission,
     logo,
-    setPDFDocURL
+    setPDFDocURL,
+    missionid,
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
     setTemplate: Dispatch<SetStateAction<number>>;
     setPDFDocURL: Dispatch<SetStateAction<string>>;
-    mission: number;
-    logo: string | null;
+    missionid: number,
+    logo: string | null,
 }) {
     const handleTemplateSelection = async (templateId: number) => {
-        if (mission === -1) {
-            alert('Please select a mission first!'); // TODO replace by popup like in Tooltip.
-            return;
-        }
-
         setTemplate(templateId);
-        console.log('Token', Cookies.get('Token'));
         axios
             .post(
                 `${config.apiUrl}/download-report`,
                 {
                     template_name: templates[templateId].name,
-                    mission,
+                    missionid,
                     logo,
                 },
                 {
@@ -72,6 +73,7 @@ function DocumentTemplates({
             )
             .then((response) => {
                 setPDFDocURL(response.data['pdf_file']);
+                console.log(response);
             });
     };
 
@@ -114,11 +116,12 @@ function DocumentTemplates({
 }
 
 export default function Report() {
-    const [template, setTemplate] = React.useState(-1);
-    const [PDFDocURL, setPDFDocURL] = React.useState('');
-    const [isMDActivated, setMD] = React.useState(false);
-    const [mission, setMissionId] = React.useState(-1);
-    const [logo, setBase64Image] = React.useState<string | null>(null);
+    const location = useLocation();
+    const [missionId, setMissionId] = useState(0);
+    const [template, setTemplate] = useState(-1);
+    const [isMDActivated, setMD] = useState(false);
+    const [logo, setBase64Image] = useState<string | null>(null);
+    const [PDFDocURL, setPDFDocURL] = useState<string>("");
 
     const handleImageUpload = (file: any) => {
         if (file) {
@@ -133,7 +136,10 @@ export default function Report() {
             reader.readAsDataURL(file);
         }
     };
-    console.log('logo', logo);
+
+    useEffect(() => {
+        setMissionId(location.state.missionId);
+    }, []);
 
     return (
         <div>
@@ -158,21 +164,21 @@ export default function Report() {
             >
                 <SelectMission
                     setMissionId={setMissionId}
-                    missionId={mission}
+                    missionId={missionId}
                 />
                 {!isMDActivated && <FileInput setImage={handleImageUpload} />}
             </div>
 
             {isMDActivated && (
-                <MarkdownEditor mission={mission} />
+                <MarkdownEditor missionid={missionId} />
             )}
             {!isMDActivated && PDFDocURL === "" && (
                 <DocumentTemplates
                     logo={logo}
                     setMD={setMD}
                     setTemplate={setTemplate}
-                    mission={mission}
                     setPDFDocURL={setPDFDocURL}
+                    missionid={missionId}
                 />
             )}
             {!isMDActivated && PDFDocURL !== "" && (

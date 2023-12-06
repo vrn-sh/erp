@@ -32,14 +32,14 @@ def create_user(
         password: str,
         username: str,
         UserClass: Any ,
-        is_manager: bool = False,
+        role:int = 1,
     ) -> Any:
     """create a user that is already validated"""
 
     auth = Auth(
-        role=2 if is_manager else 1,
+        role=role,
         email=email,
-        is_superuser=is_manager,
+        is_superuser=False,
         username=username,
         first_name=first_name,
         last_name=last_name,
@@ -49,7 +49,7 @@ def create_user(
     auth.set_password(password)
     auth.save()
 
-    auth.is_enabled = True
+    auth.is_enabled = True  # type: ignore
     auth.save()
 
     user = UserClass(auth=auth)
@@ -74,7 +74,7 @@ def create_random_manager() -> Manager:
         default_user_password(),
         name,
         Manager,
-        True
+        2
     )
 
 
@@ -90,7 +90,7 @@ def create_random_pentester() -> Pentester:
         default_user_password(),
         name,
         Pentester,
-        False
+        1
     )
 
 def create_team(leader: Manager, members: List[Pentester], *args, **kwargs) -> Team:
