@@ -9,8 +9,9 @@ import formRows from '../../../assets/strings/en/basicpayload.json';
 export default function BasicShellcode(props: {
     closeModal: any;
     setLink: any;
+    setError: any;
 }) {
-    const { setLink, closeModal } = props;
+    const { setLink, closeModal, setError } = props;
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
         [key: string]: string;
@@ -35,7 +36,7 @@ export default function BasicShellcode(props: {
 
         axios
             .post(
-                `http://voron.djnn.sh/saas//load_shellcode`,
+                `https://voron.djnn.sh/saas/load_shellcode`,
                 {
                     lport: formData.lport,
                     laddr: formData.laddr,
@@ -61,6 +62,7 @@ export default function BasicShellcode(props: {
                 setLink(response.data.url);
             })
             .catch((error) => {
+                setError('Unexpected error occurred. Please try again later.');
                 console.error(error);
             })
             .finally(() => {

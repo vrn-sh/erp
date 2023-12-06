@@ -6,6 +6,7 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent,
+    Alert,
 } from '@mui/material';
 import BasicShellcode from './BasicShellcode';
 import MyPhShellcode from './MyPhShellcode';
@@ -18,6 +19,7 @@ export default function PayLoadForm(props: {
     const { isModalOpen, closeModal } = props;
     const [payloadType, setPayloadType] = useState('myph');
     const [link, setLink] = useState('');
+    const [error, setError] = useState('');
 
     const handleChange = (event: SelectChangeEvent) => {
         setPayloadType(event.target.value as string);
@@ -25,6 +27,7 @@ export default function PayLoadForm(props: {
 
     function close() {
         setLink('');
+        setError('');
         closeModal();
     }
 
@@ -95,16 +98,28 @@ export default function PayLoadForm(props: {
                                 Configuration
                             </h3>
                         </div>
+                        {error && (
+                            <Alert
+                                severity="error"
+                                style={{
+                                    marginBottom: '1%',
+                                }}
+                            >
+                                {error}
+                            </Alert>
+                        )}
                         {payloadType === 'myph' && (
                             <MyPhShellcode
                                 closeModal={() => close()}
                                 setLink={setLink}
+                                setError={setError}
                             />
                         )}
                         {payloadType === 'basicshellcode' && (
                             <BasicShellcode
                                 closeModal={() => close()}
                                 setLink={setLink}
+                                setError={setError}
                             />
                         )}
                     </>

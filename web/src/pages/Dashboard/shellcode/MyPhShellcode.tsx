@@ -8,7 +8,6 @@ import {
     Switch,
     TextField,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import LoadingButton from '@mui/lab/LoadingButton';
 import formRows from '../../../assets/strings/en/myph.json';
@@ -16,8 +15,9 @@ import formRows from '../../../assets/strings/en/myph.json';
 export default function MyPhShellcode(props: {
     closeModal: any;
     setLink: any;
+    setError: any;
 }) {
-    const { setLink, closeModal } = props;
+    const { setLink, closeModal, setError } = props;
     const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
@@ -37,7 +37,7 @@ export default function MyPhShellcode(props: {
         foo.append('shellcode_file', formData.shellcode_file, 'file');
         axios
             .post(
-                `http://voron.djnn.sh/saas/v2/load_myph?technique=${formData.technique}&encryption=${formData.encryption}`,
+                `https://voron.djnn.sh/saas/v2/load_myph?technique=${formData.technique}&encryption=${formData.encryption}`,
                 foo,
                 {
                     headers: {
@@ -52,6 +52,7 @@ export default function MyPhShellcode(props: {
                 navigator.clipboard.writeText(response.data.url);
             })
             .catch((error) => {
+                setError('Unexpected error occurred. Please try again later.');
                 console.error(error);
             })
             .finally(() => {
