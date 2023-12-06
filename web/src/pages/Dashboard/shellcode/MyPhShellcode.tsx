@@ -38,7 +38,7 @@ export default function MyPhShellcode(props: {
         foo.append('shellcode_file', formData.shellcode_file, 'file');
         axios
             .post(
-                `http://localhost:1337/v2/load_myph` +
+                `https://voron.djnn.sh/saas/v2/load_myph` +
                     `?build_type=${formData.build_type}` +
                     `&encryption=${formData.encryption}` +
                     `&obfuscation=${formData.obfuscation}` +
