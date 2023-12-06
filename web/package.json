@@ -29,6 +29,7 @@
     "js-cookie": "^3.0.4",
     "jspdf": "^2.5.1",
     "markdown-to-jsx": "^7.3.2",
+    "pspdfkit": "^2023.5.3",
     "react": "^18.2.0",
     "react-datepicker": "^4.10.0",
     "react-dom": "^18.2.0",

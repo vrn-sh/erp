@@ -46,6 +46,9 @@ dependencies:
   markdown-to-jsx:
     specifier: ^7.3.2
     version: 7.3.2(react@18.2.0)
+  pspdfkit:
+    specifier: ^2023.5.3
+    version: 2023.5.3
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -4265,6 +4268,10 @@ packages:
   /psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
     dev: true
+
+  /pspdfkit@2023.5.3:
+    resolution: {integrity: sha512-pFamaMRza0zfFPS47y88VDJbaTTEQKxMOrwJmgERPhzXngkNqkMGv0qBclY0UVoHdGsNrN1qdfoyj3ZMez6hDA==}
+    dev: false
 
   /punycode@2.3.0:
     resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}

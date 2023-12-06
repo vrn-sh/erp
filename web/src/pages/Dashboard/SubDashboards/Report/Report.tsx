@@ -10,6 +10,7 @@ import SelectMission from '../../../../component/SelectMission';
 import BackButton from '../../../../component/BackButton';
 import config from '../../../../config';
 import { FileInput } from '../../../../component/Input';
+import PdfViewerComponent from './PDFEditor/PDFEditor';
 
 const templates = [
     // { id: 0, name: 'new', subtitle: 'Empty', thumbnail: NewTemplate },
@@ -39,9 +40,11 @@ function DocumentTemplates({
     setTemplate,
     mission,
     logo,
+    setPDFDocURL
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
     setTemplate: Dispatch<SetStateAction<number>>;
+    setPDFDocURL: Dispatch<SetStateAction<string>>;
     mission: number;
     logo: string | null;
 }) {
@@ -68,14 +71,7 @@ function DocumentTemplates({
                 }
             )
             .then((response) => {
-                    console.log(response.data);
-                    const link = document.createElement('a');
-                    link.href = response.data['pdf_file'];
-                    link.setAttribute('download', 'report.pdf');
-                    document.body.appendChild(link);
-                    link.click();
-                    link.parentNode?.removeChild(link);
-
+                setPDFDocURL(response.data['pdf_file']);
             });
     };
 
@@ -119,6 +115,7 @@ function DocumentTemplates({
 
 export default function Report() {
     const [template, setTemplate] = React.useState(-1);
+    const [PDFDocURL, setPDFDocURL] = React.useState('');
     const [isMDActivated, setMD] = React.useState(false);
     const [mission, setMissionId] = React.useState(-1);
     const [logo, setBase64Image] = React.useState<string | null>(null);
@@ -166,15 +163,20 @@ export default function Report() {
                 {!isMDActivated && <FileInput setImage={handleImageUpload} />}
             </div>
 
-            {isMDActivated ? (
+            {isMDActivated && (
                 <MarkdownEditor mission={mission} />
-            ) : (
+            )}
+            {!isMDActivated && PDFDocURL === "" && (
                 <DocumentTemplates
                     logo={logo}
                     setMD={setMD}
                     setTemplate={setTemplate}
                     mission={mission}
+                    setPDFDocURL={setPDFDocURL}
                 />
+            )}
+            {!isMDActivated && PDFDocURL !== "" && (
+                <PdfViewerComponent document={PDFDocURL} />
             )}
         </div>
     );
