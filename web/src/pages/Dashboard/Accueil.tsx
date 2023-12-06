@@ -19,6 +19,8 @@ import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import formRows from '../../assets/strings/en/payload.json';
 import { genericRequest } from '../TokenVerification/TokenVerification';
+import PayLoadForm from './shellcode/PayLoadForm';
+
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
@@ -328,16 +330,6 @@ export default function Accueil() {
             description: string;
         }[]
     >([]);
-    const [formData, setFormData] = useState<{
-        [key: string]: string;
-    }>({
-        lport: '4444',
-        laddr: '10.0.2.2',
-        exploit: 'x64/shell_reverse_tcp',
-        arch: 'x64',
-        os: 'windows',
-        output_type: 'exe',
-    });
     const currentDay = dayjs();
 
     const size = {
@@ -352,51 +344,6 @@ export default function Accueil() {
         fontSize: 16,
         fontFamily: 'Poppins-Regular',
     }));
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    async function submitPayload() {
-        const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
-        const apiUrl = `http://voron.djnn.sh/saas/load_shellcode?lport=${
-            formData.lport
-        }&laddr=${formData.laddr}&exploit=${encodeURIComponent(
-            formData.exploit
-        )}&arch=${formData.arch}&os=${formData.os}&output_type=${
-            formData.output_type
-        }`;
-
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                'X-Api-Key': apiKey,
-            },
-            body: JSON.stringify(formData),
-        });
-
-        // Check if the response status is in the success range (e.g., 200-299)
-        if (response.status >= 200 && response.status < 300) {
-            // Read the response body as a blob
-            const fileBlob = await response.blob();
-
-            const url = window.URL.createObjectURL(fileBlob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'file.exe';
-
-            a.click();
-
-            window.URL.revokeObjectURL(url);
-        } else {
-            // Handle error status code (e.g., display an error message)
-            console.error(`API Request Error: Status Code ${response.status}`);
-        }
-    }
 
     // eslint-disable-next-line
     function PieCenterLabel({ children }: { children: React.ReactNode }) {
@@ -460,7 +407,7 @@ export default function Accueil() {
                     vulnImp[y].value += 1;
                 }
             }
-            if (found === false) {
+            if (!found) {
                 vulnImp.push({
                     value: 1,
                     name: vul[x],
@@ -564,102 +511,10 @@ export default function Accueil() {
                         >
                             Generate payload
                         </button>
-                        <form
-                            style={{
-                                display: isModalOpen ? 'block' : 'none',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Modal
-                                isOpen={isModalOpen}
-                                onRequestClose={closeModal}
-                                contentLabel="General Payload Modal"
-                                style={{
-                                    content: {
-                                        border: '1px solid #ccc',
-                                        borderRadius: '10px',
-                                    },
-                                }}
-                            >
-                                {/* Content inside the modal (copy from old mission page) */}
-                                <h2>General payload</h2>
-                                <div className="form-row">
-                                    <div
-                                        className="columnTitle"
-                                        style={{
-                                            fontFamily: 'Poppins-Medium',
-                                            border: '1px solid #ccc',
-                                            borderRadius: '10px',
-                                            marginRight: '10px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        <label>Name</label>
-                                    </div>
-                                    <div
-                                        className="columnTitle"
-                                        style={{
-                                            fontFamily: 'Poppins-Medium',
-                                            border: '1px solid #ccc',
-                                            borderRadius: '10px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        <label>Description</label>
-                                    </div>
-                                </div>
-                                {formRows.map((row) => (
-                                    <div className="form-row">
-                                        <div className="column">
-                                            <div className="small-row">
-                                                {row.label}
-                                            </div>
-                                        </div>
-                                        <div className="column">
-                                            <div className="small-row-default">
-                                                Default value:{' '}
-                                                {row.defaultValue}
-                                            </div>
-                                            <div
-                                                className="small-row"
-                                                style={{
-                                                    borderRadius: '10px',
-                                                    border: '1px solid #ccc',
-                                                    padding: '5px',
-                                                }}
-                                            >
-                                                <input
-                                                    type="text"
-                                                    name={row.name}
-                                                    placeholder={
-                                                        row.placeholder
-                                                    }
-                                                    value={formData[row.name]}
-                                                    onChange={handleInputChange}
-                                                    style={{
-                                                        border: 'none',
-                                                        outline: 'none',
-                                                        width: '100%',
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                                <button type="button" onClick={submitPayload}>
-                                    Submit
-                                </button>
-                                <button type="button" onClick={closeModal}>
-                                    Close
-                                </button>
-                            </Modal>
-                        </form>
+                        <PayLoadForm
+                            isModalOpen={isModalOpen}
+                            closeModal={closeModal}
+                        />
                     </div>
                     <div className="accueil-container">
                         <div className="accueil-grid-3">
