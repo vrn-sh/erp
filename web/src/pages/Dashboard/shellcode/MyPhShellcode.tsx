@@ -22,11 +22,13 @@ export default function MyPhShellcode(props: {
     const [formData, setFormData] = useState<{
         [key: string]: any;
     }>({
-        output_type: 'exe',
+        build_type: 'exe',
         technique: 'ProcessHollowing',
         encryption: 'chacha20',
         shellcode_file: null,
         obfuscation: 'false',
+        file_name: 'payload.exe',
+        process: 'cmd.exe',
     });
 
     async function submitPayload() {
@@ -36,7 +38,13 @@ export default function MyPhShellcode(props: {
         foo.append('shellcode_file', formData.shellcode_file, 'file');
         axios
             .post(
-                `https://voron.djnn.sh/saas/v2/load_myph?technique=${formData.technique}&encryption=${formData.encryption}`,
+                `http://localhost:1337/v2/load_myph` +
+                    `?build_type=${formData.build_type}` +
+                    `&encryption=${formData.encryption}` +
+                    `&obfuscation=${formData.obfuscation}` +
+                    `&file_name=${formData.file_name}` +
+                    `&process=${formData.process}` +
+                    `&technique=${formData.technique}`,
                 foo,
                 {
                     headers: {
