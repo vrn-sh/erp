@@ -36,7 +36,7 @@ export default function Footer() {
             return;
         }
         try {
-            const response = await axios.post(`${config.apiUrl}/mailing-list`, {
+            const response = await axios.post(`http://localhost:8000/mailing-list`, {
                 email: mailInput,
             });
             console.log('Mailing List Response:', response);
