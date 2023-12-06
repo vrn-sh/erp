@@ -36,9 +36,12 @@ export default function Footer() {
             return;
         }
         try {
-            const response = await axios.post(`http://localhost:8000/mailing-list`, {
-                email: mailInput,
-            });
+            const response = await axios.post(
+                `http://localhost:8000/mailing-list`,
+                {
+                    email: mailInput,
+                }
+            );
             console.log('Mailing List Response:', response);
         } catch (error) {
             console.error('Error:', error);
