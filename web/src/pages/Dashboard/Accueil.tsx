@@ -17,7 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
-import PayLoadForm from "./shellcode/PayLoadForm";
+import PayLoadForm from './shellcode/PayLoadForm';
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
@@ -414,7 +414,7 @@ export default function Accueil() {
                     vulnImp[y].value += 1;
                 }
             }
-            if (found === false) {
+            if (!found) {
                 vulnImp.push({
                     value: 1,
                     name: vul[x],
@@ -525,7 +525,10 @@ export default function Accueil() {
                         >
                             Generate payload
                         </button>
-                        <PayLoadForm isModalOpen={isModalOpen} closeModal={closeModal}/>
+                        <PayLoadForm
+                            isModalOpen={isModalOpen}
+                            closeModal={closeModal}
+                        />
                     </div>
                     <div className="accueil-container">
                         <div className="accueil-grid-3">
