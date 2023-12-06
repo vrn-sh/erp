@@ -1,6 +1,6 @@
-import {InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
+import {InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import formRows from "../../../assets/strings/en/basicpayload.json";
-import React, {ReactNode, useState} from "react";
+import React, {useState} from "react";
 import FormControl from '@mui/material/FormControl';
 import LoadingButton from '@mui/lab/LoadingButton';
 import axios from "axios";
@@ -56,11 +56,10 @@ export default function BasicShellcode(props: {
                     'X-Api-Key': apiKey,
                 },
             }
-            ).then((response) => {
-                props.setLink(response.data.url);
-                navigator.clipboard.writeText(response.data.url);
+        ).then((response) => {
+            props.setLink(response.data.url);
         }).catch((error) => {
-                console.error(error);
+            console.error(error);
         }).finally(() => {
             setLoading(false);
         });

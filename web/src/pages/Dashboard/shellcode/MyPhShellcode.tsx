@@ -1,9 +1,7 @@
-import React, {ReactNode, useState} from "react";
-import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Switch, TextField} from "@mui/material";
+import React, {useState} from "react";
+import {Button, FormControl, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
 import formRows from "../../../assets/strings/en/myph.json";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {styled} from "@mui/material/styles";
-import Input from "../../../component/Input";
 import axios from "axios";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -26,29 +24,27 @@ export default function MyPhShellcode(props: {
     const apiKey = 'c9083d45b7a867f26772f3f0a8c104a2';
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
-        [key: string]: string;
+        [key: string]: any;
     }>({
         output_type: 'exe',
         technique: 'ProcessHollowing',
         encryption: 'chacha20',
-        shellcode_file: '',
-        obfuscation: 'false'
+        shellcode_file: null,
+        obfuscation: 'false',
     });
 
     async function submitPayload() {
         if (loading)
             return;
         setLoading(true);
+    let foo = new FormData();
+    foo.append('shellcode_file', formData.shellcode_file, "file");
         axios.post(
-            `http://localhost:1337/v2/load_myph`,
-            {
-                technique: formData.technique,
-                encryption: formData.encryption,
-                shellcode_file: formData.shellcode_file
-            },
+            `http://localhost:1337/v2/load_myph?technique=${formData.technique}&encryption=${formData.encryption}`,
+            foo,
             {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     Accept: 'application/json',
                     'X-Api-Key': apiKey,
                 }
@@ -63,32 +59,8 @@ export default function MyPhShellcode(props: {
         });
     }
 
-    const convertImageToBase64 = (file: File) => {
-        return new Promise<string | ArrayBuffer | null>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                resolve(reader.result);
-            };
-            reader.readAsDataURL(file);
-        });
-    };
-
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        console.log(file);
-        if (file)
-            setFormData({...formData, shellcode_file: await convertImageToBase64(file) as string});
-
-        /*const file = e.target.files?.[0];
-
-        if (file) {
-            const base64 = await convertImageToBase64(file);
-            if (typeof base64 === 'string') {
-                setFormData({...formData, shellcode_file: base64});
-            } else {
-                console.error('La conversion en base64 a échoué.');
-            }
-        }*/
+        setFormData({...formData, shellcode_file: e.target.files?.[0]});
     };
 
     return (

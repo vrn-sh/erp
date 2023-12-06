@@ -17,7 +17,6 @@ import IconButton from '@mui/material/IconButton';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
-import formRows from '../../assets/strings/en/basicpayload.json';
 import PayLoadForm from "./shellcode/PayLoadForm";
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
