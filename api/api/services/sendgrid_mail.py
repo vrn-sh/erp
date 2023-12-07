@@ -8,7 +8,7 @@ from typing import Optional
 class SendgridParameters:
     """Sendgrid parameters"""
     DEFAULT_SENDER = "reggi002@cougars.csusm.edu"
-    SENDGRID_API_KEY = "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"
+    SENDGRID_API_KEY = "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"
     TEMPLATE_ID = "d-791209ddcfb545169c2ff33e8c386400"
 
 class SendgridClient:
@@ -53,9 +53,9 @@ class SendgridClient:
 if __name__ == "__main__":
     email_client = SendgridClient(recipient="rislo.reggiani@gmail.com")
     email_client.set_template_data({
-        "username": "User",
+        "username": "Loris",
         "text": "Welcome to our service!",
-        "profile": "url_to_profile_image",
+        "profile": "https://cdn-icons-png.flaticon.com/512/0/747.png",
         "email": "rislo.reggiani@gmail.com"
     })
     response = email_client.send()
