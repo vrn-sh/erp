@@ -24,6 +24,7 @@ import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
 import PrivateRoute from './pages/TokenVerification/TokenVerification';
 import ViewTeamDetails from './pages/Team/ViewTeam';
 import Accueil from './pages/Dashboard/Accueil';
+import InfoForm from './pages/SignUp/InfoForm';
 import Reset from './pages/Reset/Reset';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />
+                <Route path="/info" element={<InfoForm />} />
                 <Route path="/confirm" element={<ConfirmEmail />} />
                 <Route path="/reset" element={<Reset />} />
                 <Route element={<PrivateRoute />}>
