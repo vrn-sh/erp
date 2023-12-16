@@ -82,6 +82,30 @@ export default function Login() {
         }
     };
 
+    const getUserInfos = async () => {
+        let url = `${config.apiUrl}/`;
+        if (Cookies.get('Role') === '2') url += 'manager';
+        else url += 'pentester';
+        await axios
+            .get(`${url}/${Cookies.get('Id')}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                if (
+                    data.data.auth.first_name !== null &&
+                    data.data.auth.phone_number !== null
+                )
+                    navigate('/accueil');
+                else navigate('/info');
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
     const submit = async () => {
         setOpen(true);
         if (email !== '' && pwd.length > 7) {
@@ -101,7 +125,6 @@ export default function Login() {
                     )
                     .then((e) => {
                         setMessage('Connecting...', 'success');
-                        navigate('/accueil');
                         Cookies.set('Token', e.data.token, {
                             expires: Date.parse(e.data.expiry),
                         });
@@ -114,6 +137,7 @@ export default function Login() {
                         Cookies.set('Fav', '', {
                             expires: Date.parse(e.data.expiry),
                         });
+                        getUserInfos();
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');

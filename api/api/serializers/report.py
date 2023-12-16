@@ -20,7 +20,6 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             return cached
 
         representation = super().to_representation(instance)
-        s3_client = S3Bucket()
 
         representation['logo'] = ''
         representation['html_file'] = ''
@@ -28,6 +27,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
             return representation
 
+        s3_client = S3Bucket()
         if not instance.logo:
             return representation
         if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
@@ -314,7 +314,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             </div>
         </div>
     </header>'''
-            
+
         }
         ]
         return list(filter(lambda a: a['name'] == instance.template.name, header_templates))[0]['html_header']
@@ -457,7 +457,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Weaknesses</title>
     </head>
-    
+
     <style>
     {css_style}
     </style>

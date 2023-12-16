@@ -5,57 +5,58 @@
         {
             "name": "djnn",
             "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
-            "description": "tech lead  & offensive security enthusiast",
-            "timezone": "UTC+9",
-            "github": "https://github.com/bogdzn"
-        },
-        {
-            "name": "naadi",
-            "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
-            "description": "irregular back-end engineer",
-            "timezone": "UTC+9",
-            "github": "https://github.com/lambdina"
+            "description": "tech lead  & offensive security things",
+            "timezone": "UTC+1",
+            "github": "https://github.com/djnnvx"
         },
         {
             "name": "Alvarwow69",
             "avatar": "https://avatars.githubusercontent.com/u/27078429?v=4",
             "description": "back-end engineer",
-            "timezone": "UTC+9",
+            "timezone": "UTC+1",
             "github": "https://github.com/Alvarwow69"
         },
+        {
+            "name": "naadi",
+            "avatar": "https://avatars.githubusercontent.com/u/29751352?v=4",
+            "description": "irregular back-end engineer",
+            "timezone": "UTC+1",
+            "github": "https://github.com/lambdina"
+        },
+
         {
             "name": "Blacky",
             "avatar": "https://avatars.githubusercontent.com/u/49866160?v=4",
             "description": "back-end engineer",
-            "timezone": "GMT+1",
-            "github": "https://github.com/TheOrionsB"
+            "timezone": "UTC+1",
+            "github": "https://github.com/hamid-yg"
         },
         {
             "name": "Risloss",
             "avatar": "https://avatars.githubusercontent.com/u/71264335?v=4",
             "description": "back-end engineer",
-            "timezone": "GMT+1",
+            "timezone": "UTC+1",
             "github": "https://github.com/Loris-Reggiani"
         },
         {
             "name": "Ananane",
             "avatar": "https://avatars.githubusercontent.com/u/74144283?v=4",
             "description": "front-end engineer",
-            "timezone": "GMT+1",
+            "timezone": "UTC+1",
             "github": "https://github.com/Ananane"
         },
         {
             "name": "Clara",
             "avatar": "https://avatars.githubusercontent.com/u/56248408?v=4",
             "description": "front-end engineer ",
-            "timezone": "UTC+9",
+            "timezone": "UTC+1",
             "github": "https://github.com/claraxuxu"
         },
         {
             "name": "Camelia",
             "avatar": "#",
             "description": "front-end engineer",
-            "timezone": "GMT+1",
+            "timezone": "UTC+1",
             "github": "https://github.com/samacamelia"
         }
     ]

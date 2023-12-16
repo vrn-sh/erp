@@ -8,6 +8,7 @@
 - AddressViewset: Address class CRUD (no preloaded data)
 """
 
+import os
 from typing import List
 
 from drf_yasg import openapi
@@ -21,8 +22,8 @@ from knox.auth import TokenAuthentication
 
 from api.backends import EmailBackend
 
-from api.serializers import ManagerSerializer, PentesterSerializer, TeamSerializer
-from api.models import USER_ROLES, Manager, Pentester, Team, get_user_model
+from api.serializers import FreelancerSerializer, ManagerSerializer, PentesterSerializer, TeamSerializer
+from api.models import USER_ROLES, Manager, Pentester, Freelancer, Team, get_user_model
 from api.permissions import IsManager, IsLinkedToData, IsPentester, PostOnly, ReadOnly
 from api.services.s3 import S3Bucket
 
@@ -178,15 +179,23 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
 
     def get_queryset(self):
         auth = self.request.data.get('auth')  # type: ignore
-        if auth and auth.get('role', 'manager') == 'manager':  # type: ignore
-            return Manager.objects.all()  # type: ignore
-        return Pentester.objects.all()  # type: ignore
+        if auth and auth.get('role') == 'pentester':  # type: ignore
+            return Pentester.objects.all()  # type: ignore
+
+        if auth and auth.get('role') == 'freelancer':  # type: ignore
+            return Freelancer.objects.all()  # type: ignore
+
+        return Manager.objects.all()  # type: ignore
 
     def get_serializer_class(self):
         auth = self.request.data.get('auth')  # type: ignore
-        if auth and auth.get('role', 'manager') == 'manager':  # type: ignore
-            return ManagerSerializer
-        return PentesterSerializer
+        if auth and auth.get('role') == 'pentester':  # type: ignore
+            return PentesterSerializer
+
+        if auth and auth.get('role') == 'freelancer':  # type: ignore
+            return FreelancerSerializer
+
+        return ManagerSerializer
 
 
 class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
@@ -200,7 +209,7 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     permission_classes = [permissions.IsAuthenticated, IsManager | IsLinkedToData]
     authentication_classes = [TokenAuthentication]
     serializer_class = PentesterSerializer
-    
+
     def list(self, request, *args, **kwargs):
         name_query = request.query_params.get('search', None)
 
@@ -214,11 +223,36 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
-            token = S3Bucket().upload_single_image_if_exists(
-                'profile_image',
-                request.data['auth'],
-            )
-            request.data['auth']['profile_image'] = token
+
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                token = S3Bucket().upload_single_image_if_exists(
+                    'profile_image',
+                    request.data['auth'],
+                )
+                request.data['auth']['profile_image'] = token
+        return super().update(request, *args, **kwargs)
+
+
+class FreelancerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
+    """
+       FreelancerViewset
+            CRUD operations for Freelancer model (encompasses Auth model as well)
+    """
+
+    queryset = Freelancer.objects.all()  # type: ignore
+    permission_classes = [permissions.IsAuthenticated & IsLinkedToData]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = FreelancerSerializer
+
+    def update(self, request, *args, **kwargs):
+        if 'auth' in request.data:
+
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                token = S3Bucket().upload_single_image_if_exists(
+                    'profile_image',
+                    request.data['auth'],
+                )
+                request.data['auth']['profile_image'] = token
         return super().update(request, *args, **kwargs)
 
 
@@ -246,9 +280,10 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
-            token = S3Bucket().upload_single_image_if_exists(
-                'profile_image',
-                request.data['auth'],
-            )
-            request.data['auth']['profile_image'] = token
+            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+                token = S3Bucket().upload_single_image_if_exists(
+                    'profile_image',
+                    request.data['auth'],
+                )
+                request.data['auth']['profile_image'] = token
         return super().update(request, *args, **kwargs)

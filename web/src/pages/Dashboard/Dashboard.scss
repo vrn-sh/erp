@@ -593,3 +593,21 @@ footer {
 .md-5 {
     width: 50%;
 }
+
+.des-overflow {
+    max-width: 100px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.des-a {
+    color: var(--gray-btn);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.des-a:hover {
+        color: var(--primary-btn);
+        transition: .5s;
+    }
