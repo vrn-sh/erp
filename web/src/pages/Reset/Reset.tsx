@@ -10,8 +10,6 @@ export default function Reset() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
-    console.log(token);
-
     const handlePasswordReset = async () => {
         try {
             const response = await axios.post(
