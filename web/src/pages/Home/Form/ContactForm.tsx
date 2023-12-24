@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import axios from 'axios';
 import styles from './ContactForm.module.scss';
-import config from '../../../config';
 
 interface FormData {
     name: string;
@@ -16,7 +14,6 @@ function ContactForm() {
         email: '',
         message: '',
     });
-    const [subscribe, setSubscribe] = useState(false);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -24,39 +21,18 @@ function ContactForm() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleCheckboxChange = () => {
-        setSubscribe(!subscribe);
-    };
-
-    const isValidEmail = (email: string) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    };
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
-        if (!isValidEmail(formData.email)) {
-            alert('Please enter a valid email address');
-            return;
-        }
-        try {
-            // Send email form
-            await emailjs.sendForm(
+        emailjs
+            .sendForm(
                 import.meta.env.VITE_REACT_APP_SERVICE_ID_CONTACT_FORM,
                 import.meta.env.VITE_REACT_APP_TEMP_ID_CONTACT_FORM,
                 e.target,
                 import.meta.env.VITE_REACT_APP_PUBLIC_KEY_CONTACT_FORM
-            );
-
-            if (subscribe) {
-                const response = await axios.post(
-                    `${config.apiUrl}/mailing-list`,
-                    { email: formData.email }
-                );
-                console.log('Mailing List Response:', response);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
+            )
+            .catch((error) => {
+                throw error;
+            });
     };
 
     return (
@@ -105,17 +81,6 @@ function ContactForm() {
                             onChange={handleChange}
                             required
                         />
-                    </div>
-                    <div className={styles.inputGroup}>
-                        <input
-                            type="checkbox"
-                            id="subscribe"
-                            checked={subscribe}
-                            onChange={handleCheckboxChange}
-                        />
-                        <label htmlFor="subscribe">
-                            Subscribe to our newsletter
-                        </label>
                     </div>
                     <button
                         className={styles.button}
