@@ -1,4 +1,3 @@
-import React from 'react';
 import NavBar from '../../component/NavBar/NavBar';
 import Footer from '../../component/Footer/Footer';
 import './Home.scss';
@@ -18,7 +17,7 @@ export default function Home() {
                         <div className="home-container">
                             <h1>VORON</h1>
                             <h4>
-                                In <span>efficiency</span> we trust.
+                                See your <span>pentest</span> life - In <span>efficiency</span> we trust
                             </h4>
                         </div>
                     </div>
