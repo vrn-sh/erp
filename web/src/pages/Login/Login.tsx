@@ -84,7 +84,7 @@ export default function Login() {
 
     const submit = async () => {
         setOpen(true);
-        if (email !== '') {
+        if (email !== '' && pwd.length > 7) {
             try {
                 await axios
                     .post(
