@@ -24,6 +24,12 @@
 }
 
 @font-face {
+    font-family: 'Poppins-SemiBold';
+    src: local('Poppins-SemiBold'),
+        url('./fonts/poppins/Poppins-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
     font-family: 'Poppins-Black';
     src: local('Poppins-Black'),
         url('./fonts/poppins/Poppins-Black.ttf') format('truetype');
