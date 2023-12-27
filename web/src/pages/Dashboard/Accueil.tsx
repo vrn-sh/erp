@@ -1036,7 +1036,6 @@ export default function Accueil() {
                                 </div>
                             </div>
                         </div>
-
                         <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
                                 <h5
