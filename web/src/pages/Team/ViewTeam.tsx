@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { RiEyeLine, RiUserFill } from 'react-icons/ri';
+import Modal from 'react-modal';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
+import './ViewTeam.scss';
 
 interface Member {
     id: number;
@@ -19,13 +21,48 @@ interface Member {
         date_joined: string;
         phone_number: string | null;
         role: number;
+        favorites: string | null;
     };
     creation_date: string;
+}
+interface ProfilDetailsProps {
+    label: string;
+    data: string | null;
+}
+export function ProfilDetails({ label, data }: ProfilDetailsProps) {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+            }}
+        >
+            <p className="team-popup-left">{label}</p>
+            {/* eslint-disable */}
+            {data === null ? (
+                <p className="team-popup-right">-</p>
+            ) : data.length === 0 ? (
+                <p className="team-popup-right">-</p>
+            ) : (
+                <p className="team-popup-right">{data}</p>
+            )}
+            {/* eslint-enable */}
+        </div>
+    );
 }
 
 export default function ViewTeamDetails() {
     const { id } = useParams<{ id?: string }>();
-    const navigate = useNavigate();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
 
     const [teamData, setTeamData] = useState<{
         id: number;
@@ -69,10 +106,6 @@ export default function ViewTeamDetails() {
         getTeamDetails();
     }, [id]); // Ajouter id comme dépendance
 
-    const goToProfile = (memberId: number) => {
-        navigate('/profile');
-    };
-
     const renderMembers = () => {
         if (!teamData) return null;
 
@@ -85,33 +118,8 @@ export default function ViewTeamDetails() {
             }
 
             return (
-                <div
-                    style={{
-                        backgroundColor: '#f4f5f8',
-                        padding: '10px',
-                        margin: '10px',
-                        width: '205px',
-                        height: '250px',
-                        border: '2px',
-                        borderRadius: '5px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                    key={member.id}
-                >
-                    <div
-                        style={{
-                            width: '100px',
-                            height: '100px',
-                            borderRadius: '50%',
-                            backgroundColor: '#ccc',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: '10px',
-                        }}
-                    >
+                <div className="team-detail-members-container" key={member.id}>
+                    <div className="team-detail-members-cart">
                         {member.auth.profileImage ? (
                             <img
                                 src={member.auth.profileImage}
@@ -168,7 +176,7 @@ export default function ViewTeamDetails() {
                         <RiEyeLine
                             style={{ marginRight: '5px', fontSize: '12px' }}
                         />
-                        <Link to="#" onClick={() => goToProfile(member.id)}>
+                        <Link to="#" onClick={openModal}>
                             <span
                                 style={{
                                     color: 'black',
@@ -179,6 +187,93 @@ export default function ViewTeamDetails() {
                                 View
                             </span>
                         </Link>
+
+                        <Modal
+                            isOpen={modalIsOpen}
+                            onRequestClose={closeModal}
+                            contentLabel="Profile Modal"
+                            style={{
+                                content: {
+                                    border: '1px solid #ccc',
+                                    borderRadius: '10px',
+                                    position: 'absolute',
+                                    top: '30%',
+                                    right: '50%',
+                                    transform: 'translate(60%, -20%)',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '10px',
+                                },
+                            }}
+                        >
+                            <div className="team-detail-members-cart">
+                                {member.auth.profileImage ? (
+                                    <img
+                                        src={member.auth.profileImage}
+                                        alt="Profile"
+                                        style={{
+                                            width: '200px',
+                                            height: '200px',
+                                            borderRadius: '100%',
+                                        }}
+                                    />
+                                ) : (
+                                    <RiUserFill
+                                        style={{
+                                            fontSize: '60px',
+                                            color: 'white',
+                                        }}
+                                    />
+                                )}
+                            </div>
+                            <div className="team-popup-userinfo">
+                                <ProfilDetails
+                                    label="First name :"
+                                    data={member.auth.first_name}
+                                />
+                                <ProfilDetails
+                                    label="Last name :"
+                                    data={member.auth.last_name}
+                                />
+                                <ProfilDetails
+                                    label="Username :"
+                                    data={member.auth.username}
+                                />
+                                <ProfilDetails
+                                    label="Email :"
+                                    data={member.auth.email}
+                                />
+                                <ProfilDetails label="Role :" data={roleText} />
+                                <ProfilDetails
+                                    label="Last_login :"
+                                    data={member.auth.last_login}
+                                />
+                                <ProfilDetails
+                                    label="Date joined :"
+                                    data={member.auth.date_joined.substring(
+                                        0,
+                                        10
+                                    )}
+                                />
+                                <ProfilDetails
+                                    label="Phone number :"
+                                    data={member.auth.phone_number}
+                                />
+                                <ProfilDetails
+                                    label="Favorites :"
+                                    data={member.auth.favorites}
+                                />
+                            </div>
+                            <button
+                                type="button"
+                                onClick={closeModal}
+                                style={{ marginTop: '1rem' }}
+                            >
+                                Close
+                            </button>
+                        </Modal>
                     </div>
                 </div>
             );

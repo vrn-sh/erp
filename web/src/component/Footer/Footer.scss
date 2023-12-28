@@ -2,18 +2,32 @@
     bottom: 0;
     width: 100%;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: --black;
+    border-top: #0000002d 1px solid;
+    padding: 0.9rem;
+    font-family: 'Poppins';
+}
+
+.footer-info {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    width: 50%;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: --black;
-    border-top: #0000002d 1px solid;
-    padding: 0.5rem;
-    font-family: 'Poppins';
+    font-family: 'Poppins-Regular';
+    border-right: 1px solid var(--gray-btn);
 }
 
 .footer p {
     margin: 0.2rem;
     padding: 0;
+    width: 50%;
+    text-align: left;
 }
 
 .footer ul {
@@ -28,9 +42,71 @@
     text-decoration: none;
     color: var(--primary-btn);
     cursor: pointer;
+    width: 50%;
+    text-align: left;
+    margin: 0;
+    padding: 0;
     &:hover {
-        text-decoration: underline;
         color: var(--primary-hover-btn);
         transition: 0.3s ease-in-out;
+    }
+}
+
+.policy-link {
+    width: 50%;
+    text-align: left;
+    margin-top: 1rem;
+}
+
+
+.footer-newsletter {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+
+    & h3 {
+        font-family: "Poppins-SemiBold";
+        width: 50%;
+        text-align: left;
+        padding: 0;
+        margin: 0;
+    }
+
+    & p {
+        margin: 0;
+        padding: 0;
+        margin-top: .5rem;
+        width: 50%;
+        font-family: "Poppins-Regular";
+        text-align: left;
+    }
+
+    & input {
+        width: 50%;
+        height: 2.5rem;
+        padding: 0.5rem 1rem;
+        margin: 0;
+        margin-top: 2rem;
+        letter-spacing: 0.15em;
+        font-size: 14px;
+        font-family: 'Poppins-Regular';
+        border-radius: 5px;
+        outline: none;
+        border: 1px solid var(--gray-btn);
+    }
+
+        
+    & input::placeholder {
+        font-size: 14px;
+        font-weight: lighter;
+    }
+
+    & button {
+        min-width: 1rem;
+        width: 50%;
     }
 }

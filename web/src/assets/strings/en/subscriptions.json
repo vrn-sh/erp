@@ -2,30 +2,32 @@
     {
         "type": "Basic",
         "price": "400",
-        "price_month": "400 euro / month",
+        "price_month": "400€ / month",
         "recurrence": "By mission",
         "service": [
             "Basic services",
             "Automated recon",
             "Report generation"
-        ]
+        ],
+        "stripe-link": "https://buy.stripe.com/test_aEUaHpc3MfeUc0w8wx"
     },
     {
         "type": "Freelancer",
         "price": "1050",
-        "price_month":  "350 euro / month)",
+        "price_month":  "350€ / month",
         "recurrence": "Every season(3 months)",
         "service": [
             "Basic services",
             "Automated recon",
             "Report generation",
             "OSINT tooling access"
-        ]
+        ],
+        "stripe-link": "https://buy.stripe.com/test_6oEdTBd7Q6Io3u0fZ0"
     },
     {
         "type": "Business",
         "price": "3800",
-        "price_month":  "316 euros / month)",
+        "price_month":  "316€ / month",
         "recurrence": "Per year",
         "service": [
             "Basic services",
@@ -33,6 +35,7 @@
             "Report generation",
             "OSINT tooling access",
             "Private PE Loader access"
-        ]
+        ],
+        "stripe-link": "https://buy.stripe.com/test_00g3eX8RA4Agd4A288"
     }
 ]
