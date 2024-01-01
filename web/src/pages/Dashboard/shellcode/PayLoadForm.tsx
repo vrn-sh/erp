@@ -12,7 +12,10 @@ import {
 import BasicShellcode from './BasicShellcode';
 import MyPhShellcode from './MyPhShellcode';
 import LinkDisplay from './LinkDisplay';
-import { MyPhDocumentationContent, BasicShellcodeDocumentationContent } from './Documentation';
+import {
+    MyPhDocumentationContent,
+    BasicShellcodeDocumentationContent,
+} from './Documentation';
 
 export default function PayLoadForm(props: {
     isModalOpen: boolean;
@@ -55,12 +58,12 @@ export default function PayLoadForm(props: {
                 isOpen={isModalOpen}
                 onRequestClose={() => close()}
                 contentLabel="General Payload Modal"
-                                style={{
-                                    content: {
-                                        border: '1px solid #ccc',
-                                        borderRadius: '10px',
-                                    },
-                                }}
+                style={{
+                    content: {
+                        border: '1px solid #ccc',
+                        borderRadius: '10px',
+                    },
+                }}
             >
                 {link !== '' ? (
                     <LinkDisplay link={link} close={() => close()} />
@@ -79,31 +82,35 @@ export default function PayLoadForm(props: {
                                 className="btn"
                                 onClick={openNewModal}
                             >
-                                Documentation {payloadType === 'myph' ? 'MyPH' : 'Basic Shellcode'}
+                                Documentation{' '}
+                                {payloadType === 'myph'
+                                    ? 'MyPH'
+                                    : 'Basic Shellcode'}
+                            </button>
+                            <Modal
+                                isOpen={isNewModalOpen}
+                                onRequestClose={closeNewModal}
+                                contentLabel="Documentation Modal"
+                                style={{
+                                    content: {
+                                        border: '1px solid #ccc',
+                                        borderRadius: '10px',
+                                        position: 'absolute',
+                                        overflow: 'scroll',
+                                        fontFamily: 'Poppins-Medium',
+                                    },
+                                }}
+                            >
+                                {payloadType === 'myph' && (
+                                    <MyPhDocumentationContent />
+                                )}
+                                {payloadType === 'basicshellcode' && (
+                                    <BasicShellcodeDocumentationContent />
+                                )}
+                                <button type="button" onClick={closeNewModal}>
+                                    Close
                                 </button>
-                                <Modal
-                                    isOpen={isNewModalOpen}
-                                    onRequestClose={closeNewModal}
-                                    contentLabel="Documentation Modal"
-                                    style={{
-                                        content: {
-                                            border: '1px solid #ccc',
-                                            borderRadius: '10px',
-                                            position: 'absolute',
-                                            overflow: 'scroll',
-                                            fontFamily: 'Poppins-Medium',
-                                        },
-                                    }}
-                                >
-                                    {payloadType === 'myph' && <MyPhDocumentationContent />}
-                                    {payloadType === 'basicshellcode' && <BasicShellcodeDocumentationContent />}
-                                    <button
-                                        type="button"
-                                        onClick={closeNewModal}
-                                    >
-                                        Close
-                                    </button>
-                                </Modal>
+                            </Modal>
                         </div>
                         <InputLabel
                             style={{
