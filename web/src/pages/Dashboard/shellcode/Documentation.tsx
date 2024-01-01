@@ -1,3 +1,4 @@
+import React from 'react';
 import GIF from '../../../assets/BasicShellcode.gif';
 
 export function MyPhDocumentationContent() {
