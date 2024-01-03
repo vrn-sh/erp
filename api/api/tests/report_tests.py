@@ -15,8 +15,6 @@ from api.tests.helpers import create_random_pentester, create_random_manager, de
 from api.models.mission import Mission
 from api.models.report.report import ReportHtml, ReportTemplate
 
-from api.models.report.academic_paper import AcademicTemplate
-
 
 class TeamTestCase(TransactionTestCase):
     title = 'ERP - EIP Team'
@@ -75,7 +73,7 @@ class TeamTestCase(TransactionTestCase):
         mission_id = self.create_valid_mission()
         report = ReportHtml(mission=Mission.objects.get(pk=mission_id),
                             template=ReportTemplate.objects.get(name='red4sec'))
-        
+
         expected = \
             '''<div class="cover-page">
 <svg id="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
@@ -130,13 +128,6 @@ self.assertEqual(
             expected.replace('\t', '')
         )
         '''
-        
-        # Yes there is no tests bc I'm lazy but just to make sure it does not throw any error
-        pages = [
-            (report.generate_cover()),
-            (report.generate_project_info()),
-            (report.generate_condition_and_scope()),
-            (report.generate_weaknesses())
-        ]
+
         # AcademicTemplate().dump_report(Mission.objects.get(pk=mission_id), dir_path="/tmp/test-lol")
         # rmtree("/tmp/test-lol")

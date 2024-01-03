@@ -1,4 +1,4 @@
-django==4.2.3
+django==4.2.7
 djangorestframework==3.14.0
 django-cors-headers==3.14.0
 argon2-cffi==21.3
@@ -19,3 +19,4 @@ pdfkit==1.0.0
 python-dateutil==2.8.2
 numpy==1.25.0
 tblib==2.0.0
+pyotp==2.9.0

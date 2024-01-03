@@ -6,6 +6,7 @@ import About from './About/About';
 import Team from './Team/Team';
 import ContactForm from './Form/ContactForm';
 import Timeline from './Timeline/Timeline';
+import Plan from './Plan/Plan';
 
 export default function Home() {
     return (
@@ -23,6 +24,7 @@ export default function Home() {
                     </div>
                 </div>
                 <About />
+                <Plan />
                 <Timeline />
                 <Team />
                 <ContactForm />

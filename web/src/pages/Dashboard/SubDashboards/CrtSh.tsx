@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -16,6 +17,7 @@ export default function CrtSh() {
     const [inputIdentity, setInputIdentity] = useState('');
     const [missionId, setMissionId] = useState(-1);
     const [success, setSuccess] = useState(false);
+    const location = useLocation();
     const [crtData, setCrtData] = useState<
         {
             id: number;
@@ -72,11 +74,11 @@ export default function CrtSh() {
     const searchIdentity = async () => {
         setOpen(true);
         if (missionId === -1 || tmpIdentity.length === 0) {
-            setMessage('please select a mission', 'error');
+            setMessage('Please enter a correct identity', 'error');
             return;
         }
         setMessage('Loading...', 'info');
-        axios(
+        await axios(
             `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
                 method: 'GET',
@@ -98,15 +100,16 @@ export default function CrtSh() {
                 setMessage(e.response.data.dump[0].error, 'error');
             });
     };
+
     const updateIdentity = async () => {
         setOpen(true);
         if (missionId === -1 || tmpIdentity.length === 0) {
-            setMessage('please select a mission', 'error');
+            setMessage('Please enter a correct identity', 'error');
             return;
         }
         setMessage('Loading...', 'info');
         setOpen(true);
-        axios(
+        await axios(
             `${config.apiUrl}/crtsh?mission_id=${missionId}&domain=${tmpIdentity}`,
             {
                 method: 'PATCH',
@@ -135,6 +138,10 @@ export default function CrtSh() {
     let npage = Math.ceil(crtData.length / recordsPerPage);
 
     useEffect(() => {
+        setMissionId(location.state.missionId);
+    }, []);
+
+    useEffect(() => {
         records = crtData.slice(firstIndex, lastIndex);
         npage = Math.ceil(crtData.length / recordsPerPage);
     }, [crtData, success]);
@@ -154,13 +161,23 @@ export default function CrtSh() {
     const changePage = (e: string) => {
         setCurrentPage(parseInt(e, 10));
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                searchIdentity();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [missionId, tmpIdentity]);
+
     return (
         <>
             <div className="crt_input">
-                <SelectMission
-                    setMissionId={setMissionId}
-                    missionId={missionId}
-                />
                 <input
                     className="crt-form-control"
                     placeholder="Enter an Identity"

@@ -1,0 +1,218 @@
+/* Plan.scss */
+
+@keyframes float {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+
+    50% {
+        transform: translateY(-4px) translateX(2px);
+    }
+
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .subscription-card {
+        width: calc(50% - 40px);
+        margin: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .subscription-card {
+        width: calc(100% - 40px);
+        margin: 200px;
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.plan-title {
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 10% auto;
+    max-height: 100rem;
+    z-index: 10;
+    font-family: 'Poppins-Regular';
+
+}
+.plan-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--primary-btn);
+    font-family: 'Poppins-Regular';
+}
+
+.plan-contact-button {
+    font-family: 'Poppins-Regular';
+    min-width: 30%;
+    font-size: 1.2rem;
+    border: none;
+    background-color: var(--primary-btn);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.souscrire-button {
+    font-size: 14px;
+    background-color: var(--primary-btn);
+    color: white;
+    font-family: 'Poppins-Regular';
+    letter-spacing: 1px;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+}
+
+.plan-subscription-container {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    justify-content: space-around;
+}
+
+.subscription-card {
+    color: black;
+    width: 15rem;
+    height: 70%;
+    margin: 20px;
+    padding: 10px;
+    padding-left: 15px;
+    border-radius: 6px;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: white;
+    box-shadow: 0 0 20px 5px #9480D4;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 0 40px 10px #9480D4;
+    }
+    &.primary-color {
+        background-color: var(--plan-primary-color);
+    }
+    &.secondary-color {
+        background-color: var(--plan-secondary-color);
+    }
+    & label {
+        text-align: left;
+        background-color: transparent;
+        font-family: "Poppins-Bold";
+        font-size: 18px;
+        letter-spacing: 1.5px;
+        margin: 0;
+        padding: 0;
+    }
+    & h2, p {
+        font-family: "Poppins-Regular";
+    }
+
+    & h2 {
+        text-align: left;
+    }
+}
+
+.plan-small-des {
+    text-align: left;
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.subscription-card.visible {
+    animation: fadeInDown 2s ease forwards, fadeIn 2s ease forwards, float 2s ease infinite;
+}
+
+
+.subscription-card.stopped {
+    animation-play-state: paused;
+}
+
+.subscription-card:hover {
+    animation-play-state: paused;
+}
+
+.subscription-card h2 {
+    position: relative;
+}
+
+.subscription-card h2::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+}
+
+.button-with {
+    width: auto;
+}
+
+.plan-pro {
+    font-family: 'Poppins-Regular';
+    margin-bottom: 10px
+}
+
+.plan-service-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    & p {
+        margin: 0;
+        margin-left: 10px;
+        padding: 0;
+    }
+}
+
+@media only screen and (max-width: 580px) {
+    .plan-service-container {
+        display: none;
+    }
+
+    .plan-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    .subscription-card h2{
+        font-size: 16px;
+    }
+    .souscrire-button {
+        font-size: 12px;
+        background-color: var(--primary-btn);
+        color: white;
+        font-family: 'Poppins-Regular';
+    }
+}

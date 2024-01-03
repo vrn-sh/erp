@@ -13,6 +13,7 @@ export default function SettingAccount() {
         email: '',
         first_name: '',
         last_name: '',
+        phone_number: '',
         profile_image: '', // Assurez-vous que le nom du champ correspond à votre API
     });
     const [message, setMess] = useState<{ mess: string; color: string }>({
@@ -44,7 +45,7 @@ export default function SettingAccount() {
 
     useEffect(() => {
         getUserInfos();
-    }, []);
+    }, [role]);
 
     const close = () => {
         setOpen(false);
@@ -76,6 +77,10 @@ export default function SettingAccount() {
         setUserInfos({ ...userInfos, last_name: e.target.value });
     };
 
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserInfos({ ...userInfos, phone_number: e.target.value });
+    };
+
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -101,16 +106,11 @@ export default function SettingAccount() {
     // Utilisez un effet secondaire pour surveiller les changements de userInfos.profile_image
     useEffect(() => {}, [userInfos.profile_image]);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        setOpen(true);
         let url = `${config.apiUrl}/`;
         if (role === '2') url += 'manager';
         else url += 'pentester';
-
-        console.log(
-            'UserInfos.profile_image juste avant lenvoi:',
-            userInfos.profile_image
-        );
 
         await axios
             .patch(
@@ -119,6 +119,7 @@ export default function SettingAccount() {
                     auth: {
                         first_name: userInfos.first_name,
                         last_name: userInfos.last_name,
+                        phone_number: userInfos.phone_number,
                         profile_image: userInfos.profile_image,
                     },
                 },
@@ -136,6 +137,19 @@ export default function SettingAccount() {
                 setMessage(error.message, 'error');
             });
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [userInfos]);
 
     return (
         <div className="container">
@@ -198,51 +212,62 @@ export default function SettingAccount() {
                     onChange={(e) => handleFileUpload(e)}
                 />
             </div>
-            <div style={{ width: '100%' }}>
-                <Stack direction="row" spacing={2}>
-                    <div className="input input-medium">
-                        <label>First name</label>
-                        <input
-                            id="input-first_name"
-                            type="text"
-                            value={userInfos.first_name}
-                            onChange={(e) => handleFirstNameChange(e)}
-                            title="Your firstname"
-                        />
-                    </div>
-                    <div className="input input-medium">
-                        <label>Last name</label>
-                        <input
-                            id="input-last_name"
-                            type="text"
-                            value={userInfos.last_name}
-                            onChange={(e) => handleLastNameChange(e)}
-                            title="Your lastname"
-                        />
-                    </div>
-                </Stack>
-                <br />
-                <Stack direction="row" width="full" spacing={2}>
-                    <div className="input input-medium">
-                        <label>Username</label>
-                        <input
-                            id="input-username"
-                            type="text"
-                            readOnly
-                            value={userInfos.username}
-                            onChange={(e) => handleUsernameChange(e)}
-                        />
-                    </div>
-                    <div className="input input-medium">
-                        <label>Email</label>
-                        <input
-                            id="input-email"
-                            type="text"
-                            readOnly
-                            value={userInfos.email}
-                        />
-                    </div>
-                </Stack>
+            <div
+                style={{
+                    width: '100%',
+                    paddingLeft: '3rem',
+                    paddingRight: '3rem',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <div className="input input-medium">
+                    <label>First name</label>
+                    <input
+                        id="input-first_name"
+                        type="text"
+                        placeholder={userInfos.first_name}
+                        onChange={(e) => handleFirstNameChange(e)}
+                        title="Your firstname"
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Last name</label>
+                    <input
+                        id="input-last_name"
+                        type="text"
+                        placeholder={userInfos.last_name}
+                        onChange={(e) => handleLastNameChange(e)}
+                        title="Your lastname"
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Username</label>
+                    <input
+                        id="input-username"
+                        type="text"
+                        placeholder={userInfos.username}
+                        onChange={(e) => handleUsernameChange(e)}
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Email</label>
+                    <input
+                        id="input-email"
+                        type="text"
+                        readOnly
+                        placeholder={userInfos.email}
+                    />
+                </div>
+                <div className="input input-medium">
+                    <label>Phone number</label>
+                    <input
+                        id="input-email"
+                        type="text"
+                        placeholder={userInfos.phone_number}
+                        onChange={(e) => handlePhoneChange(e)}
+                    />
+                </div>
             </div>
             <br />
 
@@ -253,9 +278,8 @@ export default function SettingAccount() {
                 <button
                     type="submit"
                     className="submit-button"
-                    onClick={(e) => {
-                        setOpen(true);
-                        handleSubmit(e);
+                    onClick={() => {
+                        handleSubmit();
                     }}
                 >
                     Save Changes

@@ -2,17 +2,20 @@
 from django.test import TransactionTestCase
 from faker import Faker
 
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APITestCase
+from api.models import Freelancer
 
 from api.tests.helpers import create_random_pentester, create_random_manager, default_user_password, \
         login_as
 
 
+#
 # import unit tests from other files here
-# from .notes_tests import *
-# from .vuln_tests import *
-# from .mission_tests import *
+from .notes_tests import *
+from .vuln_tests import *
+from .mission_tests import *
 from .report_tests import *
+
 
 
 class AuthTestCase(TransactionTestCase):
@@ -460,3 +463,159 @@ class CRUDTeamTestCase(TransactionTestCase):
 
         resp = self.pentester_client.get(f'{self.uri}/{team_id}', format='json')
         self.assertEqual(resp.status_code, 200)
+
+
+class FreelancerTestCase(APITestCase):
+    """
+        test case to demonstrate the usability of freelancer role
+        should be able to:
+
+            1. create their account
+            2. log in
+            3. create a mission
+            4. add vulns to that mission
+            5. submit a recon task (nmap trace for instance)
+            6. request pdf generation
+            7. log out
+    """
+
+    def test_can_go_through_full_process(self):
+
+        #
+        # freelancer settings
+        #
+
+        fake = Faker()
+        api = APIClient()
+
+        first_name = fake.name().split(' ')[0]
+        last_name = fake.name().split(' ')[1]
+        email = fake.email()
+        passwd = default_user_password()
+
+        #
+        # 1. Freelancer can create their account
+        #
+
+        freelancer_settings = {
+            "auth": {
+                "username": 'freelancer1337',
+                "email": email,
+                "first_name": first_name,
+                "last_name": last_name,
+                "password": passwd,
+                "role": "freelancer",
+              },
+              "creation_date": "2022-12-17T21:36:37.402Z",
+        }
+
+        response = api.post('/register', format='json', data=freelancer_settings)
+        self.assertEqual(response.status_code, 201) # type: ignore
+
+        freelancer = Freelancer.objects.filter(auth__email=email).first()  # type: ignore
+        self.assertNotEqual(None, freelancer)
+
+        #
+        # 2. Freelancer can login
+        #
+
+        freelancer.auth.is_enabled = True
+        freelancer.auth.set_password(passwd)
+        freelancer.auth.save()
+
+        auth_token = login_as(email, passwd)
+        api.credentials(HTTP_AUTHORIZATION=f'Token {auth_token}')
+
+        #
+        # 3. Create a mission
+        #
+
+        mission_settings = {
+            'title': 'freelancing',
+            'start': '2022-01-01',
+            'end': '2024-01-01',
+            'scope': ["*.djnn.sh", "10.10.0.1/24"],
+        }
+
+        response = api.post('/mission', format='json', data=mission_settings)
+        self.assertEqual(response.status_code, 201)  # type: ignore
+
+        #
+        # 4. Add vulns to the mission
+        #
+
+
+        # ensure vuln types are in database
+        call_command('init_builtin_vuln_types')
+
+        mission_id = response.data['id']  # type: ignore
+        response = api.post(
+            '/vulnerability',
+            format='json',
+            data={
+                'mission': mission_id,
+                'title': 'String Error Termination (freelancer by the way)',
+                'vuln_type': 'Cross-Site Scripting (XSS)',
+                'severity': 6.5,
+                'screenshots': []
+            }
+        )
+
+        self.assertEqual(response.status_code, 201)  # type: ignore
+
+        #
+        # 5. submit a recon task
+        #
+
+        mission = Mission.objects.get(id=mission_id)  # type: ignore
+
+        nmap_file = """
+            Nmap 5.35DC18 scan initiated Sun Jul 18 15:33:26 2010 as: ./nmap -T4 -A -oN - scanme.nmap.org
+            Nmap scan report for scanme.nmap.org (64.13.134.52)
+            Host is up (0.045s latency).
+            Not shown: 993 filtered ports
+            PORT      STATE  SERVICE VERSION
+            22/tcp    open   ssh     OpenSSH 4.3 (protocol 2.0)
+            | ssh-hostkey: 1024 60:ac:4d:51:b1:cd:85:09:12:16:92:76:1d:5d:27:6e (DSA)
+            |_2048 2c:22:75:60:4b:c3:3b:18:a2:97:2c:96:7e:28:dc:dd (RSA)
+            25/tcp    closed smtp
+            53/tcp    open   domain
+            70/tcp    closed gopher
+            80/tcp    open   http    Apache httpd 2.2.3 ((CentOS))
+            | http-methods: Potentially risky methods: TRACE
+            |_See https://nmap.org/nsedoc/scripts/http-methods.html
+            |_html-title: Go ahead and ScanMe!
+            113/tcp   closed auth
+            31337/tcp closed Elite
+            Device type: general purpose
+            Running: Linux 2.6.X
+            OS details: Linux 2.6.13 - 2.6.31, Linux 2.6.18
+            Network Distance: 13 hops
+
+            TRACEROUTE (using port 80/tcp)
+            HOP RTT       ADDRESS
+            [Cut first 10 hops for brevity]
+            11  45.16 ms  layer42.car2.sanjose2.level3.net (4.59.4.78)
+            12  43.97 ms  xe6-2.core1.svk.layer42.net (69.36.239.221)
+            13  45.15 ms  scanme.nmap.org (64.13.134.52)
+
+            OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+            # Nmap done at Sun Jul 18 15:33:48 2010 -- 1 IP address (1 host up) scanned in 22.47 seconds
+        """
+
+        recon_settings = {
+            'nmap_file': nmap_file,
+            'recon_id': mission.recon.id,   # type: ignore
+        }
+
+        response = api.post('/nmap', format='json', data=recon_settings)
+        self.assertEqual(response.status_code, 201)  # type: ignore
+
+
+        #
+        # 6. request pdf generation
+        #
+
+        response = api.get(f'/markdown-report?mission={mission_id}', format='json')
+        self.assertEqual(response.status_code, 200)  # type: ignore
+

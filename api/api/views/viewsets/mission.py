@@ -16,9 +16,10 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 from api.models import Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
-from api.permissions import IsManager, IsLinkedToData, IsPentester, ReadOnly
+from api.permissions import IsFreelancer, IsManager, IsLinkedToData, IsPentester, ReadOnly
 from api.serializers.mission import CredentialsSerializer, MissionSerializer, NmapSerializer, ReconSerializer
 from api.models.utils import NmapParser, minimal_nmap_output
+from api.services.s3 import S3Bucket
 
 from django.http import JsonResponse
 from api.services.crtsh import crtshAPI
@@ -32,7 +33,7 @@ class NmapViewset(viewsets.ModelViewSet):
     queryset = NmapScan.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = NmapSerializer
-    permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester]
+    permission_classes = [permissions.IsAuthenticated , IsLinkedToData, IsManager & ReadOnly | IsPentester | IsFreelancer]
 
     @swagger_auto_schema(
         operation_description="Creates and parses an NMAP output object.",
@@ -79,8 +80,10 @@ class NmapViewset(viewsets.ModelViewSet):
             if parser.os_details: request.data['os_details'] = parser.os_details
 
             if recon_id := request.data.get('recon_id'):
-                recon, _ = Recon.objects.get_or_create(id=recon_id)
-                cache.delete(f'mission_{recon.mission.id}')
+                recon, _ = Recon.objects.get_or_create(id=recon_id)  # type: ignore
+
+                if '1' not in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
+                    cache.delete(f'mission_{recon.mission.id}')
 
         # this will just error in the serializer if input is not provided
         request.data['recon'] = request.data.get('recon_id', 0)
@@ -129,7 +132,7 @@ class ReconViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
     queryset = Recon.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     serializer_class = ReconSerializer
-    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester]
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsManager & ReadOnly | IsPentester | IsFreelancer]
 
 class CrtShView(APIView):
     CACHE_TIMEOUT = 3600  # Set your desired cache timeout in seconds
@@ -224,7 +227,7 @@ class CredentialViewset(viewsets.ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
 
-        mission_id = request.data.get('mission_id', 0)
+        mission_id = request.query_params.get('mission_id', 0)
 
         creds = Credentials.objects.filter(mission=mission_id)  # type: ignore
         warn(f'creds: {creds}')
@@ -279,16 +282,15 @@ class CredentialViewset(viewsets.ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         mission_id = request.data.get('mission_id', 0)
+
         if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
             if not mission.is_member(self.request.user):
-                return Response(HTTP_403_FORBIDDEN)
-
-            request.data['mission'] = mission.id.__str__()
-            request.data.pop('mission_id', None)
+                return Response(status=HTTP_403_FORBIDDEN)
+            request.data['mission'] = mission_id
             return super().create(request, *args, **kwargs)
 
-        return Response({'error': 'unknown mission'}, HTTP_404_NOT_FOUND)
+        return Response({'error': 'unknown mission'}, status=HTTP_404_NOT_FOUND)
 
 
 class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -297,7 +299,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     """
 
     queryset = Mission.objects.all()  # type: ignore
-    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager]
+    permission_classes = [permissions.IsAuthenticated, IsLinkedToData, IsPentester & ReadOnly | IsManager | IsFreelancer]
     authentication_classes = [TokenAuthentication]
     serializer_class = MissionSerializer
 
@@ -322,6 +324,10 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                     type=openapi.TYPE_STRING,
                     description="Title of the mission",
                 ),
+                'logo': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="token of the logo",
+                ),
                 'team': openapi.Schema(
                     type=openapi.TYPE_INTEGER,
                     description="Id of the team",
@@ -329,7 +335,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 'scope': openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     description="list of IP addresses or domain names",
-                )
+                ),
             },
         ),
         responses={
@@ -338,6 +344,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
                 examples={
                     "id": 1,
                     "title": "Pentest mission",
+                    "logo": "token of the logo",
                     "start": "2020-06-03",
                     "end": "2022-06-03",
                     "team": 1,
@@ -356,9 +363,20 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
         request.data['created_by'] = request.user.id
         request.data['last_updated_by'] = request.user.id
 
-        recon = Recon.objects.create()
-        recon.save()
-        request.data['recon_id'] = recon.id
+
+        if not 'team' in request.data:
+            if request.user.role == 3:
+                request.data['team'] = None
+            else:
+                return Response({
+                    'error': 'please specify team',
+                }, status=HTTP_400_BAD_REQUEST)
+        if 'logo' in request.data and '1' not in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
+            token = S3Bucket().upload_single_image_if_exists(
+                'logo',
+                request.data
+            )
+            request.data['logo'] = token
 
         return super().create(request, *args, **kwargs)
 
@@ -379,6 +397,12 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def update(self, request, *args, **kwargs):
         if "created_by" in request.data:
             request.data.pop("created_by")
+        if "logo" in request.data:
+            token = S3Bucket().upload_single_image_if_exists(
+                'logo',
+                request.data
+            )
+            request.data['logo'] = token
         request.data["last_updated_by"] = request.user.id
         return super().update(request, *args, **kwargs)
 

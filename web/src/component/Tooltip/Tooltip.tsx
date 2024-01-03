@@ -13,17 +13,13 @@ function Tooltip({ tip }: { tip: React.ReactNode }) {
 
     return (
         <div className="tooltip-container">
-            <button
-                type="button"
-                className="question-mark"
-                onClick={handleQuestionMarkClick}
-            >
-                ?
-            </button>
             <div className="tooltip" id="tooltip-content">
                 <div className="tooltip-content">
                     {tip}
                     <button
+                        style={{
+                            minWidth: '45px',
+                        }}
                         type="button"
                         className="close-button"
                         onClick={handleQuestionMarkClick}

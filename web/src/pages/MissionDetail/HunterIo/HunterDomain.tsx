@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {
@@ -171,6 +171,19 @@ export default function HunterDomain() {
                 throw e.message;
             });
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                domainSearch();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [domain]);
 
     return (
         <div className="hunter-scroll-div">

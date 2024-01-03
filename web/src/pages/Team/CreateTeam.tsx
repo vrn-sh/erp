@@ -124,6 +124,7 @@ export default function CreateTeam() {
     };
 
     const handleSubmit = async () => {
+        setOpen(true);
         if (!personName.length) {
             setMessage('Please select a team member', 'error');
             return;
@@ -150,6 +151,19 @@ export default function CreateTeam() {
                 setMessage(e.message, 'error');
             });
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [Title, personName, manager]);
 
     useEffect(() => {
         getPentester();
@@ -294,7 +308,6 @@ export default function CreateTeam() {
                                 className="submit-button"
                                 onClick={() => {
                                     handleSubmit();
-                                    setOpen(true);
                                 }}
                             >
                                 Save

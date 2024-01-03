@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
 import Cookies from 'js-cookie';
 import config from '../../config';
+import Feedbacks from '../../component/Feedback';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -14,6 +15,18 @@ export default function Login() {
     const [pwdType, setPwdType] = useState('password');
     const [pwdIcon, setPwdIcon] = useState(<AiIcons.AiOutlineEyeInvisible />);
     const navigate = useNavigate();
+
+    const [open, setOpen] = useState(false);
+    const [message, setMess] = useState<{ mess: string; color: string }>({
+        mess: '',
+        color: 'success',
+    });
+    const close = () => {
+        setOpen(false);
+    };
+    const setMessage = (mess: string, color: string) => {
+        setMess({ mess, color });
+    };
 
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -45,7 +58,32 @@ export default function Login() {
         }
     };
 
+    const getUserInfos = async () => {
+        let url = `${config.apiUrl}/`;
+        if (Cookies.get('Role') === '2') url += 'manager';
+        else url += 'pentester';
+        await axios
+            .get(`${url}/${Cookies.get('Id')}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                if (
+                    data.data.auth.first_name !== null &&
+                    data.data.auth.phone_number !== null
+                )
+                    navigate('/accueil');
+                else navigate('/info');
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
     const submit = async () => {
+        setOpen(true);
         if (email !== '' && pwd.length > 7) {
             try {
                 await axios
@@ -62,7 +100,7 @@ export default function Login() {
                         }
                     )
                     .then((e) => {
-                        navigate('/dashboard');
+                        setMessage('Connecting...', 'success');
                         Cookies.set('Token', e.data.token, {
                             expires: Date.parse(e.data.expiry),
                         });
@@ -75,6 +113,7 @@ export default function Login() {
                         Cookies.set('Fav', '', {
                             expires: Date.parse(e.data.expiry),
                         });
+                        getUserInfos();
                     })
                     .catch(() => {
                         setErrorEmail('Invalid email or password!');
@@ -82,8 +121,25 @@ export default function Login() {
             } catch (error) {
                 setErrorEmail('Invalid email or password!');
             }
+        } else {
+            setMessage('Invalid email or password!', 'error');
         }
     };
+
+    // Handle submit when click 'enter' on keyboard
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [email, pwd]);
 
     return (
         <section className="login-container">
@@ -141,6 +197,14 @@ export default function Login() {
                     </div>
                 </div>
             </div>
+            {open && (
+                <Feedbacks
+                    mess={message.mess}
+                    color={message.color}
+                    close={close}
+                    open={open}
+                />
+            )}
         </section>
     );
 }

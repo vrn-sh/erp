@@ -1,5 +1,7 @@
 // About
+
 .about {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -30,19 +32,20 @@
 
 .about-catch h1 {
     color: var(--primary-btn);
-    font-family: 'Poppins';
-    font-size: 3rem;
+    font-family: 'Poppins-Regular';
+    font-size: 2rem;
     width: fit-content;
     margin: 0;
 }
 
 .about-catch button {
+    font-family: 'Poppins-Regular';
+    min-width: 30%;
     width: 30%;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     border: none;
     background-color: var(--primary-btn);
     color: white;
-    font-family: 'Poppins';
     padding: 0.5rem;
     border-radius: 5px;
 }
@@ -72,7 +75,7 @@
     // margin-top: 1rem;
 }
 
-.about-more h2 {
+.about-more h1 {
     font-family: 'Poppins-Medium';
     font-size: 1.2rem;
     margin: 0;
@@ -81,7 +84,7 @@
 }
 
 .about-more p {
-    font-family: 'Poppins-Medium';
+    font-family: 'Poppins-Regular';
     font-size: 1.2rem;
 }
 
@@ -90,9 +93,6 @@
 }
 
 @media only screen and (max-width: 700px) {
-    .about-more {
-
-    }
     .about-main-row {
         flex-direction: column;
     }
@@ -109,10 +109,30 @@
     }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 580px) {
     .about-catch h1 {
-        font-size: 1.5rem;
+        font-size: 16px;
     }
+    .about-catch button {
+        font-family: 'Poppins-Regular';
+        min-width: 30%;
+        width: 30%;
+        font-size: 15px;
+        border: none;
+        background-color: var(--primary-btn);
+        color: white;
+    }
+
+    .about-more h1 {
+        font-family: 'Poppins-Medium';
+        font-size: 18px;
+    }
+    
+    .about-more p {
+        font-family: 'Poppins-Regular';
+        font-size: 16px;
+    }
+
     .about-catch {
         width: 95%;
         justify-content: center;

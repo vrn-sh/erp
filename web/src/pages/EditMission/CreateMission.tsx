@@ -21,9 +21,12 @@ import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
+import Input from '../../component/Input';
 
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
+    const [logo, setLogo] = useState('');
+    const [Des, setDes] = useState('');
     const [Team, setTeam] = useState(0);
     const [start, setStart] = useState<Dayjs>(dayjs());
     const [end, setEnd] = useState<Dayjs>(dayjs());
@@ -94,6 +97,7 @@ export default function CreateMission() {
     };
 
     const handleSubmit = async () => {
+        setOpen(true);
         if (Team === 0) {
             setMessage('Please choose a team', 'error');
             return;
@@ -110,6 +114,8 @@ export default function CreateMission() {
                 `${config.apiUrl}/mission`,
                 {
                     title: Title,
+                    logo,
+                    description: Des,
                     start: start.format('YYYY-MM-DD'),
                     end: end.format('YYYY-MM-DD'),
                     team: Team,
@@ -122,7 +128,8 @@ export default function CreateMission() {
                     },
                 }
             )
-            .then(() => {
+            .then((data) => {
+                console.log(data);
                 setMessage('Created!', 'success');
             })
             .catch((e) => {
@@ -130,9 +137,45 @@ export default function CreateMission() {
             });
     };
 
+    const convertImageToBase64 = (file: File) => {
+        return new Promise<string | ArrayBuffer | null>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+
+        if (file) {
+            const base64Image = await convertImageToBase64(file);
+            if (typeof base64Image === 'string') {
+                setLogo(base64Image);
+            } else {
+                console.error('La conversion en base64 a échoué.');
+            }
+        }
+    };
+
     useEffect(() => {
         getTeam();
     }, []);
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [Title, start, end, Team, scope]);
 
     return (
         <div className="dashboard">
@@ -160,16 +203,28 @@ export default function CreateMission() {
                         </p>
                     </div>
                     <div className="edit-form">
+                        <Input
+                            label="Title"
+                            labelState={Title}
+                            setLabel={setTitle}
+                            size="medium"
+                        />
+                        <Input
+                            label="Description"
+                            labelState={Des}
+                            setLabel={setDes}
+                            size="medium"
+                        />
+
                         <div className="form-group">
-                            <label htmlFor="title">Title</label>
+                            <label htmlFor="logo">Logo</label>
                             <input
-                                type="text"
-                                id="title"
-                                required
+                                type="file"
+                                id="logo"
+                                accept="image/*"
                                 className="form-control"
-                                onChange={(e) => setTitle(e.target.value)}
-                                value={Title}
-                                title="Enter the name for the mission"
+                                title="Upload a logo for the mission"
+                                onChange={(e) => handleFileUpload(e)}
                             />
                         </div>
 
@@ -292,7 +347,6 @@ export default function CreateMission() {
                                 className="submit-button"
                                 onClick={() => {
                                     handleSubmit();
-                                    setOpen(true);
                                 }}
                             >
                                 Save

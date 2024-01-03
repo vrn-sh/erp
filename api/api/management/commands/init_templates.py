@@ -27,6 +27,7 @@ class Command(BaseCommand):
        </linearGradient>
    </defs>
    <path fill="url(#sw-gradient-0)" fill-opacity="0.7" d="M0,192L180,192L360,32L540,96L720,64L900,96L1080,224L1260,160L1440,96L1440,0L1260,0L1080,0L900,0L720,0L540,0L360,0L180,0L0,0Z"></path>        </svg>
+   <img alt="logo-company" id="logo" src="{logo}" />
 <h1>{team_name}</h1>
 
 <svg id="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
@@ -46,6 +47,7 @@ class Command(BaseCommand):
    </defs>
    <path fill="url(#sw-gradient-1)" fill-opacity="0.7" d="M0,64L205.7,224L411.4,256L617.1,256L822.9,224L1028.6,224L1234.3,32L1440,256L1440,320L1234.3,320L1028.6,320L822.9,320L617.1,320L411.4,320L205.7,320L0,320Z"></path></svg>
 <div class="bandeau">
+
    <h2 id="mission-title">{mission_title}</h2>
    <div class="report-info">
        <p id="version">Version: {report_version}</p>
@@ -58,7 +60,7 @@ class Command(BaseCommand):
                  self.read_css('./api/pdf-templates/hackmanit-template/main.css'),
                  '''
     <div class="cover-page">
-        <img alt="logo-company" id="logo" src="https://www.hackmanit.de/templates/hackmanit2021j4/img/wbm_hackmanit.png" />
+        <img alt="logo-company" id="logo" src="{logo}" />
         <h1 id="mission-title>{mission_title}</h1>
         <div class="report-info">
             <p>{team_name}</p>
@@ -74,7 +76,7 @@ class Command(BaseCommand):
         <header>
             <div class="identity">
                 <img class="logo"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAEN65TxlSnQM7q0XFcfdpqZkxhnIWs4BUqg&usqp=CAU"
+                    src="{logo}"
                     alt="logo" />
                 <div class="info">
                     <p>{team_name}</p>

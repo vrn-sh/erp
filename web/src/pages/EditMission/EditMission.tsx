@@ -26,6 +26,7 @@ import Input from '../../component/Input';
 
 export default function EditMission() {
     const [Title, setTitle] = useState('');
+    const [Des, setDes] = useState('');
     const [Team, setTeam] = useState(0);
     const [start, setStart] = useState<Dayjs>(dayjs());
     const [end, setEnd] = useState<Dayjs>(dayjs());
@@ -123,6 +124,7 @@ export default function EditMission() {
     };
 
     const UpdateMission = async () => {
+        setOpen(true);
         if (Team === 0) {
             setMessage('Please choose a team', 'error');
             return;
@@ -139,6 +141,7 @@ export default function EditMission() {
                 `${config.apiUrl}/mission/${id}`,
                 {
                     title: Title,
+                    description: Des,
                     end: end.format('YYYY-MM-DD'),
                     start: start.format('YYYY-MM-DD'),
                     team: Team,
@@ -173,6 +176,19 @@ export default function EditMission() {
         getMission();
     }, [id]);
 
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                UpdateMission();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [Title, start, end, Team, scope]);
+
     return (
         <div className="dashboard">
             <SideBar />
@@ -203,6 +219,12 @@ export default function EditMission() {
                             label="Title"
                             labelState={Title}
                             setLabel={setTitle}
+                            size="medium"
+                        />
+                        <Input
+                            label="Description"
+                            labelState={Des}
+                            setLabel={setDes}
                             size="medium"
                         />
                         <div
@@ -313,7 +335,6 @@ export default function EditMission() {
                                 type="submit"
                                 className="submit-button"
                                 onClick={() => {
-                                    setOpen(true);
                                     UpdateMission();
                                 }}
                             >

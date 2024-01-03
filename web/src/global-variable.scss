@@ -9,8 +9,11 @@
     --gradient-primary-btn: #cbb4fa;
     --hover-effect: #edecee;
     --gray-btn: #8a8a8a;
+    --gray-secondary-font: #686868;
     --primary-hover-btn: #632add;
     --colorful-yellow: #FFBA4A;
+    --plan-primary-color: #D9CDF2;
+    --plan-secondary-color: #C5B0F0;
 }
 
 //FONT
@@ -18,6 +21,12 @@
     font-family: 'Poppins-Bold';
     src: local('Poppins-Bold'),
         url('./fonts/poppins/Poppins-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Poppins-SemiBold';
+    src: local('Poppins-SemiBold'),
+        url('./fonts/poppins/Poppins-SemiBold.ttf') format('truetype');
 }
 
 @font-face {
