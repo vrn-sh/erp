@@ -18,6 +18,8 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Box,
+    CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -52,6 +54,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
     const [showAddForm, setShowAddForm] = useState(false);
     const navigate = useNavigate();
     const role = Cookies.get('Role');
+    const [isLoad, setIsLoad] = useState(false);
 
     const addCredential = async () => {
         try {
@@ -125,6 +128,8 @@ export default function Credentials({ idMission }: CredentialsProps) {
     };
 
     const fetchCredentials = async () => {
+        setIsLoad(true);
+
         try {
             const response = await axios.get(
                 `${config.apiUrl}/credentials?mission_id=${idMission}`,
@@ -139,6 +144,8 @@ export default function Credentials({ idMission }: CredentialsProps) {
             setCredentials(data.results);
         } catch (error) {
             console.error(error);
+        } finally {
+            setIsLoad(false);
         }
     };
 
@@ -208,14 +215,23 @@ export default function Credentials({ idMission }: CredentialsProps) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {credentials.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={5}>
-                                    No credentials available.
-                                </TableCell>
-                            </TableRow>
+                        {isLoad ? (
+                            <Box sx={{ marginY: '5%' }}>
+                                <CircularProgress color="secondary" />
+                            </Box>
                         ) : (
-                            renderCredentialRows()
+                            <>
+                                (...)
+                                {credentials.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5}>
+                                            No credentials available.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    renderCredentialRows()
+                                )}
+                            </>
                         )}
                     </TableBody>
                 </Table>
