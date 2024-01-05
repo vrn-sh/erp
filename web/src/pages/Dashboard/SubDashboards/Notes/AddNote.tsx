@@ -9,10 +9,15 @@ import Feedbacks from '../../../../component/Feedback';
 
 interface AddNoteProps {
     func: React.MouseEventHandler<HTMLButtonElement>;
-    mission: { id: number; title: string };
+    missionId: number;
+    missionTitle: string;
 }
 
-export default function AddNote({ func, mission }: AddNoteProps) {
+export default function AddNote({
+    func,
+    missionId,
+    missionTitle,
+}: AddNoteProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [open, setOpen] = useState(false);
@@ -50,7 +55,7 @@ export default function AddNote({ func, mission }: AddNoteProps) {
                 {
                     title,
                     content,
-                    mission: mission.id,
+                    mission: missionId,
                 },
                 {
                     headers: {
@@ -78,7 +83,7 @@ export default function AddNote({ func, mission }: AddNoteProps) {
                         <input
                             type="text"
                             required
-                            placeholder={mission.title}
+                            placeholder={missionTitle}
                             className="form-control"
                             readOnly
                         />

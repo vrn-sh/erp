@@ -472,6 +472,7 @@ footer {
 }
 
 .modal-wrapper {
+    z-index: 99;
     align-items: center;
     background: rgba(0, 0, 0, 0.219);
     bottom: 0;
@@ -592,3 +593,21 @@ footer {
 .md-5 {
     width: 50%;
 }
+
+.des-overflow {
+    max-width: 100px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.des-a {
+    color: var(--gray-btn);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.des-a:hover {
+        color: var(--primary-btn);
+        transition: .5s;
+    }

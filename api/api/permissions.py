@@ -5,11 +5,10 @@
 
 import logging
 from typing import List
-from warnings import warn
 
 from rest_framework import permissions
 
-from api.models import Auth, Pentester, Manager, Team
+from api.models import Auth, Freelancer, Pentester, Manager, Team
 from api.models.mission import Credentials, Mission, NmapScan, Recon
 from api.models.vulns import Notes, Vulnerability
 
@@ -59,33 +58,43 @@ class IsLinkedToData(permissions.BasePermission):
         if isinstance(obj, Auth):
             return obj.id == request.user.id # type: ignore
 
-        if isinstance(obj, (Pentester, Manager)):
+        if isinstance(obj, (Pentester, Manager, Freelancer)):
             return obj.auth.id == request.user.id # type: ignore
 
         if isinstance(obj, (Notes, Vulnerability)):
-            return obj.author.id == request.user.id
+            # FIXME: this should check for if user is member of related team
+            return obj.author.id == request.user.id  # type: ignore
 
         if isinstance(obj, Team):
-            for m in obj.members.all():
+            for m in obj.members.all():  # type: ignore
                 if request.user.id == m.auth.id:
                     return True
-            return obj.leader.auth.id == request.user.id
+            return obj.leader.auth.id == request.user.id  # type: ignore
 
         if isinstance(obj, Mission):
-            for m in obj.team.members.all():
+            if obj.freelance_member:
+                return request.user.id == obj.freelance_member.id  # type: ignore
+
+            for m in obj.team.members.all():  # type: ignore
                 if m.auth.id == request.user.id:
                     return True
-            return obj.team.leader.auth.id == request.user.id
+            return obj.team.leader.auth.id == request.user.id  # type: ignore
 
         if isinstance(obj, Credentials):
-            # TODO(djnn): fix this (cf. bureau des plaintes)
+            mission_obj = Mission.objects.filter(creds_id=obj.id).first()
+            if not mission_obj:
+                logging.warning('Credentials <%d> has no team', obj.id)
+                return False
             return True
 
         if isinstance(obj, Recon):
-            mission_obj = Mission.objects.filter(recon_id=obj.id).first()
+            mission_obj = Mission.objects.filter(recon_id=obj.id).first()  # type: ignore
             if not mission_obj:
-                logging.warning('Recon <%d> has no team', obj.id)
+                logging.warning('Recon <%d> has no team', obj.id)  # type: ignore
                 return False
+
+            if mission_obj.freelance_member:
+                return request.user.id == mission_obj.freelance_member.id
 
             for m in mission_obj.team.members.all():
                 if m.auth.id == request.user.id:
@@ -93,10 +102,13 @@ class IsLinkedToData(permissions.BasePermission):
             return mission_obj.team.leader.auth.id == request.user.id
 
         if isinstance(obj, NmapScan):
-            mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()
+            mission_obj = Mission.objects.filter(recon_id=obj.recon.id).first()  # type: ignore
             if not mission_obj:
-                logging.warning('NmapScan <%d> has no team', obj.id)
+                logging.warning('NmapScan <%d> has no team', obj.id)  # type: ignore
                 return False
+
+            if mission_obj.freelance_member:
+                return request.user.id == mission_obj.freelance_member.id
 
             for m in mission_obj.team.members.all():
                 if m.auth.id == request.user.id:
@@ -109,8 +121,8 @@ class IsLinkedToData(permissions.BasePermission):
 
 
 def user_has_role(request, role: str) -> bool:
-    """checks if a user has the appropriate role (being 1 or 2)"""
-    user_roles = ['placeholder', 'pentester', 'manager']
+    """checks if a user has the appropriate role (being 1, 2 or 3)"""
+    user_roles = ['placeholder', 'pentester', 'manager', 'freelancer']
     return user_roles[request.user.role] == role
 
 
@@ -130,6 +142,24 @@ class IsNotManager(permissions.BasePermission):
 
     def has_object_permission(self, request, _, __):
         return not user_has_role(request, 'manager')
+
+
+class IsFreelancer(permissions.BasePermission):
+    """checks if user IS a freelancer"""
+    def has_permission(self, request, _):
+        return user_has_role(request, 'freelancer')
+
+    def has_object_permission(self, request, _, __):
+        return user_has_role(request, 'freelancer')
+
+
+class IsNotFreelancer(permissions.BasePermission):
+    """checks if user is NOT a freelancer"""
+    def has_permission(self, request, _):
+        return not user_has_role(request, 'freelancer')
+
+    def has_object_permission(self, request, _, __):
+        return not user_has_role(request, 'freelancer')
 
 
 class IsPentester(permissions.BasePermission):

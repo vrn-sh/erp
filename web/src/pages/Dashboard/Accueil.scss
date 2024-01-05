@@ -65,6 +65,8 @@ h5, p {
             padding-right: 10px;
             padding-top: .5rem;
             padding-bottom: .5rem;
+            box-shadow: 1px 1px var(--light-gray);
+            border-radius: 6px;
         }
     
         &-container:hover {
@@ -77,6 +79,13 @@ h5, p {
         &-more:hover {
             transform: scale(1.1);
             transition: .5s ease-in-out;
+        }
+
+        &-vuln {
+            display: flex;
+            flex-direction: row;
+            overflow: scroll;
+            margin-bottom: 1rem;
         }
     }
 
