@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './Footer.scss';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import logo from '../../assets/voron-logo.svg';
 import config from '../../config';
 import '../../pages/Login/Login.scss';
 
@@ -25,28 +24,35 @@ function CustomLink({
 
 export default function Footer() {
     const [mailInput, setMailInput] = useState('');
+    const [subscriptionStatus, setSubscriptionStatus] = useState<
+        'success' | 'failure' | ''
+    >('');
+
     const isValidEmail = (email: string) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
+
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (!isValidEmail(mailInput)) {
             alert('Please enter a valid email address');
             return;
         }
-        try {
-            const response = await axios.post(
-                `http://localhost:8000/mailing-list`,
-                {
+        await axios
+            .post(`${config.apiUrl}/mailing-list`, {
                     email: mailInput,
-                }
-            );
-            console.log('Mailing List Response:', response);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+                },
+            )
+            .then((data) => {
+                setSubscriptionStatus('success');
+            })
+            .catch((error) => {
+                setSubscriptionStatus('failure');
+                throw error
+            })
     };
+
     return (
         <div className="footer">
             <div className="footer-info">
@@ -67,8 +73,8 @@ export default function Footer() {
             <div className="footer-newsletter">
                 <h3>Newsletter</h3>
                 <p>
-                    Subscribe our newsletter to get news, tips, updates and more
-                    information about us
+                    Subscribe to our newsletter to get news, tips, updates, and
+                    more information about us
                 </p>
                 <input
                     type="email"
@@ -80,6 +86,16 @@ export default function Footer() {
                 <button onClick={handleSubmit} type="button">
                     Subscribe
                 </button>
+                {subscriptionStatus === 'success' && (
+                    <span style={{ color: 'green', marginLeft: '1rem' }}>
+                        Subscription successful!
+                    </span>
+                )}
+                {subscriptionStatus === 'failure' && (
+                    <span style={{ color: 'red', marginLeft: '1rem' }}>
+                        Subscription failed. Please try again.
+                    </span>
+                )}
             </div>
         </div>
     );
