@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './Footer.scss';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import logo from '../../assets/voron-logo.svg';
 import config from '../../config';
 import '../../pages/Login/Login.scss';
 
@@ -40,16 +39,18 @@ export default function Footer() {
             alert('Please enter a valid email address');
             return;
         }
-        try {
-            const response = await axios.post(`${config.apiUrl}/mailing-list`, {
-                email: mailInput,
-            });
-            console.log('Mailing List Response:', response);
-            setSubscriptionStatus('success');
-        } catch (error) {
-            console.error('Error:', error);
-            setSubscriptionStatus('failure');
-        }
+        await axios
+            .post(`${config.apiUrl}/mailing-list`, {
+                    email: mailInput,
+                },
+            )
+            .then((data) => {
+                setSubscriptionStatus('success');
+            })
+            .catch((error) => {
+                setSubscriptionStatus('failure');
+                throw error
+            })
     };
 
     return (
