@@ -266,7 +266,7 @@ function MissionList({
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const role = Cookies.get('Role');
     // Function to open the modal
     const openModal = () => {
         setIsModalOpen(true);
@@ -629,23 +629,25 @@ export default function Accueil() {
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div className="accueil-grid-3">
-                            <div className="accueil-rect-long">
-                                <h5
-                                    style={{
-                                        marginBottom: '15px',
-                                        position: 'sticky',
-                                    }}
-                                >
-                                    Co-workers
-                                </h5>
-                                <div className="rect-scroll">
-                                    {teamList.map((t) => {
-                                        return <TeamListContainer team={t} />;
-                                    })}
+                            {role === '1' || role === '2' ? (
+                                <div className="accueil-rect-long">
+                                    <h5
+                                        style={{
+                                            marginBottom: '15px',
+                                            position: 'sticky',
+                                        }}
+                                    >
+                                        Co-workers
+                                    </h5>
+                                    <div className="rect-scroll">
+                                        {teamList.map((t) => {
+                                            return <TeamListContainer team={t} />;
+                                        })}
+                                    </div>
                                 </div>
-                            </div>
+                            ) : null}
                         </div>
                     </div>
                 </div>

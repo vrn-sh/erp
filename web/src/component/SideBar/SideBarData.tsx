@@ -37,8 +37,13 @@ const SideBarData = function SideBarDataF() {
 
     const getUserInfo = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === '2') url += 'manager';
-        else url += 'pentester';
+        if (role === '2') {
+            url += 'manager';
+        } else if (role === '3') {
+            url += 'freelancer';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
@@ -53,6 +58,7 @@ const SideBarData = function SideBarDataF() {
                 throw e;
             });
     };
+    
 
     const getMissionFav = async () => {
         const favID = userInfo.favorites;
@@ -85,6 +91,7 @@ const SideBarData = function SideBarDataF() {
         };
         getData();
     }, [userInfo.favorites]);
+    const isFreelancer = role === '3'; // Vérification du rôle de freelanceur
 
     return [
         {
@@ -132,7 +139,7 @@ const SideBarData = function SideBarDataF() {
             isForManager: false,
             subNav: [],
         },
-    ];
+    ].filter(item => !(item.title === 'Create a team' || item.title === 'Teams') || !isFreelancer);
 };
 
 export default SideBarData;

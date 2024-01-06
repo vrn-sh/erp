@@ -3,6 +3,9 @@ import '../Settings.scss';
 import * as AiIcons from 'react-icons/ai';
 import { SecondaryButton } from '../../../component/Button';
 import subscriptions from '../../../assets/strings/en/subscriptions.json';
+import axios from 'axios';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
+
 
 export default function SettingBilling() {
     const cardColors = ['primary-color', 'secondary-color', 'primary-color'];
@@ -57,34 +60,38 @@ export default function SettingBilling() {
         setCreditCards(updatedCards);
     };
 
-    // const fetchLastPayments = async () => {
-    //     await axios
-    //         .get('https://api.stripe.com/v1/payment_intents', {
-    //             headers: {
-    //                 Authorization:
-    //                     'sk_test_51ODPTULCQ1iXP3QodJhJQ4aztaAWG26mZTeWRj5rvuPlac9SxRUJ4ZEOT6HKybM7csSYVOiCGouuqE3VtdfT3pJC00Qu1Ps9yG', // Remplacez par votre clé secrète
-    //             },
-    //         })
-    //         .then(async (data) => {
-    //             const newData = await data.data;
-    //             console.log(newData)
-    //             setLastPayments(newData);
-    //         })
-    //         .catch((e) => {
-    //             throw e.message;
-    //         });
-    // };
+    async function  fetchLastPayments  () : Promise<any[]>  {
+        // Charger Stripe avec votre clé publique
+  const stripePromise: Promise<Stripe | null> = loadStripe('VOTRE_CLE_PUBLIQUE_STRIPE');
 
-    // useEffect(() => {
-    //     fetchLastPayments();
-    // }, []);
+  try {
+    const stripe = await stripePromise;
+    if (!stripe) {
+      throw new Error('Impossible de charger Stripe');
+    }
+
+    // Récupérer les paiements via l'API de Stripe
+    const paymentIntentList = await stripe.paymentIntents.list({});
+
+    // Renvoyer les données des paiements
+    return paymentIntentList.data;
+  } catch (error) {
+    // Gestion des erreurs
+    console.error('Erreur lors de la récupération de l\'historique des paiements :', error);
+    throw error;
+  }
+     };
+
+     useEffect(() => {
+         fetchLastPayments();
+     }, []);
 
     return (
         <div>
             <div className="billing-plan-section">
                 <div className="billing-plan-actuel">
                     <h3>Your plan</h3>
-                    <h2>Plan Standard</h2>
+                    <h2>Business Plan</h2>
                     <p>Prix: {planPrice}</p>
                 </div>
 
@@ -299,9 +306,7 @@ export default function SettingBilling() {
                                                             subscription.price_month
                                                         );
                                                         handlePayment(
-                                                            subscription[
-                                                                'stripe-link'
-                                                            ]
+                                                            subscription['stripe-link']
                                                         );
                                                     }}
                                                 >

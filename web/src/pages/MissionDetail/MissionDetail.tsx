@@ -17,8 +17,8 @@ import Credentials from './Credential';
 import config from '../../config';
 import DorkEngine from '../Dashboard/SubDashboards/DorkEngine';
 import CrtSh from '../Dashboard/SubDashboards/CrtSh';
-import Notes from '../Dashboard/SubDashboards/Notes/Notes';
-import Report from '../Dashboard/SubDashboards/Report/Report';
+import Notes from '../Dashboard/SubDashboards/Notes/Notes';/*
+import Report from '../Dashboard/SubDashboards/Report/Report';*/
 import Vulnerability from '../Dashboard/SubDashboards/Vulnerability';
 
 export default function MissionDetail() {
@@ -257,9 +257,9 @@ export default function MissionDetail() {
         if (active === 'crt') {
             return <CrtSh />;
         }
-        if (active === 'report') {
+        /*if (active === 'report') {
             return <Report />;
-        }
+        }*/
         return null;
     };
 

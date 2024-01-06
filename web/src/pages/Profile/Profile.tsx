@@ -87,8 +87,13 @@ export default function ProfilePage() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === '2') url += 'manager';
-        else url += 'pentester';
+        if (Cookies.get('Role') === '3') {
+            url += 'freelancer';
+        } else if (Cookies.get('Role') === '2') {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
@@ -206,7 +211,7 @@ export default function ProfilePage() {
                                 <div className="profile-username">
                                     <h5>{userInfos.username}</h5>
                                     <p>
-                                        {role === '1' ? 'Pentester' : 'Manager'}
+                                    {role === '1' ? 'Pentester' : role === '2' ? 'Manager' : 'Freelancer'}
                                     </p>
                                 </div>
                             </div>
@@ -260,38 +265,77 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
-                    <div className="page-info">
-                        <h1>Teams</h1>
-                    </div>
+                    {role !== '3' && (
+                        <>
+                            <div className="page-info">
+                                <h1>Teams</h1>
+                            </div>
 
-                    <div className="assigned-missions">
-                        <div className="profile-container">
-                            <table
-                                style={{
-                                    textAlign: 'left',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <tbody>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Manager</th>
-                                        <th>Created date</th>
-                                        <th>Members</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                    {teamList.map((teamInfo) => {
-                                        return (
-                                            <TableSection
-                                                teamInfo={teamInfo}
-                                                missionList={missionList}
-                                            />
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
+                            <div className="assigned-missions">
+                                <div className="profile-container">
+                                    <table
+                                        style={{
+                                            textAlign: 'left',
+                                            justifyContent: 'space-between',
+                                        }}
+                                    >
+                                        <tbody>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Manager</th>
+                                                <th>Created date</th>
+                                                <th>Members</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            {teamList.map((teamInfo) => {
+                                                return (
+                                                    <TableSection
+                                                        teamInfo={teamInfo}
+                                                        missionList={missionList}
+                                                    />
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </>
+                    )}
+               {role === '3' && (
+                    <>
+                        <div className="page-info">
+                            <h1>Missions</h1>
                         </div>
-                    </div>
+
+                        <div className="assigned-missions">
+                            <div className="profile-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {missionList.map((mission) => (
+                                            <tr key={mission.id}>
+                                                <td>{mission.title}</td>
+                                                <td>{mission.status}</td>
+                                                <td>
+                                                    <button onClick={() => handleOpen(mission.id)}>
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </>
+                )}
+
                 </div>
             </div>
         </div>

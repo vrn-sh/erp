@@ -248,8 +248,13 @@ export default function TopBar() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === '2') url += 'manager';
-        else url += 'pentester';
+        if (Cookies.get('Role') === '3') {
+            url += 'freelancer';
+        } else if (Cookies.get('Role') === '2') {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         const response = await axios.get(`${url}/${Cookies.get('Id')}`, {
             headers: {
                 'Content-type': 'application/json',

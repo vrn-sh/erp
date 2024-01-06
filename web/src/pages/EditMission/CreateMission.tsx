@@ -98,7 +98,7 @@ export default function CreateMission() {
 
     const handleSubmit = async () => {
         setOpen(true);
-        if (Team === 0) {
+        if (Team === 0 && Cookies.get('Role') !== '3') {
             setMessage('Please choose a team', 'error');
             return;
         }
@@ -292,6 +292,7 @@ export default function CreateMission() {
                                 label="Team"
                                 onChange={handleChange}
                                 title="Select the team for the mission"
+                                disabled={Cookies.get('Role') === '3'} // Désactive la sélection pour le rôle '3'
                             >
                                 {teamList!.map((team) => {
                                     return (

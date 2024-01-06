@@ -52,8 +52,13 @@ export default function SecurityUser() {
 
     const getUserInfo = async () => {
         let urltmp = `${config.apiUrl}/`;
-        if (role === '2') urltmp += 'manager';
-        else urltmp += 'pentester';
+        if (Cookies.get('Role') === '3') {
+            urltmp += 'freelancer';
+        } else if (Cookies.get('Role') === '2') {
+            urltmp += 'manager';
+        } else {
+            urltmp += 'pentester';
+        }
         setURL(urltmp);
         await axios
             .get(`${urltmp}/${id}`, {

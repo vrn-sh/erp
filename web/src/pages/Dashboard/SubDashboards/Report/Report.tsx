@@ -3,16 +3,16 @@ import { useLocation } from 'react-router-dom';
 import './Report.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import NewTemplate from '../../../../../public/templates/template_0.png';
+/*import NewTemplate from '../../../../../public/templates/template_0.png';
 import AcademicTemplate from '../../../../../public/templates/template_1.png';
 import Red4SecTemplate from '../../../../../public/templates/template_2.png';
 import NASATemplate from '../../../../../public/templates/template_3.png';
-import HackmanitTemplate from '../../../../../public/templates/template_4.png';
+import HackmanitTemplate from '../../../../../public/templates/template_4.png';*/
 import MarkdownEditor from './Markdown/Editor';
 import BackButton from '../../../../component/BackButton';
 import config from '../../../../config';
 import { FileInput } from '../../../../component/Input';
-
+/*
 const templates = [
     {
         id: 0,
@@ -113,7 +113,7 @@ function DocumentTemplates({
 }
 
 export default function Report() {
-    const location = useLocation();
+   const location = useLocation();
     const [missionId, setMissionId] = useState(0);
     const [template, setTemplate] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
@@ -173,4 +173,4 @@ export default function Report() {
             )}
         </div>
     );
-}
+}*/
