@@ -84,7 +84,7 @@ const SideBarData = function SideBarDataF() {
             await getMissionFav();
         };
         getData();
-    }, [userInfo.favorites]);
+    }, [userInfo?.favorites]);
 
     return [
         {

@@ -259,10 +259,10 @@ export default function TopBar() {
 
         const userData = response.data.auth;
         setUserInfos({
-            username: userData.username,
-            profileImage: userData.profile_image,
-            first_name: userData.first_name,
-            last_name: userData.last_name,
+            username: userData.username || '',
+            profileImage: userData.profile_image || '',
+            first_name: userData.first_name || '',
+            last_name: userData.last_name || '',
         });
     };
 
