@@ -9,6 +9,7 @@ import { AlertColor, Chip } from '@mui/material';
 import dayjs from 'dayjs';
 import config from '../../../config';
 import DeleteConfirm from '../../../component/DeleteConfirm';
+import { genericRequest } from '../../TokenVerification/TokenVerification';
 
 export default function Mission() {
     const [list, setList] = useState<
@@ -69,28 +70,21 @@ export default function Mission() {
     };
 
     const getTeam = async () => {
-        await axios
-            .get(`${config.apiUrl}/team?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then(async (data) => {
-                const tab = [];
-                const newData = await data.data;
-                for (let i = 0; i < newData.length; i += 1) {
-                    tab.push({
-                        id: data.data[i].id,
-                        name: data.data[i].name,
-                    });
-                }
-                setTeamList(tab);
-            })
-            .catch((e) => {
-                throw e.message;
-            });
-    };
+        try {
+          const data = await genericRequest('GET', '/team?page=1', {}, navigate);
+          
+          const tab = data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+          }));
+      
+          setTeamList(tab);
+        } catch (e:any) {
+            throw e.message;
+         
+        }
+      };
+      
 
     const getName = (id: number) => {
         const name = teamList.find((elem) => elem.id === id);
@@ -114,23 +108,17 @@ export default function Mission() {
     };
 
     const getVulType = async () => {
-        await axios
-            .get(`${config.apiUrl}/vuln-type?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then(async (data) => {
-                const newData = await data.data;
-                setVulnType(newData.results);
-                setVulSuccess(true);
-            })
-            .catch((e) => {
-                setVulSuccess(false);
-                throw e.message;
-            });
-    };
+        try {
+          const data = await genericRequest('GET', '/vuln-type?page=1', {}, navigate);
+          setVulnType(data.results);
+          setVulSuccess(true);
+        } catch (e:any) {
+          setVulSuccess(false);
+            throw e.message;
+
+        }
+      };
+      
 
     const getVulData = (newData: any) => {
         const vulnty: string[] = [];
@@ -145,61 +133,41 @@ export default function Mission() {
     };
 
     const getMission = async () => {
-        await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then(async (data) => {
-                const tab = [];
-                for (let i = 0; i < data.data.results.length; i += 1) {
-                    let VulnData: any = [];
-                    await axios
-                        .get(
-                            `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
-                            {
-                                headers: {
-                                    'Content-type': 'application/json',
-                                    Authorization: `Token ${Cookies.get(
-                                        'Token'
-                                    )}`,
-                                },
-                            }
-                        )
-                        .then(async (res) => {
-                            VulnData = await res.data;
-                        })
-                        .catch((e) => {
-                            throw e.message;
-                        });
-                    const array = [];
-                    for (let j = 0; j < VulnData.length; j += 1) {
-                        if (VulnData[j].mission === data.data.results[i].id) {
-                            array.push(VulnData[j].vuln_type);
-                        }
-                    }
-                    tab.push({
-                        id: data.data.results[i].id,
-                        name: data.data.results[i].title,
-                        des: data.data.results[i].description,
-                        team: getName(data.data.results[i].team),
-                        status: setStatus(
-                            data.data.results[i].end,
-                            data.data.results[i].start
-                        ) || { color: 'info', text: 'Not Started' },
-                        scope: data.data.results[i].scope,
-                        vuln: getVulData(array),
-                    });
-                }
-                tab.reverse();
-                setList(tab);
-            })
-            .catch((e) => {
-                throw e.message;
+        try {
+          const missions = await genericRequest('GET', '/mission?page=1', {}, navigate);
+          const tab = [];
+      
+          for (let i = 0; i < missions.results.length; i += 1) {
+            const missionId = missions.results[i].id;
+            const vulnData = await genericRequest('GET', `/vulnerability?page=1&mission_id=${missionId}`, {}, navigate);
+            const array = [];
+      
+            for (let j = 0; j < vulnData.results.length; j += 1) {
+              if (vulnData.results[j].mission === missionId) {
+                array.push(vulnData.results[j].vuln_type);
+              }
+            }
+      
+            tab.push({
+              id: missions.results[i].id,
+              name: missions.results[i].title,
+              des: missions.results[i].description,
+              team: getName(missions.results[i].team),
+              status: setStatus(missions.results[i].end, missions.results[i].start) || { color: 'info', text: 'Not Started' },
+              scope: missions.results[i].scope,
+              vuln: getVulData(array),
             });
-    };
+          }
+      
+          tab.reverse();
+          setList(tab);
+        } catch (e:any) {
+            throw e.message;
+          
+        }
+      };
+      
+      
 
     const NavEditMission = (id: number) => {
         navigate('/mission/edit', {

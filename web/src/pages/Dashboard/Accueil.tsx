@@ -17,7 +17,10 @@ import IconButton from '@mui/material/IconButton';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
+import formRows from '../../assets/strings/en/payload.json';
+import { genericRequest } from '../TokenVerification/TokenVerification';
 import PayLoadForm from './shellcode/PayLoadForm';
+
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
@@ -266,6 +269,8 @@ function MissionList({
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate(); // Utilisation de useNavigate dans le composant
+
 
     // Function to open the modal
     const openModal = () => {
@@ -350,39 +355,27 @@ export default function Accueil() {
         );
     }
 
-    const getVulType = async () => {
-        await axios
-            .get(`${config.apiUrl}/vuln-type?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then(async (vulnT) => {
-                const newData = await vulnT.data;
-                setVulnType(newData.results);
-            })
-            .catch((e) => {
-                throw e.message;
-            });
-    };
+    const getVulnType = async () => {
+        try {
+          const vulnT = await genericRequest('GET', '/vuln-type?page=1', {}, navigate);
+          const newData = vulnT.results;
+          setVulnType(newData);
+        } catch (error) {
+          console.error(error);
+          // Gérer l'erreur ici, si nécessaire
+        }
+      };
 
-    const getTeamList = async () => {
-        await axios
-            .get(`${config.apiUrl}/team?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((res) => {
-                setTeamList(res.data);
-            })
-            .catch((e) => {
-                throw e.message;
-            });
-    };
-
+      const getTeamList = async () => {
+        try {
+          const teamList = await genericRequest('GET', '/team?page=1', {}, navigate);
+          setTeamList(teamList);
+        } catch (error) {
+          console.error(error);
+          // Gérer l'erreur ici, si nécessaire
+        }
+      };
+      
     const setStatus = (end: string, start: string) => {
         if (currentDay.isAfter(dayjs(end))) return 100;
         const duration = dayjs(end).diff(dayjs(start), 'days');
@@ -423,86 +416,79 @@ export default function Accueil() {
         }
         return vulnImp;
     };
-
     const getMission = async () => {
         let vulnImp: any = [];
         let vulnLenth = 0;
-        await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then(async (missions) => {
-                const tab = [];
-                const project = {
-                    'In progress': 0,
-                    Succeeded: 0,
-                    'On hold': 0,
-                };
-                const missionData = missions.data.results;
-                // number of projects to show
-                setNumProjects(missionData.length);
-                for (let i = 0; i < missionData.length; i += 1) {
-                    let VulnData: any = [];
-                    const array = [];
-                    await axios
-                        .get(`${config.apiUrl}/vulnerability?page=1`, {
-                            headers: {
-                                'Content-type': 'application/json',
-                                Authorization: `Token ${Cookies.get('Token')}`,
-                            },
-                        })
-                        .then(async (res) => {
-                            VulnData = await res.data.results;
-                        })
-                        .catch((e) => {
-                            throw e.message;
-                        });
-                    for (let j = 0; j < VulnData.length; j += 1) {
-                        if (VulnData[j].mission === missionData[i].id) {
-                            array.push(VulnData[j].vuln_type);
-                        }
-                    }
-                    const vul: any = getVulData(array);
-                    tab.push({
-                        id: missionData[i].id,
-                        name: missionData[i].title,
-                        status: setStatus(
-                            missionData[i].end,
-                            missionData[i].start
-                        ),
-                        end: missionData[i].end,
-                        vuln: vul,
-                    });
-                    const s = missionData[i].status;
-                    if (s === 'In progress') project['In progress'] += 1;
-                    else project.Succeeded += 1;
-                    vulnLenth += vul.length;
-                    vulnImp = getVulnSev(vulnImp, vul);
-                }
-                tab.reverse();
-                setList(tab);
-                vulnImp.push({
-                    value: vulnLenth,
-                    name: 'total',
-                });
-                setVulnImport(vulnImp);
-                // set for piechart
-                setData([
-                    { value: project['In progress'], label: 'In progress' },
-                    { value: project.Succeeded, label: 'Succeeded' },
-                    { value: project['On hold'], label: 'On hold' },
-                ]);
-            })
-            .catch((e) => {
-                throw e.message;
+      
+        try {
+          const missions = await genericRequest('GET', '/mission?page=1', {}, navigate);
+          const tab = [];
+          const project = {
+            'In progress': 0,
+            Succeeded: 0,
+            'On hold': 0,
+          };
+          const missionData = missions.results;
+      
+          setNumProjects(missionData.length);
+      
+          for (let i = 0; i < missionData.length; i += 1) {
+            let VulnData: any = [];
+            const array = [];
+      
+            const res = await genericRequest('GET', '/vulnerability?page=1', {}, navigate);
+            VulnData = res.results;
+      
+            for (let j = 0; j < VulnData.length; j += 1) {
+              if (VulnData[j].mission === missionData[i].id) {
+                array.push(VulnData[j].vuln_type);
+              }
+            }
+      
+            const vul: any = getVulData(array);
+            tab.push({
+              id: missionData[i].id,
+              name: missionData[i].title,
+              status: setStatus(
+                missionData[i].end,
+                missionData[i].start
+              ),
+              end: missionData[i].end,
+              vuln: vul,
             });
-    };
+      
+            const s = missionData[i].status;
+            if (s === 'In progress') project['In progress'] += 1;
+            else project.Succeeded += 1;
+      
+            vulnLenth += vul.length;
+            vulnImp = getVulnSev(vulnImp, vul);
+          }
+      
+          tab.reverse();
+          setList(tab);
+      
+          vulnImp.push({
+            value: vulnLenth,
+            name: 'total',
+          });
+      
+          setVulnImport(vulnImp);
+      
+          // set for piechart
+          setData([
+            { value: project['In progress'], label: 'In progress' },
+            { value: project.Succeeded, label: 'Succeeded' },
+            { value: project['On hold'], label: 'On hold' },
+          ]);
+        } catch (e:any) {
+          throw e.message;
+        }
+      };
+      
 
     useEffect(() => {
-        getVulType();
+        getVulnType();
     }, []);
 
     useEffect(() => {
