@@ -24,7 +24,7 @@ import VulnerabilityDetail from './pages/Vulnerability/VulnDetail';
 import PrivateRoute from './pages/TokenVerification/TokenVerification';
 import ViewTeamDetails from './pages/Team/ViewTeam';
 import Accueil from './pages/Dashboard/Accueil';
-import Reset from './pages/Reset/Reset';
+import Reset from './pages/Login/Reset';
 
 function App() {
     return (
