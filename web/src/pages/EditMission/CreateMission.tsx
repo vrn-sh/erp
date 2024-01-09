@@ -23,6 +23,15 @@ import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
 import Input from '../../component/Input';
 
+interface MissionData {
+    title: string;
+    logo: string;
+    description: string;
+    start: string;
+    end: string;
+    scope: string[];
+    team?: number;
+}
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
     const [logo, setLogo] = useState('');
@@ -109,18 +118,32 @@ export default function CreateMission() {
             );
             return;
         }
+        let requestData: MissionData = {
+            title: Title,
+            logo,
+            description: Des,
+            start: start.format('YYYY-MM-DD'),
+            end: end.format('YYYY-MM-DD'),
+            scope,
+        };
+    
+        if (Cookies.get('Role') === '3') {
+            // Si le rôle est égal à 3, enlève le paramètre team de la requête
+            requestData = {
+                ...requestData,
+                team: undefined,
+            };
+        } else {
+            // Sinon, ajoute le paramètre team à la requête
+            requestData = {
+                ...requestData,
+                team: Team,
+            };
+        }
         await axios
             .post(
                 `${config.apiUrl}/mission`,
-                {
-                    title: Title,
-                    logo,
-                    description: Des,
-                    start: start.format('YYYY-MM-DD'),
-                    end: end.format('YYYY-MM-DD'),
-                    team: Team,
-                    scope,
-                },
+                requestData,
                 {
                     headers: {
                         'Content-type': 'application/json',

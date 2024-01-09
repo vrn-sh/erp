@@ -1,0 +1,57 @@
+                        List of relations
+ Schema |               Name               |   Type   |  Owner   
+--------+----------------------------------+----------+----------
+ public | api_auth                         | table    | postgres
+ public | api_auth_groups                  | table    | postgres
+ public | api_auth_groups_id_seq           | sequence | postgres
+ public | api_auth_id_seq                  | sequence | postgres
+ public | api_auth_user_permissions        | table    | postgres
+ public | api_auth_user_permissions_id_seq | sequence | postgres
+ public | api_clientinfo                   | table    | postgres
+ public | api_clientinfo_id_seq            | sequence | postgres
+ public | api_credentials                  | table    | postgres
+ public | api_credentials_id_seq           | sequence | postgres
+ public | api_crtsh                        | table    | postgres
+ public | api_crtsh_id_seq                 | sequence | postgres
+ public | api_freelancer                   | table    | postgres
+ public | api_freelancer_id_seq            | sequence | postgres
+ public | api_mailinglistitem              | table    | postgres
+ public | api_mailinglistitem_id_seq       | sequence | postgres
+ public | api_manager                      | table    | postgres
+ public | api_manager_id_seq               | sequence | postgres
+ public | api_mission                      | table    | postgres
+ public | api_mission_id_seq               | sequence | postgres
+ public | api_nmapscan                     | table    | postgres
+ public | api_nmapscan_id_seq              | sequence | postgres
+ public | api_notes                        | table    | postgres
+ public | api_notes_id_seq                 | sequence | postgres
+ public | api_pentester                    | table    | postgres
+ public | api_pentester_id_seq             | sequence | postgres
+ public | api_recon                        | table    | postgres
+ public | api_recon_id_seq                 | sequence | postgres
+ public | api_reporthtml                   | table    | postgres
+ public | api_reporthtml_id_seq            | sequence | postgres
+ public | api_reporttemplate               | table    | postgres
+ public | api_reporttemplate_id_seq        | sequence | postgres
+ public | api_team                         | table    | postgres
+ public | api_team_id_seq                  | sequence | postgres
+ public | api_team_members                 | table    | postgres
+ public | api_team_members_id_seq          | sequence | postgres
+ public | api_vulnerability                | table    | postgres
+ public | api_vulnerability_id_seq         | sequence | postgres
+ public | api_vulntype                     | table    | postgres
+ public | api_vulntype_id_seq              | sequence | postgres
+ public | auth_group                       | table    | postgres
+ public | auth_group_id_seq                | sequence | postgres
+ public | auth_group_permissions           | table    | postgres
+ public | auth_group_permissions_id_seq    | sequence | postgres
+ public | auth_permission                  | table    | postgres
+ public | auth_permission_id_seq           | sequence | postgres
+ public | django_content_type              | table    | postgres
+ public | django_content_type_id_seq       | sequence | postgres
+ public | django_migrations                | table    | postgres
+ public | django_migrations_id_seq         | sequence | postgres
+ public | django_session                   | table    | postgres
+ public | knox_authtoken                   | table    | postgres
+(52 rows)
+

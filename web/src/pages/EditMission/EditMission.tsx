@@ -24,6 +24,7 @@ import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
 import Input from '../../component/Input';
 
+
 export default function EditMission() {
     const [Title, setTitle] = useState('');
     const [Des, setDes] = useState('');
