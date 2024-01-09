@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -16,6 +17,7 @@ export default function CrtSh() {
     const [inputIdentity, setInputIdentity] = useState('');
     const [missionId, setMissionId] = useState(-1);
     const [success, setSuccess] = useState(false);
+    const location = useLocation();
     const [crtData, setCrtData] = useState<
         {
             id: number;
@@ -72,7 +74,7 @@ export default function CrtSh() {
     const searchIdentity = async () => {
         setOpen(true);
         if (missionId === -1 || tmpIdentity.length === 0) {
-            setMessage('please select a mission', 'error');
+            setMessage('Please enter a correct identity', 'error');
             return;
         }
         setMessage('Loading...', 'info');
@@ -102,7 +104,7 @@ export default function CrtSh() {
     const updateIdentity = async () => {
         setOpen(true);
         if (missionId === -1 || tmpIdentity.length === 0) {
-            setMessage('please select a mission', 'error');
+            setMessage('Please enter a correct identity', 'error');
             return;
         }
         setMessage('Loading...', 'info');
@@ -134,6 +136,10 @@ export default function CrtSh() {
     const firstIndex = lastIndex - recordsPerPage;
     let records = crtData.slice(firstIndex, lastIndex);
     let npage = Math.ceil(crtData.length / recordsPerPage);
+
+    useEffect(() => {
+        setMissionId(location.state.missionId);
+    }, []);
 
     useEffect(() => {
         records = crtData.slice(firstIndex, lastIndex);
@@ -172,10 +178,6 @@ export default function CrtSh() {
     return (
         <>
             <div className="crt_input">
-                <SelectMission
-                    setMissionId={setMissionId}
-                    missionId={missionId}
-                />
                 <input
                     className="crt-form-control"
                     placeholder="Enter an Identity"

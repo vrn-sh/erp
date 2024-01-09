@@ -1,0 +1,81 @@
+[
+
+    {
+        "id": "laddr",
+        "name": "Callback Address",
+        "type": "text",
+        "selection": [],
+        "defaultValue": "10.0.2.2"
+    },
+    {
+        "id": "lport",
+        "name": "CallBack Port",
+        "type": "text",
+        "selection": [],
+        "defaultValue": "4444"
+    },
+    {
+        "id": "exploit",
+        "name": "Exploit",
+        "type": "selection",
+        "selection": ["x64/shell_reverse_tcp"],
+        "defaultValue": "x64/shell_reverse_tcp"
+    },
+    {
+        "id": "arch",
+        "name": "Architecture",
+        "type": "selection",
+        "selection": ["x64"],
+        "defaultValue": "x64"
+    },
+    {
+        "id": "os",
+        "name": "Operating System",
+        "type": "selection",
+        "selection": ["windows"],
+        "defaultValue": "windows"
+    },
+    {
+        "id": "output_type",
+        "name": "Output Type",
+        "type": "selection",
+        "selection": ["exe"],
+        "defaultValue": "exe"
+    },
+    {
+        "id": "method",
+        "name": "Method",
+        "type": "selection",
+        "selection": ["CreateRemoteThread", "processHollowing"],
+        "defaultValue": "CreateRemoteThread"
+    },
+    {
+        "id": "exit_func",
+        "name": "Exit Function",
+        "type": "text",
+        "selection": [],
+        "defaultValue": ""
+    },
+    {
+        "id": "encoder",
+        "name": "Encoder",
+        "type": "text",
+        "selection": [],
+        "defaultValue": ""
+    },
+    {
+        "id": "exclude_bytes",
+        "name": "Byte excluded",
+        "type": "text",
+        "selection": [],
+        "defaultValue": ""
+    },
+    {
+        "id": "entropy",
+        "name": "Entropy",
+        "type": "selection",
+        "selection": ["", "dico", "SCE"],
+        "defaultValue": ""
+    }
+
+]

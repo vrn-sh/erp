@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
-import { BsFillShieldLockFill } from 'react-icons/bs';
-// import { IoIosNotifications } from 'react-icons/io';
-// import { BsCreditCard } from 'react-icons/bs';
+import { BsFillShieldLockFill, BsCreditCard } from 'react-icons/bs';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import './Settings.scss';
 import SettingAccount from './Settings-pages/setting-account';
 import SettingSecurity from './Settings-pages/set-security';
 // import SettingNotification from './Settings-pages/set-notif';
-// import SettingBilling from './Settings-pages/set-billing';
+import SettingBilling from './Settings-pages/set-billing';
 
 // Interface pour les données de sous-pages
 interface SubPage {
@@ -39,12 +37,18 @@ const subPagesData: SubPage[] = [
         icon: <BsFillShieldLockFill style={{ fontSize: '22px' }} />,
         key: 1,
     },
-    // {
-    //     title: 'Billing',
-    //     content: <SettingBilling />,
-    //     icon: <BsCreditCard style={{ fontSize: '22px' }} />,
-    //     key: 3,
-    // },
+    {
+        title: 'Billing',
+        content: <SettingBilling />,
+        icon: <BsCreditCard style={{ fontSize: '22px' }} />,
+        key: 2,
+    },
+    /* {
+         title: 'Billing',
+         content: <SettingBilling />,
+         icon: <BsCreditCard style={{ fontSize: '22px' }} />,
+         key: 2,
+     }, */
     // {
     //     title: 'Team',
     //     content: <SettingTeam userId={0} userRole="Manager" />, // TOFIX, Idk what role to put
