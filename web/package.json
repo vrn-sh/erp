@@ -22,6 +22,7 @@
     "@mui/icons-material": "^5.14.9",
     "@mui/joy": "^5.0.0-beta.10",
     "@mui/material": "^5.10.17",
+    "@mui/lab": "^5.0.0-alpha.154",
     "@mui/x-charts": "^6.0.0-alpha.14",
     "@mui/x-date-pickers": "^6.2.1",
     "@stripe/stripe-js": "^2.2.0",
@@ -45,7 +46,7 @@
     "react-vertical-timeline-component": "^3.6.0",
     "reactstrap": "^9.1.9",
     "recharts": "^2.1.16",
-    "vite": "^4.3.9",
+    "vite": "^4.4.12",
     "yarn": "^1.22.19"
   },
   "devDependencies": {

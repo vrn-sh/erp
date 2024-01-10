@@ -1,0 +1,51 @@
+[
+    {
+        "id": "build_type",
+        "name": "Build Type",
+        "type": "selection",
+        "selection": ["exe", "dll"],
+        "defaultValue": "exe"
+    },
+    {
+        "id": "technique",
+        "name": "Technique",
+        "type": "selection",
+        "selection": ["CRT", "CRTx", "CreateFiber", "ProcessHollowing", "CreateThread", "Syscall", "Etwp"],
+        "defaultValue": "ProcessHollowing"
+    },
+    {
+        "id": "encryption",
+        "name": "Encryption",
+        "type": "selection",
+        "selection": ["AES" ,"chacha20", "XOR", "blowfish"],
+        "defaultValue": "chacha20"
+    },
+    {
+        "id": "shellcode_file",
+        "name": "Shellcode File",
+        "type": "file",
+        "selection": [],
+        "defaultValue": ""
+    },
+    {
+        "id": "file_name",
+        "name": "File Name",
+        "type": "text",
+        "selection": [],
+        "defaultValue": "payload.exe"
+    },
+    {
+        "id": "process",
+        "name": "Process",
+        "type": "text",
+        "selection": [],
+        "defaultValue": "cmd.exe"
+    },
+    {
+        "id": "obfuscation",
+        "name": "Obfuscation",
+        "type": "boolean",
+        "selection": [],
+        "defaultValue": "false"
+    }
+]
