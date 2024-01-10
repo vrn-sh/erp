@@ -60,8 +60,6 @@ services:
 
   web:
     build:
-      args:
-        NODE_OPTIONS: "--max-old-space-size=400 --memory=600m --memory_swap=-1 --cpu-period=100000 --cpu-quota=500000"
       context: ./web
     ports:
       - "127.0.0.1:${FRONT_PORT}:3000"
