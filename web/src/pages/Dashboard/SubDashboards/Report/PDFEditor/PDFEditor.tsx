@@ -1,7 +1,6 @@
 import { useEffect, useRef, ReactElement } from "react";
 import PSPDFKit from "pspdfkit";
 
-
 interface PdfViewerProps {
   document: string; // Assuming `document` is a string representing the document URL
 }
@@ -11,7 +10,12 @@ export default function PdfViewerComponent(props: PdfViewerProps): ReactElement 
 
   useEffect(() => {
     const container = containerRef.current;
-        // Ensure that there's only one PSPDFKit instance.
+      const loadPSPDFKit = async () => {
+      try {
+        // Dynamically import pspdfkit during runtime
+
+        // Now you can use pspdfkit
+        // For example:
         PSPDFKit.unload(container);
 
         PSPDFKit.load({
@@ -22,11 +26,16 @@ export default function PdfViewerComponent(props: PdfViewerProps): ReactElement 
           document: props.document,
           baseUrl: `${window.location.protocol}//${window.location.host}/assets/`,
           toolbarItems: [...PSPDFKit.defaultToolbarItems, {type: "content-editor"}],
-        }).then((instance) => {
-          // PSPDFKit is ready to be used.
-          console.log(instance);
+        }).then(() => {
           console.log("PSPDFKit for Web successfully loaded!!!");
         });
+      } catch (error) {
+        console.error('Error loading PSPDFKit:', error);
+      }
+    };
+
+    loadPSPDFKit();
+
   }, [props.document]);
 
   // This div element will render the document to the DOM.
