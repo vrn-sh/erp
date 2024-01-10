@@ -1,0 +1,1 @@
+declare module 'https://cdn.jsdelivr.net/npm/pspdfkit@2023.5.4/+esm';
