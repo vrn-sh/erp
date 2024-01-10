@@ -4,7 +4,6 @@ import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import './Login.scss';
 import Cookies from 'js-cookie';
-import Modal from 'react-modal';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
 
@@ -29,29 +28,6 @@ export default function Login() {
         setMess({ mess, color });
     };
 
-    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-    const [resetEmail, setResetEmail] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
-
-    const handlePasswordReset = async () => {
-        setOpen(true);
-        await axios
-            .put(`${config.apiUrl}/reset`, {
-                email: resetEmail,
-            })
-            .then((date) => {
-                setMessage('Succeed! Please check your email', 'success');
-                setIsSuccess(true);
-            })
-            .catch((e) => {
-                setMessage('Error! Please enter correct email', 'error');
-                setIsSuccess(false);
-            });
-    };
-
-    const toggleResetModal = () => {
-        setIsResetModalOpen(!isResetModalOpen);
-    };
     const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
 
@@ -206,90 +182,21 @@ export default function Login() {
                                 {errorPwd} {errorEmail}
                             </p>
                             <div className="login-submit">
+                                {/* <p>Forgot password ? </p> */}
                                 <button type="button" onClick={submit}>
                                     LOGIN
                                 </button>
-
                                 <Link to="/sign_up" className="log-box">
                                     <span>You don't have an account </span>
                                     <span className="txt-color">
                                         Sign up in here!
                                     </span>
                                 </Link>
-                                <div
-                                    className="reset-password"
-                                    onClick={toggleResetModal}
-                                    onKeyDown={() => {}}
-                                    role="presentation"
-                                >
-                                    Forgot your password ? Reset here
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <Modal
-                isOpen={isResetModalOpen}
-                onRequestClose={toggleResetModal}
-                contentLabel="Reset Password Modal"
-                style={{
-                    overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                        zIndex: 1000,
-                    },
-                    content: {
-                        width: '30em',
-                        height: '30em',
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        right: 'auto',
-                        bottom: 'auto',
-                        marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                    },
-                }}
-            >
-                <h2>Reset Password</h2>
-                <p>Please enter your email address to reset your password.</p>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <input
-                        className="form-control"
-                        style={{ margin: '10px' }}
-                        type="email"
-                        value={resetEmail}
-                        onChange={(e) => setResetEmail(e.target.value)}
-                        placeholder="Enter your email"
-                    />
-                    <div style={{ width: '300px' }}>
-                        <button
-                            onClick={handlePasswordReset}
-                            type="button"
-                            className="form-control cursor-pointer"
-                        >
-                            Send Email
-                        </button>
-                        <button
-                            onClick={toggleResetModal}
-                            type="button"
-                            className="form-control cursor-pointer"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </Modal>
             {open && (
                 <Feedbacks
                     mess={message.mess}
