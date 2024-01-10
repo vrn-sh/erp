@@ -101,7 +101,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'voron',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',

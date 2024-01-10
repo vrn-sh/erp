@@ -167,7 +167,46 @@ header img {
     left: 0;
 }
 
+@page {
+    @bottom-left {
+        color: black;
+        content: counter(page);
+        height: 1cm;
+        text-align: center;
+        width: 1cm;
+    }
+
+    @bottom-center {
+    }
+
+    @bottom-right {
+        content: string(heading);
+        font-size: 9pt;
+        height: 1cm;
+        vertical-align: middle;
+        width: 100%;
+    }
+}
+@page :first {
+    @bottom-left {
+        background: white;
+        content: "";
+    }
+
+    @bottom-center {
+        background: white;
+        content: '';
+    }
+
+    @bottom-right {
+        content: "";
+    }
+}
+
+
+
 h1 {
+    string-set: heading content();
     font-family: 'Courier New', Courier, monospace;
     font-size: 2.5em;
 }

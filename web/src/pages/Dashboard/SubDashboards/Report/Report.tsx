@@ -41,6 +41,17 @@ const templates = [
     },
 ];
 
+interface IReport {
+    id: number;
+    template: string;
+    mission: number;
+    pdf_file: string;
+    html_file: string;
+    version: number;
+    mission_title: string;
+    updated_at: string;
+}
+
 // type for setMD and setTemplate
 function DocumentTemplates({
     setMD,
@@ -55,6 +66,22 @@ function DocumentTemplates({
     missionid: number,
     logo: string | null,
 }) {
+    const [reportHistory, setReportHistory] = useState<Array<IReport>>([]);
+
+    useEffect(() => {
+        // list all templates from history
+        axios.
+            get(`${config.apiUrl}/download-report`, {
+                headers: {
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                }
+            }).then((response) => {
+                console.log(response);
+                if (response.data['count'] > 0) {
+                    setReportHistory(response.data['results']);
+                }
+            })
+    }, [setTemplate])
     const handleTemplateSelection = async (templateId: number) => {
         setTemplate(templateId);
         axios
@@ -62,7 +89,7 @@ function DocumentTemplates({
                 `${config.apiUrl}/download-report`,
                 {
                     template_name: templates[templateId].name,
-                    missionid,
+                    mission: missionid,
                     logo,
                 },
                 {
@@ -111,6 +138,29 @@ function DocumentTemplates({
                     DOWNLOAD AS MARKDOWN
                 </button>
             </div>
+            <h2 style={{ textAlign: 'left' }}>History</h2>
+            <div className="template-row">
+                {reportHistory.length === 0 && <p>Nothing to show...</p>}
+                {reportHistory.map((report) => (
+                    <button
+                        style={{ minWidth: '0%' }}
+                        type="button"
+                        onKeyDown={() => {
+                            setPDFDocURL(report.pdf_file);
+                        }}
+                        key={report.id}
+                        className="template"
+                        onClick={() => {
+                            setPDFDocURL(report.pdf_file);
+                        }}
+                    >
+                        <img src={(templates.find((t) => t.name === report.template))?.thumbnail} alt={report.template} />
+                        <p className="template-name">{report.mission_title}</p>
+                        <p className="template-subtitle">{report.updated_at}</p>
+                        <p className="template-subtitle">Version {report.version}</p>
+                    </button>
+                    ))}
+            </div>
         </div>
     );
 }
@@ -144,10 +194,11 @@ export default function Report() {
     return (
         <div>
             <div style={{ display: 'content' }}>
-                {isMDActivated && (
+                {(isMDActivated === true || PDFDocURL !== "") && (
                     <BackButton
                         onClick={() => {
                             setMD(false);
+                            setPDFDocURL("");
                         }}
                         label="BACK TO TEMPLATES"
                     />

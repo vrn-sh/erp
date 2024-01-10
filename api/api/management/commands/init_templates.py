@@ -52,16 +52,13 @@ class Command(BaseCommand):
     <div class="cover-page">
         <header>
             <div class="header-content">
-                <div id="page-title">
+                <div id="page-title" style="background-color: navy;color:white;padding-right: none; padding-left: 12px;">
                     <h2 class="page-title-name">{team_name}</h2>
                 </div>
-                <div>
-                    <img src="{logo}" alt="{team_name} logo" style="max-height:0.75cm">
+                <div style="margin: 20px;">
+                    <img src="{logo}" alt="{team_name} logo" style="max-height:100px;">
                 </div>
             </div>
-
-                <div class="golden-divider"></div>
-
         </header>
         <div class="title">
             <h1>{mission_title}</h1>

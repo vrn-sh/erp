@@ -15,6 +15,27 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportHtml
         fields = '__all__'
+    
+    def update(self, instance, validated_data):
+        html_file = validated_data.pop('html_file')
+        instance = super().update(instance, validated_data)
+        instance.version += 1
+        filename = f'report-{instance.pk}-{instance.version}.pdf'
+        filepath = f'/tmp/{filename}'
+        if html_file:
+            HTML(string=html_file).write_pdf(
+                filepath,
+                stylesheets=[CSS(string=instance.template.css_style)],
+                font_config=FontConfiguration())
+        if 'pdf_file' in validated_data or html_file:
+            s3_client = S3Bucket()
+            if 'pdf_file' in validated_data:
+                s3_client.delete_file('rootbucket', instance.pdf_file.split('/')[-1])
+            s3_client.upload_file('rootbucket', filepath, filename)
+            instance.pdf_file = s3_client.get_object_url('rootbucket', filename)
+        instance.save()
+        return instance
+
 
     def to_representation(self, instance):
         cache_key = f'report_{instance.pk}'
@@ -25,6 +46,9 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         s3_client = S3Bucket()
 
         representation['logo'] = ''
+        representation['template'] = instance.template.name
+        representation['mission_title'] = instance.mission.title
+        representation['updated_at'] = instance.updated_at.strftime('%Y-%m-%d at %H:%M')
 
         # if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
         #    return representation
@@ -32,6 +56,9 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         s3_client = S3Bucket()
         if instance.logo:
             representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
+        if instance.pdf_file:
+            cache.set(cache_key, representation)
+            return representation
         filename = f'report-{instance.pk}-{instance.version}.pdf'
         filepath = f'/tmp/{filename}'
         html_content = self.dump_academic_report(instance, representation['logo']) \
@@ -41,10 +68,9 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             filepath,
             stylesheets=[CSS(string=instance.template.css_style)],
             font_config=FontConfiguration())
-            
+
         s3_client.upload_file('rootbucket', filepath, filename)
         representation['pdf_file'] = s3_client.get_object_url('rootbucket', filename)
-        print(representation['pdf_file'])
         os.remove(filepath)
         cache.set(cache_key, representation)
         return representation
@@ -211,14 +237,15 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             "name": "NASA",
             "html_header": f'''
         <div class="header-content">
-            <img id="header-logo"
-                src="{logo}"
-                alt="NASA logo" />
             <div id="page-title">
                 <h2 class="page-title-name">{title}</h2>
             </div>
+            <div class="header-logo">
+                <img id="header-logo"
+                    src="{logo}"
+                    alt="NASA logo" />
+            </div>
         </div>
-        <div class="golden-divider"></div>
 '''
             
         },

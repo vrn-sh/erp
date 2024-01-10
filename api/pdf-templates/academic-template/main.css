@@ -11,6 +11,28 @@ main {
     line-height: 1.6;
 }
 
+@page {
+    @bottom-left {
+        color: black;
+        content: counter(page);
+        height: 1cm;
+        text-align: center;
+        width: 1cm;
+    }
+
+    @bottom-center {
+    }
+
+    @bottom-right {
+        content: string(heading);
+        font-size: 9pt;
+        height: 1cm;
+        vertical-align: middle;
+        width: 100%;
+    }
+}
+
+
 section {
     /* 2 columns */
     column-count: 2;
