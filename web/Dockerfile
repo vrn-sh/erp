@@ -3,7 +3,7 @@ FROM node:hydrogen-alpine3.17 as web-build
 COPY package.json .
 RUN yarn install
 
-RUN cp -R ./node_modules/pspdfkit/dist/pspdfkit-lib assets/pspdfkit-lib
+RUN cp -R ./node_modules/pspdfkit/dist/pspdfkit-lib public/pspdfkit-lib
 
 COPY . .
 
