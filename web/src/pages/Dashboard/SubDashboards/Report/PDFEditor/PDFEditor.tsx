@@ -15,7 +15,7 @@ export default function PdfViewerComponent(props: PdfViewerProps): ReactElement 
         PSPDFKit.unload(container);
 
         PSPDFKit.load({
-          licenseKey: "",
+          licenseKey: import.meta.env.VITE_REACT_APP_PSPDFKIT_LICENSE_KEY,
           // Container where PSPDFKit should be mounted.
           container: containerRef.current!,
           // The document to open.
