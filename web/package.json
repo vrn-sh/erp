@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "VITE_REACT_APP_NODE_ENV=development vite",
-    "build": "tsc && NODE_OPTIONS=--max_old_space_size=8192 vite build",
+    "build": "tsc && NODE_OPTIONS=--max_old_space_size=1534 vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.ts,.tsx .",
     "lint:fix": "eslint --ext .js,.ts,.tsx --fix .",
