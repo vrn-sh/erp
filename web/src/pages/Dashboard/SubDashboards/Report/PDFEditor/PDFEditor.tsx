@@ -20,7 +20,7 @@ export default function PdfViewerComponent(props: PdfViewerProps): ReactElement 
           container: containerRef.current!,
           // The document to open.
           document: props.document,
-          baseUrl: `${window.location.protocol}//${window.location.host}/public/`,
+          baseUrl: `${window.location.protocol}//${window.location.host}/assets/`,
           toolbarItems: [...PSPDFKit.defaultToolbarItems, {type: "content-editor"}],
         }).then((instance) => {
           // PSPDFKit is ready to be used.
