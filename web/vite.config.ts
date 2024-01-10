@@ -15,9 +15,5 @@ export default defineConfig(() => {
     return {
         plugins: [react()],
         define: processEnvValues,
-        optimizeDeps: {
-            include: ['react','esm-dep > cjs-dep', './src/declarations.d.ts'],
-            exclude: ['react-hot-loader', 'react-hot-loader/root', 'react-hot-loader/patch'],
-        },
     };
 });

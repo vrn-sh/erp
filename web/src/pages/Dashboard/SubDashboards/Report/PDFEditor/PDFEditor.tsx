@@ -1,6 +1,5 @@
 import { useEffect, useRef, ReactElement } from "react";
-import PSPDFKit from "https://cdn.jsdelivr.net/npm/pspdfkit@2023.5.4/+esm";
-
+import PSPDFKit from "pspdfkit";
 
 interface PdfViewerProps {
   document: string; // Assuming `document` is a string representing the document URL
