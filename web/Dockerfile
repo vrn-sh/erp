@@ -11,7 +11,7 @@ FROM nginx:stable-alpine3.17 as run
 RUN apk update && apk upgrade
 
 COPY --from=web-build /dist /usr/share/nginx/html
-COPY --from=web-build ./node_modules/pspdfkit/dist/pspdfkit-lib /usr/share/html/assets/pspdfkit-lib
+COPY --from=web-build ./node_modules/pspdfkit/dist/pspdfkit-lib /usr/share/html/assets/.
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 3000
