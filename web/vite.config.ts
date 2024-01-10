@@ -15,5 +15,9 @@ export default defineConfig(() => {
     return {
         plugins: [react()],
         define: processEnvValues,
+        optimizeDeps: {
+            include: ['react', 'pspdfkit','esm-dep > cjs-dep'],
+            exclude: ['react-hot-loader', 'react-hot-loader/root', 'react-hot-loader/patch'],
+        },
     };
 });
