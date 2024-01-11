@@ -6,6 +6,8 @@ import re
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, To, Attachment, FileContent, FileName, FileType, Disposition, ContentId
 from typing import Optional
+import warnings
+from api.models.mailing_list import MailingListItem
 
 
 class SendgridParameters:
@@ -14,8 +16,6 @@ class SendgridParameters:
         "SENDGRID_SENDER", "YOUR_SENGRID_SENDER")
     SENDGRID_API_KEY = os.getenv(
         "SENDGRID_API_KEY", "YOUR_SENGRID_KEY")
-    TEMPLATE_ID = os.getenv("SENDGRID_MFA_TEMPLATE_ID",
-                            "YOUR_SENGRID_MFA_TEMPLATE_ID")
 
 
 class SendgridClient:
@@ -24,11 +24,13 @@ class SendgridClient:
     def __init__(self, recipient: str, sender: Optional[str] = SendgridParameters.DEFAULT_SENDER):
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
-
         self.sendgrid_client = SendGridAPIClient(
             api_key=SendgridParameters.SENDGRID_API_KEY)
         self.mail = Mail(sender, To(recipient), subject=None)
-        self.mail.template_id = SendgridParameters.TEMPLATE_ID
+
+    def set_template_id(self, template_id: str):
+        """Set the template ID for the email"""
+        self.mail.template_id = template_id
 
     def extract_first_name(self, email: str):
         """Extract first name from email using regex"""
@@ -69,22 +71,27 @@ class SendgridClient:
 
 
 def get_recipients():
-    url = f'https://{os.environ["DOMAIN_NAME"]}/api/mailing-list'
-    response = requests.get(url)
-    return response.json().get("results", [])
+    mailing_list_items = MailingListItem.objects.all()
+    recipients = [item.email for item in mailing_list_items]
+    return recipients
+
+
+def determine_template_id_based_on_scenario():
+    return "YOUR_TEMPLATE_ID"
 
 
 if __name__ == "__main__":
     recipients = get_recipients()
-
     for recipient_data in recipients:
         email_address = recipient_data.get("email")
         email_client = SendgridClient(recipient=email_address)
+        template_id = determine_template_id_based_on_scenario()
+        email_client.set_template_id(template_id)
         email_client.set_template_data({
             "text": "Welcome to our service!",
             "profile": "https://img.freepik.com/photos-gratuite/surface-abstraite-textures-mur-pierre-beton-blanc_74190-8189.jpg?size=626&ext=jpg&ga=GA1.1.1546980028.1703030400&semt=ais",
             "email": email_address
         }, recipient_email=email_address)
         response = email_client.send()
-        print(f"Email sent to {email_address}. Response:",
-              response.status_code)
+        warnings.warn(
+            f"Email sent to {email_address}. Response: {response.status_code}")
