@@ -6,6 +6,8 @@ import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
 import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
+import { GrSecure } from "react-icons/gr";
+
 
 export default function SecurityUser() {
     const role = Cookies.get('Role');
@@ -49,7 +51,46 @@ export default function SecurityUser() {
         }
         setOpen(false);
     };
+    const [mfaEnabled, setMfaEnabled] = useState(false);
+    const [mfaCode, setMfaCode] = useState('');
+    const [codeValidation, setCodeValidation] = useState(['', '', '', '', '', '']);
+    const [showMfaPopup, setShowMfaPopup] = useState(false);
+    const [isCodeCorrect, setIsCodeCorrect] = useState(false);
 
+    const handleMfaCheckbox = () => {
+        setMfaEnabled(!mfaEnabled);
+        if (!mfaEnabled) {
+            setShowMfaPopup(true);
+        }
+    };
+
+    const handleCodeInput = (index: number, value: string) => {
+        const newCodeValidation = [...codeValidation];
+        newCodeValidation[index] = value;
+        setCodeValidation(newCodeValidation);
+
+        const code = newCodeValidation.join('');
+        if (code.length === 6) {
+            // Vérification du code (remplacez cette logique par l'envoi de la validation côté serveur)
+            const isValidCode = code === '123456';
+            setIsCodeCorrect(isValidCode);
+        }
+    };
+
+    const [isCodeIncorrect, setIsCodeIncorrect] = useState(false); // État pour suivre si le code est incorrect
+
+    const handleVerifyCode = () => {
+        // Vérifier si le code est correct et activer le MFA
+        if (isCodeCorrect) {
+            setMfaEnabled(true);
+            setShowMfaPopup(false);
+        } else {
+            // Réinitialiser les champs et indiquer que le code est incorrect
+            setMfaEnabled(false);
+            setCodeValidation(['', '', '', '', '', '']);
+            setIsCodeIncorrect(true); // Activer le message d'erreur
+        }
+    };
     const getUserInfo = async () => {
         let urltmp = `${config.apiUrl}/`;
         if (role === '2') urltmp += 'manager';
@@ -245,6 +286,48 @@ export default function SecurityUser() {
             >
                 Submit
             </button>
+            <div style={{ marginTop: '1em',borderRadius:'5px', border:'solid 2px'}}>
+                <h2>Keep your account secure</h2>
+                <p style={{fontSize:'10px'}}>Protecting your account is crucial. To enhance the security of your personal information, activate two-factor authentication (2FA) now. This makes it harder for hackers to access your account, even if your credentials are compromised. Take a moment to enable 2FA in your security settings.</p>
+                <div>
+                    <input
+                        type="checkbox"
+                        checked={mfaEnabled}
+                        onChange={handleMfaCheckbox}
+                    />
+                    <label style={{ marginLeft: '0.5em' }}>Activer MFA</label>
+                </div>
+            </div>
+            {showMfaPopup && (
+                <div className="popup-container"style={{backgroundColor:'black'}}>
+                    <div className="popup">
+                        <div style={{width:'500px', height:'400px', borderRadius: '8px', padding: '20px', display:'block',backgroundColor:'white',textAlign:'center', alignItems:'center',justifyContent:'center'}}>
+                            <GrSecure size={50} style={{ color: 'blue' }} />
+                            <h3>Authentificate you account</h3>
+                            <p style={{fontSize:'12px'}}>Your online protection is our priority, and we're here to help make your account safer.</p>
+                            <p>Please enter the code sent to your email address</p>
+                            <div className="mfa-code-input" style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                {Array.from({ length: 6 }, (_, index) => (
+                                    <input
+                                        key={index}
+                                        type="text"
+                                        maxLength={1}
+                                        value={codeValidation[index]}
+                                        onChange={(e) => handleCodeInput(index, e.target.value)}
+                                        style={{ width: '30px', height: '30px', marginRight: '10px', textAlign: 'center', border: '1px solid #ccc', borderRadius: '4px' }}
+                                    />
+                                ))}
+                            </div>
+                            {isCodeIncorrect && (
+                            <p style={{ color: 'red', marginTop: '5px' }}>Code incorrect. Veuillez réessayer.</p>
+                        )}
+                            <div style={{ marginTop: '20px'}}>
+                                <button onClick={handleVerifyCode}>Verify</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
