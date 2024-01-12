@@ -313,6 +313,7 @@ export default function ProfilePage() {
                             </div>
                         </>
                     )}
+                    
                {role === '3' && (
                     <>
                         <div className="page-info">
