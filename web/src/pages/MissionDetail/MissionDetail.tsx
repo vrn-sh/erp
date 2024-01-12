@@ -41,9 +41,13 @@ export default function MissionDetail() {
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
     const url =
-        Cookies.get('Role') === '2'
-            ? `${config.apiUrl}/manager`
-            : `${config.apiUrl}/pentester`;
+    Cookies.get('Role') === '2'
+        ? `${config.apiUrl}/manager`
+        : Cookies.get('Role') === '1'
+        ? `${config.apiUrl}/pentester`
+        : Cookies.get('Role') === '3'
+        ? `${config.apiUrl}/freelancer`
+        : '';
 
     const handleClick = (event: any) => {
         setActive(event.target.id);

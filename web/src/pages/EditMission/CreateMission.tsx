@@ -128,6 +128,7 @@ export default function CreateMission() {
         };
     
         if (Cookies.get('Role') === '3') {
+            console.log(requestData);
             // Si le rôle est égal à 3, enlève le paramètre team de la requête
             requestData = {
                 ...requestData,

@@ -35,6 +35,7 @@ function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
 export default function ProfilePage() {
     const role = Cookies.get('Role');
     const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
     const [NumMission, setNumMission] = useState(0);
     const [coworker, setCowoker] = useState(0);
     const [userInfos, setUserInfos] = useState({
@@ -70,7 +71,11 @@ export default function ProfilePage() {
             people: number;
         }[]
     >([]);
-
+    const [item, setItem] = useState<{
+        id: number;
+        title: string;
+        type: string;
+    }>();
     const [missionList, setMissionList] = useState<
         {
             id: number;
@@ -163,6 +168,13 @@ export default function ProfilePage() {
                 setMissionList(res);
                 setNumMission(data.data.count);
             });
+    };
+    const NavMissionDetail = (id: number) => {
+        navigate('/mission/detail', {
+            state: {
+                missionId: id,
+            },
+        });
     };
 
     useEffect(() => {
@@ -323,9 +335,30 @@ export default function ProfilePage() {
                                                 <td>{mission.title}</td>
                                                 <td>{mission.status}</td>
                                                 <td>
-                                                    <button onClick={() => handleOpen(mission.id)}>
-                                                        Delete
-                                                    </button>
+                                                    <input
+                                                        type="button"
+                                                        value="Open"
+                                                        className="openBtn"
+                                                        onClick={() =>
+                                                            NavMissionDetail(
+                                                                mission.id
+                                                            )
+                                                        }
+                                                    />
+                                                    <input
+                                                            type="button"
+                                                            value="Delete"
+                                                            className="borderBtnError"
+                                                            onClick={() => {
+                                                                setItem({
+                                                                    id: mission.id,
+                                                                    title: mission.title,
+                                                                    type: 'mission',
+                                                                });
+                                                                setOpen(true);
+                                                            }}
+                                                        />
+                                                    
                                                 </td>
                                             </tr>
                                         ))}

@@ -531,7 +531,7 @@ export default function Accueil() {
                         />
                     </div>
                     <div className="accueil-container">
-                        <div className="accueil-grid-3">
+                        <div className={`accueil-grid-3 ${Number(Cookies.get('Role')) === 3 ? 'role-3' : ''}`}>
                             <div
                                 className="accueil-rect"
                                 style={{ height: '30vh' }}
@@ -609,7 +609,7 @@ export default function Accueil() {
                             </div>
                         </div>
 
-                        <div className="accueil-grid-3">
+                        <div className={`accueil-grid-3 ${Number(Cookies.get('Role')) === 3 ? 'role-3' : ''}`}>
                             <div className="accueil-rect-long">
                                 <h5 style={{ marginBottom: '15px' }}>
                                     My mission
@@ -630,8 +630,8 @@ export default function Accueil() {
                             </div>
                         </div>
                         
+                        {role === '1' || role === '2' ? (
                         <div className="accueil-grid-3">
-                            {role === '1' || role === '2' ? (
                                 <div className="accueil-rect-long">
                                     <h5
                                         style={{
@@ -647,8 +647,9 @@ export default function Accueil() {
                                         })}
                                     </div>
                                 </div>
-                            ) : null}
                         </div>
+                        ) : null}
+
                     </div>
                 </div>
             </div>

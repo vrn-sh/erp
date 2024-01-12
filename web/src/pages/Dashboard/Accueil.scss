@@ -16,6 +16,10 @@ h5, p {
     &-grid-3 {
         width: 30%;
         gap: 1rem;
+        &.role-3 {
+            /* Ajoutez ici les styles spécifiques pour le rôle 3 */
+            width: 50%; /* Ajustez la largeur selon vos besoins */
+        }
     }
 
     &-rect {
