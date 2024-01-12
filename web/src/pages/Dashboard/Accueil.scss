@@ -208,3 +208,36 @@ h5, p {
     text-decoration: none;
     text-transform: none;
 }
+
+.accueil-create-mission {
+    min-width: 1rem;
+    border-radius: 20px;
+    padding: .5rem;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.accueil-create-mission:hover {
+    background-color: var(--gradient-primary-btn);
+
+}
+
+.accueil-mission-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .5rem;
+}
+
+.borderBtn {
+    min-width: 20px;
+    border: 1px var(--primary-btn) solid;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+}

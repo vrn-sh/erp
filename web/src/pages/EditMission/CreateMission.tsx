@@ -96,6 +96,12 @@ export default function CreateMission() {
         setScope(newValue);
     };
 
+    /* eslint-disable */
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
+    }
+    /* eslint-enable */
+
     const handleSubmit = async () => {
         setOpen(true);
         if (Team === 0) {
@@ -132,9 +138,10 @@ export default function CreateMission() {
                     },
                 }
             )
-            .then((data) => {
-                console.log(data);
+            .then(async (data) => {
                 setMessage('Created!', 'success');
+                await timeout(1000);
+                navigate('/accueil');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
