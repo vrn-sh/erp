@@ -249,7 +249,7 @@ export default function MissionDetail() {
             return <Notes />;
         }
         if (active === 'vuln') {
-            return <Vulnerability />;
+            return <Vulnerability missionName={Title}/>;
         }
         if (active === 'recon') {
             return <Recon id={id} />;
