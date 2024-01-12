@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import './Report.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import NewTemplate from '../../../../assets/templates/template_0.png';
 import AcademicTemplate from '../../../../assets/templates/template_1.png';
 import Red4SecTemplate from '../../../../assets/templates/template_2.png';
 import NASATemplate from '../../../../assets/templates/template_3.png';
@@ -12,6 +11,8 @@ import MarkdownEditor from './Markdown/Editor';
 import BackButton from '../../../../component/BackButton';
 import config from '../../../../config';
 import { FileInput } from '../../../../component/Input';
+import PdfViewerComponent from './PDFEditor/PDFEditor';
+import SelectMission from '../../../../component/SelectMission';
 
 const templates = [
     {
@@ -22,8 +23,8 @@ const templates = [
     },
     {
         id: 1,
-        name: 'red4sec',
-        subtitle: 'Red4Sec Style',
+        name: 'yellow',
+        subtitle: 'Yellow Style',
         thumbnail: Red4SecTemplate,
     },
     {
@@ -40,18 +41,48 @@ const templates = [
     },
 ];
 
+interface IReport {
+    id: number;
+    template: string;
+    mission: number;
+    pdf_file: string;
+    html_file: string;
+    version: number;
+    mission_title: string;
+    updated_at: string;
+}
+
 // type for setMD and setTemplate
 function DocumentTemplates({
     setMD,
     setTemplate,
-    missionid,
     logo,
+    setPDFDocURL,
+    missionid,
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
     setTemplate: Dispatch<SetStateAction<number>>;
+    setPDFDocURL: Dispatch<SetStateAction<string>>;
     missionid: number;
     logo: string | null;
 }) {
+    const [reportHistory, setReportHistory] = useState<Array<IReport>>([]);
+
+    useEffect(() => {
+        // list all templates from history
+        axios
+            .get(`${config.apiUrl}/download-report`, {
+                headers: {
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((response) => {
+                console.log(response);
+                if (response.data.count > 0) {
+                    setReportHistory(response.data.results);
+                }
+            });
+    }, [setTemplate]);
     const handleTemplateSelection = async (templateId: number) => {
         setTemplate(templateId);
         axios
@@ -59,7 +90,7 @@ function DocumentTemplates({
                 `${config.apiUrl}/download-report`,
                 {
                     template_name: templates[templateId].name,
-                    missionid,
+                    mission: missionid,
                     logo,
                 },
                 {
@@ -69,8 +100,8 @@ function DocumentTemplates({
                 }
             )
             .then((response) => {
+                setPDFDocURL(response.data.pdf_file);
                 console.log(response);
-                window.open(response.data.html_file, '_blank');
             });
     };
 
@@ -108,6 +139,38 @@ function DocumentTemplates({
                     DOWNLOAD AS MARKDOWN
                 </button>
             </div>
+            <h2 style={{ textAlign: 'left' }}>History</h2>
+            <div className="template-row">
+                {reportHistory.length === 0 && <p>Nothing to show...</p>}
+                {reportHistory.map((report) => (
+                    <button
+                        style={{ minWidth: '0%' }}
+                        type="button"
+                        onKeyDown={() => {
+                            setPDFDocURL(report.pdf_file);
+                        }}
+                        key={report.id}
+                        className="template"
+                        onClick={() => {
+                            setPDFDocURL(report.pdf_file);
+                        }}
+                    >
+                        <img
+                            src={
+                                templates.find(
+                                    (t) => t.name === report.template
+                                )?.thumbnail
+                            }
+                            alt={report.template}
+                        />
+                        <p className="template-name">{report.mission_title}</p>
+                        <p className="template-subtitle">{report.updated_at}</p>
+                        <p className="template-subtitle">
+                            Version {report.version}
+                        </p>
+                    </button>
+                ))}
+            </div>
         </div>
     );
 }
@@ -118,6 +181,7 @@ export default function Report() {
     const [template, setTemplate] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
     const [logo, setBase64Image] = useState<string | null>(null);
+    const [PDFDocURL, setPDFDocURL] = useState<string>('');
 
     const handleImageUpload = (file: any) => {
         if (file) {
@@ -140,10 +204,11 @@ export default function Report() {
     return (
         <div>
             <div style={{ display: 'content' }}>
-                {isMDActivated && (
+                {(isMDActivated === true || PDFDocURL !== '') && (
                     <BackButton
                         onClick={() => {
                             setMD(false);
+                            setPDFDocURL('');
                         }}
                         label="BACK TO TEMPLATES"
                     />
@@ -158,18 +223,25 @@ export default function Report() {
                     alignItems: 'flex-end',
                 }}
             >
+                <SelectMission
+                    setMissionId={setMissionId}
+                    missionId={missionId}
+                />
                 {!isMDActivated && <FileInput setImage={handleImageUpload} />}
             </div>
 
-            {isMDActivated ? (
-                <MarkdownEditor missionid={missionId} />
-            ) : (
+            {isMDActivated && <MarkdownEditor missionid={missionId} />}
+            {!isMDActivated && PDFDocURL === '' && (
                 <DocumentTemplates
                     logo={logo}
                     setMD={setMD}
                     setTemplate={setTemplate}
+                    setPDFDocURL={setPDFDocURL}
                     missionid={missionId}
                 />
+            )}
+            {!isMDActivated && PDFDocURL !== '' && (
+                <PdfViewerComponent document={PDFDocURL} />
             )}
         </div>
     );

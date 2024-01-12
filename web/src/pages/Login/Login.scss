@@ -64,7 +64,7 @@
 .log-box {
     text-decoration: none;
     margin-top: 1rem;
-    font-family: 'Roboto-Light';
+    font-family: 'Poppins-Light';
     font-size: 13px;
 }
 
@@ -139,6 +139,9 @@ button:hover {
     color: #fefefe;
     transition: 0.2s ease-in-out;
 }
+.cursor-pointer {
+    cursor: pointer;
+}
 
 .email,
 .password {
@@ -181,7 +184,21 @@ button:hover {
     .login-text {
         display: none;
     }
+
     .form-wrapper {
         width: 100%;
     }
+}
+
+.reset-password {
+    color: var(--primary-btn);
+    margin-top: .5rem;
+    font-family: "Poppins-Regular";
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.reset-password:hover {
+    color: var(--primary-hover-txt);
+    cursor: pointer;
 }
