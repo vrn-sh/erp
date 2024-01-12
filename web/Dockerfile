@@ -14,4 +14,6 @@ COPY --from=web-build /dist /usr/share/nginx/html
 COPY --from=web-build ./node_modules/pspdfkit/dist/pspdfkit-lib /usr/share/html/assets/.
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
+RUN cp -r /usr/share/nginx/html/pspdfkit-lib /usr/share/nginx/html/assets/.
+
 EXPOSE 3000
