@@ -12,6 +12,7 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
     const [markdownText, setMarkdownText] = useState(
         '# Loading from backend...'
     );
+    const [isfetchDone, setFetchDone] = useState(false);
 
     const fetchDataFromBackend = async () => {
         const response = await axios.get(`${config.apiUrl}/markdown-report`, {
@@ -19,7 +20,7 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
                 Authorization: `Token ${Cookies.get('Token')}`,
             },
             params: {
-                missionid,
+                mission: missionid,
                 download: false,
             },
         });
@@ -34,14 +35,37 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
             );
             return;
         }
+        if (isfetchDone) {
+            setTimeout(() => {
+                const mdMission = JSON.parse(
+                    localStorage.getItem('md') || '{}'
+                );
+                mdMission[missionid] = markdownText;
+                localStorage.setItem('md', JSON.stringify(mdMission));
+            }, 2000);
+            return;
+        }
+
+        if (localStorage.getItem('md')) {
+            const mdMission = JSON.parse(localStorage.getItem('md') || '{}');
+            console.log('mdMission', mdMission);
+            if (mdMission[missionid]) {
+                setMarkdownText(mdMission[missionid]);
+                setFetchDone(true);
+                return;
+            }
+        }
         fetchDataFromBackend()
             .then((result) => {
                 setMarkdownText(result);
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
+            })
+            .finally(() => {
+                setFetchDone(true);
             });
-    }, []); // Empty dependency array
+    }, [markdownText, isfetchDone]); // Empty dependency array
 
     const handleInputChange = (e: any) => {
         setMarkdownText(e.target.value);
@@ -58,7 +82,7 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
                     Authorization: `Token ${Cookies.get('Token')}`,
                 },
                 params: {
-                    missionid,
+                    mission: missionid,
                     download: true,
                 },
                 maxRedirects: 5,

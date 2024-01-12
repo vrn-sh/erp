@@ -18,6 +18,8 @@ module.exports = {
         '@typescript-eslint/no-empty-interface': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
+        'react/destructuring-assignment': 'off',
+        'react/react-in-jsx-scope': 'off',
     },
     root: true,
     extends: [
