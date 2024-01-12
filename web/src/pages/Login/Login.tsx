@@ -28,26 +28,6 @@ export default function Login() {
         setMess({ mess, color });
     };
 
-    const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-
-        if (!/^\S+@\S+\.\S+$/.test(email)) {
-            setErrorEmail('Please enter valid email address.');
-        } else if (/^\S+@\S+\.\S+$/.test(email)) {
-            setErrorEmail('');
-        }
-    };
-
-    const checkPwd = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPwd(e.target.value);
-
-        if (pwd.length < 7) {
-            setErrorPwd('Password should have at least 8 characters.');
-        } else {
-            setErrorPwd('');
-        }
-    };
-
     const handleShowPwd = () => {
         if (pwdType === 'password') {
             setPwdType('text');
@@ -160,14 +140,14 @@ export default function Login() {
                             <input
                                 type="text"
                                 className="form-control"
-                                onChange={checkEmail}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                             <label>Password</label>
                             <div className="input-pwd">
                                 <input
                                     type={pwdType}
                                     className="form-control"
-                                    onChange={checkPwd}
+                                    onChange={(e) => setPwd(e.target.value)}
                                 />
                                 <button
                                     onClick={handleShowPwd}
