@@ -9,20 +9,27 @@ export default function About() {
         <div id="about" className="about">
             <div className="about-main-row">
                 <div className="about-more">
-                    {strings.more.map((item) => (
-                        item.position == 'right' ?
-                        <div style={{textAlign: 'right'}}>
-                            <h1 className="title">{item.title}</h1>
-                            <p style={{textAlign: 'right'}}>{item.desc}</p>
-                        </div>
-                        : 
-                        <div style={{textAlign: 'left'}}>
-                            <h1 className="title">{item.title}</h1>
-                            <p style={{textAlign: 'left'}}>{item.desc}</p>
-                        </div>
-                    ))}
+                    {strings.more.map((item) =>
+                        item.position === 'right' ? (
+                            <div style={{ textAlign: 'right' }}>
+                                <h1 className="title">{item.title}</h1>
+                                <p style={{ textAlign: 'right' }}>
+                                    {item.desc}
+                                </p>
+                            </div>
+                        ) : (
+                            <div style={{ textAlign: 'left' }}>
+                                <h1 className="title">{item.title}</h1>
+                                <p style={{ textAlign: 'left' }}>{item.desc}</p>
+                            </div>
+                        )
+                    )}
                     <Link to="/sign_up">
-                        <img src={action} alt="about-action" className='about-action'/>
+                        <img
+                            src={action}
+                            alt="about-action"
+                            className="about-action"
+                        />
                     </Link>
                 </div>
             </div>
