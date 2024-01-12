@@ -1,24 +1,41 @@
 body {
     font-family: "Times New Roman", Times, serif;
-            padding: 2em 4.5em;
-            margin: 20px;
 }
 
 header {
     text-align: center;
     padding: 20px 0;
 }
+
 main {
     line-height: 1.6;
-    position: relative;
-    width: 3.5in;
-    height: 5in;
-    display: inline-block;
-    overflow: hidden;
-    vertical-align: top;
 }
+
+@page {
+    @bottom-left {
+        color: black;
+        content: counter(page);
+        height: 1cm;
+        text-align: center;
+        width: 1cm;
+    }
+
+    @bottom-center {
+    }
+
+    @bottom-right {
+        content: string(heading);
+        font-size: 9pt;
+        height: 1cm;
+        vertical-align: middle;
+        width: 100%;
+    }
+}
+
+
 section {
-    width: 3.5in;
+    /* 2 columns */
+    column-count: 2;
 }
 
 h1 {
@@ -53,6 +70,7 @@ h2 {
 .paper-content {
     margin-top: 30px;
 }
+
 /* Table Styles */
 table {
     width: 100%;
@@ -60,7 +78,8 @@ table {
     margin-top: 20px;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
@@ -70,83 +89,75 @@ th {
     background-color: #f2f2f2;
 }
 
-            .project-info-table {
-                display: block;
-            }
+.project-info-table .row {
+    display: flex;
+}
 
-            .project-info-table .row:after {
-                content: "";
-                display: table;
-                clear: both;
-            }
+.project-info-table .col-left {
+    width: 25%;
+    padding: 10px;
+}
 
-            .project-info-table .col-left {
-                float: left;
-                width: 25%;
-                padding: 10px;
-            }
+.project-info-table .col-right {
+    padding: 10px;
+}
 
-            .project-info-table .col-right {
-                float: left;
-                padding: 10px;
-            }
+.project-info-table .sub-col-left {
+    width: 25%;
+    padding: 0 0 0 10px;
+}
 
-            .project-info-table .sub-col-left {
-                float: left;
-                width: 25%;
-                padding: 0 0 0 10px;
-            }
+.project-info-table .sub-col-right {
+    width: 60%;
+    padding: 0 0 0 10px;
+}
 
-            .project-info-table .sub-col-right {
-                float: left;
-                width: 60%;
-                padding: 0 0 0 10px;
-            }
 
-            .main-table {
-                border-collapse: separate;
-                border: 2px solid black;
-                border-left: 0;
-                border-right: 0;
-                border-spacing: 0;
-                text-align: left;
-                width: 100%;
-            }
+.main-table {
+    border-collapse: separate;
+    border: 2px solid black;
+    border-left: 0;
+    border-right: 0;
+    border-spacing: 0;
+    text-align: left;
+    width: 100%;
+}
 
-            .main-table thead th {
-                font-size: larger;
-            }
+.main-table thead th {
+    font-size: larger;
+}
 
-            .main-table span {
-                font-weight: bold;
-            }
+.main-table span {
+    font-weight: bold;
+}
 
-            .main-table td:last-child,
-            th:last-child {
-                border-left: 1px solid black;
-            }
+.main-table td:last-child,
+th:last-child {
+    border-left: 1px solid black;
+}
 
-            .main-table td,
-            .main-table th {
-                border-bottom: 1px solid black;
-                padding: 3px;
-            }
+.main-table td,
+.main-table th {
+    border-bottom: 1px solid black;
+    padding: 3px;
+}
 
-            .sub-table {
-                border-collapse: collapse;
-                border-left: 0;
-            }
+.sub-table {
+    border-collapse: collapse;
+    border-left: 0;
+}
 
-            .sub-table td,
-            .sub-table th {
-                border-bottom: 0;
-            }
+.sub-table td,
+.sub-table th {
+    border-bottom: 0;
+}
 
-            .figure {
-                display: block;
-                text-align: center;
-            }
-            .figure img {
-                width: 100%;
-                object-fit: cover;
-            }
+.figure {
+    display: block;
+    text-align: center;
+}
+
+img {
+    max-width: 600px;
+    object-fit: cover;
+}

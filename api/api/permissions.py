@@ -72,7 +72,7 @@ class IsLinkedToData(permissions.BasePermission):
             return obj.leader.auth.id == request.user.id  # type: ignore
 
         if isinstance(obj, Mission):
-            if obj.freelance_member:
+            if obj.freelance_member or request.user.role == 3:
                 return request.user.id == obj.freelance_member.id  # type: ignore
 
             for m in obj.team.members.all():  # type: ignore

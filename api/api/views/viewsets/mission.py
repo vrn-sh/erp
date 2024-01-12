@@ -285,7 +285,7 @@ class CredentialViewset(viewsets.ModelViewSet):
 
         if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
-            if not mission.is_member(self.request.user):
+            if self.request.user.role != 3 and not mission.is_member(self.request.user):
                 return Response(status=HTTP_403_FORBIDDEN)
             request.data['mission'] = mission_id
             return super().create(request, *args, **kwargs)
@@ -383,7 +383,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def list(self, request, *args, **kwargs):
         name_query = request.query_params.get('search', None)
 
-        if request.user.role == 2:
+        if request.user.role == 2 or request.user.role == 3:
             missions = Mission.objects.filter(created_by=request.user.id)
         else:
             missions = Mission.objects.filter(team__members__auth__id=request.user.id)

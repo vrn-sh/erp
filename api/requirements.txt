@@ -19,4 +19,5 @@ pdfkit==1.0.0
 python-dateutil==2.8.2
 numpy==1.25.0
 tblib==2.0.0
+weasyprint
 pyotp==2.9.0

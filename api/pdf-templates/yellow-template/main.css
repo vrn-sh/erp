@@ -1,0 +1,296 @@
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 0;
+}
+
+@page {
+    @top-left {
+        background: #fbc847;
+        content: counter(page);
+        height: 1cm;
+        text-align: center;
+        width: 1cm;
+    }
+
+    @top-center {
+        background: #fbc847;
+        content: '';
+        display: block;
+        height: .05cm;
+        opacity: .5;
+        width: 100%;
+    }
+
+    @top-right {
+        content: string(heading);
+        font-size: 9pt;
+        height: 1cm;
+        vertical-align: middle;
+        width: 100%;
+    }
+}
+
+@page :blank {
+    @top-left {
+        background: none;
+        content: ''
+    }
+
+    @top-center {
+        content: none
+    }
+
+    @top-right {
+        content: none
+    }
+}
+
+@page no-chapter {
+    @top-left {
+        background: none;
+        content: none
+    }
+
+    @top-center {
+        content: none
+    }
+
+    @top-right {
+        content: none
+    }
+}
+
+@page :first {}
+
+@page chapter {
+    background: #fbc847;
+    margin: 0;
+
+    @top-left {
+        content: none
+    }
+
+    @top-center {
+        content: none
+    }
+
+    @top-right {
+        content: none
+    }
+}
+
+html {
+    color: #393939;
+    font-family: Fira Sans;
+    font-size: 11pt;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+
+h1,
+h2,
+h3,
+h4 {
+    color: black;
+    font-weight: 400;
+}
+
+h1 {
+    break-before: always;
+    font-size: 28pt;
+    string-set: heading content();
+}
+
+h3 {
+    font-weight: 300;
+    font-size: 15pt;
+}
+
+h4 {
+    font-size: 13pt;
+}
+
+#cover #logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#cover address {
+    border: 1px solid #fbc847;
+    padding: 0.5em;
+    white-space: pre-wrap;
+}
+
+#cover address:first-of-type {
+    padding-left: 3cm;
+}
+
+.project-info-table {
+    display: block;
+    border: 1px solid #fbc847;
+    padding: 0.5em;
+}
+
+.project-info-table .row {
+    display: flex;
+}
+
+.project-info-table .col-left {
+    width: 25%;
+    padding: 10px;
+}
+
+.project-info-table .col-right {
+    padding: 10px;
+}
+
+.project-info-table .sub-col-left {
+    width: 25%;
+    padding: 0 0 0 10px;
+}
+
+.project-info-table .sub-col-right {
+    width: 60%;
+    padding: 0 0 0 10px;
+}
+
+header {
+    display: block;
+}
+
+img {
+    float: right;
+    height: 10%;
+    width: 15%;
+    object-fit: cover;
+}
+
+.divider-x {
+    border-bottom: 2px solid #fbc847;
+    width: 100%;
+    margin: 0;
+    left: 0;
+}
+
+.heading-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#heading-title {
+    font-size: 13px;
+    padding: 1.5em;
+    background-color: #fbc847;
+}
+
+.scope {}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul li {
+    border-top: .25pt solid #c1c1c1;
+    margin: .25cm 0;
+    padding-top: .25cm;
+}
+
+ul li::before {
+    color: #fbc847;
+    content: '• ';
+    font-size: 40pt;
+    line-height: 16pt;
+    vertical-align: bottom;
+}
+
+
+.m-wkns {
+    background-color: orange;
+}
+
+.l-wkns {
+    background-color: yellow;
+}
+
+.r {
+    background-color: rgb(74, 207, 74);
+}
+
+code {
+    border: 1px solid rgb(109, 108, 108);
+    background-color: rgb(224, 224, 224);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.section-text p {
+    text-align: justify;
+}
+
+.section-text p span {
+    font-weight: bold;
+    padding-right: 3px;
+}
+
+
+.main-table {
+    border-collapse: separate;
+    border: 2px solid #fbc847;
+    border-left: 0;
+    border-right: 0;
+    border-spacing: 0;
+    text-align: left;
+    width: 100%;
+}
+
+.main-table thead th {
+    font-size: larger;
+}
+
+.main-table span {
+    font-weight: bold;
+}
+
+.main-table td:last-child,
+th:last-child {
+    border-left: 1px solid #fbc847;
+}
+
+.main-table td,
+.main-table th {
+    border-bottom: 1px solid #fbc847;
+    padding: 3px;
+}
+
+.sub-table {
+    border-collapse: collapse;
+    border-left: 0;
+}
+
+.sub-table td,
+.sub-table th {
+    border-bottom: 0;
+}
+
+.figure {
+    height: 300px;
+    position: relative;
+    background-color: #fbc847;
+    border: 3px solid #fbc847;
+}
+
+.figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.figure p {
+    position: absolute;
+    bottom: 0px;
+    padding: 1em;
+    background-color: #fbc847;
+}
