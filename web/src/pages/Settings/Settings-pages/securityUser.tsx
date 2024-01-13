@@ -123,8 +123,6 @@ export default function SecurityUser() {
                 'Authorization': `Token ${Cookies.get('Token')}`,
             },
         }).then((data) => {
-            console.log(data)
-            console.log(mfaCode);
             setMfaEnabled(true);
             setShowMfaPopup(false);
         }).catch((e) => {
@@ -155,7 +153,6 @@ export default function SecurityUser() {
                     },
                 })
                 .then((data) => {
-                    console.log(data)
                     setUserInfo(data.data.auth);
                 })
                 .catch((e) => {
