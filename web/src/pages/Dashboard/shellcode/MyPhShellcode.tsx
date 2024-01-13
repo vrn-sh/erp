@@ -67,7 +67,7 @@ export default function MyPhShellcode(props: {
     return (
         <div
             style={{
-                height: '35em',
+                height: '80%',
             }}
         >
             <div

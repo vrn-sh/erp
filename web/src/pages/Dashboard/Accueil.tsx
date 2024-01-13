@@ -269,15 +269,14 @@ export default function Accueil() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const isPentester = Cookies.get('Role') === '1';
 
-    // Function to open the modal
     const openModal = () => {
         setIsModalOpen(true);
     };
 
-    // Function to close the modal
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
     const [teamList, setTeamList] = useState<
         {
             id: number;
@@ -327,6 +326,7 @@ export default function Accueil() {
             description: string;
         }[]
     >([]);
+
     const currentDay = dayjs();
     const navigate = useNavigate();
 
@@ -529,6 +529,7 @@ export default function Accueil() {
                         >
                             Generate payload
                         </button>
+
                         <PayLoadForm
                             isModalOpen={isModalOpen}
                             closeModal={closeModal}
