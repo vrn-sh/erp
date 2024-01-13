@@ -21,7 +21,6 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.14.9",
     "@mui/joy": "^5.0.0-beta.10",
-    "@mui/lab": "^5.0.0-alpha.154",
     "@mui/material": "^5.10.17",
     "@mui/x-charts": "^6.0.0-alpha.14",
     "@mui/x-date-pickers": "^6.2.1",

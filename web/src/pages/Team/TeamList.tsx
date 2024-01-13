@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import '../Dashboard/Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
-import ViewTeam from './ViewTeam';
 
 export default function TeamList() {
     const [list, setList] = useState<
@@ -156,11 +155,11 @@ export default function TeamList() {
                                 <thead>
                                     <tr>
                                         <th className="md-3">Name</th>
-                                        <th className="md-3">Manager</th>
-                                        <th className="md-5">Members</th>
-                                        <th className="md-5">Missions</th>
+                                        <th className="md-2">Manager</th>
+                                        <th className="md-1">Members</th>
+                                        <th className="md-2">Missions</th>
                                         {!isPentester && (
-                                            <th className="md-3">Action</th>
+                                            <th className="md-2">Action</th>
                                         )}
                                     </tr>
                                 </thead>
@@ -168,17 +167,21 @@ export default function TeamList() {
                                     return (
                                         <tbody key={team.id}>
                                             <tr key={team.id}>
-                                                <td>
-                                                    <Link
-                                                        to={`/team/view/${team.id}`}
-                                                    >
-                                                        {team.name}
-                                                    </Link>
-                                                </td>
+                                                <td>{team.name}</td>
                                                 <td>{team.manager}</td>
                                                 <td>{team.nbMember}</td>
                                                 <td>{team.nbMission}</td>
                                                 <td className="scope-table-action">
+                                                    <input
+                                                        type="button"
+                                                        value="Open"
+                                                        className="openBtn"
+                                                        onClick={() => {
+                                                            navigate(
+                                                                `/team/view/${team.id}`
+                                                            );
+                                                        }}
+                                                    />
                                                     {!isPentester && (
                                                         <>
                                                             <input
