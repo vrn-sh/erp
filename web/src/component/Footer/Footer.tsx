@@ -41,16 +41,15 @@ export default function Footer() {
         }
         await axios
             .post(`${config.apiUrl}/mailing-list`, {
-                    email: mailInput,
-                },
-            )
+                email: mailInput,
+            })
             .then((data) => {
                 setSubscriptionStatus('success');
             })
             .catch((error) => {
                 setSubscriptionStatus('failure');
-                throw error
-            })
+                throw error;
+            });
     };
 
     return (

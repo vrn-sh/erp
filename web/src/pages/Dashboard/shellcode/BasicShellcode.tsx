@@ -1,7 +1,6 @@
 import { InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import FormControl from '@mui/material/FormControl';
-import LoadingButton from '@mui/lab/LoadingButton';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import formRows from '../../../assets/strings/en/basicpayload.json';
@@ -12,7 +11,6 @@ export default function BasicShellcode(props: {
     setError: any;
 }) {
     const { setLink, closeModal, setError } = props;
-    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
         [key: string]: string;
     }>({
@@ -30,9 +28,6 @@ export default function BasicShellcode(props: {
     });
 
     function submitPayload() {
-        if (loading) return;
-        setLoading(true);
-
         axios
             .post(
                 `https://voron.djnn.sh/saas/load_shellcode`,
@@ -63,9 +58,6 @@ export default function BasicShellcode(props: {
             .catch((error) => {
                 setError('Unexpected error occurred. Please try again later.');
                 console.error(error);
-            })
-            .finally(() => {
-                setLoading(false);
             });
     }
 
@@ -98,7 +90,6 @@ export default function BasicShellcode(props: {
                             <FormControl fullWidth>
                                 {row.type === 'text' && (
                                     <TextField
-                                        disabled={loading}
                                         id={`text-${row.id}`}
                                         variant="outlined"
                                         defaultValue={row.defaultValue}
@@ -112,7 +103,6 @@ export default function BasicShellcode(props: {
                                 )}
                                 {row.type === 'selection' && (
                                     <Select
-                                        disabled={loading}
                                         labelId={`select-${row.id}`}
                                         id={row.id}
                                         value={formData[row.id]}
@@ -143,8 +133,7 @@ export default function BasicShellcode(props: {
                     width: '50%',
                 }}
             >
-                <LoadingButton
-                    loading={loading}
+                <Button
                     onClick={() => submitPayload()}
                     size="medium"
                     style={{
@@ -154,8 +143,8 @@ export default function BasicShellcode(props: {
                         marginRight: '1%',
                     }}
                 >
-                    {!loading && 'Submit'}
-                </LoadingButton>
+                    Submit
+                </Button>
                 <Button
                     onClick={closeModal}
                     size="medium"
