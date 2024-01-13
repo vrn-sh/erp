@@ -61,6 +61,11 @@ export default function PayLoadForm(props: {
                     content: {
                         border: '1px solid #ccc',
                         borderRadius: '10px',
+                        maxWidth: '300em',
+                        left: '50%',
+                        transform: 'translate(-50%, 0)',
+                        overflow: 'hidden',
+                        inset: '40px 40px auto 50%',
                     },
                 }}
             >
@@ -97,6 +102,11 @@ export default function PayLoadForm(props: {
                                         position: 'absolute',
                                         overflow: 'scroll',
                                         fontFamily: 'Poppins-Medium',
+                                        maxWidth: '300em',
+                                        left: '50%',
+                                        transform: 'translate(-50%, 0)',
+                                        // overflow: 'hidden',
+                                        inset: '40px 40px 9rem 50%',
                                     },
                                 }}
                             >
@@ -106,7 +116,15 @@ export default function PayLoadForm(props: {
                                 {payloadType === 'basicshellcode' && (
                                     <BasicShellcodeDocumentationContent />
                                 )}
-                                <button type="button" onClick={closeNewModal}>
+                                <button
+                                    type="button"
+                                    onClick={closeNewModal}
+                                    style={{
+                                        marginTop: '2rem',
+                                        position: 'sticky',
+                                        bottom: 10,
+                                    }}
+                                >
                                     Close
                                 </button>
                             </Modal>

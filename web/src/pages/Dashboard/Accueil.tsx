@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Accueil.scss';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDrawingArea } from '@mui/x-charts/hooks';
+import { styled } from '@mui/material/styles';
 import { Chip } from '@mui/material';
 import Modal from 'react-modal';
 import axios from 'axios';
@@ -13,7 +14,6 @@ import * as FaIcons from 'react-icons/fa';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { styled } from '@mui/system';
 import { FaPlus } from 'react-icons/fa6';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
@@ -574,7 +574,7 @@ export default function Accueil() {
     useEffect(() => {
         getMission();
         getTeamList();
-    }, [vulnType?.length]);
+    }, [vulnType.length]);
 
     return (
         <div className="dashboard">
@@ -592,78 +592,7 @@ export default function Accueil() {
                         >
                             Generate payload
                         </button>
-                        <form
-                            style={{
-                                display: isModalOpen ? 'block' : 'none',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Modal
-                                isOpen={isModalOpen}
-                                onRequestClose={closeModal}
-                                contentLabel="General Payload Modal"
-                                style={{
-                                    content: {
-                                        border: '1px solid #ccc',
-                                        borderRadius: '10px',
-                                    },
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <h2>General payload</h2>
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        onClick={openNewModal}
-                                    >
-                                        Documentation
-                                    </button>
-                                </div>
-                                <div className="form-row">
-                                    <div
-                                        className="columnTitle"
-                                        style={{
-                                            fontFamily: 'Poppins-Medium',
-                                            border: '1px solid #ccc',
-                                            borderRadius: '10px',
-                                            marginRight: '10px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        <label>Name</label>
-                                    </div>
-                                    <div
-                                        className="columnTitle"
-                                        style={{
-                                            fontFamily: 'Poppins-Medium',
-                                            border: '1px solid #ccc',
-                                            borderRadius: '10px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        <label>Description</label>
-                                    </div>
-                                </div>
-                                <button type="button" onClick={submitPayload}>
-                                    Submit
-                                </button>
-                                <button type="button" onClick={closeModal}>
-                                    Close
-                                </button>
-                            </Modal>
-                        </form>
+
                         <PayLoadForm
                             isModalOpen={isModalOpen}
                             closeModal={closeModal}
