@@ -176,7 +176,7 @@ function DocumentTemplates({
 }
 
 export default function Report() {
-   const location = useLocation();
+    const location = useLocation();
     const [missionId, setMissionId] = useState(0);
     const [template, setTemplate] = useState(-1);
     const [isMDActivated, setMD] = useState(false);

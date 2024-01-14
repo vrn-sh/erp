@@ -60,7 +60,6 @@ export default function SecurityDetail() {
             )}
             {role === '1' && <SecurityUser />}
             {role === '3' && <SecurityUser />}
-
         </div>
     );
 }

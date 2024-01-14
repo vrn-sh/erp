@@ -58,7 +58,6 @@ const SideBarData = function SideBarDataF() {
                 throw e;
             });
     };
-    
 
     const getMissionFav = async () => {
         const favID = userInfo.favorites;
@@ -139,7 +138,11 @@ const SideBarData = function SideBarDataF() {
             isForManager: false,
             subNav: [],
         },
-    ].filter(item => !(item.title === 'Create a team' || item.title === 'Teams') || !isFreelancer);
+    ].filter(
+        (item) =>
+            !(item.title === 'Create a team' || item.title === 'Teams') ||
+            !isFreelancer
+    );
 };
 
 export default SideBarData;

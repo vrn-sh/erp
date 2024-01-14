@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef, ChangeEvent } from 'react';
 import '../Settings.scss';
 import * as AiIcons from 'react-icons/ai';
-import { SecondaryButton } from '../../../component/Button';
-import subscriptions from '../../../assets/strings/en/subscriptions.json';
 import axios from 'axios';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
-
+import { SecondaryButton } from '../../../component/Button';
+import subscriptions from '../../../assets/strings/en/subscriptions.json';
 
 export default function SettingBilling() {
     const cardColors = ['primary-color', 'secondary-color', 'primary-color'];
@@ -60,31 +59,36 @@ export default function SettingBilling() {
         setCreditCards(updatedCards);
     };
 
-    async function  fetchLastPayments  () : Promise<any[]>  {
+    async function fetchLastPayments(): Promise<any[]> {
         // Charger Stripe avec votre clé publique
-  const stripePromise: Promise<Stripe | null> = loadStripe('VOTRE_CLE_PUBLIQUE_STRIPE');
+        const stripePromise: Promise<Stripe | null> = loadStripe(
+            'VOTRE_CLE_PUBLIQUE_STRIPE'
+        );
 
-  try {
-    const stripe = await stripePromise;
-    if (!stripe) {
-      throw new Error('Impossible de charger Stripe');
+        try {
+            const stripe = await stripePromise;
+            if (!stripe) {
+                throw new Error('Impossible de charger Stripe');
+            }
+
+            // Récupérer les paiements via l'API de Stripe
+            const paymentIntentList = await stripe.paymentIntents.list({});
+
+            // Renvoyer les données des paiements
+            return paymentIntentList.data;
+        } catch (error) {
+            // Gestion des erreurs
+            console.error(
+                "Erreur lors de la récupération de l'historique des paiements :",
+                error
+            );
+            throw error;
+        }
     }
 
-    // Récupérer les paiements via l'API de Stripe
-    const paymentIntentList = await stripe.paymentIntents.list({});
-
-    // Renvoyer les données des paiements
-    return paymentIntentList.data;
-  } catch (error) {
-    // Gestion des erreurs
-    console.error('Erreur lors de la récupération de l\'historique des paiements :', error);
-    throw error;
-  }
-     };
-
-     useEffect(() => {
-         fetchLastPayments();
-     }, []);
+    useEffect(() => {
+        fetchLastPayments();
+    }, []);
 
     return (
         <div>
@@ -306,7 +310,9 @@ export default function SettingBilling() {
                                                             subscription.price_month
                                                         );
                                                         handlePayment(
-                                                            subscription['stripe-link']
+                                                            subscription[
+                                                                'stripe-link'
+                                                            ]
                                                         );
                                                     }}
                                                 >

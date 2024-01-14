@@ -31,7 +31,6 @@ export default function Login() {
 
     const [isResetModalOpen, setIsResetModalOpen] = useState(false);
     const [resetEmail, setResetEmail] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
 
     const handlePasswordReset = async () => {
         setOpen(true);
@@ -40,36 +39,15 @@ export default function Login() {
                 email: resetEmail,
             })
             .then((date) => {
-                setMessage('Succeed! Please check your email', 'success');
-                setIsSuccess(true);
+                setMessage('Please check your email', 'success');
             })
             .catch((e) => {
-                setMessage('Error! Please enter correct email', 'error');
-                setIsSuccess(false);
+                setMessage('Please enter correct email', 'error');
             });
     };
 
     const toggleResetModal = () => {
         setIsResetModalOpen(!isResetModalOpen);
-    };
-    const checkEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-
-        if (!/^\S+@\S+\.\S+$/.test(email)) {
-            setErrorEmail('Please enter valid email address.');
-        } else if (/^\S+@\S+\.\S+$/.test(email)) {
-            setErrorEmail('');
-        }
-    };
-
-    const checkPwd = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPwd(e.target.value);
-
-        if (pwd.length < 7) {
-            setErrorPwd('Password should have at least 8 characters.');
-        } else {
-            setErrorPwd('');
-        }
     };
 
     const handleShowPwd = () => {
@@ -189,14 +167,14 @@ export default function Login() {
                             <input
                                 type="text"
                                 className="form-control"
-                                onChange={checkEmail}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                             <label>Password</label>
                             <div className="input-pwd">
                                 <input
                                     type={pwdType}
                                     className="form-control"
-                                    onChange={checkPwd}
+                                    onChange={(e) => setPwd(e.target.value)}
                                 />
                                 <button
                                     onClick={handleShowPwd}

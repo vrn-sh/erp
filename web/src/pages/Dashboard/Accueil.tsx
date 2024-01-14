@@ -14,6 +14,7 @@ import * as FaIcons from 'react-icons/fa';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import { FaPlus } from 'react-icons/fa6';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
@@ -268,14 +269,16 @@ export default function Accueil() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const role = Cookies.get('Role');
     // Function to open the modal
+    const isPentester = Cookies.get('Role') === '1';
+
     const openModal = () => {
         setIsModalOpen(true);
     };
 
-    // Function to close the modal
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
     const [teamList, setTeamList] = useState<
         {
             id: number;
@@ -325,7 +328,9 @@ export default function Accueil() {
             description: string;
         }[]
     >([]);
+
     const currentDay = dayjs();
+    const navigate = useNavigate();
 
     const size = {
         width: 200,
@@ -520,18 +525,26 @@ export default function Accueil() {
                         <h1>Overviews</h1>
                         <button
                             type="button"
-                            className="btn"
+                            className="borderBtn"
+                            style={{ marginRight: '5rem' }}
                             onClick={openModal}
                         >
                             Generate payload
                         </button>
+
                         <PayLoadForm
                             isModalOpen={isModalOpen}
                             closeModal={closeModal}
                         />
                     </div>
                     <div className="accueil-container">
-                        <div className={`accueil-grid-3 ${Number(Cookies.get('Role')) === 3 ? 'role-3' : ''}`}>
+                        <div
+                            className={`accueil-grid-3 ${
+                                Number(Cookies.get('Role')) === 3
+                                    ? 'role-3'
+                                    : ''
+                            }`}
+                        >
                             <div
                                 className="accueil-rect"
                                 style={{ height: '30vh' }}
@@ -609,11 +622,32 @@ export default function Accueil() {
                             </div>
                         </div>
 
-                        <div className={`accueil-grid-3 ${Number(Cookies.get('Role')) === 3 ? 'role-3' : ''}`}>
+                        <div
+                            className={`accueil-grid-3 ${
+                                Number(Cookies.get('Role')) === 3
+                                    ? 'role-3'
+                                    : ''
+                            }`}
+                        >
                             <div className="accueil-rect-long">
-                                <h5 style={{ marginBottom: '15px' }}>
-                                    My mission
-                                </h5>
+                                <div className="accueil-mission-title">
+                                    <h5>My mission</h5>
+                                    {!isPentester && (
+                                        <button
+                                            type="submit"
+                                            className="accueil-create-mission"
+                                            onClick={() => {
+                                                navigate('/mission/create');
+                                            }}
+                                        >
+                                            <FaPlus
+                                                color="#7c44f3"
+                                                style={{ marginRight: '.3rem' }}
+                                            />{' '}
+                                            Add mission
+                                        </button>
+                                    )}
+                                </div>
                                 <div className="rect-scroll">
                                     {list.map((mission) => {
                                         return (
@@ -629,9 +663,9 @@ export default function Accueil() {
                                 </div>
                             </div>
                         </div>
-                        
+
                         {role === '1' || role === '2' ? (
-                        <div className="accueil-grid-3">
+                            <div className="accueil-grid-3">
                                 <div className="accueil-rect-long">
                                     <h5
                                         style={{
@@ -641,15 +675,29 @@ export default function Accueil() {
                                     >
                                         Co-workers
                                     </h5>
-                                    <div className="rect-scroll">
-                                        {teamList.map((t) => {
-                                            return <TeamListContainer team={t} />;
-                                        })}
-                                    </div>
+                                    {!isPentester && (
+                                        <button
+                                            type="submit"
+                                            className="accueil-create-mission"
+                                            onClick={() => {
+                                                navigate('/mission/create');
+                                            }}
+                                        >
+                                            <FaPlus
+                                                color="#7c44f3"
+                                                style={{ marginRight: '.3rem' }}
+                                            />{' '}
+                                            Add team
+                                        </button>
+                                    )}
                                 </div>
-                        </div>
+                                <div className="rect-scroll">
+                                    {teamList.map((t) => {
+                                        return <TeamListContainer team={t} />;
+                                    })}
+                                </div>
+                            </div>
                         ) : null}
-
                     </div>
                 </div>
             </div>

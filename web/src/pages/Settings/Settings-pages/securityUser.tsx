@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { Stack } from '@mui/material';
 import * as AiIcons from 'react-icons/ai';
 import axios from 'axios';
+import { GrSecure } from 'react-icons/gr';
 import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
 
@@ -21,6 +22,7 @@ export default function SecurityUser() {
         last_name: '',
         profile_image: '',
         phone_number: '',
+        has_otp: false,
     });
     const [open, setOpen] = useState(false);
     const [url, setURL] = useState(`${config.apiUrl}/`);
@@ -49,16 +51,147 @@ export default function SecurityUser() {
         }
         setOpen(false);
     };
+    const [mfaEnabled, setMfaEnabled] = useState(false);
+    const [mfaCode, setMfaCode] = useState('');
+    const [codeValidation, setCodeValidation] = useState([
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+    ]);
+    const [showMfaPopup, setShowMfaPopup] = useState(false);
+
+    const handleMfaCheckbox = () => {
+        if (mfaEnabled) {
+            setMfaCode('');
+            setMfaEnabled(!mfaEnabled);
+            let urltmp = `${config.apiUrl}/`;
+            if (role === '2') urltmp += 'manager';
+            else if (role === '3') urltmp += 'freelancer';
+            else urltmp += 'pentester';
+            setURL(urltmp);
+
+            axios
+                .put(
+                    `${urltmp}/${id}`,
+                    {
+                        auth: {
+                            has_otp: false,
+                        },
+                    },
+                    {
+                        headers: {
+                            'Content-type': 'application/json',
+                            Authorization: `Token ${Cookies.get('Token')}`,
+                        },
+                    }
+                )
+                .then((data) => {
+                    setUserInfo(data.data.auth);
+                })
+                .catch((e) => {
+                    throw e;
+                });
+        } else {
+            setMfaEnabled(!mfaEnabled);
+            axios
+                .get(`${config.apiUrl}/mfa`, {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                })
+                .then((data) => {
+                    setMfaCode(data.data.mfa_code);
+                })
+                .catch((e) => {
+                    throw e;
+                });
+            setShowMfaPopup(true);
+        }
+    };
+
+    const inputRefs = Array.from({ length: 6 }, () =>
+        React.createRef<HTMLInputElement>()
+    );
+
+    const handleCodeInput = (index: number, value: string) => {
+        const newCodeValidation = [...codeValidation];
+        newCodeValidation[index] = value;
+        setCodeValidation(newCodeValidation);
+
+        const code = newCodeValidation.join('');
+        if (index < inputRefs.length - 1 && value) {
+            inputRefs[index + 1].current?.focus();
+        }
+        setMfaCode(code);
+    };
+
+    const [isCodeIncorrect, setIsCodeIncorrect] = useState(false); // État pour suivre si le code est incorrect
+
+    const handleVerifyCode = () => {
+        axios
+            .post(
+                `${config.apiUrl}/mfa?mfa_code=${mfaCode}`,
+                {},
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${Cookies.get('Token')}`,
+                    },
+                }
+            )
+            .then((data) => {
+                setMfaEnabled(true);
+                setShowMfaPopup(false);
+            })
+            .catch((e) => {
+                setMfaEnabled(false);
+                setIsCodeIncorrect(true);
+                setCodeValidation(['', '', '', '', '', '']);
+                throw e;
+            });
+
+        if (mfaEnabled) {
+            setMfaCode('');
+            setMfaEnabled(!mfaEnabled);
+            let urltmp = `${config.apiUrl}/`;
+            if (role === '2') urltmp += 'manager';
+            else if (role === '3') urltmp += 'freelancer';
+            else urltmp += 'pentester';
+            setURL(urltmp);
+
+            axios
+                .put(
+                    `${urltmp}/${id}`,
+                    {
+                        auth: {
+                            has_otp: false,
+                        },
+                    },
+                    {
+                        headers: {
+                            'Content-type': 'application/json',
+                            Authorization: `Token ${Cookies.get('Token')}`,
+                        },
+                    }
+                )
+                .then((data) => {
+                    setUserInfo(data.data.auth);
+                })
+                .catch((e) => {
+                    throw e;
+                });
+        }
+    };
 
     const getUserInfo = async () => {
         let urltmp = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '3') {
-            urltmp += 'freelancer';
-        } else if (Cookies.get('Role') === '2') {
-            urltmp += 'manager';
-        } else {
-            urltmp += 'pentester';
-        }
+        if (role === '2') urltmp += 'manager';
+        else if (role === '3') urltmp += 'freelancer';
+        else urltmp += 'pentester';
         setURL(urltmp);
         await axios
             .get(`${urltmp}/${id}`, {
@@ -250,6 +383,108 @@ export default function SecurityUser() {
             >
                 Submit
             </button>
+            <div
+                style={{
+                    marginTop: '1em',
+                    borderRadius: '5px',
+                    border: 'solid 2px',
+                }}
+            >
+                <h2>Keep your account secure</h2>
+                <p style={{ fontSize: '10px' }}>
+                    Protecting your account is crucial. To enhance the security
+                    of your personal information, activate two-factor
+                    authentication (2FA) now. This makes it harder for hackers
+                    to access your account, even if your credentials are
+                    compromised. Take a moment to enable 2FA in your security
+                    settings.
+                </p>
+                <div>
+                    <input
+                        type="checkbox"
+                        checked={userInfo.has_otp}
+                        onChange={handleMfaCheckbox}
+                    />
+                    <label style={{ marginLeft: '0.5em' }}>Activer MFA</label>
+                </div>
+            </div>
+            {showMfaPopup && (
+                <div
+                    className="popup-container"
+                    style={{ backgroundColor: 'black' }}
+                >
+                    <div className="popup">
+                        <div
+                            style={{
+                                width: '500px',
+                                height: '400px',
+                                borderRadius: '8px',
+                                padding: '20px',
+                                display: 'block',
+                                backgroundColor: 'white',
+                                textAlign: 'center',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <GrSecure size={50} style={{ color: 'blue' }} />
+                            <h3>Authentificate you account</h3>
+                            <p style={{ fontSize: '12px' }}>
+                                Your online protection is our priority, and
+                                we're here to help make your account safer.
+                            </p>
+                            <p>
+                                Please enter the code sent to your email address
+                            </p>
+                            <div
+                                className="mfa-code-input"
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    marginTop: '10px',
+                                }}
+                            >
+                                {Array.from({ length: 6 }, (_, index) => (
+                                    <input
+                                        key={index}
+                                        type="text"
+                                        maxLength={1}
+                                        value={codeValidation[index]}
+                                        onChange={(e) =>
+                                            handleCodeInput(
+                                                index,
+                                                e.target.value
+                                            )
+                                        }
+                                        ref={inputRefs[index]}
+                                        style={{
+                                            width: '30px',
+                                            height: '30px',
+                                            marginRight: '10px',
+                                            textAlign: 'center',
+                                            border: '1px solid #ccc',
+                                            borderRadius: '4px',
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                            {isCodeIncorrect && (
+                                <p style={{ color: 'red', marginTop: '5px' }}>
+                                    Code incorrect. Veuillez réessayer.
+                                </p>
+                            )}
+                            <div style={{ marginTop: '20px' }}>
+                                <button
+                                    type="button"
+                                    onClick={handleVerifyCode}
+                                >
+                                    Verify
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

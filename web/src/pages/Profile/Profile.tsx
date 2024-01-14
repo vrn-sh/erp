@@ -142,6 +142,9 @@ export default function ProfilePage() {
                     }
                 }
                 setTeamList(t);
+            })
+            .catch((e) => {
+                throw e;
             });
     };
 
@@ -220,14 +223,18 @@ export default function ProfilePage() {
                                         <FaUser size={32} />
                                     </div>
                                 )}
+                                {/* eslint-disable */}
                                 <div className="profile-username">
                                     <h5>{userInfos.username}</h5>
                                     <p>
-                                    {role === '1' ? 'Pentester' : role === '2' ? 'Manager' : 'Freelancer'}
+                                        {role === '1'
+                                            ? 'Pentester'
+                                            : role === '2'
+                                            ? 'Manager'
+                                            : 'Freelancer'}
                                     </p>
                                 </div>
                             </div>
-                            {/* eslint-disable */}
                             <GroupInfo
                                 t1="First name"
                                 t2="Email"
@@ -303,7 +310,9 @@ export default function ProfilePage() {
                                                 return (
                                                     <TableSection
                                                         teamInfo={teamInfo}
-                                                        missionList={missionList}
+                                                        missionList={
+                                                            missionList
+                                                        }
                                                     />
                                                 );
                                             })}
@@ -313,40 +322,40 @@ export default function ProfilePage() {
                             </div>
                         </>
                     )}
-                    
-               {role === '3' && (
-                    <>
-                        <div className="page-info">
-                            <h1>Missions</h1>
-                        </div>
 
-                        <div className="assigned-missions">
-                            <div className="profile-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {missionList.map((mission) => (
-                                            <tr key={mission.id}>
-                                                <td>{mission.title}</td>
-                                                <td>{mission.status}</td>
-                                                <td>
-                                                    <input
-                                                        type="button"
-                                                        value="Open"
-                                                        className="openBtn"
-                                                        onClick={() =>
-                                                            NavMissionDetail(
-                                                                mission.id
-                                                            )
-                                                        }
-                                                    />
-                                                    <input
+                    {role === '3' && (
+                        <>
+                            <div className="page-info">
+                                <h1>Missions</h1>
+                            </div>
+
+                            <div className="assigned-missions">
+                                <div className="profile-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {missionList.map((mission) => (
+                                                <tr key={mission.id}>
+                                                    <td>{mission.title}</td>
+                                                    <td>{mission.status}</td>
+                                                    <td>
+                                                        <input
+                                                            type="button"
+                                                            value="Open"
+                                                            className="openBtn"
+                                                            onClick={() =>
+                                                                NavMissionDetail(
+                                                                    mission.id
+                                                                )
+                                                            }
+                                                        />
+                                                        <input
                                                             type="button"
                                                             value="Delete"
                                                             className="borderBtnError"
@@ -359,17 +368,15 @@ export default function ProfilePage() {
                                                                 setOpen(true);
                                                             }}
                                                         />
-                                                    
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                    </>
-                )}
-
+                        </>
+                    )}
                 </div>
             </div>
         </div>

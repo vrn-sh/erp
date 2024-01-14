@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
@@ -17,13 +17,13 @@ import Credentials from './Credential';
 import config from '../../config';
 import DorkEngine from '../Dashboard/SubDashboards/DorkEngine';
 import CrtSh from '../Dashboard/SubDashboards/CrtSh';
-import Notes from '../Dashboard/SubDashboards/Notes/Notes';/*
-import Report from '../Dashboard/SubDashboards/Report/Report';*/
+import Notes from '../Dashboard/SubDashboards/Notes/Notes';
+import Report from '../Dashboard/SubDashboards/Report/Report';
 import Vulnerability from '../Dashboard/SubDashboards/Vulnerability';
 
 export default function MissionDetail() {
     const isPentester = Cookies.get('Role') === '1';
-    const [active, setActive] = useState('detail');
+    const [active, setActive] = useState('scope');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
     const [logo, setLogo] = useState('');
@@ -38,22 +38,24 @@ export default function MissionDetail() {
         mess: '',
         color: 'success',
     });
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
-    const url =
-    Cookies.get('Role') === '2'
-        ? `${config.apiUrl}/manager`
-        : Cookies.get('Role') === '1'
-        ? `${config.apiUrl}/pentester`
-        : Cookies.get('Role') === '3'
-        ? `${config.apiUrl}/freelancer`
-        : '';
+    const role = Cookies.get('Role');
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
     };
 
     const getUserInfo = async () => {
+        let url = `${config.apiUrl}/`;
+        if (Cookies.get('Role') === '3') {
+            url += 'freelancer';
+        } else if (Cookies.get('Role') === '2') {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
@@ -70,6 +72,14 @@ export default function MissionDetail() {
     };
 
     const handleAdd = async (val: string[]) => {
+        let url = `${config.apiUrl}/`;
+        if (Cookies.get('Role') === '3') {
+            url += 'freelancer';
+        } else if (Cookies.get('Role') === '2') {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .patch(
                 `${url}/${Cookies.get('Id')}`,
@@ -119,6 +129,14 @@ export default function MissionDetail() {
     };
 
     const deleteFavory = async () => {
+        let url = `${config.apiUrl}/`;
+        if (Cookies.get('Role') === '3') {
+            url += 'freelancer';
+        } else if (Cookies.get('Role') === '2') {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         if (userInfo && isFavory) {
             const val = userInfo;
             for (let i = 0; i < val.length; i += 1) {
@@ -216,6 +234,14 @@ export default function MissionDetail() {
         }
     };
 
+    const NavEditMission = (mission_id: number) => {
+        navigate('/mission/edit', {
+            state: {
+                missionId: mission_id,
+            },
+        });
+    };
+
     useEffect(() => {
         setId(location.state.missionId);
     }, []);
@@ -237,14 +263,14 @@ export default function MissionDetail() {
     }, [userInfo]);
 
     const getSubMissionDetail = () => {
-        if (active === 'detail') {
+        if (active === 'scope') {
             return <Scope />;
         }
         if (active === 'note') {
             return <Notes />;
         }
         if (active === 'vuln') {
-            return <Vulnerability />;
+            return <Vulnerability missionName={Title} />;
         }
         if (active === 'recon') {
             return <Recon id={id} />;
@@ -261,9 +287,9 @@ export default function MissionDetail() {
         if (active === 'crt') {
             return <CrtSh />;
         }
-        /*if (active === 'report') {
+        if (active === 'report') {
             return <Report />;
-        }*/
+        }
         return null;
     };
 
@@ -304,48 +330,67 @@ export default function MissionDetail() {
                             )}
                         </h1>
 
-                        <Chip
-                            label={status}
-                            color={
-                                status === 'In progress' ? 'warning' : 'success'
-                            }
-                            variant="outlined"
-                            size="medium"
-                            style={{
-                                marginRight: '10px',
-                                fontSize: '12px',
-                            }}
-                        />
+                        <div>
+                            <button
+                                type="submit"
+                                className="editBtn"
+                                onClick={() => {
+                                    NavEditMission(id);
+                                }}
+                            >
+                                Edit Mission
+                            </button>
+
+                            <Chip
+                                label={status}
+                                color={
+                                    status === 'In progress'
+                                        ? 'warning'
+                                        : 'success'
+                                }
+                                variant="outlined"
+                                size="medium"
+                                style={{
+                                    marginRight: '10px',
+                                    fontSize: '12px',
+                                }}
+                            />
+                        </div>
                     </div>
                     <div className="mission-detail-team">
                         <AiIcons.AiOutlineTeam size={20} color="#7c44f3" />
                         <p>{TeamName}</p>
                     </div>
-                    <div className="mission-detail-team">
-                        <TbIcons.TbFileDescription size={20} color="#7c44f3" />
-                        <p>{missionDes}</p>
-                        {missionDes.length > 60 && (
-                            <a
-                                role="presentation"
-                                onClick={() => setPopup(true)}
-                                onKeyDown={() => {}}
-                            >
-                                Read more
-                            </a>
-                        )}
-                    </div>
+                    {missionDes && (
+                        <div className="mission-detail-team">
+                            <TbIcons.TbFileDescription
+                                size={20}
+                                color="#7c44f3"
+                            />
+                            <p>{missionDes}</p>
+                            {missionDes.length > 60 && (
+                                <a
+                                    role="presentation"
+                                    onClick={() => setPopup(true)}
+                                    onKeyDown={() => {}}
+                                >
+                                    Read more
+                                </a>
+                            )}
+                        </div>
+                    )}
                     <div className="subHeader">
                         <div className="submenu-mission">
                             <button
                                 key={1}
-                                id="detail"
+                                id="scope"
                                 type="button"
                                 className={
-                                    active === 'detail' ? 'active' : undefined
+                                    active === 'scope' ? 'active' : undefined
                                 }
                                 onClick={handleClick}
                             >
-                                Detail
+                                scope
                             </button>
                             <button
                                 key={2}
