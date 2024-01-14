@@ -8,7 +8,7 @@ from typing import List
 
 from rest_framework import permissions
 
-from api.models import Auth, Freelancer, Pentester, Manager, Team
+from api.models import USER_ROLES, Auth, Freelancer, Pentester, Manager, Team
 from api.models.mission import Credentials, Mission, NmapScan, Recon
 from api.models.vulns import Notes, Vulnerability
 
@@ -55,6 +55,10 @@ class IsLinkedToData(permissions.BasePermission):
         return True
 
     def has_object_permission(self, request, _, obj):
+
+        if request.user is None:
+            return False
+
         if isinstance(obj, Auth):
             return obj.id == request.user.id # type: ignore
 
@@ -72,7 +76,7 @@ class IsLinkedToData(permissions.BasePermission):
             return obj.leader.auth.id == request.user.id  # type: ignore
 
         if isinstance(obj, Mission):
-            if obj.freelance_member or request.user.role == 3:
+            if obj.freelance_member is not None:
                 return request.user.id == obj.freelance_member.id  # type: ignore
 
             for m in obj.team.members.all():  # type: ignore
