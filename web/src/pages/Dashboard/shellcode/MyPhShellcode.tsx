@@ -27,6 +27,7 @@ export default function MyPhShellcode(props: {
         obfuscation: 'false',
         file_name: 'payload.exe',
         process: 'cmd.exe',
+        use_api_hashing: 'false',
     });
 
     async function submitPayload() {
@@ -40,7 +41,8 @@ export default function MyPhShellcode(props: {
                     `&obfuscation=${formData.obfuscation}` +
                     `&file_name=${formData.file_name}` +
                     `&process=${formData.process}` +
-                    `&technique=${formData.technique}`,
+                    `&technique=${formData.technique}` +
+                    `&use_api_hashing=${formData.use_api_hashing}`,
                 foo,
                 {
                     headers: {
