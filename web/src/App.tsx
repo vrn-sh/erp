@@ -25,6 +25,7 @@ import PrivateRoute from './pages/TokenVerification/TokenVerification';
 import ViewTeamDetails from './pages/Team/ViewTeam';
 import Accueil from './pages/Dashboard/Accueil';
 import InfoForm from './pages/SignUp/InfoForm';
+import MfaLogin from './pages/Login/MfaLogin';
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/sign_up" element={<SignUp />} />
                 <Route path="/info" element={<InfoForm />} />
+                <Route path="/mfa_check" element={<MfaLogin />} />
                 <Route path="/confirm" element={<ConfirmEmail />} />
                 <Route element={<PrivateRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />

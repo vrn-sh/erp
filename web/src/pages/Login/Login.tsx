@@ -60,6 +60,23 @@ export default function Login() {
         }
     };
 
+    // Jsp si c'est le bon api
+    const sendMfaMail = async () => {
+        axios
+            .get(`${config.apiUrl}/mfa`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                navigate('/mfa_check');
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
         if (Cookies.get('Role') === '2') url += 'manager';
@@ -72,11 +89,8 @@ export default function Login() {
                 },
             })
             .then((data) => {
-                if (
-                    data.data.auth.first_name !== null &&
-                    data.data.auth.phone_number !== null
-                )
-                    navigate('/accueil');
+                // HAMIDOU verifie s'il capte bien has opt stp, et quand on choisit pas de mfa, est-ce qu'il existe tjr cette clé de dictionaire
+                if (data.data.auth.has_opt === true) sendMfaMail();
                 else navigate('/info');
             })
             .catch((e) => {
