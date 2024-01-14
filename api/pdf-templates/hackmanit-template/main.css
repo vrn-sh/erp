@@ -1,220 +1,319 @@
-        body {
-        letter-spacing: 1.2px;
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        }
+#contents {
+    break-before: right;
+    break-after: left;
+    page: no-chapter;
+}
 
-        .cover-page {
-            padding: 2em 6.5em;
-            margin: 30px;
-            display: block;
-            justify-content: space-around;
-        }
-        .cover-page img {
-            object-fit: cover;
-            width: 100%;
-        }
+#contents h2 {
+    font-size: 20pt;
+    font-weight: 400;
+    margin-bottom: 3cm;
+}
 
-        .cover-page h1 {
-            padding: 6rem;
-            text-align: center;
-            font-weight: 300;
-            font-size: 3em;
-        }
-        .cover-page h1 span {
-            font-style: italic;
-        }
-        .report-info {
-            text-align: center;
-            color: gray;
-            font-weight: 400;
-            font-size: 1.5em;
-        }
+#contents h3 {
+    font-weight: 500;
+    margin: 3em 0 1em;
+}
 
-                footer {
-                    position: fixed;
-                    bottom: 0;
-                    width: 100%;
-                }
-                footer p {
-                                     font-style: italic;
-                    text-align: center;
-                    color: gray;
-                    font-weight: 300;
-                    font-size: 1em;
-                }
-                .leader-name {
-                    color: red;
-                }
+#contents h3::before {
+    background: #fbc847;
+    content: '';
+    display: block;
+    height: .08cm;
+    margin-bottom: .25cm;
+    width: 2cm;
+}
 
-        .divider-x {
-            border-bottom: 2px solid black;
-            width: 100%;
-            margin: 0;
-            padding-top: 2.5em;
-            left: 0;
-        }
+#contents ul {
+    list-style: none;
+    padding-left: 0;
+}
 
-        .page h1 {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 2.5em;
-        }
+#contents ul li {
+    border-top: .25pt solid #c1c1c1;
+    margin: .25cm 0;
+    padding-top: .25cm;
+}
 
-            header {
-                display: block;
-            }
+#contents ul li::before {
+    color: #fbc847;
+    content: '• ';
+    font-size: 40pt;
+    line-height: 16pt;
+    vertical-align: bottom;
+}
 
-            header img {
-                float: right;
-                object-fit: cover;
-                height: 20px;
-            }
+#contents ul li a {
+    color: inherit;
+    text-decoration-line: inherit;
+}
 
-            .project-info-table {
-                display: block;
-            }
+#contents ul li a::before {
+    content: target-text(attr(href));
+}
 
-            .project-info-table .row:after {
-                content: "";
-                display: table;
-                clear: both;
-            }
+#contents ul li a::after {
+    color: #fbc847;
+    content: target-counter(attr(href), page);
+    float: right;
+}
 
-            .project-info-table .col-left {
-                float: left;
-                width: 25%;
-                padding: 10px;
-            }
+body {
+    letter-spacing: 1.2px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
 
-            .project-info-table .col-right {
-                float: left;
-                padding: 10px;
-            }
+.cover-page {
+    display: block;
+    justify-content: space-around;
+}
 
-            .project-info-table .sub-col-left {
-                float: left;
-                width: 25%;
-                padding: 0 0 0 10px;
-            }
+.cover-page img {
+    object-fit: cover;
+    width: 100%;
+}
 
-            .project-info-table .sub-col-right {
-                float: left;
-                width: 60%;
-                padding: 0 0 0 10px;
-            }
+.cover-page h1 {
+    padding: 6rem;
+    text-align: center;
+    font-weight: 300;
+    font-size: 3em;
+}
 
-        .scope {
-            letter-spacing: 1.2px;
-        }
+.cover-page h1 span {
+    font-style: italic;
+}
 
-        .divider-x {
-            border-bottom: 2px solid black;
-            width: 100%;
-            margin: 0;
-            padding-top: 1em;
-            left: 0;
-        }
+.report-info {
+    text-align: center;
+    color: gray;
+    font-weight: 400;
+    font-size: 1.5em;
+}
 
-        h1 {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 2.5em;
-        }
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    font-style: italic;
+    text-align: center;
+    color: gray;
+    font-weight: 300;
+    font-size: 1em;
+}
+
+.leader-name {
+    color: red;
+}
+
+.divider-x {
+    border-bottom: 2px solid black;
+    width: 100%;
+    margin: 0;
+    padding-top: 2.5em;
+    left: 0;
+}
+
+.page h1 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.5em;
+}
+
+header {
+    display: block;
+}
+
+header img {
+    float: right;
+    object-fit: contain;
+    height: 70px;
+}
+
+.project-info-table .row {
+    display: flex;
+}
+
+.project-info-table .col-left {
+    width: 25%;
+    padding: 10px;
+}
+
+.project-info-table .col-right {
+    padding: 10px;
+}
+
+.project-info-table .sub-col-left {
+    width: 25%;
+    padding: 0 0 0 10px;
+}
+
+.project-info-table .sub-col-right {
+    width: 60%;
+    padding: 0 0 0 10px;
+}
+
+.scope {
+    letter-spacing: 1.2px;
+}
+
+.divider-x {
+    border-bottom: 2px solid black;
+    width: 100%;
+    margin: 0;
+    padding-top: 1em;
+    left: 0;
+}
+
+@page {
+    @bottom-left {
+        color: black;
+        content: counter(page);
+        height: 1cm;
+        text-align: center;
+        width: 1cm;
+    }
+
+    @bottom-center {
+    }
+
+    @bottom-right {
+        content: string(heading);
+        font-size: 9pt;
+        height: 1cm;
+        vertical-align: middle;
+        width: 100%;
+    }
+}
+@page :first {
+    @bottom-left {
+        background: white;
+        content: "";
+    }
+
+    @bottom-center {
+        background: white;
+        content: '';
+    }
+
+    @bottom-right {
+        content: "";
+    }
+}
 
 
-            .inline-title-logo {
-                display: flex;
-                justify-content: space-between;
-            }
 
-            .inline-title-logo p {
-                font-variant: small-caps;
-                color: red;
-                font-weight: 400;
-                letter-spacing: 1.5px;
-                margin: 0;
-            }
+h1 {
+    string-set: heading content();
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.5em;
+}
 
-            .section-text p {
-                text-align: justify;
-            }
 
-            .section-text p span {
-                font-weight: bold;
-                padding-right: 3px;
-            }
-            .section-text ul li {
-                margin-bottom: 6px;
-                margin-top: 1.5rem;
-            }
-            .section-text ul li code {
-                border: 1px solid rgb(109, 108, 108);
-                background-color: rgb(224, 224, 224);
-                font-family: 'Courier New', Courier, monospace;
-            }
+.inline-title-logo {
+    display: flex;
+    justify-content: space-between;
+}
 
-            .c-wkns {
-                background-color: purple;
-            }
+.inline-title-logo p {
+    font-variant: small-caps;
+    color: red;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    margin: 0;
+}
 
-            .h-wkns {
-                background-color: red;
-            }
+.section-text p {
+    text-align: justify;
+}
 
-            .m-wkns {
-                background-color: orange;
-            }
+.section-text p span {
+    font-weight: bold;
+    padding-right: 3px;
+}
 
-            .l-wkns {
-                background-color: yellow;
-            }
+.section-text ul li {
+    margin-bottom: 6px;
+    margin-top: 1.5rem;
+}
 
-            .r {
-                background-color: rgb(74, 207, 74);
-            }
+.section-text ul li code {
+    border: 1px solid rgb(109, 108, 108);
+    background-color: rgb(224, 224, 224);
+    font-family: 'Courier New', Courier, monospace;
+}
 
-            .main-table {
-                border-collapse: separate;
-                border: 2px solid black;
-                border-left: 0;
-                border-right: 0;
-                border-spacing: 0;
-                text-align: left;
-                width: 100%;
-            }
+.c-wkns {
+    background-color: purple;
+}
 
-            .main-table thead th {
-                font-size: larger;
-            }
+.h-wkns {
+    background-color: red;
+}
 
-            .main-table span {
-                font-weight: bold;
-            }
+.m-wkns {
+    background-color: orange;
+}
 
-            .main-table td:last-child,
-            th:last-child {
-                border-left: 1px solid black;
-            }
+.l-wkns {
+    background-color: yellow;
+}
 
-            .main-table td,
-            .main-table th {
-                border-bottom: 1px solid black;
-                padding: 3px;
-            }
+.r {
+    background-color: rgb(74, 207, 74);
+}
 
-            .sub-table {
-                border-collapse: collapse;
-                border-left: 0;
-            }
+.main-table {
+    border-collapse: separate;
+    border: 2px solid black;
+    border-left: 0;
+    border-right: 0;
+    border-spacing: 0;
+    text-align: left;
+    width: 100%;
+}
 
-            .sub-table td,
-            .sub-table th {
-                border-bottom: 0;
-            }
+.main-table thead th {
+    font-size: larger;
+}
 
-            .figure {
-                display: block;
-                text-align: center;
-            }
-            .figure img {
-                width: 100%;
-                object-fit: cover;
-            }
+.main-table span {
+    font-weight: bold;
+}
+
+.main-table td:last-child,
+th:last-child {
+    border-left: 1px solid black;
+}
+
+.main-table td,
+.main-table th {
+    border-bottom: 1px solid black;
+    padding: 3px;
+}
+
+.sub-table {
+    border-collapse: collapse;
+    border-left: 0;
+}
+
+.sub-table td,
+.sub-table th {
+    border-bottom: 0;
+}
+
+.figure {
+    display: block;
+    text-align: center;
+}
+
+img {
+    max-width: 600px;
+}
+
+.figure img {
+    max-width: 600px;
+    object-fit: cover;
+}

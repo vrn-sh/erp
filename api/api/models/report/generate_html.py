@@ -97,11 +97,11 @@ def generate_vulns_detail(mission: Mission) -> str:
             </tr>
         </tfoot>
     </table>
-    <div class="section-text">
+    <section>
         <p><span>General Description.</span>{vuln_type_description}
         </p>
         <p><span>Weaknessess.</span>{vuln_description}</p>
-    </div>
+    </section>
     {images}
         '''.format(vuln_label_class=vuln_label_class,
                    vuln_label=vuln_label,

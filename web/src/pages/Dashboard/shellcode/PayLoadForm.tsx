@@ -11,6 +11,10 @@ import {
 import BasicShellcode from './BasicShellcode';
 import MyPhShellcode from './MyPhShellcode';
 import LinkDisplay from './LinkDisplay';
+import {
+    MyPhDocumentationContent,
+    BasicShellcodeDocumentationContent,
+} from './Documentation';
 
 export default function PayLoadForm(props: {
     isModalOpen: boolean;
@@ -20,7 +24,15 @@ export default function PayLoadForm(props: {
     const [payloadType, setPayloadType] = useState('myph');
     const [link, setLink] = useState('');
     const [error, setError] = useState('');
+    const [isNewModalOpen, setIsNewModalOpen] = useState(false);
 
+    const openNewModal = () => {
+        setIsNewModalOpen(true);
+    };
+
+    const closeNewModal = () => {
+        setIsNewModalOpen(false);
+    };
     const handleChange = (event: SelectChangeEvent) => {
         setError('');
         setPayloadType(event.target.value as string);
@@ -61,13 +73,62 @@ export default function PayLoadForm(props: {
                     <LinkDisplay link={link} close={() => close()} />
                 ) : (
                     <>
-                        <h2
+                        <div
                             style={{
-                                fontFamily: 'Poppins-Regular',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
                             }}
                         >
-                            Payload generation
-                        </h2>
+                            <h2>General payload</h2>
+                            <button
+                                type="button"
+                                className="btn"
+                                onClick={openNewModal}
+                            >
+                                Documentation{' '}
+                                {payloadType === 'myph'
+                                    ? 'MyPH'
+                                    : 'Basic Shellcode'}
+                            </button>
+                            <Modal
+                                isOpen={isNewModalOpen}
+                                onRequestClose={closeNewModal}
+                                contentLabel="Documentation Modal"
+                                style={{
+                                    content: {
+                                        border: '1px solid #ccc',
+                                        borderRadius: '10px',
+                                        position: 'absolute',
+                                        overflow: 'scroll',
+                                        fontFamily: 'Poppins-Medium',
+                                        maxWidth: '300em',
+                                        left: '50%',
+                                        transform: 'translate(-50%, 0)',
+                                        // overflow: 'hidden',
+                                        inset: '40px 40px 9rem 50%',
+                                    },
+                                }}
+                            >
+                                {payloadType === 'myph' && (
+                                    <MyPhDocumentationContent />
+                                )}
+                                {payloadType === 'basicshellcode' && (
+                                    <BasicShellcodeDocumentationContent />
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={closeNewModal}
+                                    style={{
+                                        marginTop: '2rem',
+                                        position: 'sticky',
+                                        bottom: 10,
+                                    }}
+                                >
+                                    Close
+                                </button>
+                            </Modal>
+                        </div>
                         <InputLabel
                             style={{
                                 fontFamily: 'Poppins-Regular',
