@@ -133,6 +133,9 @@ export default function ProfilePage() {
                     }
                 }
                 setTeamList(t);
+            })
+            .catch((e) => {
+                throw e;
             });
     };
 
@@ -186,11 +189,6 @@ export default function ProfilePage() {
                     <div className="assigned-missions">
                         <div className="profile-container">
                             <div className="mainInfo-container">
-                                {/* <img
-                                    className="profile-photo"
-                                    alt="profile"
-                                    src={userInfos.profile_image}
-                                /> */}
                                 {userInfos.profile_image ? (
                                     <img
                                         src={userInfos.profile_image} // Affichez l'image depuis l'état local
@@ -216,39 +214,44 @@ export default function ProfilePage() {
                                     </p>
                                 </div>
                             </div>
-
+                            {/* eslint-disable */}
                             <GroupInfo
                                 t1="First name"
                                 t2="Email"
                                 c1={
-                                    userInfos.first_name.length === 0
-                                        ? '-'
-                                        : userInfos.first_name
+                                    userInfos.first_name !== null
+                                        ? userInfos.first_name.length > 0
+                                            ? userInfos.first_name
+                                            : '-'
+                                        : '-'
                                 }
                                 c2={
-                                    userInfos.email.length === 0
-                                        ? '-'
-                                        : userInfos.email
+                                    userInfos.email !== null
+                                        ? userInfos.email.length > 0
+                                            ? userInfos.email
+                                            : '-'
+                                        : '-'
                                 }
                             />
-
                             <GroupInfo
                                 t1="Last name"
                                 t2="Co-workers"
                                 c1={
-                                    userInfos.last_name.length === 0
-                                        ? '-'
-                                        : userInfos.last_name
+                                    userInfos.last_name !== null
+                                        ? userInfos.last_name.length > 0
+                                            ? userInfos.last_name
+                                            : '-'
+                                        : '-'
                                 }
                                 c2={String(coworker)}
                             />
+                            {/* eslint-enable */}
                             <GroupInfo
                                 t1="Missions"
                                 t2="Teams"
                                 c1={String(NumMission)}
                                 c2={String(teamList.length)}
                             />
-
                             <div className="btn-container">
                                 <button
                                     type="button"

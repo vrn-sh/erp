@@ -30,7 +30,7 @@ interface Credential {
     service: string;
     login: string;
     password: string;
-    comments: string;
+    comment: string;
     passwordVisible: boolean;
 }
 
@@ -46,7 +46,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
         service: '',
         login: '',
         password: '',
-        comments: '',
+        comment: '',
         passwordVisible: false,
     });
 
@@ -59,10 +59,11 @@ export default function Credentials({ idMission }: CredentialsProps) {
             const response = await axios.post(
                 `${config.apiUrl}/credentials`,
                 {
+                    mission_id: idMission,
                     login: newCredential.login,
                     password: newCredential.password,
                     service: newCredential.service,
-                    mission_id: idMission, // Use the actual ID, no need to convert to a string
+                    comment: newCredential.comment,
                 },
                 {
                     headers: {
@@ -86,7 +87,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                 service: '',
                 login: '',
                 password: '',
-                comments: '',
+                comment: '',
                 passwordVisible: false,
             });
             setShowAddForm(false);
@@ -103,6 +104,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
             [event.target.name]: event.target.value,
         }));
     };
+
     const togglePasswordVisibility = (index: number) => {
         setCredentials((prevCredentials) => {
             if (!Array.isArray(prevCredentials)) {
@@ -135,7 +137,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                 }
             );
             const { data } = response;
-            setCredentials(data);
+            setCredentials(data.results);
         } catch (error) {
             console.error(error);
         }
@@ -165,7 +167,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                             )}
                         </IconButton>
                     </TableCell>
-                    <TableCell>{credential.comments}</TableCell>
+                    <TableCell>{credential.comment}</TableCell>
                 </TableRow>
             );
         }
@@ -191,7 +193,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                     }}
                     onClick={() => setShowAddForm(true)}
                 >
-                    Add Credentials
+                    Add test credentials
                 </Button>
             </div>
 
@@ -260,9 +262,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                     <TextField
                         name="password"
                         label="Password"
-                        type={
-                            newCredential.passwordVisible ? 'text' : 'password'
-                        }
+                        type="text"
                         value={newCredential.password}
                         onChange={handleCredentialChange}
                         required
@@ -297,9 +297,9 @@ export default function Credentials({ idMission }: CredentialsProps) {
                         }}
                     />
                     <TextField
-                        name="comments"
-                        label="Comments"
-                        value={newCredential.comments}
+                        name="comment"
+                        label="Comment"
+                        value={newCredential.comment}
                         style={{
                             margin: '10px',
                             width: '450px',

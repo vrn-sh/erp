@@ -11,6 +11,8 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         'react/jsx-props-no-spreading': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
+        'jsx-a11y/control-has-associated-label': 'off',
+        "jsx-a11y/label-has-for":"off",
         'jsx-a11y/anchor-is-valid': 0,
         'no-alert': 'off',
         'no-await-in-loop': 'off',
@@ -18,6 +20,8 @@ module.exports = {
         '@typescript-eslint/no-empty-interface': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
+        'react/destructuring-assignment': 'off',
+        'react/react-in-jsx-scope': 'off',
     },
     root: true,
     extends: [

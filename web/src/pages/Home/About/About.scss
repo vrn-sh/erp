@@ -1,5 +1,13 @@
 // About
+
+@mixin txt-non-selectable {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
 .about {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -17,42 +25,7 @@
     justify-content: center;
     align-items: center;
     z-index: 10;
-}
-
-.about-catch {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-right: 2vw;
-    text-decoration: none;
-}
-
-.about-catch h1 {
-    color: var(--primary-btn);
-    font-family: 'Poppins';
-    font-size: 3rem;
-    width: fit-content;
-    margin: 0;
-}
-
-.about-catch button {
-    width: 30%;
-    font-size: 1.5rem;
-    border: none;
-    background-color: var(--primary-btn);
-    color: white;
-    font-family: 'Poppins';
-    padding: 0.5rem;
-    border-radius: 5px;
-}
-
-.about-bullets {
-    width: 50%;
-    margin-left: 2vw;
-    display: flex;
-    flex-direction: column;
-    vertical-align: flex-end;
+    margin-top: 20vh;
 }
 
 .about li {
@@ -68,61 +41,60 @@
 }
 
 .about-more {
-    // width: 90%;
-    // margin-top: 1rem;
+    width: 95%;
+    margin-top: 1rem;
+    height: 100%;
 }
 
-.about-more h2 {
+.about-more h1 {
     font-family: 'Poppins-Medium';
     font-size: 1.2rem;
     margin: 0;
     padding: 0;
     color: var(--primary-btn);
+    @include txt-non-selectable;
 }
 
 .about-more p {
-    font-family: 'Poppins-Medium';
+    font-family: 'Poppins-Regular';
     font-size: 1.2rem;
+    margin-bottom: 3rem;
+    @include txt-non-selectable;
 }
 
 .about span {
     color: var(--primary-btn);
+    @include txt-non-selectable;
 }
 
 @media only screen and (max-width: 700px) {
-    .about-more {
-
-    }
     .about-main-row {
         flex-direction: column;
     }
-    .about-catch,
-    .about-bullets {
-        width: 90%;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .about-bullets ul {
-        list-style: none;
-        text-align: center;
-    }
 }
 
-@media only screen and (max-width: 480px) {
-    .about-catch h1 {
-        font-size: 1.5rem;
+@media only screen and (max-width: 580px) {
+    .about-more h1 {
+        font-family: 'Poppins-Medium';
+        font-size: 18px;
     }
-    .about-catch {
-        width: 95%;
-        justify-content: center;
-        align-items: center;
-    }
-    .about-bullets {
-        // display: none;
+    
+    .about-more p {
+        font-family: 'Poppins-Regular';
+        font-size: 16px;
     }
 }
 
 .title {
     color: var(--primary-btn);
+}
+
+.about-action {
+    width: 85%;
+}
+
+.about-action:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: .3s ease-in-out;
 }

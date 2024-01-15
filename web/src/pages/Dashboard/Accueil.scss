@@ -1,0 +1,244 @@
+h5, p {
+    cursor: default;
+    user-select: none; 
+}
+
+.accueil {
+    &-container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 75vh;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    &-grid-3 {
+        width: 30%;
+        gap: 1rem;
+    }
+
+    &-rect {
+        background-color: white;
+        border-radius: 6px;
+        box-shadow: 2px 2px 2px var(--light-gray);
+        width: 75%;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+
+        & h5 {
+            font-family: "Poppins-Regular";
+            font-size: 16px;
+            font-weight: 800;
+            text-align: left;
+            margin-left: 1rem;
+            margin-top: 5px;
+            margin-bottom: 0;
+        }
+    }
+
+    &-rect-long {
+        background-color: white;
+        border-radius: 6px;
+        box-shadow: 2px 2px 2px var(--light-gray);
+        width: 90%;
+        height: 90%;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+
+        & h5 {
+            font-family: "Poppins-Regular";
+            font-size: 16px;
+            font-weight: 800;
+            text-align: left;
+            margin-left: 1rem;
+            margin-top: 5px;
+            margin-bottom: 0;
+        }
+    }
+
+    &-mission {
+        &-container {
+            padding-left: 15px;
+            padding-right: 10px;
+            padding-top: .5rem;
+            padding-bottom: .5rem;
+            box-shadow: 1px 1px var(--light-gray);
+            border-radius: 6px;
+        }
+    
+        &-container:hover {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 2px 2px 2px 2px var(--light-gray);
+            transition: .5s ease-in-out;
+        }
+
+        &-more:hover {
+            transform: scale(1.1);
+            transition: .5s ease-in-out;
+        }
+
+        &-vuln {
+            display: flex;
+            flex-direction: row;
+            overflow: scroll;
+            margin-bottom: 1rem;
+        }
+    }
+
+    &-team {
+        &-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: start;
+            margin-right: 2px;
+        }
+    
+        &-title {
+            font-size: 10px;
+            color: var(--gray-secondary-font);
+            font-family: "Poppins-Regular";
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            padding-left: 15px;
+            margin-bottom: 0.5rem;
+        }
+    
+        &-member-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            width: 100%;
+            align-items: center;
+            padding: 8px 8px 8px 23px;
+            margin-bottom: .4rem;
+        }
+    
+        &-member-container p {
+            margin: 0;
+            font-family: "Poppins-Regular";
+            font-size: 14px;
+            margin-left: 1rem;
+        }
+    
+        &-member-container:hover {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 2px 2px 2px 2px var(--light-gray);
+            transition: .5s ease-in-out;
+        }
+    
+        &-pp {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+    }
+
+
+}
+
+.rect-scroll {
+    overflow-y: scroll;
+}
+
+.mission-left-half {
+    display: flex;
+    width: 50%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 0 !important;
+}
+
+.mission-right-half {
+    display: flex;
+    width: 50%;
+    flex-direction: row;
+    justify-content: end;
+
+    & p {
+        font-size: 10px;
+        margin: 0;
+
+    }
+}
+
+.emptyProgressBar {
+    background-color: #e7e4da;
+    border-radius: 100px;
+    height: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.greenProgressBar {
+    background-image: linear-gradient(to right, #009621, #55D872);
+    border-radius: 100px;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.fillingProgressBar {
+    background-image: linear-gradient(to right, #666fcc, #9c77d3);
+    border-radius: 100px;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.mainProgressBarDiv {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.Popover {
+    display: flex;
+    flex-direction: column;
+}
+
+.more-btn {
+    text-decoration: none;
+    text-transform: none;
+}
+
+.accueil-create-mission {
+    min-width: 1rem;
+    border-radius: 20px;
+    padding: .5rem;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.accueil-create-mission:hover {
+    background-color: var(--gradient-primary-btn);
+
+}
+
+.accueil-mission-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .5rem;
+}
+
+.borderBtn {
+    min-width: 20px;
+    border: 1px var(--primary-btn) solid;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+}

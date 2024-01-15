@@ -2,17 +2,9 @@ import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import '../../Dashboard.scss';
-import {
-    Stack,
-    Divider,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-} from '@mui/material';
+import { Stack, Divider } from '@mui/material';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { IDashboardNotes } from '../../DashBoardNote.type';
 import AddNote from './AddNote';
 import ViewNote from './ViewNote';
@@ -20,51 +12,10 @@ import config from '../../../../config';
 import Team from '../../../Team/Team';
 import { getCookiePart } from '../../../../crypto-utils';
 
-interface NoteGridProps {
-    list: {
-        id: number;
-        notes: any;
-    }[];
-    count: number;
-    displayed: number;
-    viewClick: any;
-}
-
-function NoteGrid({ list, count, displayed, viewClick }: NoteGridProps) {
-    if (list[count].notes)
-        return list[count].notes.map((note: IDashboardNotes, index: number) => {
-            return (
-                <div className="card" key={`component-${note.id}`}>
-                    <div>
-                        <h2 className="heading">{note.title}</h2>
-                        <p className="card-content">{note.content}</p>
-                    </div>
-                    <footer>
-                        {/* {note.author !== null ? note.author.toString() : 1} */}
-                        <a
-                            role="button"
-                            className="button__link"
-                            onKeyDown={() => {
-                                viewClick(index);
-                            }}
-                            tabIndex={0}
-                            onClick={() => {
-                                viewClick(index);
-                            }}
-                            color="rebeccapurple"
-                        >
-                            View more
-                        </a>
-                    </footer>
-                    {displayed === index && (
-                        <ViewNote note={note} func={() => viewClick(note.id)} />
-                    )}
-                </div>
-            );
-        });
-}
-
-function Notes() {
+export default function Notes() {
+    const [missionId, setMissionId] = useState(0);
+    const [missionName, setMissionName] = useState('');
+    const location = useLocation();
     const [list, setList] = useState<
         {
             id: number;
@@ -85,30 +36,8 @@ function Notes() {
     const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
     const [count, setCount] = useState(0);
     const navigate = useNavigate();
-    const [currentMission, setCurrentMission] = useState(1);
 
-    const changeMission = (state: string) => {
-        if (state === 'plus') {
-            if (count === max - 1) {
-                setCount(0);
-            } else {
-                setCount(count + 1);
-            }
-        }
-        if (state === 'moins') {
-            if (count === 0) {
-                setCount(max - 1);
-            } else {
-                setCount(count - 1);
-            }
-        }
-    };
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setCurrentMission(Number(event.target.value));
-    };
-
-    const getMission = async () => {
+    const getMissionName = async () => {
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
@@ -117,19 +46,10 @@ function Notes() {
                 },
             })
             .then((data) => {
-                const tab: {
-                    id: number;
-                    title: string;
-                }[] = [];
                 for (let i = 0; i < data.data.results.length; i += 1) {
                     const res = data.data.results[i];
-                    const test = {
-                        id: res.id,
-                        title: res.title,
-                    };
-                    tab.push(test);
+                    if (res.id === missionId) setMissionName(res.title);
                 }
-                setIsMission(tab);
             })
             .catch((e) => {
                 throw new Error(e);
@@ -137,7 +57,6 @@ function Notes() {
     };
 
     const getNotes = async () => {
-        setMax(idMission.length);
         await axios
             .get(`${config.apiUrl}/note?page=1`, {
                 headers: {
@@ -147,13 +66,11 @@ function Notes() {
             })
             .then((e) => {
                 const tab = [];
-                for (let i = 0; i < idMission.length; i += 1) {
-                    const note = e.data.results.filter(
-                        (elem: IDashboardNotes) =>
-                            elem.mission === idMission[i].id
-                    );
-                    tab.push({ id: idMission[i].id, notes: note });
-                }
+                const note = e.data.results.filter(
+                    (elem: IDashboardNotes) => elem.mission === missionId
+                );
+                for (let i = 0; i < note.length; i += 1)
+                    tab.push({ id: missionId, notes: note[i] });
                 tab.reverse();
                 setList(tab);
             })
@@ -162,20 +79,11 @@ function Notes() {
             });
     };
 
-    const findMission = () => {
-        let find: any = null;
-
-        for (let i = 0; i < idMission.length; i += 1) {
-            find = idMission.filter((elem: any) => elem.id === currentMission);
-        }
-        return find[0];
-    };
-
     const findCount = () => {
         let value = 0;
 
         for (let i = 0; i < list.length; i += 1) {
-            if (list[i].id === currentMission) {
+            if (list[i].id === missionId) {
                 value = i;
             }
         }
@@ -183,12 +91,13 @@ function Notes() {
     };
 
     useEffect(() => {
-        getMission();
+        setMissionId(location.state.missionId);
     }, []);
 
     useEffect(() => {
+        getMissionName();
         getNotes();
-    }, [idMission]);
+    }, [missionId]);
 
     const modalClick = () => {
         if (modal) getNotes();
@@ -212,7 +121,7 @@ function Notes() {
 
     return (
         <div>
-            {!idMission ? (
+            {!missionId ? (
                 <Stack spacing={4}>
                     <h2>Create a mission to add a note</h2>
                     <button
@@ -228,82 +137,6 @@ function Notes() {
                 </Stack>
             ) : (
                 <div>
-                    <FormControl
-                        sx={{
-                            paddingY: 2,
-                            width: '100%',
-                            marginTop: '10px',
-                        }}
-                        size="small"
-                    >
-                        <InputLabel
-                            id="Team"
-                            sx={{
-                                fontFamily: 'Poppins-Regular',
-                                fontSize: '14px',
-                            }}
-                        >
-                            Team
-                        </InputLabel>
-                        <Select
-                            labelId="Mission"
-                            id="Mission-select"
-                            value={currentMission.toString()}
-                            required
-                            label="Mission"
-                            onChange={handleChange}
-                        >
-                            {idMission!.map((current) => {
-                                return (
-                                    <MenuItem
-                                        sx={{
-                                            fontFamily: 'Poppins-Regular',
-                                            fontSize: '14px',
-                                        }}
-                                        value={current.id}
-                                    >
-                                        {current.title}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                    {/* </FormControl>
-                    <Stack
-                        direction="row"
-                        justifyContent="start"
-                        alignItems="center"
-                        spacing={4}
-                        ml={2}
-                        width="50%"
-                    >
-                        <div>
-                            <h2>{idMission[count].title}</h2>
-                        </div>
-                        <a
-                            onClick={() => changeMission('moins')}
-                            onKeyDown={() => changeMission('moins')}
-                            tabIndex={0}
-                            role="button"
-                        >
-                            <IoIcons.IoIosArrowBack
-                                size="25px"
-                                color="rebeccapurple"
-                            />
-                        </a>
-                        <a
-                            onClick={() => changeMission('plus')}
-                            onKeyDown={() => changeMission('plus')}
-                            tabIndex={0}
-                            role="button"
-                        >
-                            <IoIcons.IoIosArrowForward
-                                size="25px"
-                                color="rebeccapurple"
-                            />
-                        </a>
-                    </Stack> */}
-                    <Divider variant="middle" />
                     <div className="container-note cards">
                         {isPentester && (
                             <div className="card">
@@ -329,22 +162,54 @@ function Notes() {
                         {modal && (
                             <AddNote
                                 func={modalClick}
-                                mission={findMission()}
+                                missionId={missionId}
+                                missionTitle={missionName}
                             />
                         )}
-                        {findCount() !== 0 && (
-                            <NoteGrid
-                                list={list}
-                                count={findCount()}
-                                displayed={displayed}
-                                viewClick={viewClick}
-                            />
-                        )}
+
+                        {findCount() !== 0 &&
+                            list.map((l, index) => {
+                                return (
+                                    <div
+                                        className="card"
+                                        key={`component-${l.id}`}
+                                    >
+                                        <div>
+                                            <h2 className="heading">
+                                                {l.notes.title}
+                                            </h2>
+                                            <p className="card-content">
+                                                {l.notes.content}
+                                            </p>
+                                        </div>
+                                        <footer>
+                                            <a
+                                                role="button"
+                                                className="button__link"
+                                                onKeyDown={() => {
+                                                    viewClick(index);
+                                                }}
+                                                tabIndex={0}
+                                                onClick={() => {
+                                                    viewClick(index);
+                                                }}
+                                                color="rebeccapurple"
+                                            >
+                                                View more
+                                            </a>
+                                        </footer>
+                                        {displayed === index && (
+                                            <ViewNote
+                                                note={l.notes}
+                                                func={() => viewClick(l.id)}
+                                            />
+                                        )}
+                                    </div>
+                                );
+                            })}
                     </div>
                 </div>
             )}
         </div>
     );
 }
-
-export default Notes;

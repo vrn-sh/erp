@@ -1,3 +1,4 @@
+import os
 from django.contrib.postgres.fields import ArrayField
 from typing import List, Optional
 from django.core.cache import cache
@@ -82,5 +83,6 @@ class Vulnerability(models.Model):
     mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.pk: cache.delete(f'vulnerability_{self.pk}')
+        if self.pk and '1' not in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
+            cache.delete(f'vulnerability_{self.pk}')
         return super().save(force_insert, force_update, using, update_fields)

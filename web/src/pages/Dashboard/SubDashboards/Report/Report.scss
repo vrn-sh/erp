@@ -14,13 +14,14 @@
   }
 }
 
+
+
 /* Template row container */
 .template-row {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
   margin-bottom: 20px;
-
   /* Individual template rectangle */
   .template {
     flex: 0 0 200px;
@@ -68,6 +69,28 @@
   /* Horizontal scrollbar style */
   &::-webkit-scrollbar {
     height: 8px;
+    background-color: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+  }
+}
+
+.template-grid {
+  display: grid;
+  // we shall have 4 columns
+  grid-template-columns: repeat(4, 1fr);
+  overflow-y: auto;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  /* Horizontal scrollbar style */
+  &::-webkit-scrollbar {
+    width: 8px;
     background-color: #f5f5f5;
   }
 

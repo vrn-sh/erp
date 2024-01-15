@@ -59,6 +59,12 @@ jobs:
           SENDGRID_CONFIRM_TEMPLATE_ID: d-1234567890
           SENDGRID_RESET_TEMPLATE_ID: d-1234567890
 
+          WAPP_API_KEY: SOME_RANDOM_KEY
+          WAPP_API_URL: https://some.url.com/wapp
+
+          SAAS_API_KEY: SOME_RANDOM_KEY
+          SAAS_API_URL: https://some.url.com/saas
+
           MINIO_HOST: s3
           MINIO_ROOT_USER: minioadmin
           MINIO_ROOT_PASSWORD: minioadmin

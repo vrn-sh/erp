@@ -124,7 +124,14 @@ export default function CreateTeam() {
         navigate('/team');
     };
 
+    /* eslint-disable */
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
+    }
+    /* eslint-enable */
+
     const handleSubmit = async () => {
+        setOpen(true);
         if (!personName.length) {
             setMessage('Please select a team member', 'error');
             return;
@@ -144,13 +151,28 @@ export default function CreateTeam() {
                     },
                 }
             )
-            .then(() => {
+            .then(async () => {
                 setMessage('Created!', 'success');
+                await timeout(1000);
+                navigate('/accueil');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
             });
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [Title, personName, manager]);
 
     useEffect(() => {
         getPentester();
@@ -295,7 +317,6 @@ export default function CreateTeam() {
                                 className="submit-button"
                                 onClick={() => {
                                     handleSubmit();
-                                    setOpen(true);
                                 }}
                             >
                                 Save

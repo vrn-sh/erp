@@ -1,7 +1,7 @@
-import { Stack } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import React, { useState } from 'react';
+import { Stack } from '@mui/material';
 import '../../Dashboard.scss';
 import { SecondaryButton, PrimaryButton } from '../../../../component/Button';
 import { IDashboardNotes } from '../../DashBoardNote.type';
@@ -86,6 +86,19 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
                 setMessage(e.message, 'error');
             });
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                handleEdit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [note, content]);
 
     return (
         <div className="modal-wrapper">

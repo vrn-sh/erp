@@ -76,21 +76,6 @@ export default function SignUp() {
             case 'email':
                 errors.email = Regex.test(value) ? '' : 'Email is not valid!';
                 break;
-            case 'username':
-                errors.username =
-                    value.length < 5
-                        ? 'Username must be 5 characters long!'
-                        : '';
-                break;
-            case 'role':
-                errors.role = value.length === 0 ? 'Please choose a role' : '';
-                break;
-            case 'password':
-                errors.password =
-                    value.length < 8
-                        ? 'Password must be eight characters long!'
-                        : '';
-                break;
             case 'confirmpassword':
                 errors.confirmpassword =
                     value !== state.password
@@ -108,43 +93,40 @@ export default function SignUp() {
     }, [state]);
 
     const submit = async () => {
-        setPopUp(true);
-        const { username, email, role, password } = state;
         setOpen(true);
-        if (email !== '' && password.length > 7 && username.length > 4) {
-            try {
-                await axios
-                    .post(`${config.apiUrl}/register`, {
-                        auth: {
-                            username,
-                            email,
-                            role,
-                            password,
-                        },
-                    })
-                    .then(() => {
-                        setMessage('Email verification sent', 'success');
-                        setPopUp(true);
-                    })
-                    .catch(() => {
-                        setState({
-                            ...state,
-                            errors: {
-                                ...state.errors,
-                                email: 'Email or username already exists!',
-                            },
-                        });
-                    });
-            } catch (error) {
-                setState({
-                    ...state,
-                    errors: {
-                        ...state.errors,
-                        email: 'Email or username already exists!',
-                    },
-                });
-            }
+        const { username, email, role, password } = state;
+        if (password.length < 8) {
+            setMessage('Password should has at least 8 characters', 'error');
+            return;
         }
+        if (email === '') {
+            setMessage('Please enter an email', 'error');
+            return;
+        }
+        if (username.length < 3) {
+            setMessage('username should has at least 3 characters', 'error');
+            return;
+        }
+
+        await axios
+            .post(`${config.apiUrl}/register`, {
+                auth: {
+                    username,
+                    email,
+                    role,
+                    password,
+                },
+            })
+            .then(() => {
+                setMessage('Email verification sent', 'success');
+                setPopUp(true);
+            })
+            .catch((e: any) => {
+                setMessage(
+                    String(Object.values(e.response.data.auth)[0]),
+                    'error'
+                );
+            });
     };
 
     const confirmUpdate = async () => {
@@ -180,6 +162,20 @@ export default function SignUp() {
             setConPwdIcon(<AiIcons.AiOutlineEyeInvisible />);
         }
     };
+
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submit();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [state]);
 
     return (
         <section className="signup-container">

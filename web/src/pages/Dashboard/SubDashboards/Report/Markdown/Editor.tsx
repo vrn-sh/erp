@@ -9,10 +9,11 @@ import Tooltip from '../../../../../component/Tooltip/Tooltip';
 import MarkdownHelper from './MarkdownHelper';
 import { getCookiePart } from '../../../../../crypto-utils';
 
-function MarkdownEditor({ mission }: { mission: number }) {
+function MarkdownEditor({ missionid }: { missionid: number }) {
     const [markdownText, setMarkdownText] = useState(
         '# Loading from backend...'
     );
+    const [isfetchDone, setFetchDone] = useState(false);
 
     const fetchDataFromBackend = async () => {
         const response = await axios.get(`${config.apiUrl}/markdown-report`, {
@@ -20,7 +21,7 @@ function MarkdownEditor({ mission }: { mission: number }) {
                 Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
             },
             params: {
-                mission,
+                mission: missionid,
                 download: false,
             },
         });
@@ -29,11 +30,31 @@ function MarkdownEditor({ mission }: { mission: number }) {
     };
 
     useEffect(() => {
-        if (mission === -1) {
+        if (missionid === -1) {
             setMarkdownText(
                 '# Please select a mission with the Select button above.'
             );
             return;
+        }
+        if (isfetchDone) {
+            setTimeout(() => {
+                const mdMission = JSON.parse(
+                    localStorage.getItem('md') || '{}'
+                );
+                mdMission[missionid] = markdownText;
+                localStorage.setItem('md', JSON.stringify(mdMission));
+            }, 2000);
+            return;
+        }
+
+        if (localStorage.getItem('md')) {
+            const mdMission = JSON.parse(localStorage.getItem('md') || '{}');
+            console.log('mdMission', mdMission);
+            if (mdMission[missionid]) {
+                setMarkdownText(mdMission[missionid]);
+                setFetchDone(true);
+                return;
+            }
         }
         fetchDataFromBackend()
             .then((result) => {
@@ -41,15 +62,18 @@ function MarkdownEditor({ mission }: { mission: number }) {
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
+            })
+            .finally(() => {
+                setFetchDone(true);
             });
-    }, []); // Empty dependency array
+    }, [markdownText, isfetchDone]); // Empty dependency array
 
     const handleInputChange = (e: any) => {
         setMarkdownText(e.target.value);
     };
 
     const handleDownload = async () => {
-        if (mission === -1) {
+        if (missionid === -1) {
             alert('Please select a mission with the Select button above.');
             return;
         }
@@ -59,7 +83,7 @@ function MarkdownEditor({ mission }: { mission: number }) {
                     Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
                 },
                 params: {
-                    mission,
+                    mission: missionid,
                     download: true,
                 },
                 maxRedirects: 5,

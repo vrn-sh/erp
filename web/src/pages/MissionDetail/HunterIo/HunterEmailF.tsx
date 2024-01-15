@@ -93,6 +93,19 @@ export default function HunterEmailF() {
         setScore(tmp);
     }, [hunterEmailF]);
 
+    useEffect(() => {
+        const keyDownHandler = async (event: any) => {
+            if (event.key === 'Enter') {
+                emailFinder();
+            }
+        };
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        };
+    }, [company, name]);
+
     return (
         <div className="hunter-scroll-div">
             <div className="hunter-input-bar">

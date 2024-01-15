@@ -97,6 +97,26 @@ TEMPLATES = [
     },
 ]
 
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'voron',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+
+# cache configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
+
+
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
@@ -150,58 +170,12 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'voron',
-            'USER': os.environ.get("USER"),
+            'USER': 'postgres',# os.environ.get("USER"),
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
             'PORT': '',
         }
     }
-
-    # cache configuration
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        }
-    }
-
-elif os.environ.get('CI') and os.environ.get('CI')  == '1':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': 'localhost',
-            'PORT': '',
-        }
-    }
-
-    # cache configuration
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        }
-    }
-
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'voron',
-            'USER': os.environ.get('USER'),
-            'PASSWORD': 'postgres',
-            'HOST': 'localhost',
-            'PORT': '',
-        }
-    }
-
-    # cache configuration
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        }
-    }
-
 
 
 # Password validation

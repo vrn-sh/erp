@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as IoIcons from 'react-icons/io';
 import '../Dashboard/Dashboard.scss';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
-import ViewTeam from './ViewTeam';
 import { getCookiePart } from '../../crypto-utils';
 
 export default function TeamList() {
@@ -133,11 +132,10 @@ export default function TeamList() {
     return (
         <div className="dashboard-pages">
             <div className="page-info">
-                <h1>Team</h1>
+                <h1>Assigned Teams</h1>
             </div>
             <div className="assigned-missions">
                 <div className="dashboard-table">
-                    <h1>Existing teams</h1>
                     {!list.length ? (
                         <button
                             type="button"
@@ -158,27 +156,33 @@ export default function TeamList() {
                                 <thead>
                                     <tr>
                                         <th className="md-3">Name</th>
-                                        <th className="md-3">Manager</th>
-                                        <th className="md-5">Members</th>
-                                        <th className="md-5">Missions</th>
-                                        <th className="md-3">Action</th>
+                                        <th className="md-2">Manager</th>
+                                        <th className="md-1">Members</th>
+                                        <th className="md-2">Missions</th>
+                                        {!isPentester && (
+                                            <th className="md-2">Action</th>
+                                        )}
                                     </tr>
                                 </thead>
                                 {records.map((team) => {
                                     return (
                                         <tbody key={team.id}>
                                             <tr key={team.id}>
-                                                <td>
-                                                    <Link
-                                                        to={`/team/view/${team.id}`}
-                                                    >
-                                                        {team.name}
-                                                    </Link>
-                                                </td>
+                                                <td>{team.name}</td>
                                                 <td>{team.manager}</td>
                                                 <td>{team.nbMember}</td>
                                                 <td>{team.nbMission}</td>
                                                 <td className="scope-table-action">
+                                                    <input
+                                                        type="button"
+                                                        value="Open"
+                                                        className="openBtn"
+                                                        onClick={() => {
+                                                            navigate(
+                                                                `/team/view/${team.id}`
+                                                            );
+                                                        }}
+                                                    />
                                                     {!isPentester && (
                                                         <>
                                                             <input

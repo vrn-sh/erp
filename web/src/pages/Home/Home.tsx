@@ -6,6 +6,7 @@ import About from './About/About';
 import Team from './Team/Team';
 import ContactForm from './Form/ContactForm';
 import Timeline from './Timeline/Timeline';
+import Plan from './Plan/Plan';
 
 export default function Home() {
     return (
@@ -17,12 +18,14 @@ export default function Home() {
                         <div className="home-container">
                             <h1>VORON</h1>
                             <h4>
-                                In <span>efficiency</span> we trust.
+                                See your <span>pentest</span> life - In{' '}
+                                <span>efficiency</span> we trust
                             </h4>
                         </div>
                     </div>
                 </div>
                 <About />
+                <Plan />
                 <Timeline />
                 <Team />
                 <ContactForm />

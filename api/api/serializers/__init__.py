@@ -9,7 +9,7 @@ from rest_framework import serializers
 from argon2 import PasswordHasher
 from api.backends import EmailBackend
 
-from api.models import Manager, Pentester, Auth, Team
+from api.models import Freelancer, Manager, Pentester, Auth, Team
 from api.serializers.utils import create_instance, get_image_data, get_mime_type
 from api.services.s3 import S3Bucket
 
@@ -122,6 +122,30 @@ class ManagerSerializer(serializers.ModelSerializer):
         return Manager.objects.create(auth=auth, **validated_data)  # type: ignore
 
     def update(self, instance, validated_data) -> Manager:
+        if 'auth' in validated_data:
+            nested_serializer: AuthSerializer = self.fields['auth']  # type: ignore
+            nested_instance: Auth = instance.auth
+            nested_data: dict[str, str] = validated_data.pop('auth')
+            nested_serializer.update(nested_instance, nested_data)
+        return super().update(instance, validated_data)
+
+
+class FreelancerSerializer(serializers.ModelSerializer):
+    """serializer used for Admin CRUD operations"""
+    auth = AuthSerializer(many=False, read_only=False)
+
+    class Meta:
+        model = Freelancer
+        fields = '__all__'
+
+    def create(self, validated_data) -> Freelancer:
+        validated_data['auth']['role'] = 3
+        validated_data['auth']['is_superuser'] = False
+        validated_data['auth']['is_staff'] = False
+        auth: Auth = create_instance(AuthSerializer, validated_data, 'auth')  # type: ignore
+        return Freelancer.objects.create(auth=auth, **validated_data)  # type: ignore
+
+    def update(self, instance, validated_data) -> Freelancer:
         if 'auth' in validated_data:
             nested_serializer: AuthSerializer = self.fields['auth']  # type: ignore
             nested_instance: Auth = instance.auth

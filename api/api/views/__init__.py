@@ -22,7 +22,7 @@ from rest_framework.status import (
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
-from api.models import Auth, Manager, Pentester
+from api.models import Auth, Manager, Pentester, get_user_model
 
 from knox.views import LoginView as KnoxLoginView
 
@@ -276,8 +276,6 @@ class LoginView(KnoxLoginView):
     def post(self, request):
         """Logs in account, after checking if account has been disabled or not"""
 
-        auth_model_dict = [None, Pentester, Manager]
-
         serializer = LoginSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({
@@ -288,7 +286,7 @@ class LoginView(KnoxLoginView):
         login(request, auth)
 
         knox_resp = super().post(request, format=None)
-        user = auth_model_dict[auth.role].objects.get(auth_id=auth.id)
+        user = get_user_model(auth)
 
         knox_resp.data['role'] = auth.role
         knox_resp.data['id'] = user.id
