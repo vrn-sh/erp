@@ -52,7 +52,8 @@ class Auth(AbstractUser):
         is_enabled: boolean value checking if user has been locked, or has not confirmed account yet
         favorites: value use for front-end to decide which favorites to display
         profile_image: key holding the value of an image in the bucket
-
+        has_otp: boolean value checking if user has enabled MFA
+        mfa_secret: secret key used for MFA
     """
 
     class Meta:
@@ -77,6 +78,8 @@ class Auth(AbstractUser):
     last_name: models.CharField = models.CharField(max_length=NAME_LENGTH, null=True, blank=True)
     is_enabled: models.BooleanField = models.BooleanField(default=False)  # type: ignore
     favorites: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)  # type: ignore
+    has_otp: models.BooleanField = models.BooleanField(default=False)
+    mfa_secret: Optional[CharField] = models.CharField(max_length=32, null=True, blank=True)  # type: ignore
 
     # will hold a key that can be fetched by S3 service to get a profile image
     profile_image: Optional[CharField] = models.CharField(max_length=38, null=True, blank=True)  # type: ignore

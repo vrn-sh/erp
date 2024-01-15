@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -82,14 +82,32 @@ export default function MfaLogin() {
                     },
                 }
             )
-            .then((data) => {
+            .then(() => {
                 setMessage('Succeed!', 'success');
                 getUserInfos();
             })
             .catch((e) => {
                 setMessage('Wrong code', 'error');
+                throw e;
             });
     };
+
+    useEffect(() => {
+        axios
+            .get(`${config.apiUrl}/mfa`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then((data) => {
+                setMfaCode(data.data.mfa_code);
+            })
+            .catch((e) => {
+                setMessage('Wrong code', 'error');
+                throw e;
+            });
+    }, []);
 
     return (
         <section className="login-container">

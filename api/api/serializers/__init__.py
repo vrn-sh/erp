@@ -48,7 +48,7 @@ class AuthSerializer(serializers.ModelSerializer):
             'username', 'email', 'first_name', 'last_name',
             'last_login', 'date_joined', 'password',
             'phone_number', 'role', 'favorites',
-            'profile_image',
+            'profile_image', 'has_otp'
         ]
 
     def update(self, instance, validated_data) -> Auth:

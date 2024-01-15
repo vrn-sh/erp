@@ -39,11 +39,8 @@ class MFAView(APIView):
     )
     def get(self, request):
         user = request.user
-        if user.has_otp:
-            return Response({'error': 'MFA is already enabled for this user'}, status=status.HTTP_400_BAD_REQUEST)
         user.mfa_secret = pyotp.random_base32()
         totp = pyotp.TOTP(user.mfa_secret)
-
         user.save()
 
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
