@@ -72,16 +72,16 @@ export default function TableSection(props: {
                     <button
                         type="button"
                         className="set-button"
-                        onClick={() => NavTeamDetail()}
-                    >
-                        Open
-                    </button>
-                    <button
-                        type="button"
-                        className="set-button"
                         onClick={() => DisplayMission()}
                     >
                         Mission
+                    </button>
+                    <button
+                        type="button"
+                        className="main-button"
+                        onClick={() => NavTeamDetail()}
+                    >
+                        Open
                     </button>
                 </td>
             </tr>

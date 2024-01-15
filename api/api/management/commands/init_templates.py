@@ -9,58 +9,17 @@ class Command(BaseCommand):
     """Command creating report templates information"""
     def handle(self, *_, **__):
             templates = [
-                ('red4sec',
-                 self.read_css('./api/pdf-templates/red4sec-template/main.css'),
-                 '''<div class="cover-page">
-<svg id="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-   <defs>
-       <linearGradient id="url(#sw-gradient-1)" x1="0" x2="0" y1="1" y2="0">
-           <stop stop-color="rgba(243, 62, 172, 1)" offset="0%"></stop>
-           <stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop>
-       </linearGradient>
-   </defs>
-   <path fill="url(#sw-gradient-1)" fill-opacity="0.7" d="M0,160L180,96L360,192L540,224L720,288L900,0L1080,128L1260,128L1440,192L1440,0L1260,0L1080,0L900,0L720,0L540,0L360,0L180,0L0,0Z"></path>
-   <defs>
-       <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
-           <stop stop-color="rgba(243, 62, 142, 1)" offset="0%"></stop>
-           <stop stop-color="rgba(255, 85, 11, 1)" offset="100%"></stop>
-       </linearGradient>
-   </defs>
-   <path fill="url(#sw-gradient-0)" fill-opacity="0.7" d="M0,192L180,192L360,32L540,96L720,64L900,96L1080,224L1260,160L1440,96L1440,0L1260,0L1080,0L900,0L720,0L540,0L360,0L180,0L0,0Z"></path>        </svg>
-   <img alt="logo-company" id="logo" src="{logo}" />
-<h1>{team_name}</h1>
-
-<svg id="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-   <defs>
-       <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
-           <stop stop-color="rgba(243, 62, 142, 1)" offset="0%"></stop>
-           <stop stop-color="rgba(255, 85, 11, 1)" offset="100%"></stop>
-       </linearGradient>
-   </defs>
-   <path fill="url(#sw-gradient-0)" fill-opacity="1" d="M0,64L205.7,128L411.4,32L617.1,192L822.9,128L1028.6,160L1234.3,32L1440,288L1440,320L1234.3,320L1028.6,320L822.9,320L617.1,320L411.4,320L205.7,320L0,320Z"></path>
-
-   <defs>
-       <linearGradient id="sw-gradient-1" x1="0" x2="0" y1="1" y2="0">
-           <stop stop-color="rgba(243, 62, 172, 1)" offset="0%"></stop>
-           <stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop>
-       </linearGradient>
-   </defs>
-   <path fill="url(#sw-gradient-1)" fill-opacity="0.7" d="M0,64L205.7,224L411.4,256L617.1,256L822.9,224L1028.6,224L1234.3,32L1440,256L1440,320L1234.3,320L1028.6,320L822.9,320L617.1,320L411.4,320L205.7,320L0,320Z"></path></svg>
-<div class="bandeau">
-
-   <h2 id="mission-title">{mission_title}</h2>
-   <div class="report-info">
-       <p id="version">Version: {report_version}</p>
-       <p id="report-date">{report_date}</p>
-   </div>
-</div>
-
-</div>'''),
                 ('hackmanit',
                  self.read_css('./api/pdf-templates/hackmanit-template/main.css'),
                  '''
+<div>
+    <header>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>{mission_title}</title>
+    </header>
     <div class="cover-page">
-        <img alt="logo-company" id="logo" src="{logo}" />
+        <img alt="logo-company" id="logo" src="{logo}" style="max-height: 300px;"/>
         <h1 id="mission-title>{mission_title}</h1>
         <div class="report-info">
             <p>{team_name}</p>
@@ -68,32 +27,51 @@ class Command(BaseCommand):
             <p id="report-date">{report_date}</p>
         </div>
     </div>
+</div>
                  '''),
+                 (
+                      'yellow',
+                        self.read_css('./api/pdf-templates/yellow-template/main.css'),
+                        '''
+    <article id="cover" style="display: block; justify-content:space-between;">
+      <h1 class="title">{mission_title}</h1>
+        <div id="logo">
+            <img alt="logo-company" src="{logo}" style="max-height: 600px;"/>
+        </div>
+      <address>
+      {team_name}
+        <strong>Version:</strong> {report_version}<br>
+        <strong>Date:</strong> {report_date}<br>
+      </address>
+    </article>
+                        '''
+                 ),
                 ('NASA',
                  self.read_css('./api/pdf-templates/NASA-template/main.css'),
                  '''
     <div class="cover-page">
         <header>
-            <div class="identity">
-                <img class="logo"
-                    src="{logo}"
-                    alt="logo" />
-                <div class="info">
-                    <p>{team_name}</p>
+            <div class="header-content">
+                <div id="page-title" style="background-color: navy;color:white;padding-right: none; padding-left: 12px;">
+                    <h2 class="page-title-name">{team_name}</h2>
+                </div>
+                <div style="margin: 20px;">
+                    <img src="{logo}" alt="{team_name} logo" style="max-height:100px;">
                 </div>
             </div>
         </header>
         <div class="title">
-            <div class="divider-x"></div>
             <h1>{mission_title}</h1>
             <h2>{report_date}</h2>
-            <div class="divider-x"></div>
         </div>
         <footer id="footer">
-            <p>Report No. {report_version}</p>
+            <div style="display:flex;">
+                <p id="footnote">Report No. {report_version}</p>
+            </div>
         </footer>
     </div>
                  '''),
+
                 (
                     'academic',
                     self.read_css('./api/pdf-templates/academic-template/main.css'),

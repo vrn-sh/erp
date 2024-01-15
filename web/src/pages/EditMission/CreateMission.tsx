@@ -6,6 +6,7 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    TextField,
     SelectChangeEvent,
     Chip,
     Grid,
@@ -21,7 +22,6 @@ import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
-import Input from '../../component/Input';
 
 export default function CreateMission() {
     const [Title, setTitle] = useState('');
@@ -96,10 +96,20 @@ export default function CreateMission() {
         setScope(newValue);
     };
 
+    /* eslint-disable */
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
+    }
+    /* eslint-enable */
+
     const handleSubmit = async () => {
         setOpen(true);
         if (Team === 0) {
             setMessage('Please choose a team', 'error');
+            return;
+        }
+        if (Title.length < 3) {
+            setMessage('Please set a correct title name', 'error');
             return;
         }
         if (start.isBefore(dayjs(), 'day') || end.isBefore(dayjs(), 'day')) {
@@ -128,9 +138,10 @@ export default function CreateMission() {
                     },
                 }
             )
-            .then((data) => {
-                console.log(data);
+            .then(async (data) => {
                 setMessage('Created!', 'success');
+                await timeout(1000);
+                navigate('/accueil');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -164,19 +175,6 @@ export default function CreateMission() {
         getTeam();
     }, []);
 
-    useEffect(() => {
-        const keyDownHandler = async (event: any) => {
-            if (event.key === 'Enter') {
-                handleSubmit();
-            }
-        };
-
-        document.addEventListener('keydown', keyDownHandler);
-        return () => {
-            document.removeEventListener('keydown', keyDownHandler);
-        };
-    }, [Title, start, end, Team, scope]);
-
     return (
         <div className="dashboard">
             <SideBar />
@@ -203,95 +201,49 @@ export default function CreateMission() {
                         </p>
                     </div>
                     <div className="edit-form">
-                        <Input
+                        <TextField
+                            fullWidth
                             label="Title"
-                            labelState={Title}
-                            setLabel={setTitle}
-                            size="medium"
-                        />
-                        <Input
-                            label="Description"
-                            labelState={Des}
-                            setLabel={setDes}
-                            size="medium"
-                        />
-
-                        <div className="form-group">
-                            <label htmlFor="logo">Logo</label>
-                            <input
-                                type="file"
-                                id="logo"
-                                accept="image/*"
-                                className="form-control"
-                                title="Upload a logo for the mission"
-                                onChange={(e) => handleFileUpload(e)}
-                            />
-                        </div>
-
-                        <div
-                            style={{ marginBottom: '8px' }}
-                            className="form-group"
-                        >
-                            <label htmlFor="scopes">Scopes</label>
-                            <input
-                                id="input-scope"
-                                type="text"
-                                // id="scopes"
-                                required
-                                className="form-control"
-                                value={label}
-                                onChange={(e) => setLabel(e.target.value)}
-                                onKeyDown={setScopes}
-                                title="Enter the environment list for the mission. Ex:epitech.eu,  (Press Enter to add)"
-                            />
-                        </div>
-                        <Grid
-                            container
-                            spacing={{ xs: 2, md: 3 }}
-                            columns={{ xs: 4, sm: 8, md: 12 }}
-                        >
-                            {scope.map((item, index) => {
-                                return (
-                                    <Grid item xs="auto">
-                                        <Chip
-                                            sx={{
-                                                fontFamily: 'Poppins-Regular',
-                                                fontSize: '14px',
-                                            }}
-                                            label={item}
-                                            onDelete={() => {
-                                                deleteScope(index);
-                                            }}
-                                        />
-                                    </Grid>
-                                );
-                            })}
-                        </Grid>
-                        <FormControl
-                            sx={{
-                                paddingY: 2,
-                                width: '100%',
-                                marginTop: '10px',
+                            value={Title}
+                            onChange={(e) => {
+                                setTitle(e.target.value);
                             }}
+                            style={{ padding: '.8rem' }}
+                            size="small"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Description"
+                            value={Des}
+                            onChange={(e) => {
+                                setDes(e.target.value);
+                            }}
+                            style={{ padding: '.8rem' }}
+                            size="small"
+                        />
+
+                        {/* Team */}
+                        <FormControl
+                            style={{ padding: '.8rem' }}
+                            fullWidth
                             size="small"
                         >
                             <InputLabel
-                                htmlFor="Team-select"
                                 sx={{
                                     fontFamily: 'Poppins-Regular',
                                     fontSize: '14px',
+                                    paddingLeft: '10px',
                                 }}
                             >
                                 Team
                             </InputLabel>
                             <Select
+                                required
                                 labelId="Team"
+                                label="Team"
                                 id="Team-select"
                                 value={Team.toString()}
-                                required
-                                label="Team"
                                 onChange={handleChange}
-                                title="Select the team for the mission"
                             >
                                 {teamList!.map((team) => {
                                     return (
@@ -310,29 +262,106 @@ export default function CreateMission() {
                             </Select>
                         </FormControl>
 
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateField
-                                label="Start date"
-                                value={start}
-                                sx={{ padding: '6px', width: '50%' }}
-                                onChange={(newValue: any) => setStart(newValue)}
-                            />
-                        </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateField
-                                label="End date"
-                                value={end}
-                                sx={{ padding: '6px', width: '50%' }}
-                                onChange={(newValue: any) => setEnd(newValue)}
-                            />
-                        </LocalizationProvider>
+                        {/* DatePicker */}
+                        <div style={{ padding: '.5rem' }}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateField
+                                    label="Start date"
+                                    value={start}
+                                    sx={{ padding: '6px', width: '50%' }}
+                                    onChange={(newValue: any) =>
+                                        setStart(newValue)
+                                    }
+                                    format="DD-MM-YYYY"
+                                />
+                            </LocalizationProvider>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateField
+                                    label="End date"
+                                    value={end}
+                                    sx={{ padding: '6px', width: '50%' }}
+                                    onChange={(newValue: any) =>
+                                        setEnd(newValue)
+                                    }
+                                    format="DD-MM-YYYY"
+                                />
+                            </LocalizationProvider>
+                        </div>
 
-                        <br />
+                        {/* Logo */}
+                        <div
+                            className="form-group"
+                            style={{ padding: '.8rem', paddingTop: '0' }}
+                        >
+                            <label
+                                htmlFor="logo"
+                                style={{ padding: 0, margin: 0, color: 'gray' }}
+                            >
+                                Logo
+                            </label>
+                            <input
+                                type="file"
+                                id="logo"
+                                accept="image/*"
+                                className="form-control"
+                                placeholder="Upload a logo for the mission"
+                                onChange={(e) => handleFileUpload(e)}
+                            />
+                        </div>
+
+                        {/* Scopes */}
+                        <div
+                            style={{ padding: '.8rem', paddingTop: '0' }}
+                            className="form-group"
+                        >
+                            <label
+                                htmlFor="scopes"
+                                style={{ padding: 0, margin: 0, color: 'gray' }}
+                            >
+                                Scopes
+                            </label>
+                            <Grid
+                                container
+                                spacing={{ xs: 2, md: 3 }}
+                                columns={{ xs: 4, sm: 8, md: 12 }}
+                                style={{ paddingBottom: '.5rem' }}
+                            >
+                                {scope.map((item, index) => {
+                                    return (
+                                        <Grid item xs="auto">
+                                            <Chip
+                                                sx={{
+                                                    fontFamily:
+                                                        'Poppins-Regular',
+                                                    fontSize: '14px',
+                                                }}
+                                                label={item}
+                                                onDelete={() => {
+                                                    deleteScope(index);
+                                                }}
+                                            />
+                                        </Grid>
+                                    );
+                                })}
+                            </Grid>
+                            <input
+                                id="input-scope"
+                                type="text"
+                                required
+                                className="form-control"
+                                value={label}
+                                onChange={(e) => setLabel(e.target.value)}
+                                onKeyDown={setScopes}
+                                placeholder="Enter an url, press Enter to add. Ex:https://www.epitech.eu"
+                            />
+                        </div>
+
                         <div
                             style={{
                                 display: 'flex',
                                 width: '150px',
                                 justifyContent: 'space-between',
+                                paddingLeft: '.8rem',
                             }}
                         >
                             <button

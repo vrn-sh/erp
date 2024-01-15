@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { FaPlus } from 'react-icons/fa6';
 import config from '../../config';
 import AddNMAP from './AddNMAP';
 import Feedbacks from '../../component/Feedback';
@@ -209,207 +210,9 @@ export default function Recon(idMission: any) {
             {modal && <AddNMAP func={modalClick} idRecon={recon.id} />}
             <div className="recon_container">
                 <div className="recon_info">
-                    <div className="mission-tool-line">
-                        {isPentester && (
-                            <button
-                                type="button"
-                                className="input_btn mission-borderBtn"
-                                onClick={modalClick}
-                            >
-                                ADD NMAP
-                            </button>
-                        )}
-                    </div>
-                    {!records.length ? (
-                        <h3 style={{ fontFamily: 'Poppins-Regular' }}>
-                            Nothing to show
-                        </h3>
-                    ) : (
-                        <div className="recon_scroll">
-                            <table className="no_center_container">
-                                <tbody className="width_fix">
-                                    {records.map((s_list) => {
-                                        return (
-                                            <Accordion
-                                                key={s_list.id}
-                                                expanded={
-                                                    expanded ===
-                                                    `panel${s_list.id}`
-                                                }
-                                                onChange={handleChange(
-                                                    `panel${s_list.id}`
-                                                )}
-                                                style={{ width: '30%' }}
-                                            >
-                                                <AccordionSummary
-                                                    expandIcon={
-                                                        <IoIcons.IoIosArrowDown />
-                                                    }
-                                                    aria-controls="panel1bh-content"
-                                                    sx={{
-                                                        backgroundColor:
-                                                            'rgba(0, 0, 0, .02)',
-                                                    }}
-                                                    id="panel1bh-header"
-                                                >
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={15}
-                                                        alignItems="center"
-                                                        justifyContent="space-between"
-                                                    >
-                                                        <p
-                                                            style={{
-                                                                margin: 0,
-                                                            }}
-                                                        >
-                                                            {s_list.id}
-                                                        </p>
-                                                        <p>
-                                                            {s_list.creation_timestamp.slice(
-                                                                0,
-                                                                10
-                                                            )}
-                                                        </p>
-                                                        <p>
-                                                            IPS :{' '}
-                                                            {s_list.ips.length}
-                                                        </p>
-                                                        <p>
-                                                            Ports :{' '}
-                                                            {
-                                                                s_list.ports
-                                                                    .length
-                                                            }
-                                                        </p>
-                                                    </Stack>
-                                                </AccordionSummary>
-                                                <AccordionDetails>
-                                                    <p>Ports</p>
-                                                    {!s_list!.ports.length ? (
-                                                        <h3
-                                                            style={{
-                                                                fontFamily:
-                                                                    'Poppins-Regular',
-                                                            }}
-                                                            className="centered"
-                                                        >
-                                                            Nothing to show
-                                                        </h3>
-                                                    ) : (
-                                                        <>
-                                                            {s_list!.ports.map(
-                                                                (nmap) => {
-                                                                    return (
-                                                                        <Tooltip
-                                                                            title="See more"
-                                                                            arrow
-                                                                        >
-                                                                            <Chip
-                                                                                sx={{
-                                                                                    margin: '8px',
-                                                                                }}
-                                                                                label={
-                                                                                    nmap
-                                                                                }
-                                                                            />
-                                                                        </Tooltip>
-                                                                    );
-                                                                }
-                                                            )}
-                                                        </>
-                                                    )}
-                                                    <p>IPS</p>
-                                                    {!s_list!.ips.length ? (
-                                                        <h3
-                                                            style={{
-                                                                fontFamily:
-                                                                    'Poppins-Regular',
-                                                            }}
-                                                            className="centered"
-                                                        >
-                                                            Nothing to show
-                                                        </h3>
-                                                    ) : (
-                                                        <>
-                                                            {s_list!.ips.map(
-                                                                (nmap) => {
-                                                                    return (
-                                                                        <Tooltip
-                                                                            title="See more"
-                                                                            arrow
-                                                                        >
-                                                                            <Chip
-                                                                                sx={{
-                                                                                    margin: '8px',
-                                                                                }}
-                                                                                label={
-                                                                                    nmap
-                                                                                }
-                                                                            />
-                                                                        </Tooltip>
-                                                                    );
-                                                                }
-                                                            )}
-                                                        </>
-                                                    )}
-                                                </AccordionDetails>
-                                            </Accordion>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            {/* <nav>
-                                <ul className="pagination">
-                                    <li className="page-item">
-                                        <a
-                                            href="#"
-                                            className="page-link"
-                                            onClick={prePage}
-                                        >
-                                            <IoIcons.IoIosArrowBack />
-                                        </a>
-                                    </li>
-                                    {nums.map((n) => {
-                                        return (
-                                            <li
-                                                key={n}
-                                                className={`page-item ${
-                                                    currentPage === n
-                                                        ? 'active'
-                                                        : ''
-                                                }`}
-                                            >
-                                                <a
-                                                    href="#"
-                                                    className="page-link"
-                                                    onClick={() =>
-                                                        changePage(n)
-                                                    }
-                                                >
-                                                    {n}
-                                                </a>
-                                            </li>
-                                        );
-                                    })}
-                                    <li className="page-item">
-                                        <a
-                                            href="#"
-                                            className="page-link"
-                                            onClick={nextPage}
-                                        >
-                                            <IoIcons.IoIosArrowForward />
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav> */}
-                        </div>
-                    )}
-                </div>
-                <div className="recon_info">
                     <div className="wappa_input_container">
                         <input
-                            placeholder="Enter a domain name"
+                            placeholder="Enter a domain name -> Ex: https://www.voron.djnn.sh"
                             onChange={(e) => setWappDomain(e.target.value)}
                             className="wappa_input"
                         />
@@ -484,6 +287,154 @@ export default function Recon(idMission: any) {
                                     Please enter an url to scrape
                                 </h5>
                             )}
+                        </div>
+                    )}
+                </div>
+                <div className="recon_info">
+                    <div className="mission-tool-line">
+                        {isPentester && (
+                            <button
+                                type="button"
+                                className="searchBtn wappa_search"
+                                onClick={modalClick}
+                                style={{ marginBottom: '1rem' }}
+                            >
+                                <FaPlus
+                                    style={{ marginRight: '1rem' }}
+                                    color="#fff"
+                                />
+                                ADD NMAP
+                            </button>
+                        )}
+                    </div>
+                    {!records.length ? (
+                        <h3 style={{ fontFamily: 'Poppins-Regular' }}>
+                            Nothing to show
+                        </h3>
+                    ) : (
+                        <div>
+                            {/* <table className="no_center_container">
+                                <tbody className="width_fix"> */}
+                            {records.map((s_list) => {
+                                return (
+                                    <Accordion
+                                        key={s_list.id}
+                                        expanded={
+                                            expanded === `panel${s_list.id}`
+                                        }
+                                        onChange={handleChange(
+                                            `panel${s_list.id}`
+                                        )}
+                                        // style={{ width: '50%' }}
+                                    >
+                                        <AccordionSummary
+                                            expandIcon={
+                                                <IoIcons.IoIosArrowDown />
+                                            }
+                                            aria-controls="panel1bh-content"
+                                            sx={{
+                                                backgroundColor:
+                                                    'rgba(0, 0, 0, .02)',
+                                            }}
+                                            id="panel1bh-header"
+                                        >
+                                            <Stack
+                                                direction="row"
+                                                spacing={15}
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                            >
+                                                <p
+                                                    style={{
+                                                        margin: 0,
+                                                    }}
+                                                >
+                                                    {s_list.id}
+                                                </p>
+                                                <p>
+                                                    {s_list.creation_timestamp.slice(
+                                                        0,
+                                                        10
+                                                    )}
+                                                </p>
+                                                <p>IPS : {s_list.ips.length}</p>
+                                                <p>
+                                                    Ports :{' '}
+                                                    {s_list.ports.length}
+                                                </p>
+                                            </Stack>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <p>Ports</p>
+                                            {!s_list!.ports.length ? (
+                                                <h3
+                                                    style={{
+                                                        fontFamily:
+                                                            'Poppins-Regular',
+                                                    }}
+                                                    className="centered"
+                                                >
+                                                    Nothing to show
+                                                </h3>
+                                            ) : (
+                                                <>
+                                                    {s_list!.ports.map(
+                                                        (nmap) => {
+                                                            return (
+                                                                <Tooltip
+                                                                    title="See more"
+                                                                    arrow
+                                                                >
+                                                                    <Chip
+                                                                        sx={{
+                                                                            margin: '8px',
+                                                                        }}
+                                                                        label={
+                                                                            nmap
+                                                                        }
+                                                                    />
+                                                                </Tooltip>
+                                                            );
+                                                        }
+                                                    )}
+                                                </>
+                                            )}
+                                            <p>IPS</p>
+                                            {!s_list!.ips.length ? (
+                                                <h3
+                                                    style={{
+                                                        fontFamily:
+                                                            'Poppins-Regular',
+                                                    }}
+                                                    className="centered"
+                                                >
+                                                    Nothing to show
+                                                </h3>
+                                            ) : (
+                                                <>
+                                                    {s_list!.ips.map((nmap) => {
+                                                        return (
+                                                            <Tooltip
+                                                                title="See more"
+                                                                arrow
+                                                            >
+                                                                <Chip
+                                                                    sx={{
+                                                                        margin: '8px',
+                                                                    }}
+                                                                    label={nmap}
+                                                                />
+                                                            </Tooltip>
+                                                        );
+                                                    })}
+                                                </>
+                                            )}
+                                        </AccordionDetails>
+                                    </Accordion>
+                                );
+                            })}
+                            {/* </tbody>
+                            </table> */}
                         </div>
                     )}
                 </div>

@@ -154,6 +154,16 @@ $opacity-transition: opacity;
     min-width: 10px;
 }
 
+.editBtn {
+    min-width: 1rem;
+    border: 1px var(--primary-btn) solid;
+    border-radius: 60px;
+    padding: .5rem;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+}
+
 .scope-table-action {
     align-items: center;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
@@ -24,7 +24,7 @@ import ClientInfo from './ClientInfo';
 
 export default function MissionDetail() {
     const isPentester = Cookies.get('Role') === '1';
-    const [active, setActive] = useState('detail');
+    const [active, setActive] = useState('scope');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
     const [logo, setLogo] = useState('');
@@ -39,6 +39,7 @@ export default function MissionDetail() {
         mess: '',
         color: 'success',
     });
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
     const url =
@@ -214,6 +215,14 @@ export default function MissionDetail() {
         }
     };
 
+    const NavEditMission = (mission_id: number) => {
+        navigate('/mission/edit', {
+            state: {
+                missionId: mission_id,
+            },
+        });
+    };
+
     useEffect(() => {
         setId(location.state.missionId);
     }, []);
@@ -238,14 +247,14 @@ export default function MissionDetail() {
         if (active === 'client') {
             return <ClientInfo />;
         }
-        if (active === 'detail') {
+        if (active === 'scope') {
             return <Scope />;
         }
         if (active === 'note') {
             return <Notes />;
         }
         if (active === 'vuln') {
-            return <Vulnerability />;
+            return <Vulnerability missionName={Title} />;
         }
         if (active === 'recon') {
             return <Recon id={id} />;
@@ -305,36 +314,55 @@ export default function MissionDetail() {
                             )}
                         </h1>
 
-                        <Chip
-                            label={status}
-                            color={
-                                status === 'In progress' ? 'warning' : 'success'
-                            }
-                            variant="outlined"
-                            size="medium"
-                            style={{
-                                marginRight: '10px',
-                                fontSize: '12px',
-                            }}
-                        />
+                        <div>
+                            <button
+                                type="submit"
+                                className="editBtn"
+                                onClick={() => {
+                                    NavEditMission(id);
+                                }}
+                            >
+                                Edit Mission
+                            </button>
+
+                            <Chip
+                                label={status}
+                                color={
+                                    status === 'In progress'
+                                        ? 'warning'
+                                        : 'success'
+                                }
+                                variant="outlined"
+                                size="medium"
+                                style={{
+                                    marginRight: '10px',
+                                    fontSize: '12px',
+                                }}
+                            />
+                        </div>
                     </div>
                     <div className="mission-detail-team">
                         <AiIcons.AiOutlineTeam size={20} color="#7c44f3" />
                         <p>{TeamName}</p>
                     </div>
-                    <div className="mission-detail-team">
-                        <TbIcons.TbFileDescription size={20} color="#7c44f3" />
-                        <p>{missionDes}</p>
-                        {missionDes.length > 60 && (
-                            <a
-                                role="presentation"
-                                onClick={() => setPopup(true)}
-                                onKeyDown={() => {}}
-                            >
-                                Read more
-                            </a>
-                        )}
-                    </div>
+                    {missionDes && (
+                        <div className="mission-detail-team">
+                            <TbIcons.TbFileDescription
+                                size={20}
+                                color="#7c44f3"
+                            />
+                            <p>{missionDes}</p>
+                            {missionDes.length > 60 && (
+                                <a
+                                    role="presentation"
+                                    onClick={() => setPopup(true)}
+                                    onKeyDown={() => {}}
+                                >
+                                    Read more
+                                </a>
+                            )}
+                        </div>
+                    )}
                     <div className="subHeader">
                         <div className="submenu-mission">
                             <button
@@ -350,14 +378,14 @@ export default function MissionDetail() {
                             </button>
                             <button
                                 key={1}
-                                id="detail"
+                                id="scope"
                                 type="button"
                                 className={
-                                    active === 'detail' ? 'active' : undefined
+                                    active === 'scope' ? 'active' : undefined
                                 }
                                 onClick={handleClick}
                             >
-                                Detail
+                                scope
                             </button>
                             <button
                                 key={2}
