@@ -13,7 +13,6 @@ const SideBarData = function SideBarDataF() {
     const [tab, setTab] = useState<
         { path: string; title: string; idNav: string }[]
     >([]);
-    const [favList, setList] = useState<string>();
     const [userInfo, setUserInfo] = useState({
         favorites: '',
     });
@@ -24,7 +23,10 @@ const SideBarData = function SideBarDataF() {
             .get(`${config.apiUrl}/mission/${Number(idMission)}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -44,7 +46,10 @@ const SideBarData = function SideBarDataF() {
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

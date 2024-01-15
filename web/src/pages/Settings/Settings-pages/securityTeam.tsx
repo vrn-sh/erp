@@ -107,7 +107,10 @@ export default function SecurityTeam() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -128,7 +131,10 @@ export default function SecurityTeam() {
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -144,7 +150,10 @@ export default function SecurityTeam() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

@@ -74,7 +74,10 @@ export default function Mission() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (data) => {
@@ -119,7 +122,10 @@ export default function Mission() {
             .get(`${config.apiUrl}/vuln-type?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (data) => {
@@ -146,11 +152,12 @@ export default function Mission() {
     };
 
     const getMission = async () => {
+        const token = getCookiePart(Cookies.get('Token')!, 'token');
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${token}`,
                 },
             })
             .then(async (data) => {
@@ -163,9 +170,7 @@ export default function Mission() {
                             {
                                 headers: {
                                     'Content-type': 'application/json',
-                                    Authorization: `Token ${Cookies.get(
-                                        'Token'
-                                    )}`,
+                                    Authorization: `Token ${token}`,
                                 },
                             }
                         )

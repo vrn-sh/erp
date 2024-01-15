@@ -74,7 +74,10 @@ function DocumentTemplates({
         axios
             .get(`${config.apiUrl}/download-report`, {
                 headers: {
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((response) => {
@@ -96,7 +99,10 @@ function DocumentTemplates({
                 },
                 {
                     headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

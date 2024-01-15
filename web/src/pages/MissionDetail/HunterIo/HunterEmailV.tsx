@@ -66,7 +66,10 @@ export default function HunterEmailV() {
             .get(`${config.apiUrl}/hunt?email=${email}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

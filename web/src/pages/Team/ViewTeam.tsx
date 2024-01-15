@@ -88,7 +88,10 @@ export default function ViewTeamDetails() {
         const response = await axios.get(`${config.apiUrl}/team/${teamId}`, {
             headers: {
                 'Content-type': 'application/json',
-                Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                Authorization: `Token ${getCookiePart(
+                    Cookies.get('Token')!,
+                    'token'
+                )}`,
             },
         });
         const team = response.data;

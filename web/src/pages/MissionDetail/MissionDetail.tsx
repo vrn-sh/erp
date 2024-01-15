@@ -56,7 +56,10 @@ export default function MissionDetail() {
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -79,7 +82,10 @@ export default function MissionDetail() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -138,7 +144,10 @@ export default function MissionDetail() {
                     {
                         headers: {
                             'Content-type': 'application/json',
-                            Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                            Authorization: `Token ${getCookiePart(
+                                Cookies.get('Token')!,
+                                'token'
+                            )}`,
                         },
                     }
                 )
@@ -157,7 +166,10 @@ export default function MissionDetail() {
             .get(`${config.apiUrl}/mission/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -177,7 +189,10 @@ export default function MissionDetail() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (data) => {

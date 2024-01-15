@@ -83,7 +83,10 @@ export default function Scope() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -103,7 +106,10 @@ export default function Scope() {
             .get(`${config.apiUrl}/mission/${missionId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

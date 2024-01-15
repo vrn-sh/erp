@@ -40,7 +40,10 @@ export default function DeleteConfirm({ func, item }: DeleteProps) {
             .delete(`${config.apiUrl}/${item.type}/${item.id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(() => {

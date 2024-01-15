@@ -1,10 +1,9 @@
 import config from './config';
 
-
-export function createCookie(id : string, token : string, role : string) {
-    let cookie = `${id}/${token}/${role}`;
+export function createCookie(id: string, token: string, role: string) {
+    const cookie = `${id}/${token}/${role}`;
     return btoa(cookie);
-};
+}
 
 // function encryptString(inputString : string, secretKey : string) {
 //   const cipher = crypto.createCipher('aes-256-cbc', secretKey);
@@ -20,21 +19,21 @@ export function createCookie(id : string, token : string, role : string) {
 //     return decrypted;
 // };
 
-export function getCookiePart(cookie : string, type : string) {
-    let res = atob(cookie)
-    console.log(res)
+export function getCookiePart(cookie: string, type: string) {
+    const res = atob(cookie);
+    console.log(res);
     const parties = res.split('/');
     if (parties.length >= 3) {
-      switch (type) {
-        case 'id':
-          return parseInt(parties[0], 10);
-        case 'token':
-          return parties[1];
-        case 'role':
-          return parseInt(parties[2], 10);
-        default:
-          return null; // Type non valide
-      }
+        switch (type) {
+            case 'id':
+                return parseInt(parties[0], 10);
+            case 'token':
+                return parties[1];
+            case 'role':
+                return parseInt(parties[2], 10);
+            default:
+                return null; // Type non valide
+        }
     }
     return null; // Si la chaîne n'a pas le bon format
-};
+}

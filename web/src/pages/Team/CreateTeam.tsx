@@ -67,7 +67,10 @@ export default function CreateTeam() {
             .get(`${config.apiUrl}/manager?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -90,7 +93,10 @@ export default function CreateTeam() {
             .get(`${config.apiUrl}/pentester?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -147,7 +153,10 @@ export default function CreateTeam() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

@@ -46,7 +46,10 @@ export default function AddNMAP({ idRecon, func }: AddNmapProps) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

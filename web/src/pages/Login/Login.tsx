@@ -6,7 +6,7 @@ import './Login.scss';
 import Cookies from 'js-cookie';
 import Modal from 'react-modal';
 import config from '../../config';
-import { createCookie } from '../../crypto-utils';
+import { createCookie, getCookiePart } from '../../crypto-utils';
 import Feedbacks from '../../component/Feedback';
 
 export default function Login() {
@@ -69,7 +69,10 @@ export default function Login() {
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -105,9 +108,13 @@ export default function Login() {
                     .then((e) => {
                         navigate('/dashboard');
 
-                        Cookies.set('Token', createCookie(e.data.id, e.data.token, e.data.role), {
-                            expires: Date.parse(e.data.expiry),
-                        });
+                        Cookies.set(
+                            'Token',
+                            createCookie(e.data.id, e.data.token, e.data.role),
+                            {
+                                expires: Date.parse(e.data.expiry),
+                            }
+                        );
                         getUserInfos();
                     })
                     .catch(() => {

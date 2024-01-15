@@ -18,7 +18,10 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
     const fetchDataFromBackend = async () => {
         const response = await axios.get(`${config.apiUrl}/markdown-report`, {
             headers: {
-                Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                Authorization: `Token ${getCookiePart(
+                    Cookies.get('Token')!,
+                    'token'
+                )}`,
             },
             params: {
                 mission: missionid,
@@ -80,7 +83,10 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
         axios
             .get(`${config.apiUrl}/markdown-report`, {
                 headers: {
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
                 params: {
                     mission: missionid,

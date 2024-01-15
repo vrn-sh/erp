@@ -71,7 +71,10 @@ function SearchModal({ exit }: SearchModalProps) {
             .get(`${config.apiUrl}/search?q=${keyword}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -251,12 +254,18 @@ export default function TopBar() {
         let url = `${config.apiUrl}/`;
         if (role === '2') url += 'manager';
         else url += 'pentester';
-        const response = await axios.get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
-            },
-        });
+        const response = await axios.get(
+            `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
+            {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
+                },
+            }
+        );
 
         const userData = response.data.auth;
         setUserInfos({

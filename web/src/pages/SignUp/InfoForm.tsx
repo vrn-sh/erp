@@ -7,6 +7,7 @@ import { FaUser, FaCamera } from 'react-icons/fa';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
 import '../Dashboard/Dashboard.scss';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function InfoForm() {
     const role = Cookies.get('Role');
@@ -56,7 +57,10 @@ export default function InfoForm() {
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -127,7 +131,10 @@ export default function InfoForm() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

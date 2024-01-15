@@ -61,7 +61,10 @@ export default function SideBar() {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
-                Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
+                Authorization: `Token ${getCookiePart(
+                    Cookies.get('Token')!,
+                    'token'
+                )}`,
             },
         })
             .then(() => {
