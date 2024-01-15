@@ -198,9 +198,12 @@ export default function Mission() {
                             throw e.message;
                         });
                     const array = [];
-                    for (let j = 0; j < VulnData.length; j += 1) {
-                        if (VulnData[j].mission === data.data.results[i].id) {
-                            array.push(VulnData[j].vuln_type);
+                    for (let j = 0; j < VulnData.results.length; j += 1) {
+                        if (
+                            VulnData.results[j].mission ===
+                            data.data.results[i].id
+                        ) {
+                            array.push(VulnData.results[j].vuln_type);
                         }
                     }
                     tab.push({
@@ -283,7 +286,7 @@ export default function Mission() {
                 </Box>
             ) : (
                 <div className="dashboard-content">
-                    {list.length && vulSuccess ? (
+                    {list.length === 0 && !vulSuccess ? (
                         <>
                             {isPentester ? (
                                 <h3 style={{ fontFamily: 'Poppins-Regular' }}>

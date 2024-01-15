@@ -647,24 +647,26 @@ export default function Accueil() {
 
                         <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
-                                <h5 style={{ marginBottom: '15px' }}>
-                                    My mission
-                                </h5>
-                                {!isPentester && (
-                                    <button
-                                        type="submit"
-                                        className="accueil-create-mission"
-                                        onClick={() => {
-                                            navigate('/mission/create');
-                                        }}
-                                    >
-                                        <FaPlus
-                                            color="#7c44f3"
-                                            style={{ marginRight: '.3rem' }}
-                                        />{' '}
-                                        Add mission
-                                    </button>
-                                )}
+                                <div className="accueil-mission-title">
+                                    <h5 style={{ marginBottom: '15px' }}>
+                                        My mission
+                                    </h5>
+                                    {!isPentester && (
+                                        <button
+                                            type="submit"
+                                            className="accueil-create-mission"
+                                            onClick={() => {
+                                                navigate('/mission/create');
+                                            }}
+                                        >
+                                            <FaPlus
+                                                color="#7c44f3"
+                                                style={{ marginRight: '.3rem' }}
+                                            />{' '}
+                                            Add mission
+                                        </button>
+                                    )}
+                                </div>
                                 {isLoad ? (
                                     <CircularProgress
                                         style={{
@@ -707,29 +709,31 @@ export default function Accueil() {
 
                         <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
-                                <h5
-                                    style={{
-                                        marginBottom: '15px',
-                                        position: 'sticky',
-                                    }}
-                                >
-                                    Co-workers
-                                </h5>
-                                {!isPentester && (
-                                    <button
-                                        type="submit"
-                                        className="accueil-create-mission"
-                                        onClick={() => {
-                                            navigate('/mission/create');
+                                <div className="accueil-mission-title">
+                                    <h5
+                                        style={{
+                                            marginBottom: '15px',
+                                            position: 'sticky',
                                         }}
                                     >
-                                        <FaPlus
-                                            color="#7c44f3"
-                                            style={{ marginRight: '.3rem' }}
-                                        />{' '}
-                                        Add team
-                                    </button>
-                                )}
+                                        Co-workers
+                                    </h5>
+                                    {!isPentester && (
+                                        <button
+                                            type="submit"
+                                            className="accueil-create-mission"
+                                            onClick={() => {
+                                                navigate('/mission/create');
+                                            }}
+                                        >
+                                            <FaPlus
+                                                color="#7c44f3"
+                                                style={{ marginRight: '.3rem' }}
+                                            />{' '}
+                                            Add team
+                                        </button>
+                                    )}
+                                </div>
                                 {isLoad ? (
                                     <CircularProgress
                                         style={{

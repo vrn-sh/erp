@@ -78,17 +78,6 @@ export default function Notes() {
             });
     };
 
-    const findCount = () => {
-        let value = 0;
-
-        for (let i = 0; i < list.length; i += 1) {
-            if (list[i].id === missionId) {
-                value = i;
-            }
-        }
-        return value;
-    };
-
     useEffect(() => {
         setMissionId(location.state.missionId);
     }, []);
@@ -175,7 +164,7 @@ export default function Notes() {
                                     />
                                 )}
 
-                                {findCount() !== 0 ? (
+                                {list.length ? (
                                     list.map((l, index) => {
                                         return (
                                             <div
