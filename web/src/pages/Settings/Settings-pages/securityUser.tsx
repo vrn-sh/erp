@@ -489,11 +489,14 @@ export default function SecurityUser() {
                             </div>
                             {isCodeIncorrect && (
                                 <p style={{ color: 'red', marginTop: '5px' }}>
-                                    Code incorrect. Veuillez réessayer.
+                                    Incorrect code. Try Again.
                                 </p>
                             )}
                             <div style={{ marginTop: '20px' }}>
-                                <button onClick={handleVerifyCode}>
+                                <button
+                                    type="button"
+                                    onClick={handleVerifyCode}
+                                >
                                     Verify
                                 </button>
                             </div>

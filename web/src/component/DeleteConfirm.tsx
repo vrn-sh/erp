@@ -35,6 +35,12 @@ export default function DeleteConfirm({ func, item }: DeleteProps) {
         setOpen(false);
     };
 
+    /* eslint-disable */
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
+    }
+    /* eslint-enable */
+
     const handleDelete = async () => {
         await axios
             .delete(`${config.apiUrl}/${item.type}/${item.id}`, {
@@ -46,9 +52,10 @@ export default function DeleteConfirm({ func, item }: DeleteProps) {
                     )}`,
                 },
             })
-            .then(() => {
+            .then(async () => {
                 setMessage('Deleted !', 'success');
-                func();
+                await timeout(1000);
+                window.location.reload();
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
