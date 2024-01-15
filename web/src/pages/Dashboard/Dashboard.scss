@@ -204,6 +204,16 @@ table input {
     cursor: pointer;
 }
 
+.addVulnBtn {
+    color: var(--primary-btn);
+    background-color: transparent;
+    border: 1px var(--primary-btn) solid;
+    padding: .6rem 1.2rem;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .borderBtnError {
     @extend .borderBtn;
     border-color: red;

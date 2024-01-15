@@ -123,6 +123,12 @@ export default function CreateTeam() {
         navigate('/team');
     };
 
+    /* eslint-disable */
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
+    }
+    /* eslint-enable */
+
     const handleSubmit = async () => {
         setOpen(true);
         if (!personName.length) {
@@ -144,8 +150,10 @@ export default function CreateTeam() {
                     },
                 }
             )
-            .then(() => {
+            .then(async () => {
                 setMessage('Created!', 'success');
+                await timeout(1000);
+                navigate('/accueil');
             })
             .catch((e) => {
                 setMessage(e.message, 'error');

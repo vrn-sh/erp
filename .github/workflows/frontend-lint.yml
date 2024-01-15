@@ -22,8 +22,3 @@ jobs:
         with:
           cmd: lint # will run `yarn test` command
           dir: 'web' # will run `yarn test` in `frontend` sub folder
-      - name: Build production bundle
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build # will run `yarn build:prod` command
-          dir: 'web' # will run `yarn test` in `frontend` sub folder

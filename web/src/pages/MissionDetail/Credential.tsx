@@ -277,9 +277,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                     <TextField
                         name="password"
                         label="Password"
-                        type={
-                            newCredential.passwordVisible ? 'text' : 'password'
-                        }
+                        type="text"
                         value={newCredential.password}
                         onChange={handleCredentialChange}
                         required

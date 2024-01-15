@@ -312,7 +312,7 @@ export default function ViewTeamDetails() {
             <div className="dashboard_container">
                 <TopBar />
                 <div className="page-info">
-                    <h1>Meet our Team</h1>
+                    <h1>Team details</h1>
                 </div>
                 <div className="edit-container">
                     {teamData ? (
