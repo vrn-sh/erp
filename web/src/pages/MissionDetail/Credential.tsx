@@ -18,6 +18,8 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Box,
+    CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -31,7 +33,6 @@ interface Credential {
     login: string;
     password: string;
     comment: string;
-    passwordVisible: boolean;
 }
 
 interface CredentialsProps {
@@ -47,12 +48,12 @@ export default function Credentials({ idMission }: CredentialsProps) {
         login: '',
         password: '',
         comment: '',
-        passwordVisible: false,
     });
 
     const [showAddForm, setShowAddForm] = useState(false);
     const navigate = useNavigate();
     const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const [isLoad, setIsLoad] = useState(false);
 
     const addCredential = async () => {
         try {
@@ -91,7 +92,6 @@ export default function Credentials({ idMission }: CredentialsProps) {
                 login: '',
                 password: '',
                 comment: '',
-                passwordVisible: false,
             });
             setShowAddForm(false);
         } catch (error) {
@@ -120,7 +120,6 @@ export default function Credentials({ idMission }: CredentialsProps) {
                 if (i === index) {
                     return {
                         ...credential,
-                        passwordVisible: !credential.passwordVisible,
                     };
                 }
                 return credential;
@@ -129,6 +128,8 @@ export default function Credentials({ idMission }: CredentialsProps) {
     };
 
     const fetchCredentials = async () => {
+        setIsLoad(true);
+        /* eslint-disable */
         try {
             const response = await axios.get(
                 `${config.apiUrl}/credentials?mission_id=${idMission}`,
@@ -145,8 +146,11 @@ export default function Credentials({ idMission }: CredentialsProps) {
             const { data } = response;
             setCredentials(data.results);
         } catch (error) {
-            console.error(error);
+            throw error;
+        } finally {
+            setIsLoad(false);
         }
+        /* eslint-enable */
     };
 
     function renderCredentialRows() {
@@ -159,20 +163,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                 <TableRow key={credential.id}>
                     <TableCell>{credential.service}</TableCell>
                     <TableCell>{credential.login}</TableCell>
-                    <TableCell>
-                        {credential.passwordVisible
-                            ? credential.password
-                            : '********'}
-                    </TableCell>
-                    <TableCell>
-                        <IconButton onClick={() => togglePasswordVisibility(i)}>
-                            {credential.passwordVisible ? (
-                                <AiOutlineEyeInvisible />
-                            ) : (
-                                <AiOutlineEye />
-                            )}
-                        </IconButton>
-                    </TableCell>
+                    <TableCell>{credential.password}</TableCell>
                     <TableCell>{credential.comment}</TableCell>
                 </TableRow>
             );
@@ -210,19 +201,27 @@ export default function Credentials({ idMission }: CredentialsProps) {
                             <TableCell>Service</TableCell>
                             <TableCell>Login</TableCell>
                             <TableCell>Password</TableCell>
-                            <TableCell />
                             <TableCell>Comments</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {credentials.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={5}>
-                                    No credentials available.
-                                </TableCell>
-                            </TableRow>
+                        {isLoad ? (
+                            <Box sx={{ marginY: '5%' }}>
+                                <CircularProgress color="secondary" />
+                            </Box>
                         ) : (
-                            renderCredentialRows()
+                            <>
+                                {' '}
+                                {credentials.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5}>
+                                            No credentials available.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    renderCredentialRows()
+                                )}
+                            </>
                         )}
                     </TableBody>
                 </Table>
@@ -285,19 +284,11 @@ export default function Credentials({ idMission }: CredentialsProps) {
                                             setNewCredential(
                                                 (prevCredential) => ({
                                                     ...prevCredential,
-                                                    passwordVisible:
-                                                        !prevCredential.passwordVisible,
                                                 })
                                             )
                                         }
                                         edge="end"
-                                    >
-                                        {newCredential.passwordVisible ? (
-                                            <AiOutlineEyeInvisible />
-                                        ) : (
-                                            <AiOutlineEye />
-                                        )}
-                                    </IconButton>
+                                    />
                                 </InputAdornment>
                             ),
                         }}
