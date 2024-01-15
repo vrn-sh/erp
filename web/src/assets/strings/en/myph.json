@@ -10,15 +10,15 @@
         "id": "technique",
         "name": "Technique",
         "type": "selection",
-        "selection": ["CRT", "CRTx", "CreateFiber", "ProcessHollowing", "CreateThread", "Syscall", "Etwp"],
-        "defaultValue": "ProcessHollowing"
+        "selection": ["CRT", "CRTx", "CreateFiber", "ProcessHollowing", "CreateThread", "Syscall", "Etwp", "NtCreateThreadEx"],
+        "defaultValue": "CRT"
     },
     {
         "id": "encryption",
         "name": "Encryption",
         "type": "selection",
         "selection": ["AES" ,"chacha20", "XOR", "blowfish"],
-        "defaultValue": "chacha20"
+        "defaultValue": "AES"
     },
     {
         "id": "shellcode_file",
@@ -44,6 +44,13 @@
     {
         "id": "obfuscation",
         "name": "Obfuscation",
+        "type": "boolean",
+        "selection": [],
+        "defaultValue": "false"
+    },
+    {
+        "id": "use_api_hashing",
+        "name": "Use API Hashing",
         "type": "boolean",
         "selection": [],
         "defaultValue": "false"
