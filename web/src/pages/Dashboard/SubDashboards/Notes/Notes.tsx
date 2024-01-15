@@ -126,7 +126,7 @@ export default function Notes() {
                 </Box>
             ) : (
                 <>
-                    (...)
+                    {' '}
                     {!missionId ? (
                         <Stack spacing={4}>
                             <h2>Create a mission to add a note</h2>

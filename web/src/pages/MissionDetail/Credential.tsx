@@ -221,7 +221,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
                             </Box>
                         ) : (
                             <>
-                                (...)
+                                {' '}
                                 {credentials.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={5}>

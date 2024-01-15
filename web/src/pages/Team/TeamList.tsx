@@ -162,7 +162,7 @@ export default function TeamList() {
                         </Box>
                     ) : (
                         <>
-                            (...)
+                            {' '}
                             {!list.length ? (
                                 <button
                                     type="button"
