@@ -21,7 +21,17 @@ export default function Mission() {
             scope: any;
             vuln: string[];
         }[]
-    >([]);
+    >([
+        {
+            name: 'string',
+            id: 2,
+            des: 'string',
+            team: 'string',
+            status: { color: 'success', text: 'string' },
+            scope: [],
+            vuln: [],
+        },
+    ]);
     const [vulnType, setVulnType] = useState<
         {
             id: number;
