@@ -24,7 +24,7 @@ import ClientInfo from './ClientInfo';
 
 export default function MissionDetail() {
     const isPentester = Cookies.get('Role') === '1';
-    const [active, setActive] = useState('scope');
+    const [active, setActive] = useState('client');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
     const [logo, setLogo] = useState('');

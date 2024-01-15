@@ -168,7 +168,7 @@ function ClientInfoDetail({ switchToEdit, clientId }: ClientInfoDetailProps) {
                             </button>
                             <button
                                 type="submit"
-                                onClick={() => {
+                                onClick={async () => {
                                     setItem({
                                         id: clientId,
                                         title: Name,

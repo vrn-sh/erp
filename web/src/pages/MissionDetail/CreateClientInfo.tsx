@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../EditMission/Mission.scss';
 import '../Settings/Settings.scss';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers';
@@ -34,8 +34,6 @@ export default function CreateClientInfo({
         mess: '',
         color: 'success',
     });
-
-    const navigate = useNavigate();
     const location = useLocation();
 
     const close = () => {
@@ -74,6 +72,12 @@ export default function CreateClientInfo({
             });
     };
 
+    /* eslint-disable */
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
+    }
+    /* eslint-enable */
+
     const handleSubmit = async () => {
         setOpen(true);
         if (start.isAfter(dayjs(), 'day')) {
@@ -104,8 +108,10 @@ export default function CreateClientInfo({
                     },
                 }
             )
-            .then((data) => {
+            .then(async (data) => {
                 setMessage('Created!', 'success');
+                await timeout(1000);
+                window.location.reload();
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -209,6 +215,7 @@ export default function CreateClientInfo({
                             marginTop: '10px',
                         }}
                         onChange={(newValue: any) => setStart(newValue)}
+                        format="DD-MM-YYYY"
                     />
                 </LocalizationProvider>
                 <br />

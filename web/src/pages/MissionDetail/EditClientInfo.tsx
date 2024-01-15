@@ -77,6 +77,12 @@ export default function EditClientInfo({
             });
     };
 
+    /* eslint-disable */
+    function timeout(delay: number) {
+        return new Promise((res) => setTimeout(res, delay));
+    }
+    /* eslint-enable */
+
     const handleSubmit = async () => {
         setOpen(true);
         if (start.isAfter(dayjs(), 'day')) {
@@ -105,8 +111,10 @@ export default function EditClientInfo({
                     },
                 }
             )
-            .then((data) => {
+            .then(async () => {
                 setMessage('Created!', 'success');
+                await timeout(1000);
+                window.location.reload();
             })
             .catch((e) => {
                 setMessage(e.message, 'error');
@@ -275,6 +283,7 @@ export default function EditClientInfo({
                             marginTop: '10px',
                         }}
                         onChange={(newValue: any) => setStart(newValue)}
+                        format="DD-MM-YYYY"
                     />
                 </LocalizationProvider>
                 <br />
