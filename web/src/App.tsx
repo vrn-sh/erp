@@ -25,6 +25,7 @@ import PrivateRoute from './pages/TokenVerification/TokenVerification';
 import ViewTeamDetails from './pages/Team/ViewTeam';
 import Accueil from './pages/Dashboard/Accueil';
 import InfoForm from './pages/SignUp/InfoForm';
+import ClientList from './pages/Client/ClientList';
 
 function App() {
     return (
@@ -59,6 +60,7 @@ function App() {
                         element={<ViewTeamDetails />}
                     />
                     <Route path="/team/edit" element={<EditTeam />} />
+                    <Route path="/client" element={<ClientList />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
