@@ -157,9 +157,9 @@ export default function TeamList() {
                                         <th className="md-3">Name</th>
                                         <th className="md-2">Manager</th>
                                         <th className="md-1">Members</th>
-                                        <th className="md-2">Missions</th>
+                                        <th className="md-1">Missions</th>
                                         {!isPentester && (
-                                            <th className="md-2">Action</th>
+                                            <th className="md-3">Action</th>
                                         )}
                                     </tr>
                                 </thead>
