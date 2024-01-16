@@ -132,6 +132,9 @@ export default function ProfilePage() {
                     }
                 }
                 setTeamList(t);
+            })
+            .catch((e) => {
+                throw e;
             });
     };
 

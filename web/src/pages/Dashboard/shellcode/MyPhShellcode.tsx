@@ -9,7 +9,6 @@ import {
     TextField,
 } from '@mui/material';
 import axios from 'axios';
-import LoadingButton from '@mui/lab/LoadingButton';
 import formRows from '../../../assets/strings/en/myph.json';
 
 export default function MyPhShellcode(props: {
@@ -18,7 +17,6 @@ export default function MyPhShellcode(props: {
     setError: any;
 }) {
     const { setLink, closeModal, setError } = props;
-    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<{
         [key: string]: any;
     }>({
@@ -29,11 +27,10 @@ export default function MyPhShellcode(props: {
         obfuscation: 'false',
         file_name: 'payload.exe',
         process: 'cmd.exe',
+        use_api_hashing: 'false',
     });
 
     async function submitPayload() {
-        if (loading) return;
-        setLoading(true);
         const foo = new FormData();
         foo.append('shellcode_file', formData.shellcode_file, 'file');
         axios
@@ -44,7 +41,8 @@ export default function MyPhShellcode(props: {
                     `&obfuscation=${formData.obfuscation}` +
                     `&file_name=${formData.file_name}` +
                     `&process=${formData.process}` +
-                    `&technique=${formData.technique}`,
+                    `&technique=${formData.technique}` +
+                    `&use_api_hashing=${formData.use_api_hashing}`,
                 foo,
                 {
                     headers: {
@@ -61,9 +59,6 @@ export default function MyPhShellcode(props: {
             .catch((error) => {
                 setError('Unexpected error occurred. Please try again later.');
                 console.error(error);
-            })
-            .finally(() => {
-                setLoading(false);
             });
     }
 
@@ -74,7 +69,7 @@ export default function MyPhShellcode(props: {
     return (
         <div
             style={{
-                height: '35em',
+                height: '80%',
             }}
         >
             <div
@@ -103,7 +98,6 @@ export default function MyPhShellcode(props: {
                                         id={`text-${row.id}`}
                                         variant="outlined"
                                         defaultValue={row.defaultValue}
-                                        disabled={loading}
                                         onChange={(event) => {
                                             setFormData({
                                                 ...formData,
@@ -116,7 +110,6 @@ export default function MyPhShellcode(props: {
                                     <Switch
                                         id={`switch-${row.id}`}
                                         checked={formData[row.id] === 'true'}
-                                        disabled={loading}
                                         onChange={(event) => {
                                             setFormData({
                                                 ...formData,
@@ -135,7 +128,6 @@ export default function MyPhShellcode(props: {
                                         <input
                                             type="file"
                                             id={`file-${row.id}`}
-                                            disabled={loading}
                                             className="form-control"
                                             title="Upload your shellcode file"
                                             onChange={(e) =>
@@ -148,7 +140,6 @@ export default function MyPhShellcode(props: {
                                     <Select
                                         labelId={`select-${row.id}`}
                                         id={row.id}
-                                        disabled={loading}
                                         value={formData[row.id]}
                                         onChange={(event) => {
                                             setFormData({
@@ -177,8 +168,7 @@ export default function MyPhShellcode(props: {
                     width: '50%',
                 }}
             >
-                <LoadingButton
-                    loading={loading}
+                <Button
                     onClick={() => submitPayload()}
                     size="medium"
                     style={{
@@ -188,8 +178,8 @@ export default function MyPhShellcode(props: {
                         marginRight: '1%',
                     }}
                 >
-                    {!loading && 'Submit'}
-                </LoadingButton>
+                    Submit
+                </Button>
                 <Button
                     onClick={() => closeModal()}
                     size="medium"

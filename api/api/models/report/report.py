@@ -1,7 +1,22 @@
+<<<<<<< HEAD
+=======
+from typing import Any
+import warnings
+from datetime import date
+
+>>>>>>> 5e75c0acd38d45918bc4a270b0532da4c252a7d2
 from django.db import models
 
 from api.models.mission import Mission
 
+<<<<<<< HEAD
+=======
+from api.models import Team
+from api.models.report.generate_html import generate_vulns_detail, generate_members
+from api.services.s3 import S3Bucket
+
+
+>>>>>>> 5e75c0acd38d45918bc4a270b0532da4c252a7d2
 class ReportTemplate(models.Model):
     class Meta:
         verbose_name = 'Report Template'
