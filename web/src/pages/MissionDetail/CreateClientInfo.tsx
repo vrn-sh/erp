@@ -63,7 +63,7 @@ export default function CreateClientInfo({
                         'Content-type': 'application/json',
                         Authorization: `Token ${getCookiePart(
                             Cookies.get('Token')!,
-                            'role'
+                            'token'
                         )}`,
                     },
                 }
@@ -108,7 +108,10 @@ export default function CreateClientInfo({
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

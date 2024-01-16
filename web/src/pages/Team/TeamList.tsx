@@ -18,15 +18,14 @@ export default function TeamList() {
             nbMission: number;
             manager: string;
         }[]
-    >([
+    >([]);
+    const [missionList, setMissionList] = useState<
         {
-            name: 'string',
-            id: 2,
-            nbMember: 2,
-            nbMission: 4,
-            manager: 'string',
-        },
-    ]);
+            name: string;
+            id: number;
+        }[]
+    >([]);
+
     const [open, setOpen] = useState(false);
     const [item, setItem] = useState<{
         id: number;
@@ -62,7 +61,7 @@ export default function TeamList() {
         setCurrentPage(n);
     };
 
-    const getMission = async (idTeam: number) => {
+    const getMission = async () => {
         setIsLoad(true);
 
         await axios
@@ -75,16 +74,16 @@ export default function TeamList() {
                     )}`,
                 },
             })
-            .then((data) => {
-                const tab: any = [];
-                const missions = data.data.results;
-                for (let i = 0; i < missions.length; i += 1) {
-                    const find = missions.filter(
-                        (elem: any) => elem.team === idTeam
-                    );
-                    tab.push(find);
+            .then(async (data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    tab.push({
+                        id: data.data.results[i].id,
+                        name: data.data.results[i].title,
+                    });
                 }
-                setMission(tab.length);
+                tab.reverse();
+                setMissionList(tab);
             })
             .catch((e) => {
                 throw e.message;
@@ -114,14 +113,19 @@ export default function TeamList() {
             .then((data) => {
                 const tab = [];
                 for (let i = 0; i < data.data.length; i += 1) {
-                    getMission(data.data[i].id);
+                    let nbmission = 0;
+                    for (let j = 0; j < missionList.length; j += 1) {
+                        if (missionList[j].id === data.data[i].id)
+                            nbmission += 1;
+                    }
                     tab.push({
                         id: data.data[i].id,
                         name: data.data[i].name,
                         nbMember: data.data[i].members.length,
-                        nbMission: mission, // get info
+                        nbMission: nbmission, // get info
                         manager: data.data[i].leader.auth.username, // get info
                     });
+                    setMission(0);
                 }
                 tab.reverse();
                 setList(tab);
@@ -144,8 +148,12 @@ export default function TeamList() {
     };
 
     useEffect(() => {
-        getTeamList();
+        getMission();
     }, []);
+
+    useEffect(() => {
+        getTeamList();
+    }, [missionList]);
 
     useEffect(() => {
         getTeamList();

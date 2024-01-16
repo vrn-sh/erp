@@ -21,7 +21,6 @@ export function createCookie(id: string, token: string, role: string) {
 
 export function getCookiePart(cookie: string, type: string) {
     const res = atob(cookie);
-    console.log(res);
     const parties = res.split('/');
     if (parties.length >= 3) {
         switch (type) {

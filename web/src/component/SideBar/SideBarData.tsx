@@ -42,7 +42,6 @@ const SideBarData = function SideBarDataF() {
         let url = `${config.apiUrl}/`;
         if (role === '2') url += 'manager';
         else url += 'pentester';
-        console.log('url', url);
         await axios
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
