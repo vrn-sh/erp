@@ -56,7 +56,8 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
 function SettingTeam({ userRole }: UserGroupsProps) {
     // eslint-disable-next-line
     const [groups, setGroups] = useState<Group[]>([]);
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     // const [showPopup, setShowPopup] = useState(false);
     // const [email, setEmail] = useState('');

@@ -269,7 +269,8 @@ export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoad, setIsLoad] = useState(false);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const openModal = () => {
         setIsModalOpen(true);

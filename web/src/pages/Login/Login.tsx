@@ -63,7 +63,8 @@ export default function Login() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '2') url += 'manager';
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2')
+            url += 'manager';
         else url += 'pentester';
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {

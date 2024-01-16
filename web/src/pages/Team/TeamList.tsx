@@ -35,7 +35,8 @@ export default function TeamList() {
     }>();
     const [currentPage, setCurrentPage] = useState(1);
     const [mission, setMission] = useState(0);
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;

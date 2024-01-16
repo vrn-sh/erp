@@ -52,7 +52,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
 
     const [showAddForm, setShowAddForm] = useState(false);
     const navigate = useNavigate();
-    const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const [isLoad, setIsLoad] = useState(false);
 
     const addCredential = async () => {

@@ -86,7 +86,8 @@ export default function Recon(idMission: any) {
     const nums = [...Array(npage + 1).keys()].slice(1);
     const [modal, setModal] = useState(false);
     const { id } = idMission;
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const [expanded, setExpanded] = React.useState<string | false>(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',

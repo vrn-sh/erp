@@ -34,7 +34,7 @@ function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
 }
 
 export default function ProfilePage() {
-    const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const navigate = useNavigate();
     const [NumMission, setNumMission] = useState(0);
     const [coworker, setCowoker] = useState(0);

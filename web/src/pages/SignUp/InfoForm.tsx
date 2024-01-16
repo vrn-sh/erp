@@ -10,7 +10,7 @@ import '../Dashboard/Dashboard.scss';
 import { getCookiePart } from '../../crypto-utils';
 
 export default function InfoForm() {
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const navigate = useNavigate();
     const [userInfos, setUserInfos] = useState({
         first_name: '',

@@ -237,7 +237,7 @@ function SearchModal({ exit }: SearchModalProps) {
 
 export default function TopBar() {
     const navigate = useNavigate();
-    const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const [isOpen, setIsOpen] = useState(false);
     const [userInfos, setUserInfos] = useState({
         username: '',
@@ -277,9 +277,7 @@ export default function TopBar() {
     };
 
     const modalClick = () => {
-        console.log('mystique');
         setIsOpen(!isOpen);
-        console.log(isOpen);
     };
 
     useEffect(() => {

@@ -23,7 +23,7 @@ export default function SettingAccount() {
     });
     const [open, setOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null); // Nouvel état pour le fichier sélectionné
-    const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;

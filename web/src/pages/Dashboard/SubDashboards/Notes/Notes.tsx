@@ -28,7 +28,8 @@ export default function Notes() {
         [{ id: 0, title: '' }]
     );
     const [max, setMax] = useState(0);
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const [count, setCount] = useState(0);
     const navigate = useNavigate();
     const [isLoad, setIsLoad] = useState(false);
@@ -82,6 +83,7 @@ export default function Notes() {
                     tab.push({ id: missionId, notes: note[i] });
                 tab.reverse();
                 setList(tab);
+                console.log('list', tab);
             })
             .catch((e) => {
                 throw new Error(e.message);
@@ -177,7 +179,9 @@ export default function Notes() {
                                     />
                                 )}
 
-                                {list.length ? (
+                                {list.length && !isPentester ? (
+                                    <p>Nothing to show</p>
+                                ) : (
                                     list.map((l, index) => {
                                         return (
                                             <div
@@ -219,8 +223,6 @@ export default function Notes() {
                                             </div>
                                         );
                                     })
-                                ) : (
-                                    <p>Nothing to show</p>
                                 )}
                             </div>
                         </div>

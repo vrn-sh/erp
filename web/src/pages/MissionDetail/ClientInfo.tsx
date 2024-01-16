@@ -12,6 +12,7 @@ import CreateClientInfo from './CreateClientInfo';
 import EditClientInfo from './EditClientInfo';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
+import { getCookiePart } from '../../crypto-utils';
 
 interface ClientInfoDetailProps {
     switchToEdit: () => void;
@@ -20,7 +21,8 @@ interface ClientInfoDetailProps {
 
 function ClientInfoDetail({ switchToEdit, clientId }: ClientInfoDetailProps) {
     const [missionId, setMissionId] = useState(0);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const [Name, setName] = useState('');
     const [logo, setLogo] = useState('');
     const [occupation, setOccupation] = useState('');
@@ -51,7 +53,10 @@ function ClientInfoDetail({ switchToEdit, clientId }: ClientInfoDetailProps) {
             .get(`${config.apiUrl}/client-info/${clientId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -76,7 +81,10 @@ function ClientInfoDetail({ switchToEdit, clientId }: ClientInfoDetailProps) {
             .get(`${config.apiUrl}/mission/${missionId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -194,7 +202,8 @@ export default function ClientInfo() {
     const [isLoad, setIsLoad] = useState(false);
     const [clientId, setCId] = useState(0);
     const [missionId, setMissionId] = useState(0);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const location = useLocation();
     const [isEmpty, setIsEmpty] = useState(true);
 
@@ -211,7 +220,10 @@ export default function ClientInfo() {
             .get(`${config.apiUrl}/client-info`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

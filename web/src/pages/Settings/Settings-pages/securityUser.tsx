@@ -10,8 +10,8 @@ import config from '../../../config';
 import { getCookiePart } from '../../../crypto-utils';
 
 export default function SecurityUser() {
-    const role = getCookiePart(Cookies.get('Token')!, 'role');
-    const id = getCookiePart(Cookies.get('Token')!, 'id');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
+    const id = Number(getCookiePart(Cookies.get('Token')!, 'id'));
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',
         color: 'success',

@@ -42,7 +42,8 @@ export default function Scope() {
         setOpen(false);
     };
 
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);

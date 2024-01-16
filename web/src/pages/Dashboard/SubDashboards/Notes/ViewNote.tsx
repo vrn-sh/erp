@@ -22,7 +22,8 @@ export default function ViewNote({ note, func }: ViewNoteProps) {
         mess: '',
         color: 'success',
     });
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setContent(event.target.value);

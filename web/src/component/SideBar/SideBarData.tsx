@@ -9,7 +9,7 @@ import { getCookiePart } from '../../crypto-utils';
 
 const SideBarData = function SideBarDataF() {
     const [id, setId] = useState(0);
-    const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const [tab, setTab] = useState<
         { path: string; title: string; idNav: string }[]
     >([]);
@@ -42,6 +42,7 @@ const SideBarData = function SideBarDataF() {
         let url = `${config.apiUrl}/`;
         if (role === '2') url += 'manager';
         else url += 'pentester';
+        console.log('url', url);
         await axios
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {

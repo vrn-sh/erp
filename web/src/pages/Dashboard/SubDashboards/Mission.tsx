@@ -54,7 +54,8 @@ export default function Mission() {
         { id: 0, name: '' },
     ]);
     const [vulSuccess, setVulSuccess] = useState(false);
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
