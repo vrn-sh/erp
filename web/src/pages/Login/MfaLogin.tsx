@@ -17,7 +17,6 @@ export default function MfaLogin() {
     const inputRefs = Array.from({ length: 6 }, () =>
         React.createRef<HTMLInputElement>()
     );
-    const [mfaCode, setMfaCode] = useState('');
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
@@ -63,17 +62,15 @@ export default function MfaLogin() {
         newCodeValidation[index] = value;
         setCodeValidation(newCodeValidation);
 
-        const code = newCodeValidation.join('');
         if (index < inputRefs.length - 1 && value) {
             inputRefs[index + 1].current?.focus();
         }
-        setMfaCode(code);
     };
 
     const handleVerifyCode = () => {
         axios
             .post(
-                `${config.apiUrl}/mfa?mfa_code=${mfaCode}`,
+                `${config.apiUrl}/mfa?mfa_code=${codeValidation.join('')}`,
                 {},
                 {
                     headers: {
@@ -87,27 +84,12 @@ export default function MfaLogin() {
                 getUserInfos();
             })
             .catch((e) => {
+                setOpen(true);
+                setCodeValidation(['', '', '', '', '', '']);
                 setMessage('Wrong code', 'error');
                 throw e;
             });
     };
-
-    useEffect(() => {
-        axios
-            .get(`${config.apiUrl}/mfa`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
-            .then((data) => {
-                setMfaCode(data.data.mfa_code);
-            })
-            .catch((e) => {
-                setMessage('Wrong code', 'error');
-                throw e;
-            });
-    }, []);
 
     return (
         <section className="login-container">
