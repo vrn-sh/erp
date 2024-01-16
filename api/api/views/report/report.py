@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from shutil import rmtree
 
 from rest_framework import permissions
+from rest_framework.parsers import FileUploadParser
 from knox.auth import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
@@ -39,6 +40,7 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
     authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
     serializer_class = ReportHtmlSerializer
     pagination_class = CustomPagination
+    parser_classes = [FileUploadParser]
     queryset = ReportHtml.objects.all().order_by('updated_at')
 
     @swagger_auto_schema(
@@ -87,6 +89,8 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
             }, status=HTTP_404_NOT_FOUND)
         request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
         template_name = request.data.pop('template_name')
+        if request.data.get('file', ''):
+            request.data['pdf_file'] = S3Bucket().upload_file(request.data.get('file', ''))
         if request.data.get('logo', ''):
             request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
         return super().create(request, *args, **kwargs)
