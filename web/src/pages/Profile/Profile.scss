@@ -139,5 +139,12 @@
     color: var(--primary-btn);
     border: 1px solid var(--primary-btn);
     border-radius: 6px;
-    justify-content: end;
+}
+
+.main-button {
+    min-width: 1rem;
+    padding: .75rem;
+    background-color: var(--primary-btn);
+    color: white;
+    border-radius: 6px;
 }

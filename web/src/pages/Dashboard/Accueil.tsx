@@ -4,7 +4,7 @@ import './Accueil.scss';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import { styled } from '@mui/material/styles';
-import { Chip } from '@mui/material';
+import { Chip, CircularProgress } from '@mui/material';
 import Modal from 'react-modal';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -14,6 +14,7 @@ import * as FaIcons from 'react-icons/fa';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import { FaPlus } from 'react-icons/fa6';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
@@ -266,16 +267,17 @@ function MissionList({
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLoad, setIsLoad] = useState(false);
+    const isPentester = Cookies.get('Role') === '1';
 
-    // Function to open the modal
     const openModal = () => {
         setIsModalOpen(true);
     };
 
-    // Function to close the modal
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
     const [teamList, setTeamList] = useState<
         {
             id: number;
@@ -325,7 +327,9 @@ export default function Accueil() {
             description: string;
         }[]
     >([]);
+
     const currentDay = dayjs();
+    const navigate = useNavigate();
 
     const size = {
         width: 200,
@@ -368,6 +372,8 @@ export default function Accueil() {
     };
 
     const getTeamList = async () => {
+        setIsLoad(true);
+
         await axios
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
@@ -380,6 +386,9 @@ export default function Accueil() {
             })
             .catch((e) => {
                 throw e.message;
+            })
+            .finally(() => {
+                setIsLoad(false);
             });
     };
 
@@ -427,6 +436,8 @@ export default function Accueil() {
     const getMission = async () => {
         let vulnImp: any = [];
         let vulnLenth = 0;
+        setIsLoad(true);
+
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
@@ -498,6 +509,9 @@ export default function Accueil() {
             })
             .catch((e) => {
                 throw e.message;
+            })
+            .finally(() => {
+                setIsLoad(false);
             });
     };
 
@@ -520,11 +534,13 @@ export default function Accueil() {
                         <h1>Overviews</h1>
                         <button
                             type="button"
-                            className="btn"
+                            className="borderBtn"
+                            style={{ marginRight: '5rem' }}
                             onClick={openModal}
                         >
                             Generate payload
                         </button>
+
                         <PayLoadForm
                             isModalOpen={isModalOpen}
                             closeModal={closeModal}
@@ -583,6 +599,7 @@ export default function Accueil() {
                                     </PieChart>
                                 </div>
                             </div>
+
                             <div
                                 className="accueil-rect"
                                 style={{ height: '35vh' }}
@@ -590,61 +607,160 @@ export default function Accueil() {
                                 <h5 style={{ marginBottom: '15px' }}>
                                     Top severity of Vulnerability
                                 </h5>
-                                <div className="rect-scroll">
-                                    {vulnImport &&
-                                        vulnImport.map((vul) => {
-                                            return (
-                                                vul.name !== 'total' && (
-                                                    <SeverityVuln
-                                                        title={vul.name}
-                                                        value={
-                                                            (100 / 8) *
-                                                            vul.value
-                                                        }
-                                                    />
-                                                )
-                                            );
-                                        })}
-                                </div>
+                                {isLoad ? (
+                                    <CircularProgress
+                                        style={{
+                                            marginTop: '8vh',
+                                            marginLeft: '8vw',
+                                        }}
+                                        color="secondary"
+                                    />
+                                ) : (
+                                    <div className="rect-scroll">
+                                        {vulnImport && vulnImport.length > 0 ? (
+                                            <>
+                                                {' '}
+                                                {vulnImport.map((vul) => {
+                                                    return (
+                                                        vul.name !==
+                                                            'total' && (
+                                                            <SeverityVuln
+                                                                title={vul.name}
+                                                                value={
+                                                                    (100 / 8) *
+                                                                    vul.value
+                                                                }
+                                                            />
+                                                        )
+                                                    );
+                                                })}
+                                            </>
+                                        ) : (
+                                            <p style={{ marginTop: '8vh' }}>
+                                                Nothing to show
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
-                                <h5 style={{ marginBottom: '15px' }}>
-                                    My mission
-                                </h5>
-                                <div className="rect-scroll">
-                                    {list.map((mission) => {
-                                        return (
-                                            <MissionList
-                                                title={mission.name}
-                                                mission_id={mission.id}
-                                                vuln_list={mission.vuln}
-                                                date={mission.end}
-                                                progressValue={mission.status}
-                                            />
-                                        );
-                                    })}
+                                <div className="accueil-mission-title">
+                                    <h5 style={{ marginBottom: '15px' }}>
+                                        My mission
+                                    </h5>
+                                    {!isPentester && (
+                                        <button
+                                            type="submit"
+                                            className="accueil-create-mission"
+                                            onClick={() => {
+                                                navigate('/mission/create');
+                                            }}
+                                        >
+                                            <FaPlus
+                                                color="#7c44f3"
+                                                style={{ marginRight: '.3rem' }}
+                                            />{' '}
+                                            Add mission
+                                        </button>
+                                    )}
                                 </div>
+                                {isLoad ? (
+                                    <CircularProgress
+                                        style={{
+                                            marginTop: '22vh',
+                                            marginLeft: '11vw',
+                                        }}
+                                        color="secondary"
+                                    />
+                                ) : (
+                                    <div className="rect-scroll">
+                                        {list && list.length > 0 ? (
+                                            <>
+                                                {list.map((mission) => {
+                                                    return (
+                                                        <MissionList
+                                                            title={mission.name}
+                                                            mission_id={
+                                                                mission.id
+                                                            }
+                                                            vuln_list={
+                                                                mission.vuln
+                                                            }
+                                                            date={mission.end}
+                                                            progressValue={
+                                                                mission.status
+                                                            }
+                                                        />
+                                                    );
+                                                })}
+                                            </>
+                                        ) : (
+                                            <p style={{ marginTop: '22vh' }}>
+                                                Nothing to show
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
-                                <h5
-                                    style={{
-                                        marginBottom: '15px',
-                                        position: 'sticky',
-                                    }}
-                                >
-                                    Co-workers
-                                </h5>
-                                <div className="rect-scroll">
-                                    {teamList.map((t) => {
-                                        return <TeamListContainer team={t} />;
-                                    })}
+                                <div className="accueil-mission-title">
+                                    <h5
+                                        style={{
+                                            marginBottom: '15px',
+                                            position: 'sticky',
+                                        }}
+                                    >
+                                        Co-workers
+                                    </h5>
+                                    {!isPentester && (
+                                        <button
+                                            type="submit"
+                                            className="accueil-create-mission"
+                                            onClick={() => {
+                                                navigate('/mission/create');
+                                            }}
+                                        >
+                                            <FaPlus
+                                                color="#7c44f3"
+                                                style={{ marginRight: '.3rem' }}
+                                            />{' '}
+                                            Add team
+                                        </button>
+                                    )}
                                 </div>
+                                {isLoad ? (
+                                    <CircularProgress
+                                        style={{
+                                            marginTop: '22vh',
+                                            marginLeft: '11vw',
+                                        }}
+                                        color="secondary"
+                                    />
+                                ) : (
+                                    <div className="rect-scroll">
+                                        {teamList && teamList.length > 0 ? (
+                                            <>
+                                                {teamList.map((t) => {
+                                                    return (
+                                                        <TeamListContainer
+                                                            team={t}
+                                                        />
+                                                    );
+                                                })}
+                                            </>
+                                        ) : (
+                                            <p style={{ marginTop: '22vh' }}>
+                                                Nothing to show
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

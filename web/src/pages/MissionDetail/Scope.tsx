@@ -7,11 +7,13 @@ import { useLocation } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { Box, CircularProgress } from '@mui/material';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
 
 export default function Scope() {
     const [scope, setScope] = useState([]);
+    const [isLoad, setIsLoad] = useState(false);
     const [missionId, setMissionId] = useState(0);
     const [Title, setTitle] = useState('');
     const [createBy, setCreateBy] = useState();
@@ -98,6 +100,8 @@ export default function Scope() {
     };
 
     const getMission = async () => {
+        setIsLoad(true);
+
         await axios
             .get(`${config.apiUrl}/mission/${missionId}`, {
                 headers: {
@@ -116,6 +120,9 @@ export default function Scope() {
             })
             .catch((e) => {
                 throw e;
+            })
+            .finally(() => {
+                setIsLoad(false);
             });
     };
 
@@ -151,51 +158,56 @@ export default function Scope() {
                     close={handleClose}
                 />
             )}
-            <table className="no_center_container">
-                <tbody>
-                    <tr>
-                        <th>Status</th>
-                        <th className="md-5">Name</th>
-                        {!isPentester && <th className="md-2">Actions</th>}
-                    </tr>
-                    {record.map((s_list, index) => {
-                        return (
-                            <tr>
-                                <td style={{ fontSize: '18px' }}>
-                                    {s_list ? (
-                                        <AiIcons.AiOutlineCheckCircle
-                                            size="25px"
-                                            style={{
-                                                marginLeft: '8px',
-                                                color: 'grey',
-                                            }}
-                                        />
-                                    ) : (
-                                        <AiIcons.AiOutlineCloseCircle
-                                            size="25px"
-                                            style={{
-                                                marginLeft: '8px',
-                                                color: 'grey',
-                                            }}
-                                        />
-                                    )}
-                                </td>
-                                <td id="name">{s_list}</td>
-                                {!isPentester && (
-                                    <td className="scope-table-action">
-                                        <AiIcons.AiFillDelete
-                                            className="scope-action-icons"
-                                            style={{ color: 'red' }}
-                                            onClick={() => delScope(index)}
-                                        />
+            {isLoad ? (
+                <Box sx={{ width: '100%', marginTop: '5%' }}>
+                    <CircularProgress color="secondary" />
+                </Box>
+            ) : (
+                <table className="no_center_container">
+                    <tbody>
+                        <tr>
+                            <th>Status</th>
+                            <th className="md-5">Name</th>
+                            {!isPentester && <th className="md-2">Actions</th>}
+                        </tr>
+                        {record.map((s_list, index) => {
+                            return (
+                                <tr>
+                                    <td style={{ fontSize: '18px' }}>
+                                        {s_list ? (
+                                            <AiIcons.AiOutlineCheckCircle
+                                                size="25px"
+                                                style={{
+                                                    marginLeft: '8px',
+                                                    color: 'grey',
+                                                }}
+                                            />
+                                        ) : (
+                                            <AiIcons.AiOutlineCloseCircle
+                                                size="25px"
+                                                style={{
+                                                    marginLeft: '8px',
+                                                    color: 'grey',
+                                                }}
+                                            />
+                                        )}
                                     </td>
-                                )}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-
+                                    <td id="name">{s_list}</td>
+                                    {!isPentester && (
+                                        <td className="scope-table-action">
+                                            <AiIcons.AiFillDelete
+                                                className="scope-action-icons"
+                                                style={{ color: 'red' }}
+                                                onClick={() => delScope(index)}
+                                            />
+                                        </td>
+                                    )}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            )}
             <nav>
                 <ul className="pagination">
                     <li className="page-item">

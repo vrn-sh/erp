@@ -10,6 +10,18 @@
     font-size: 20px;
     line-height: 160%;  
 }
+
+.form-container{
+    margin: 20px;
+    display: flex;
+    font-family: 'Arial';
+    font-style: "Poppins-regular";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 160%;  
+}
+
 .edit-form{
     width: 60%;
     margin: 20px;
@@ -19,6 +31,7 @@
     font-family: Arial;
     font-style: "Poppins-regular";
     color: #737272;
+    background-color: #fcfbfd;
 }
 
 .cancel-btn{

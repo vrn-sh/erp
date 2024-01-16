@@ -17,6 +17,36 @@ $opacity-transition: opacity;
         font-size: 14px;
         font-family: "Poppins-Regular";
         color: var(--gray-btn);
+
+        &.title {
+            color: #000; 
+            font-size: 24px;
+            font-weight: 700; 
+        }
+    
+        &.subtitle {
+            color: #000; 
+            font-size: 16px;
+            font-weight: 400; 
+        }
+    
+        &.data {
+            color: #7C44F3; 
+            font-size: 22px;
+            font-weight: 700; 
+        }
+    
+        &.dtitle {
+            font-size: 18px;
+            font-weight: 400; 
+            color: #686868; 
+        }
+    
+        &.simple {
+            font-size: 16px;
+            font-weight: 400; 
+            color: #686868; 
+        }
     }
 }
 
@@ -124,6 +154,16 @@ $opacity-transition: opacity;
     min-width: 10px;
 }
 
+.editBtn {
+    min-width: 1rem;
+    border: 1px var(--primary-btn) solid;
+    border-radius: 60px;
+    padding: .5rem;
+    color: var(--primary-btn);
+    background-color: transparent;
+    cursor: pointer;
+}
+
 .scope-table-action {
     align-items: center;
 }
@@ -174,4 +214,10 @@ $opacity-transition: opacity;
         width: 100%;
         justify-content: end;
     }
+}
+
+.text {
+    font-style: "Poppins-regular";
+
+    
 }

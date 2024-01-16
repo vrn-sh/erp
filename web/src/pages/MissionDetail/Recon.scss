@@ -30,15 +30,15 @@
 .recon_info {
     width: 50%;
     padding-top: 1rem;
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
 }
 
 .recon_container {
-    width: 155vh;
+    width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .wappa_input_container {
@@ -166,6 +166,16 @@
     box-shadow: 2px 2px 2px var(--light-gray);
     transition: .5s ease-in-out;
 }
-.width_fix {
-    width: 50vh !important;
+
+@media only screen and (max-width: 960px) {
+
+    .recon_container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .recon_info {
+        width: 100%;
+        padding-top: 1rem;
+    }
 }

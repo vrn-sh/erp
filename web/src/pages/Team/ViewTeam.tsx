@@ -4,6 +4,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { RiEyeLine, RiUserFill } from 'react-icons/ri';
 import Modal from 'react-modal';
+import { PiSelectionSlashBold } from 'react-icons/pi';
+import { Box, CircularProgress } from '@mui/material';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
@@ -56,6 +58,7 @@ export function ProfilDetails({ label, data }: ProfilDetailsProps) {
 export default function ViewTeamDetails() {
     const { id } = useParams<{ id?: string }>();
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [isLoad, setIsLoad] = useState(false);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -82,14 +85,19 @@ export default function ViewTeamDetails() {
 
     const getTeamDetails = async () => {
         if (!id) return; // Vérifier si id existe
+        setIsLoad(true);
 
         const teamId = parseInt(id, 10);
-        const response = await axios.get(`${config.apiUrl}/team/${teamId}`, {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Token ${Cookies.get('Token')}`,
-            },
-        });
+        const response = await axios
+            .get(`${config.apiUrl}/team/${teamId}`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .finally(() => {
+                setIsLoad(false);
+            });
         const team = response.data;
         const mission = 0; // Ajoutez la valeur correcte pour mission
         setTeamData({
@@ -304,7 +312,7 @@ export default function ViewTeamDetails() {
             <div className="dashboard_container">
                 <TopBar />
                 <div className="page-info">
-                    <h1>Meet our Team</h1>
+                    <h1>Team details</h1>
                 </div>
                 <div className="edit-container">
                     {teamData ? (
@@ -342,7 +350,13 @@ export default function ViewTeamDetails() {
                             >
                                 Members:
                             </h4>
-                            {renderMembers()}
+                            {isLoad ? (
+                                <Box sx={{ marginY: '5%', marginLeft: '40vw' }}>
+                                    <CircularProgress color="secondary" />
+                                </Box>
+                            ) : (
+                                renderMembers()
+                            )}
                         </div>
                     ) : (
                         <p>Loading team data...</p>

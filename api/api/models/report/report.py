@@ -1,13 +1,6 @@
-import warnings
-from datetime import date
-
 from django.db import models
 
 from api.models.mission import Mission
-
-from api.models import Team
-from api.models.report.generate_html import generate_vulns_detail, generate_members
-
 
 class ReportTemplate(models.Model):
     class Meta:
@@ -31,7 +24,9 @@ class ReportHtml(models.Model):
                                  blank=True, default=None)
     mission = models.ForeignKey(to=Mission, on_delete=models.CASCADE, related_name='mission_id')
     version = models.FloatField(default=1.0)
-    logo = models.CharField(max_length=255, blank=True, null=True)
-    html_file = models.CharField(max_length=255, blank=True, null=True)
+    logo = models.CharField(max_length=512, blank=True, null=True)
+    html_file = models.CharField(max_length=255, blank=True, null=True,)
+    pdf_file = models.CharField(max_length=512, blank=True, null=True,)
+    updated_at = models.DateTimeField(auto_now=True, )
 
 

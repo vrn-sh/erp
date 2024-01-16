@@ -1,10 +1,14 @@
 import base64
+from io import BytesIO
 import os
 from typing import Type, List
+from uuid import uuid4
 from django.http import HttpResponseRedirect
+from django.core.files.base import File
 from shutil import rmtree
 
 from rest_framework import permissions
+from rest_framework.parsers import MultiPartParser, JSONParser
 from knox.auth import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
@@ -12,6 +16,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from api.pagination import CustomPagination
 from api.serializers.report import ReportHtmlSerializer
 
 from api.models.mission import Mission
@@ -33,10 +38,13 @@ def get_image_file_as_base64_data(path: str) -> bytes:
     with open(path, 'rb') as image_file:
         return base64.b64encode(image_file.read())
 
-
 class GeneratePDFReportView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes: List[Type[TokenAuthentication]] = [TokenAuthentication]
+    serializer_class = ReportHtmlSerializer
+    pagination_class = CustomPagination
+    parser_classes = [MultiPartParser, JSONParser]
+    queryset = ReportHtml.objects.all().order_by('updated_at')
 
     @swagger_auto_schema(
         operation_description="Get the mission report generated with the mission' data.",
@@ -82,16 +90,23 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
             return Response({
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
-
-        if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
-            return Response({'message': 'all good buddy. mock response :)'}, status=HTTP_200_OK)
-
         request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
         template_name = request.data.pop('template_name')
-        request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
-
-        self.serializer_class = ReportHtmlSerializer
+        if file := request.FILES.get('file', None):
+            pdf_file = S3Bucket().upload_stream(
+                'rootbucket',
+                f'report-{mission}-{uuid4().__str__()}',
+                BytesIO(file.read()) if isinstance(file, File) else file,
+                mime_type='application/pdf')
+            request.data['pdf_file'] = S3Bucket().get_object_url('rootbucket', pdf_file.object_name)
+        if request.data.get('logo', ''):
+            request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
         return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if request.data.get('logo', ''):
+            request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
+        return super().update(request, *args, **kwargs)
 
 
 

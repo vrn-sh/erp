@@ -1,6 +1,8 @@
 """ Multi-factor Anthentication views """
 
 import pyotp
+import os
+from logging import info, warning
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -37,29 +39,27 @@ class MFAView(APIView):
     )
     def get(self, request):
         user = request.user
-        if user.has_otp:
-            return Response({'error': 'MFA is already enabled for this user'}, status=status.HTTP_400_BAD_REQUEST)
         user.mfa_secret = pyotp.random_base32()
-        totp = pyotp.TOTP(user.mfa_secret, interval=60)
-
+        totp = pyotp.TOTP(user.mfa_secret)
         user.save()
 
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
-            info(f'Passing send_mfa_mail() to {self.email}')
-            return 1
+            info(f'Passing send_mfa_mail() to {user.email}')
+            return Response({'success': "MFA code generated and email sent successfully", 'mfa_code': totp.now()})
 
-        warning(f'Sending mfa_code email to {self.email}')
+        warning(f'Sending mfa_code email to {user.email}')
 
         template_id = os.environ.get('SENDGRID_MFA_TEMPLATE_ID')
 
         if not template_id:
             warning('No template detected...proceeding with default email.')
-            return send_mail(
+            send_mail(
                 f'{self.first_name}, this is your MFA code',
                 f'Hello there\nThis is your MFA code: {totp.now()}',
                 os.environ['SENDGRID_SENDER'],
                 [self.email],
             )
+            return Response({'success': "MFA code generated and email sent successfully", 'mfa_code': totp.now()})
 
         mail = SendgridClient([self.email])
         mail.set_template_data({
@@ -91,7 +91,7 @@ class MFAView(APIView):
                     }
                 }
             ),
-            400: openapi.Response(
+            401: openapi.Response(
                 description="Invalid MFA code",
                 examples={
                     "application/json": {
@@ -106,8 +106,11 @@ class MFAView(APIView):
         mfa_code = request.query_params.get('mfa_code', None)
         if not mfa_code:
             return Response({'error': 'MFA code is required'}, status=status.HTTP_400_BAD_REQUEST)
-        if not pyotp.TOTP(user.mfa_secret).verify(mfa_code):
-            return Response({'error': 'Invalid MFA code'}, status=status.HTTP_400_BAD_REQUEST)
-        user.has_otp = True
-        user.save()
-        return Response({'success': "MFA is enabled for this user"})
+        my_otp = pyotp.TOTP(user.mfa_secret)
+        if not my_otp.verify(mfa_code):
+            return Response({'error': 'Invalid MFA code'}, status=status.HTTP_401_UNAUTHORIZED)
+        if user.has_otp is False:
+            user.has_otp = True
+            user.save()
+            return Response({'success': "MFA is enabled for this user"}, status=status.HTTP_200_OK)
+        return Response({'error': "MFA Code is verified successfully"}, status=status.HTTP_200_OK)
