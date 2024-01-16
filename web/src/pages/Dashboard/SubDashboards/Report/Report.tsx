@@ -63,25 +63,26 @@ function DocumentTemplates({
     setMD: Dispatch<SetStateAction<boolean>>;
     setTemplate: Dispatch<SetStateAction<number>>;
     setPDFDocURL: Dispatch<SetStateAction<string>>;
-    missionid: number,
-    logo: string | null,
+    missionid: number;
+    logo: string | null;
 }) {
     const [reportHistory, setReportHistory] = useState<Array<IReport>>([]);
 
     useEffect(() => {
         // list all templates from history
-        axios.
-            get(`${config.apiUrl}/download-report`, {
+        axios
+            .get(`${config.apiUrl}/download-report`, {
                 headers: {
                     Authorization: `Token ${Cookies.get('Token')}`,
-                }
-            }).then((response) => {
-                console.log(response);
-                if (response.data['count'] > 0) {
-                    setReportHistory(response.data['results']);
-                }
+                },
             })
-    }, [setTemplate])
+            .then((response) => {
+                console.log(response);
+                if (response.data.count > 0) {
+                    setReportHistory(response.data.results);
+                }
+            });
+    }, [setTemplate]);
     const handleTemplateSelection = async (templateId: number) => {
         setTemplate(templateId);
         axios
@@ -99,7 +100,7 @@ function DocumentTemplates({
                 }
             )
             .then((response) => {
-                setPDFDocURL(response.data['pdf_file']);
+                setPDFDocURL(response.data.pdf_file);
                 console.log(response);
             });
     };
@@ -154,12 +155,21 @@ function DocumentTemplates({
                             setPDFDocURL(report.pdf_file);
                         }}
                     >
-                        <img src={(templates.find((t) => t.name === report.template))?.thumbnail} alt={report.template} />
+                        <img
+                            src={
+                                templates.find(
+                                    (t) => t.name === report.template
+                                )?.thumbnail
+                            }
+                            alt={report.template}
+                        />
                         <p className="template-name">{report.mission_title}</p>
                         <p className="template-subtitle">{report.updated_at}</p>
-                        <p className="template-subtitle">Version {report.version}</p>
+                        <p className="template-subtitle">
+                            Version {report.version}
+                        </p>
                     </button>
-                    ))}
+                ))}
             </div>
         </div>
     );
@@ -171,7 +181,7 @@ export default function Report() {
     const [template, setTemplate] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
     const [logo, setBase64Image] = useState<string | null>(null);
-    const [PDFDocURL, setPDFDocURL] = useState<string>("");
+    const [PDFDocURL, setPDFDocURL] = useState<string>('');
 
     const handleImageUpload = (file: any) => {
         if (file) {
@@ -194,11 +204,11 @@ export default function Report() {
     return (
         <div>
             <div style={{ display: 'content' }}>
-                {(isMDActivated === true || PDFDocURL !== "") && (
+                {(isMDActivated === true || PDFDocURL !== '') && (
                     <BackButton
                         onClick={() => {
                             setMD(false);
-                            setPDFDocURL("");
+                            setPDFDocURL('');
                         }}
                         label="BACK TO TEMPLATES"
                     />
@@ -220,10 +230,8 @@ export default function Report() {
                 {!isMDActivated && <FileInput setImage={handleImageUpload} />}
             </div>
 
-            {isMDActivated && (
-                <MarkdownEditor missionid={missionId} />
-            )}
-            {!isMDActivated && PDFDocURL === "" && (
+            {isMDActivated && <MarkdownEditor missionid={missionId} />}
+            {!isMDActivated && PDFDocURL === '' && (
                 <DocumentTemplates
                     logo={logo}
                     setMD={setMD}

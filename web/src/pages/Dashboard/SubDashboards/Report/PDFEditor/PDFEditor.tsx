@@ -1,5 +1,5 @@
-import { useEffect, useRef, ReactElement } from "react";
-import PSPDFKit from "pspdfkit";
+import { useEffect, useRef, ReactElement } from 'react';
+import PSPDFKit from 'pspdfkit';
 
 interface PdfViewerProps {
   document: string; // Assuming `document` is a string representing the document URL
@@ -7,8 +7,10 @@ interface PdfViewerProps {
   template?: string;
 }
 
-export default function PdfViewerComponent(props: PdfViewerProps): ReactElement {
-  const containerRef = useRef<HTMLDivElement>(null);
+export default function PdfViewerComponent(
+    props: PdfViewerProps
+): ReactElement {
+    const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -52,10 +54,15 @@ export default function PdfViewerComponent(props: PdfViewerProps): ReactElement 
         });
     };
 
-    loadPSPDFKit();
+        loadPSPDFKit();
+    }, [props.document]);
 
-  }, [props.document]);
-
-  // This div element will render the document to the DOM.
-  return <div id="pdf-editor" ref={containerRef} style={{ width: "100%", height: "100vh" }} />;
+    // This div element will render the document to the DOM.
+    return (
+        <div
+            id="pdf-editor"
+            ref={containerRef}
+            style={{ width: '100%', height: '100vh' }}
+        />
+    );
 }

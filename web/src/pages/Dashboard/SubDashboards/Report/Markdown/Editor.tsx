@@ -37,7 +37,9 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
         }
         if (isfetchDone) {
             setTimeout(() => {
-                let mdMission = JSON.parse(localStorage.getItem('md') || '{}');
+                const mdMission = JSON.parse(
+                    localStorage.getItem('md') || '{}'
+                );
                 mdMission[missionid] = markdownText;
                 localStorage.setItem('md', JSON.stringify(mdMission));
             }, 2000);
@@ -45,8 +47,8 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
         }
 
         if (localStorage.getItem('md')) {
-            let mdMission = JSON.parse(localStorage.getItem('md') || '{}');
-            console.log("mdMission", mdMission);
+            const mdMission = JSON.parse(localStorage.getItem('md') || '{}');
+            console.log('mdMission', mdMission);
             if (mdMission[missionid]) {
                 setMarkdownText(mdMission[missionid]);
                 setFetchDone(true);
@@ -59,7 +61,10 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-            }).finally(() => {setFetchDone(true);});
+            })
+            .finally(() => {
+                setFetchDone(true);
+            });
     }, [markdownText, isfetchDone]); // Empty dependency array
 
     const handleInputChange = (e: any) => {
