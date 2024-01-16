@@ -19,9 +19,7 @@ export default function PdfViewerComponent(
         PSPDFKit.load({
           autoSaveMode: PSPDFKit.AutoSaveMode.DISABLED,
           licenseKey: import.meta.env.VITE_REACT_APP_PSPDFKIT_LICENSE_KEY,
-          // Container where PSPDFKit should be mounted.
           container: containerRef.current!,
-          // The document to open.
           document: props.document,
           baseUrl: `${window.location.protocol}//${window.location.host}/public/`,
           toolbarItems: [
