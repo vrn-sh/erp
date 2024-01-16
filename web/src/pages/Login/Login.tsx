@@ -61,6 +61,22 @@ export default function Login() {
         }
     };
 
+    const sendMfaCode = async () => {
+        await axios
+            .get(`${config.apiUrl}/mfa`, {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${Cookies.get('Token')}`,
+                },
+            })
+            .then(() => {
+                navigate('/mfa_check');
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
+
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
         if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2')
@@ -77,11 +93,7 @@ export default function Login() {
                 },
             })
             .then((data) => {
-                if (
-                    data.data.auth.first_name !== null &&
-                    data.data.auth.phone_number !== null
-                )
-                    navigate('/accueil');
+                if (data.data.auth.has_otp === true) sendMfaCode();
                 else navigate('/info');
             })
             .catch((e) => {

@@ -38,6 +38,17 @@ export default function SecurityUser() {
     const [confirmPwdIcon, setConfirmPwdIcon] = useState(
         <AiIcons.AiOutlineEyeInvisible />
     );
+    const [mfaCode, setMfaCode] = useState('');
+    const [codeValidation, setCodeValidation] = useState([
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+    ]);
+    const [showMfaPopup, setShowMfaPopup] = useState(false);
+    const [isCodeIncorrect, setIsCodeIncorrect] = useState(false); // État pour suivre si le code est incorrect
 
     const setMessage = (mess: string, color: string) => {
         setMess({ mess, color });
@@ -52,54 +63,44 @@ export default function SecurityUser() {
         }
         setOpen(false);
     };
-    const [mfaEnabled, setMfaEnabled] = useState(false);
-    const [mfaCode, setMfaCode] = useState('');
-    const [codeValidation, setCodeValidation] = useState([
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-    ]);
-    const [showMfaPopup, setShowMfaPopup] = useState(false);
+
+    const updateUserInfo = async (infos: object) => {
+        let urltmp = `${config.apiUrl}/`;
+        if (role === '2') urltmp += 'manager';
+        else if (role === '3') urltmp += 'freelancer';
+        else urltmp += 'pentester';
+        setURL(urltmp);
+        await axios
+            .patch(
+                `${urltmp}/${id}`,
+                {
+                    auth: {
+                        ...infos,
+                    },
+                },
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
+                    },
+                }
+            )
+            .then((data) => {
+                setUserInfo(data.data.auth);
+            })
+            .catch((e) => {
+                throw e;
+            });
+    };
 
     const handleMfaCheckbox = () => {
-        if (mfaEnabled) {
+        if (userInfo.has_otp) {
             setMfaCode('');
-            setMfaEnabled(!mfaEnabled);
-            let urltmp = `${config.apiUrl}/`;
-            if (role === '2') urltmp += 'manager';
-            else if (role === '3') urltmp += 'freelancer';
-            else urltmp += 'pentester';
-            setURL(urltmp);
-
-            axios
-                .put(
-                    `${urltmp}/${id}`,
-                    {
-                        auth: {
-                            has_otp: false,
-                        },
-                    },
-                    {
-                        headers: {
-                            'Content-type': 'application/json',
-                            Authorization: `Token ${getCookiePart(
-                                Cookies.get('Token')!,
-                                'token'
-                            )}`,
-                        },
-                    }
-                )
-                .then((data) => {
-                    setUserInfo(data.data.auth);
-                })
-                .catch((e) => {
-                    throw e;
-                });
+            updateUserInfo({ has_otp: false });
         } else {
-            setMfaEnabled(!mfaEnabled);
             axios
                 .get(`${config.apiUrl}/mfa`, {
                     headers: {
@@ -112,11 +113,11 @@ export default function SecurityUser() {
                 })
                 .then((data) => {
                     setMfaCode(data.data.mfa_code);
+                    setShowMfaPopup(true);
                 })
                 .catch((e) => {
                     throw e;
                 });
-            setShowMfaPopup(true);
         }
     };
 
@@ -136,8 +137,6 @@ export default function SecurityUser() {
         setMfaCode(code);
     };
 
-    const [isCodeIncorrect, setIsCodeIncorrect] = useState(false); // État pour suivre si le code est incorrect
-
     const handleVerifyCode = () => {
         axios
             .post(
@@ -153,51 +152,15 @@ export default function SecurityUser() {
                     },
                 }
             )
-            .then((data) => {
-                setMfaEnabled(true);
+            .then(() => {
+                updateUserInfo({ has_otp: true });
                 setShowMfaPopup(false);
             })
             .catch((e) => {
-                setMfaEnabled(false);
                 setIsCodeIncorrect(true);
                 setCodeValidation(['', '', '', '', '', '']);
                 throw e;
             });
-
-        if (mfaEnabled) {
-            setMfaCode('');
-            setMfaEnabled(!mfaEnabled);
-            let urltmp = `${config.apiUrl}/`;
-            if (role === '2') urltmp += 'manager';
-            else if (role === '3') urltmp += 'freelancer';
-            else urltmp += 'pentester';
-            setURL(urltmp);
-
-            axios
-                .put(
-                    `${urltmp}/${id}`,
-                    {
-                        auth: {
-                            has_otp: false,
-                        },
-                    },
-                    {
-                        headers: {
-                            'Content-type': 'application/json',
-                            Authorization: `Token ${getCookiePart(
-                                Cookies.get('Token')!,
-                                'token'
-                            )}`,
-                        },
-                    }
-                )
-                .then((data) => {
-                    setUserInfo(data.data.auth);
-                })
-                .catch((e) => {
-                    throw e;
-                });
-        }
     };
 
     const getUserInfo = async () => {
