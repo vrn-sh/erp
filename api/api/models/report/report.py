@@ -1,15 +1,6 @@
-from typing import Any
-import warnings
-from datetime import date
-
 from django.db import models
 
 from api.models.mission import Mission
-
-from api.models import Team
-from api.models.report.generate_html import generate_vulns_detail, generate_members
-from api.services.s3 import S3Bucket
-
 
 class ReportTemplate(models.Model):
     class Meta:
