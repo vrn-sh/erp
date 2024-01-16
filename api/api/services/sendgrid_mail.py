@@ -40,7 +40,9 @@ class SendgridClient:
             data["username"] = first_name
         else:
             data["username"] = "user"
-        self.mail.dynamic_template_data = data
+        self.mail.dynamic_template_data = {
+            **data
+        }
 
     def set_attachment(self, filename: str, content: bytes, **kwargs):
         """Set file attachment"""
