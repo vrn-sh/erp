@@ -59,7 +59,7 @@ export default function PdfViewerComponent(
     };
 
         loadPSPDFKit();
-    }, [props.document]);
+    }, [props.document, instance]);
 
     // This div element will render the document to the DOM.
     return (
