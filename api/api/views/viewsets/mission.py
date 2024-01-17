@@ -13,7 +13,7 @@ from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
-from api.models import Pentester
+from api.models import USER_ROLES, Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsFreelancer, IsManager, IsLinkedToData, IsPentester, ReadOnly
@@ -365,8 +365,10 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
 
 
         if not 'team' in request.data:
-            if request.user.role == 3:
+            if USER_ROLES[request.user.role] == 'freelancer':
+
                 request.data['team'] = None
+                request.data['freelance_member'] = request.user.id
             else:
                 return Response({
                     'error': 'please specify team',
