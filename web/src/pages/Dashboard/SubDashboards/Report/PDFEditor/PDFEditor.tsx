@@ -1,17 +1,19 @@
-import { useEffect, useRef, ReactElement } from 'react';
-import PSPDFKit from 'pspdfkit';
+import { useEffect, useRef, ReactElement, useState } from 'react';
+import PSPDFKit, { Instance } from 'pspdfkit';
 
 /* eslint-disable */
 interface PdfViewerProps {
     document: string; // Assuming `document` is a string representing the document URL
     mission?: number;
     template?: string;
+    reportId?: number;
 }
 /* eslint-enable */
 export default function PdfViewerComponent(
     props: PdfViewerProps
 ): ReactElement {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [instance, setInstance] = useState<Instance | null>(null);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -24,42 +26,45 @@ export default function PdfViewerComponent(
                 document: props.document,
                 baseUrl: `${window.location.protocol}//${window.location.host}/public/`,
                 toolbarItems: [
-                    ...PSPDFKit.defaultToolbarItems,
+                    ...PSPDFKit.defaultToolbarItems.map((item) => {
+                        if (item.type === 'export-pdf') {
+                            return {
+                                type: 'custom' as any,
+                                title: 'Save',
+                                onPress: async () => {
+                                    const arrayBuffer = await (
+                                        instance as Instance
+                                    ).exportPDF();
+                                    const blob = new Blob([arrayBuffer], {
+                                        type: 'application/pdf',
+                                    });
+                                    const formData = new FormData();
+                                    formData.append(
+                                        'mission',
+                                        props.mission?.toString() || ''
+                                    );
+                                    formData.append(
+                                        'template_name',
+                                        props.template || ''
+                                    );
+                                    formData.append('file', blob);
+                                    await fetch('/download-report', {
+                                        method: 'POST',
+                                        body: formData,
+                                    });
+                                },
+                            };
+                        }
+                        return item;
+                    }),
                     { type: 'content-editor' },
                 ],
             })
-                .then((instance) => {
-                    instance.setToolbarItems((items) => {
-                        items.push({
-                            type: 'custom',
-                            id: 'save-as',
-                            title: 'Save As',
-                            onPress: async (event: any): Promise<void> => {
-                                const arrayBuffer = await instance.exportPDF();
-                                const blob = new Blob([arrayBuffer], {
-                                    type: 'application/pdf',
-                                });
-                                const formData = new FormData();
-                                formData.append(
-                                    'mission',
-                                    props.mission?.toString() || ''
-                                );
-                                formData.append(
-                                    'template_name',
-                                    props.template || ''
-                                );
-                                formData.append('file', blob);
-                                await fetch('/download-report', {
-                                    method: 'POST',
-                                    body: formData,
-                                });
-                            },
-                        });
-                        return items;
-                    });
+                .then((response) => {
+                    setInstance(response);
                 })
                 .catch((error) => {
-                    console.error(error.message);
+                    throw error.message;
                 });
         };
 
