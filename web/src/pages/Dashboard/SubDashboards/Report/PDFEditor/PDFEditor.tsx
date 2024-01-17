@@ -12,54 +12,39 @@ export default function PdfViewerComponent(
     props: PdfViewerProps
 ): ReactElement {
     const containerRef = useRef<HTMLDivElement>(null);
-    const [instance, setInstance] = useState<Instance | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     const loadPSPDFKit = async () => {
         PSPDFKit.unload(container);
-        PSPDFKit.load({
+        const instance = await PSPDFKit.load({
           autoSaveMode: PSPDFKit.AutoSaveMode.DISABLED,
           licenseKey: import.meta.env.VITE_REACT_APP_PSPDFKIT_LICENSE_KEY,
           container: containerRef.current!,
           document: props.document,
           baseUrl: `${window.location.protocol}//${window.location.host}/assets/`,
           toolbarItems: [
-            ...PSPDFKit.defaultToolbarItems.map((item) => {
-              if (item.type === "export-pdf") {
-                return {
-                      type: "custom" as any,
-                      title: "Save",
-                      onPress: async (event: any) => {
-                        console.log('events', event);
-                        console.log('instance', instance);
-                        const arrayBuffer = await (instance as Instance).exportPDF();
-                        const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
-                        const formData = new FormData();
-                        formData.append("mission", props.mission?.toString() || "");
-                        formData.append("template_name", props.template || "");
-                        formData.append("file", blob);
-                        await fetch("/download-report", {
-                          method: "POST",
-                          body: formData,
-                        });
-                      },
-                    };
-              } else {
-                return item;
-              }
-            }),
+            ...PSPDFKit.defaultToolbarItems.filter((item) => item.type !== "export-pdf"),
             { type: "content-editor" },
           ],
-        }).then((instance) => {
-          setInstance(instance);
-        }).catch((error) => {
-          console.error(error.message);
         });
+        if (instance) {
+          instance.setToolbarItems((items) => [
+            ...items,
+            {
+              type: "custom",
+              title: "Save",
+              onPress: async () => {
+                console.log("Pressed this mf button");
+              },
+            },
+          ]);
+          console.log(instance.toolbarItems)
+        }
     };
 
         loadPSPDFKit();
-    }, [props.document, instance]);
+    }, [props.document]);
 
     // This div element will render the document to the DOM.
     return (
