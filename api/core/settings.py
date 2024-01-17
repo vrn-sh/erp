@@ -170,7 +170,7 @@ elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'voron',
-            'USER': os.environ.get("USER"),
+            'USER': os.environ.get("POSTGRES_USER"),
             'PASSWORD': 'postgres',
             'HOST': 'localhost',
             'PORT': '',
