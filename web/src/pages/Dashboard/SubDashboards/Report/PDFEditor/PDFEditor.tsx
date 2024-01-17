@@ -1,5 +1,7 @@
 import { useEffect, useRef, ReactElement, useState } from 'react';
 import PSPDFKit, { Instance } from 'pspdfkit';
+import config from '../../../../../config';
+import Cookies from 'js-cookie';
 
 interface PdfViewerProps {
   document: string; // Assuming `document` is a string representing the document URL
@@ -42,9 +44,12 @@ export default function PdfViewerComponent(
               formData.append("mission", props.mission?.toString() || "");
               formData.append("template_name", props.template || "");
               formData.append("file", blob);
-              await fetch("/download-report", {
+              await fetch(`${config.apiUrl}/download-report`, {
                 method: "POST",
                 body: formData,
+                headers: {
+                  Authorization: `Token ${Cookies.get('Token')}`,
+                },
               });
             },
           },
