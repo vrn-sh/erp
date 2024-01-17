@@ -40,6 +40,16 @@ export default function PdfViewerComponent(
               console.log("Pressed this mf button");
               const arrayBuffer = await (instance as Instance).exportPDF();
               const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+              const objectUrl = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = objectUrl;
+              a.style.display = "none";
+              a.download = "report.pdf";
+              document.body.appendChild(a);
+              a.click();
+              URL.revokeObjectURL(objectUrl);
+              document.body.removeChild(a);
+
               const formData = new FormData();
               formData.append("mission", props.mission?.toString() || "");
               formData.append("template_name", props.template || "");
