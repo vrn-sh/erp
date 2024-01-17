@@ -30,7 +30,7 @@ export default function PdfViewerComponent(
                 return {
                       type: "custom" as any,
                       title: "Save",
-                      onKeyPress: async (event: any) => {
+                      onPress: async (event: any) => {
                         console.log('events', event);
                         console.log('instance', instance);
                         const arrayBuffer = await (instance as Instance).exportPDF();
