@@ -4,6 +4,7 @@ from faker import Faker
 
 from rest_framework.test import APIClient, APITestCase
 from api.models import Freelancer
+from api.models.mission import Mission
 
 from api.tests.helpers import create_random_pentester, create_random_manager, default_user_password, \
         login_as
@@ -11,10 +12,10 @@ from api.tests.helpers import create_random_pentester, create_random_manager, de
 
 #
 # import unit tests from other files here
-#from .notes_tests import *
-#from .vuln_tests import *
-#from .mission_tests import *
-from .report_tests import *
+from .notes_tests import *
+from .vuln_tests import *
+from .mission_tests import *
+# from .report_tests import * (requires S3 to run)
 
 
 
