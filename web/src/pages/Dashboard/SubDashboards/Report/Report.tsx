@@ -242,6 +242,7 @@ export default function Report() {
             )}
             {!isMDActivated && PDFDocURL !== "" && (
                 <PdfViewerComponent document={PDFDocURL} mission={missionId} template={templates[template].name} />
+
             )}
         </div>
     );
