@@ -23,14 +23,16 @@ export default function PdfViewerComponent(
           licenseKey: import.meta.env.VITE_REACT_APP_PSPDFKIT_LICENSE_KEY,
           container: containerRef.current!,
           document: props.document,
-          baseUrl: `${window.location.protocol}//${window.location.host}/public/`,
+          baseUrl: `${window.location.protocol}//${window.location.host}/assets/`,
           toolbarItems: [
             ...PSPDFKit.defaultToolbarItems.map((item) => {
               if (item.type === "export-pdf") {
                 return {
                       type: "custom" as any,
                       title: "Save",
-                      onPress: async () => {
+                      onKeyPress: async (event: any) => {
+                        console.log('events', event);
+                        console.log('instance', instance);
                         const arrayBuffer = await (instance as Instance).exportPDF();
                         const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
                         const formData = new FormData();
