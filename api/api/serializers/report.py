@@ -29,10 +29,9 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                 font_config=FontConfiguration())
         if 'pdf_file' in validated_data or html_file:
             s3_client = S3Bucket()
-            if 'pdf_file' in validated_data:
-                s3_client.delete_file('rootbucket', instance.pdf_file.split('/')[-1])
-            s3_client.upload_file('rootbucket', filepath, filename)
-            instance.pdf_file = s3_client.get_object_url('rootbucket', filename)
+            if 'pdf_file' not in validated_data:
+                s3_client.upload_file('rootbucket', filepath, filename)
+                instance.pdf_file = s3_client.get_object_url('rootbucket', filename)
         instance.save()
         return instance
 

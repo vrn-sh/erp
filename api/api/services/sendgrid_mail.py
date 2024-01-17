@@ -33,11 +33,20 @@ class SendgridClient:
         match = re.match(r"^[^._@]+", email)
         return match.group() if match else ""
 
-    def set_template_data(self, data: dict, recipient_email: str):
+    def set_template_id(self, template_id: str):
+        """Set template ID before sending email"""
+        self.mail.template_id = template_id
+
+    def set_template_data(self, data: dict, recipient_email: Optional[str] = None):
         """Set dynamic data for the template"""
-        first_name = self.extract_first_name(recipient_email)
-        data["username"] = first_name
-        self.mail.dynamic_template_data = data
+        if recipient_email:
+            first_name = self.extract_first_name(recipient_email)
+            data["username"] = first_name
+        else:
+            data["username"] = "user"
+        self.mail.dynamic_template_data = {
+            **data
+        }
 
     def set_attachment(self, filename: str, content: bytes, **kwargs):
         """Set file attachment"""

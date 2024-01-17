@@ -1,44 +1,60 @@
-import { useEffect, useRef, ReactElement } from 'react';
-import PSPDFKit from 'pspdfkit';
+import { useEffect, useRef, ReactElement, useState } from 'react';
+import PSPDFKit, { Instance } from 'pspdfkit';
 
 interface PdfViewerProps {
-    document: string; // Assuming `document` is a string representing the document URL
+  document: string; // Assuming `document` is a string representing the document URL
+  mission?: number;
+  template?: string;
+  reportId?: number;
 }
 
 export default function PdfViewerComponent(
     props: PdfViewerProps
 ): ReactElement {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [instance, setInstance] = useState<Instance | null>(null);
 
-    useEffect(() => {
-        const container = containerRef.current;
-        const loadPSPDFKit = async () => {
-            try {
-                // Dynamically import pspdfkit during runtime
-
-                // Now you can use pspdfkit
-                // For example:
-                PSPDFKit.unload(container);
-
-                PSPDFKit.load({
-                    licenseKey: import.meta.env
-                        .VITE_REACT_APP_PSPDFKIT_LICENSE_KEY,
-                    // Container where PSPDFKit should be mounted.
-                    container: containerRef.current!,
-                    // The document to open.
-                    document: props.document,
-                    baseUrl: `${window.location.protocol}//${window.location.host}/assets/`,
-                    toolbarItems: [
-                        ...PSPDFKit.defaultToolbarItems,
-                        { type: 'content-editor' },
-                    ],
-                }).then(() => {
-                    console.log('PSPDFKit for Web successfully loaded!!!');
-                });
-            } catch (error) {
-                console.error('Error loading PSPDFKit:', error);
-            }
-        };
+  useEffect(() => {
+    const container = containerRef.current;
+    const loadPSPDFKit = async () => {
+        PSPDFKit.unload(container);
+        PSPDFKit.load({
+          autoSaveMode: PSPDFKit.AutoSaveMode.DISABLED,
+          licenseKey: import.meta.env.VITE_REACT_APP_PSPDFKIT_LICENSE_KEY,
+          container: containerRef.current!,
+          document: props.document,
+          baseUrl: `${window.location.protocol}//${window.location.host}/public/`,
+          toolbarItems: [
+            ...PSPDFKit.defaultToolbarItems.map((item) => {
+              if (item.type === "export-pdf") {
+                return {
+                      type: "custom" as any,
+                      title: "Save",
+                      onPress: async () => {
+                        const arrayBuffer = await (instance as Instance).exportPDF();
+                        const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                        const formData = new FormData();
+                        formData.append("mission", props.mission?.toString() || "");
+                        formData.append("template_name", props.template || "");
+                        formData.append("file", blob);
+                        await fetch("/download-report", {
+                          method: "POST",
+                          body: formData,
+                        });
+                      },
+                    };
+              } else {
+                return item;
+              }
+            }),
+            { type: "content-editor" },
+          ],
+        }).then((instance) => {
+          setInstance(instance);
+        }).catch((error) => {
+          console.error(error.message);
+        });
+    };
 
         loadPSPDFKit();
     }, [props.document]);

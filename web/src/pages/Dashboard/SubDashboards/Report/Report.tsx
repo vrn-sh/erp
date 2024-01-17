@@ -240,8 +240,9 @@ export default function Report() {
                     missionid={missionId}
                 />
             )}
-            {!isMDActivated && PDFDocURL !== '' && (
-                <PdfViewerComponent document={PDFDocURL} />
+            {!isMDActivated && PDFDocURL !== "" && (
+                <PdfViewerComponent document={PDFDocURL} mission={missionId} template={templates[template].name} />
+
             )}
         </div>
     );

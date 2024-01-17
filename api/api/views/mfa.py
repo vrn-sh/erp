@@ -39,11 +39,8 @@ class MFAView(APIView):
     )
     def get(self, request):
         user = request.user
-        if user.has_otp:
-            return Response({'error': 'MFA is already enabled for this user'}, status=status.HTTP_400_BAD_REQUEST)
         user.mfa_secret = pyotp.random_base32()
         totp = pyotp.TOTP(user.mfa_secret)
-
         user.save()
 
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
@@ -112,6 +109,8 @@ class MFAView(APIView):
         my_otp = pyotp.TOTP(user.mfa_secret)
         if not my_otp.verify(mfa_code):
             return Response({'error': 'Invalid MFA code'}, status=status.HTTP_401_UNAUTHORIZED)
-        user.has_otp = True
-        user.save()
-        return Response({'success': "MFA is enabled for this user"})
+        if user.has_otp is False:
+            user.has_otp = True
+            user.save()
+            return Response({'success': "MFA is enabled for this user"}, status=status.HTTP_200_OK)
+        return Response({'error': "MFA Code is verified successfully"}, status=status.HTTP_200_OK)

@@ -138,6 +138,15 @@ const SideBarData = function SideBarDataF() {
             isForManager: false,
             subNav: [],
         },
+        {
+            title: 'Clients',
+            path: '/client', // change when build client page
+            icon: <IoIcons.IoMdPeople color="#7c44f3" />,
+            iconClosed: <IoIcons.IoIosArrowForward />,
+            iconOpened: <IoIcons.IoIosArrowDown />,
+            isForManager: true,
+            subNav: [],
+        },
     ].filter(
         (item) =>
             !(item.title === 'Create a team' || item.title === 'Teams') ||

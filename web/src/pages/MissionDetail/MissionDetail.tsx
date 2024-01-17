@@ -20,10 +20,11 @@ import CrtSh from '../Dashboard/SubDashboards/CrtSh';
 import Notes from '../Dashboard/SubDashboards/Notes/Notes';
 import Report from '../Dashboard/SubDashboards/Report/Report';
 import Vulnerability from '../Dashboard/SubDashboards/Vulnerability';
+import ClientInfo from './ClientInfo';
 
 export default function MissionDetail() {
     const isPentester = Cookies.get('Role') === '1';
-    const [active, setActive] = useState('scope');
+    const [active, setActive] = useState('client');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
     const [logo, setLogo] = useState('');
@@ -140,11 +141,11 @@ export default function MissionDetail() {
         if (userInfo && isFavory) {
             const val = userInfo;
             for (let i = 0; i < val.length; i += 1) {
-                if (Number(val[i]) === id) {
+                // eslint-disable-next-line
+                if (parseInt(val[i]) === id) {
                     val.splice(i, 1);
                 }
             }
-            setIsFavory(false);
             setUserInfo(val);
             setOpen(true);
             await axios
@@ -164,6 +165,7 @@ export default function MissionDetail() {
                 )
                 .then(() => {
                     setMess({ mess: 'Deleted !', color: 'success' });
+                    setIsFavory(false);
                 })
                 .catch((e) => {
                     setMess({ mess: 'e.message', color: 'error' });
@@ -263,6 +265,9 @@ export default function MissionDetail() {
     }, [userInfo]);
 
     const getSubMissionDetail = () => {
+        if (active === 'client') {
+            return <ClientInfo />;
+        }
         if (active === 'scope') {
             return <Scope />;
         }
@@ -381,6 +386,17 @@ export default function MissionDetail() {
                     )}
                     <div className="subHeader">
                         <div className="submenu-mission">
+                            <button
+                                key={1}
+                                id="client"
+                                type="button"
+                                className={
+                                    active === 'client' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Client info
+                            </button>
                             <button
                                 key={1}
                                 id="scope"
