@@ -183,7 +183,7 @@ export default function Report() {
         template: '',
         mission: 0,
         logo: null,
-        pdf_file: '',
+        html_file: ''
     });
     console.log("report info not in useEffect idunderstand how react works", reportInfo)
     const [templateIdx, setTemplateIdx] = useState(-1);
@@ -210,7 +210,7 @@ export default function Report() {
     return (
         <div>
             <div style={{ display: 'content' }}>
-                {(isMDActivated === true || reportInfo.pdf_file !== '') && (
+                {(isMDActivated === true || reportInfo.id !== -1) && (
                     <BackButton
                         onClick={() => {
                             setMD(false);
@@ -237,7 +237,7 @@ export default function Report() {
             </div>
 
             {isMDActivated && <MarkdownEditor missionid={reportInfo.mission!} />}
-            {!isMDActivated && reportInfo.pdf_file === '' && (
+            {!isMDActivated && reportInfo.id === -1 && (
                 <DocumentTemplates
                     setMD={setMD}
                     setTemplate={function (idx) {
@@ -248,12 +248,12 @@ export default function Report() {
                     setReportInfo={setReportInfo}
                 />
             )}
-            {!isMDActivated && reportInfo.documentURL !== "" && (
+            {!isMDActivated && reportInfo.id !== -1 && (
                 <PdfViewerComponent
                     id={reportInfo.id}
                     mission={reportInfo.mission}
                     template={reportInfo.template}
-                    pdf_file={reportInfo.pdf_file}
+                    html_file={reportInfo.html_file}
                      />
 
             )}

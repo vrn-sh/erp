@@ -1,9 +1,50 @@
 import { useEffect, useRef, ReactElement, useState } from 'react';
-import PSPDFKit, { Instance } from 'pspdfkit';
 import config from '../../../../../config';
 import Cookies from 'js-cookie';
 import { IReport } from '../types';
+import { Editor } from '@tinymce/tinymce-react';
 
+
+export default function PdfViewerComponent(
+  props: IReport
+): ReactElement {
+      const editorRef = useRef(null);
+    const log = () => {
+    if (editorRef.current) {
+        console.log((editorRef.current as any).getContent());
+    }
+  };
+  return (
+    <>
+    {/* TODO: add an info modal to inform that h3 title will be counted as
+              headers title in the pdf final version
+     */}
+    <Editor
+        onInit={(evt, editor) => (editorRef.current as any) = editor}
+        initialValue={props.html_file}
+        init={{
+        height: 500,
+        menubar: false,
+        plugins: [
+           'a11ychecker','advlist','advcode','advtable','autolink','checklist','export',
+           'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
+           'powerpaste','fullscreen','formatpainter','insertdatetime','media','table','help','wordcount'
+        ],
+        toolbar: 'undo redo | casechange blocks | bold italic backcolor | ' +
+           'alignleft aligncenter alignright alignjustify | ' +
+           'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help',
+        //content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        // TODO: take care of content_style in case they don't take into account the font
+        }}
+    />
+    <button onClick={log}>Log editor content</button>
+    </>
+  );
+}
+
+/*
+
+import PSPDFKit, { Instance } from 'pspdfkit';
 export default function PdfViewerComponent(
   props: IReport
 ): ReactElement {
@@ -73,3 +114,4 @@ export default function PdfViewerComponent(
     />
   );
 }
+*/

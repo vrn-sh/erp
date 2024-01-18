@@ -55,10 +55,13 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         if instance.pdf_file:
             #cache.set(cache_key, representation)
             return representation
-        representation['pdf_file'] = self.generate_pdf_url(instance, instance.logo)
+        representation['pdf_file'], representation['html_file'] = self.assemble_report(
+            instance,
+            instance.logo
+        )
         return representation
 
-    def generate_pdf_url(self, instance, logo: str = "") -> str:
+    def assemble_report(self, instance, logo: str = "") -> (str, str):
         filename = f'report-{instance.pk}-{instance.version}.pdf'
         filepath = f'/tmp/{filename}'
         html_content = self.dump_academic_report(instance, logo) \
@@ -70,7 +73,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             font_config=FontConfiguration())
         s3_client = S3Bucket()
         s3_client.upload_file('rootbucket', filepath, filename)
-        return s3_client.get_object_url('rootbucket', filename)
+        return s3_client.get_object_url('rootbucket', filename), html_content
 
     def dump_academic_report(self, instance, logo=None) -> str:
 
