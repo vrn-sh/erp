@@ -15,7 +15,7 @@ jobs:
       POSTGRES_DB: voron
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST: database
+      POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
 
     services:
@@ -46,7 +46,7 @@ jobs:
           DEBUG: "0"
           POSTGRES_DB: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST: database
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           DJANGO_SETTINGS_MODULE: core.settings
 
