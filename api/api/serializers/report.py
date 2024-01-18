@@ -44,7 +44,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         if instance.pdf_file:
             #cache.set(cache_key, representation)
             return representation
-        representation['pdf_file'], _ = self.assemble_report(
+        representation['pdf_file'], representation['html_file'] = self.assemble_report(
             instance,
             instance.logo
         )
