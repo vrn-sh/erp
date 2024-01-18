@@ -66,7 +66,10 @@ export default function Login() {
             .get(`${config.apiUrl}/mfa`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token',
+                    )}`,
                 },
             })
             .then(() => {
@@ -119,8 +122,6 @@ export default function Login() {
                         }
                     )
                     .then((e) => {
-                        navigate('/dashboard');
-
                         Cookies.set(
                             'Token',
                             createCookie(e.data.id, e.data.token, e.data.role),
