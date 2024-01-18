@@ -25,6 +25,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 interface Credential {
     id: number;
@@ -51,7 +52,7 @@ export default function Credentials({ idMission }: CredentialsProps) {
 
     const [showAddForm, setShowAddForm] = useState(false);
     const navigate = useNavigate();
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const [isLoad, setIsLoad] = useState(false);
 
     const addCredential = async () => {
@@ -68,7 +69,10 @@ export default function Credentials({ idMission }: CredentialsProps) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             );
@@ -132,7 +136,10 @@ export default function Credentials({ idMission }: CredentialsProps) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             );

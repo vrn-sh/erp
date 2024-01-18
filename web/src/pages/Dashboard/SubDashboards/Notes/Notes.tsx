@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import * as IoIcons from 'react-icons/io';
 import axios from 'axios';
 import '../../Dashboard.scss';
-import { Stack, Divider, Box, CircularProgress } from '@mui/material';
+import { Stack, Box, CircularProgress } from '@mui/material';
 import Cookies from 'js-cookie';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IDashboardNotes } from '../../DashBoardNote.type';
 import AddNote from './AddNote';
 import ViewNote from './ViewNote';
 import config from '../../../../config';
+import Team from '../../../Team/Team';
+import { getCookiePart } from '../../../../crypto-utils';
 
 export default function Notes() {
     const [missionId, setMissionId] = useState(0);
@@ -22,7 +24,13 @@ export default function Notes() {
     >([]);
     const [modal, setModal] = useState(false);
     const [displayed, setDisplayed] = useState(-1);
-    const isPentester = Cookies.get('Role') === '1';
+    const [idMission, setIsMission] = useState<{ id: number; title: string }[]>(
+        [{ id: 0, title: '' }]
+    );
+    const [max, setMax] = useState(0);
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
+    const [count, setCount] = useState(0);
     const navigate = useNavigate();
     const [isLoad, setIsLoad] = useState(false);
 
@@ -33,7 +41,10 @@ export default function Notes() {
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -57,7 +68,10 @@ export default function Notes() {
             .get(`${config.apiUrl}/note?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((e) => {
@@ -69,6 +83,7 @@ export default function Notes() {
                     tab.push({ id: missionId, notes: note[i] });
                 tab.reverse();
                 setList(tab);
+                console.log('list', tab);
             })
             .catch((e) => {
                 throw new Error(e.message);
@@ -164,7 +179,9 @@ export default function Notes() {
                                     />
                                 )}
 
-                                {list.length ? (
+                                {list.length && !isPentester ? (
+                                    <p>Nothing to show</p>
+                                ) : (
                                     list.map((l, index) => {
                                         return (
                                             <div
@@ -206,8 +223,6 @@ export default function Notes() {
                                             </div>
                                         );
                                     })
-                                ) : (
-                                    <p>Nothing to show</p>
                                 )}
                             </div>
                         </div>

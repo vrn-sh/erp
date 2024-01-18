@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
 import Input from '../../component/Input';
+import { getCookiePart } from '../../crypto-utils';
 
 interface EditClientInfoProps {
     switchToMain: () => void;
@@ -63,7 +64,10 @@ export default function EditClientInfo({
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -107,7 +111,10 @@ export default function EditClientInfo({
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -158,7 +165,10 @@ export default function EditClientInfo({
             .get(`${config.apiUrl}/client-info/${clientId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -179,7 +189,10 @@ export default function EditClientInfo({
             .get(`${config.apiUrl}/mission/${missionId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

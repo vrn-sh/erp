@@ -19,6 +19,7 @@ import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import PayLoadForm from './shellcode/PayLoadForm';
+import { getCookiePart } from '../../crypto-utils';
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
@@ -268,7 +269,8 @@ export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoad, setIsLoad] = useState(false);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -359,7 +361,10 @@ export default function Accueil() {
             .get(`${config.apiUrl}/vuln-type?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (vulnT) => {
@@ -378,7 +383,10 @@ export default function Accueil() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((res) => {
@@ -442,7 +450,10 @@ export default function Accueil() {
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (missions) => {
@@ -462,7 +473,10 @@ export default function Accueil() {
                         .get(`${config.apiUrl}/vulnerability?page=1`, {
                             headers: {
                                 'Content-type': 'application/json',
-                                Authorization: `Token ${Cookies.get('Token')}`,
+                                Authorization: `Token ${getCookiePart(
+                                    Cookies.get('Token')!,
+                                    'token'
+                                )}`,
                             },
                         })
                         .then(async (res) => {
@@ -516,6 +530,10 @@ export default function Accueil() {
     };
 
     useEffect(() => {
+        const isp = getCookiePart(Cookies.get('Token')!, 'role');
+
+        console.log('ROLE');
+        console.log(isp);
         getVulType();
     }, []);
 

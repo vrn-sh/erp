@@ -7,10 +7,11 @@ import axios from 'axios';
 import { GrSecure } from 'react-icons/gr';
 import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
+import { getCookiePart } from '../../../crypto-utils';
 
 export default function SecurityUser() {
-    const role = Cookies.get('Role');
-    const id = Cookies.get('Id');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
+    const id = Number(getCookiePart(Cookies.get('Token')!, 'id'));
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',
         color: 'success',
@@ -80,7 +81,10 @@ export default function SecurityUser() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -101,7 +105,10 @@ export default function SecurityUser() {
                 .get(`${config.apiUrl}/mfa`, {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 })
                 .then((data) => {
@@ -138,7 +145,10 @@ export default function SecurityUser() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -163,7 +173,10 @@ export default function SecurityUser() {
             .get(`${urltmp}/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -186,7 +199,10 @@ export default function SecurityUser() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -436,7 +452,7 @@ export default function SecurityUser() {
                             </div>
                             {isCodeIncorrect && (
                                 <p style={{ color: 'red', marginTop: '5px' }}>
-                                    Code incorrect. Veuillez réessayer.
+                                    Incorrect code. Try Again.
                                 </p>
                             )}
                             <div style={{ marginTop: '20px' }}>

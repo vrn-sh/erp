@@ -15,6 +15,7 @@ import Feedbacks from '../../component/Feedback';
 import HunterIo from './HunterIo/HunterIo';
 import Credentials from './Credential';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 import DorkEngine from '../Dashboard/SubDashboards/DorkEngine';
 import CrtSh from '../Dashboard/SubDashboards/CrtSh';
 import Notes from '../Dashboard/SubDashboards/Notes/Notes';
@@ -23,7 +24,8 @@ import Vulnerability from '../Dashboard/SubDashboards/Vulnerability';
 import ClientInfo from './ClientInfo';
 
 export default function MissionDetail() {
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const [active, setActive] = useState('client');
     const [id, setId] = useState(0);
     const [Title, setTitle] = useState('');
@@ -43,7 +45,7 @@ export default function MissionDetail() {
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
     const url =
-        Cookies.get('Role') === '2'
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
             ? `${config.apiUrl}/manager`
             : `${config.apiUrl}/pentester`;
 
@@ -53,10 +55,13 @@ export default function MissionDetail() {
 
     const getUserInfo = async () => {
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -70,7 +75,7 @@ export default function MissionDetail() {
     const handleAdd = async (val: string[]) => {
         await axios
             .patch(
-                `${url}/${Cookies.get('Id')}`,
+                `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
                 JSON.stringify({
                     auth: {
                         favorites: val,
@@ -79,7 +84,10 @@ export default function MissionDetail() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -109,7 +117,7 @@ export default function MissionDetail() {
             }
         } else {
             // eslint-disable-next-line
-             val = [id.toString()];
+            val = [id.toString()];
             setIsFavory(true);
             setOpen(true);
             handleAdd(val!);
@@ -129,7 +137,7 @@ export default function MissionDetail() {
             setOpen(true);
             await axios
                 .patch(
-                    `${url}/${Cookies.get('Id')}`,
+                    `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
                     JSON.stringify({
                         auth: {
                             favorites: val,
@@ -138,7 +146,10 @@ export default function MissionDetail() {
                     {
                         headers: {
                             'Content-type': 'application/json',
-                            Authorization: `Token ${Cookies.get('Token')}`,
+                            Authorization: `Token ${getCookiePart(
+                                Cookies.get('Token')!,
+                                'token'
+                            )}`,
                         },
                     }
                 )
@@ -158,7 +169,10 @@ export default function MissionDetail() {
             .get(`${config.apiUrl}/mission/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -178,11 +192,14 @@ export default function MissionDetail() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
-            .then(async (data) => {
-                const newData = await data.data;
+            .then((data) => {
+                const newData = data.data;
                 for (let i = 0; i < newData.length; i += 1)
                     if (data.data[i].id === Team)
                         setTeamName(data.data[i].name);
@@ -377,7 +394,7 @@ export default function MissionDetail() {
                                 Client info
                             </button>
                             <button
-                                key={1}
+                                key={2}
                                 id="scope"
                                 type="button"
                                 className={
@@ -388,7 +405,7 @@ export default function MissionDetail() {
                                 scope
                             </button>
                             <button
-                                key={2}
+                                key={3}
                                 id="note"
                                 type="button"
                                 className={
@@ -399,7 +416,7 @@ export default function MissionDetail() {
                                 Note
                             </button>
                             <button
-                                key={3}
+                                key={4}
                                 id="vuln"
                                 type="button"
                                 className={
@@ -410,7 +427,7 @@ export default function MissionDetail() {
                                 Vulnerability
                             </button>
                             <button
-                                key={4}
+                                key={5}
                                 id="recon"
                                 type="button"
                                 className={
@@ -421,7 +438,7 @@ export default function MissionDetail() {
                                 Recon
                             </button>
                             <button
-                                key={5}
+                                key={6}
                                 id="hunter"
                                 type="button"
                                 className={
@@ -432,7 +449,7 @@ export default function MissionDetail() {
                                 Hunter IO
                             </button>
                             <button
-                                key={6}
+                                key={7}
                                 id="credential"
                                 type="button"
                                 className={
@@ -445,7 +462,7 @@ export default function MissionDetail() {
                                 Credentials
                             </button>
                             <button
-                                key={7}
+                                key={8}
                                 id="dork"
                                 type="button"
                                 className={
@@ -457,7 +474,7 @@ export default function MissionDetail() {
                             </button>
                             {isPentester && (
                                 <button
-                                    key={8}
+                                    key={9}
                                     id="crt"
                                     type="button"
                                     className={
@@ -470,7 +487,7 @@ export default function MissionDetail() {
                             )}
                             {isPentester && (
                                 <button
-                                    key={9}
+                                    key={10}
                                     id="report"
                                     type="button"
                                     className={

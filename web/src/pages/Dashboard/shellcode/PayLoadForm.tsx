@@ -65,7 +65,7 @@ export default function PayLoadForm(props: {
                         left: '50%',
                         transform: 'translate(-50%, 0)',
                         overflow: 'hidden',
-                        inset: '40px 40px auto 50%',
+                        inset: '10vh 10vh 8rem 50%',
                     },
                 }}
             >
@@ -106,7 +106,7 @@ export default function PayLoadForm(props: {
                                         left: '50%',
                                         transform: 'translate(-50%, 0)',
                                         // overflow: 'hidden',
-                                        inset: '40px 40px 9rem 50%',
+                                        inset: '10vh 10vh 8rem 50%',
                                     },
                                 }}
                             >

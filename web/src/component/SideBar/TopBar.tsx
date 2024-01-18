@@ -17,6 +17,7 @@ import { TbTargetArrow } from 'react-icons/tb';
 import { BsFillPeopleFill, BsFillPersonFill } from 'react-icons/bs';
 import { SecondaryButton } from '../Button';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 interface SearchModalProps {
     exit: React.MouseEventHandler<HTMLButtonElement>;
@@ -70,7 +71,10 @@ function SearchModal({ exit }: SearchModalProps) {
             .get(`${config.apiUrl}/search?q=${keyword}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -233,7 +237,7 @@ function SearchModal({ exit }: SearchModalProps) {
 
 export default function TopBar() {
     const navigate = useNavigate();
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const [isOpen, setIsOpen] = useState(false);
     const [userInfos, setUserInfos] = useState({
         username: '',
@@ -250,12 +254,18 @@ export default function TopBar() {
         let url = `${config.apiUrl}/`;
         if (role === '2') url += 'manager';
         else url += 'pentester';
-        const response = await axios.get(`${url}/${Cookies.get('Id')}`, {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Token ${Cookies.get('Token')}`,
-            },
-        });
+        const response = await axios.get(
+            `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
+            {
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
+                },
+            }
+        );
 
         const userData = response.data.auth;
         setUserInfos({
@@ -267,9 +277,7 @@ export default function TopBar() {
     };
 
     const modalClick = () => {
-        console.log('mystique');
         setIsOpen(!isOpen);
-        console.log(isOpen);
     };
 
     useEffect(() => {

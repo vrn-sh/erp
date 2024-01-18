@@ -6,6 +6,7 @@ import config from '../config';
 import { SecondaryButton, PrimaryButton } from './Button';
 import Feedbacks from './Feedback';
 import '../pages/Dashboard/Dashboard.scss';
+import { getCookiePart } from '../crypto-utils';
 
 interface DeleteProps {
     func: any;
@@ -45,7 +46,10 @@ export default function DeleteConfirm({ func, item }: DeleteProps) {
             .delete(`${config.apiUrl}/${item.type}/${item.id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async () => {
