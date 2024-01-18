@@ -28,3 +28,14 @@ class ClientInfoViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         request.data['last_editor'] = request.user.id
         return super().update(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        client_infos = ClientInfo.objects.filter(mission__team__members__id=request.user.id)
+        self.queryset = client_infos
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
