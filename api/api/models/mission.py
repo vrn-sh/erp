@@ -42,6 +42,7 @@ class CrtSh(models.Model):
 
     class Meta:
         verbose_name = 'crt.sh'
+        ordering = ['id']
 
     REQUIRED_FIELDS = ['dump', 'recon']
 
@@ -80,7 +81,7 @@ class Mission(models.Model):
     class Meta:
         verbose_name = "Mission"
         verbose_name_plural = "Missions"
-        ordering = ['start', 'id']
+        ordering = ['last_updated_by']
 
     REQUIRED_FIELDS = ['start', 'end', 'team', 'created_by', 'scope']
 
@@ -160,6 +161,10 @@ class Credentials(models.Model):
     """
 
     REQUIRED_FIELDS = ['login', 'mission', 'password', 'service']
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = ['Credentials']
 
     login: models.CharField = models.CharField(max_length=128)
     password: models.CharField = models.CharField(max_length=128)

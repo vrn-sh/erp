@@ -23,6 +23,10 @@ class Notes(models.Model):
 
     REQUIRED_FIELDS = ["content", "author", "mission", "title"]
 
+    class Meta:
+        verbose_name = 'notes'
+        ordering = ['last_updated']
+
     mission = models.ForeignKey(Mission, on_delete=models.CASCADE)
     title: models.TextField = models.TextField(default="New note")
     content: models.TextField = models.TextField(max_length=MAX_NOTE_LENGTH)
@@ -41,13 +45,13 @@ class VulnType(models.Model):
     class Meta:
         verbose_name = 'Vulnerability TYPE Model'
         verbose_name_plural = 'Vulnerability TYPES models'
-        ordering = ['name']
+        ordering = ['id']
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=NAME_LENGTH)
     description = models.TextField(blank=True)
 
-    def __str__(self):
+    def __str__(self):  # type: ignore
         return self.name
 
     def __repr__(self):
@@ -62,6 +66,7 @@ class Vulnerability(models.Model):
     class Meta:
         verbose_name = 'Vulnerability Model'
         verbose_name_plural = 'Vulnerability models'
+        ordering = ['last_updated_date']
 
     @property
     def bucket_name(self):

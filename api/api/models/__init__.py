@@ -56,7 +56,7 @@ class Auth(AbstractUser):
         mfa_secret: secret key used for MFA
     """
 
-    class Meta:
+    class Meta:  # type: ignore
         verbose_name = 'Basic user auth model'
         verbose_name_plural = 'Basic user auth models'
         ordering = ['email']
@@ -123,7 +123,7 @@ class Auth(AbstractUser):
             'url': url
         })
         mail.set_template_id(template_id)
-        return mail.send()
+        return mail.send()  # type: ignore
 
     def send_reset_password_email(self) -> int:
         """sends password-reset email"""
@@ -147,14 +147,14 @@ class Auth(AbstractUser):
                 [self.email],
             )
 
-        mail = SendgridClient([self.email])
+        mail = SendgridClient(recipient=self.email)  # type: ignore
         mail.set_template_data({
             'username': self.first_name,
             'email': self.email,
             'url': url,
         })
         mail.set_template_id(template_id)
-        return mail.send()
+        return mail.send()  # type: ignore
 
 
     def save(self, *args, **kwargs) -> None:
