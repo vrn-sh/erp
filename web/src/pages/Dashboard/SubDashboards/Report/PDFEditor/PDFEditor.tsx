@@ -3,6 +3,7 @@ import config from '../../../../../config';
 import Cookies from 'js-cookie';
 import { IReport } from '../types';
 import { Editor } from '@tinymce/tinymce-react';
+import { getCookiePart } from '../../../../../crypto-utils';
 
 
 export default function PdfViewerComponent(
@@ -18,7 +19,10 @@ export default function PdfViewerComponent(
           html_file: (editorRef.current as any).getContent(),
         }),
         headers: {
-          Authorization: `Token ${Cookies.get('Token')}`,
+          Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
           'Content-Type': 'application/json'
         },
       });
@@ -54,7 +58,6 @@ export default function PdfViewerComponent(
            'powerpaste','fullscreen','formatpainter','insertdatetime','media','table','help','wordcount'
         ],
         toolbar: 'undo redo | bold italic backcolor | ' +
-           'alignleft aligncenter alignright alignjustify | ' +
            'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help | exportPdf',
         //content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         // TODO: take care of content_style in case they don't take into account the font
