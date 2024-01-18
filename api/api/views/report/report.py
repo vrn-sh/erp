@@ -116,7 +116,7 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
                 stylesheets=[CSS(string=report.template.css_style)],
                 font_config=FontConfiguration())
             s3_client = S3Bucket()
-            s3_client.upload_file('rootbucket', filepath)
+            s3_client.upload_file('rootbucket', filepath, filename)
             request.data.pop('html_file')
         if file := request.FILES.get('file', None):
             pdf_file = S3Bucket().upload_stream(
