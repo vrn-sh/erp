@@ -100,13 +100,16 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
+        print("kwargs", kwargs)
+        print("request", request.query_params)
         report = ReportHtml.objects.filter(pk=kwargs.get('pk')).first()
         if not report:
             return Response({
                 'error': f'No report with id {kwargs.get("pk")}. Report couldn\'t be updated',
             }, status=HTTP_404_NOT_FOUND)
         if html_file := request.FILES.get('html_file', None):
-            filename = report.pdf_file.split('/')[-1]
+            print("pdf_file", report.pdf_file)
+            filename = f'report-{report.mission.pk}-{uuid4().__str__()}.pdf'
             filepath = f'/tmp/{filename}'
             HTML(string=html_file.read().encoding('utf-8')).write_pdf(
                 filename,
