@@ -30,6 +30,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             # remove old file TOTEST lol
             # if instance.pdf_file:
             #     s3_client.delete_file('rootbucket', instance.pdf_file.split('/')[-1])
+            validated_data.pop('html_file')
             instance.pdf_file = s3_client.get_object_url('rootbucket', filename)
         instance.save()
         return instance
