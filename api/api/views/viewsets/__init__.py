@@ -62,16 +62,16 @@ class TeamViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestors
     )
     def get_queryset(self):
         if self.request.user.is_anonymous:
-            return Team.objects.none()
+            return Team.objects.none()  # type: ignore
         owner = EmailBackend().get_user_by_email(self.request.user.email)
         if owner is None:
-            return Team.objects.none()
+            return Team.objects.none()  # type: ignore
 
         owner_model = get_user_model(owner)
-        if USER_ROLES[owner.role] == 'manager':
-            queryset = Team.objects.filter(leader=owner_model.id)
+        if USER_ROLES[owner.role] == 'manager':  # type: ignore
+            queryset = Team.objects.filter(leader=owner_model.id)  # type: ignore
         else:
-            queryset = Team.objects.filter(members__in=[owner_model.id])
+            queryset = Team.objects.filter(members__in=[owner_model.id])  # type: ignore
 
         return queryset
 
@@ -187,7 +187,7 @@ class RegisterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancesto
 
         return Manager.objects.all()  # type: ignore
 
-    def get_serializer_class(self):
+    def get_serializer_class(self):  # type: ignore
         auth = self.request.data.get('auth')  # type: ignore
         if auth and auth.get('role') == 'pentester':  # type: ignore
             return PentesterSerializer
@@ -224,7 +224,7 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
 
-            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            if not '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
                 token = S3Bucket().upload_single_image_if_exists(
                     'profile_image',
                     request.data['auth'],
@@ -247,7 +247,7 @@ class FreelancerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ances
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
 
-            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            if not '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
                 token = S3Bucket().upload_single_image_if_exists(
                     'profile_image',
                     request.data['auth'],
@@ -280,7 +280,7 @@ class ManagerViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancestor
 
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
-            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            if not '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
                 token = S3Bucket().upload_single_image_if_exists(
                     'profile_image',
                     request.data['auth'],
