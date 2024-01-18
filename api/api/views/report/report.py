@@ -103,6 +103,15 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
             return Response({
                 'error': f'No report with id {kwargs.get("pk")}. Report couldn\'t be updated',
             }, status=HTTP_404_NOT_FOUND)
+        '''
+        if html_file := request.FILES.get('html_file', None):
+            object = S3Bucket().upload_stream(
+                'rootbucket',
+                f'report-{report.mission.pk}-{uuid4().__str__()}',
+                BytesIO(html_file.read()) if isinstance(html_file, File) else html_file,
+                mime_type='text/html')
+            request.data['html_file'] = S3Bucket().get_object_url('rootbucket', object.object_name)
+        '''
         if file := request.FILES.get('file', None):
             pdf_file = S3Bucket().upload_stream(
                 'rootbucket',

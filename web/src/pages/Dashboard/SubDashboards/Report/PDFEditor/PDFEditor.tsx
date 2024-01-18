@@ -11,13 +11,14 @@ export default function PdfViewerComponent(
 ): ReactElement {
     const editorRef = useRef(null);
     const handleExportPDF = async () => {
+      const html_blob = new Blob([(editorRef.current as any).getContent()], { type: 'text/html' });
+      const formData = new FormData();
+      formData.append("mission", props.mission?.toString() || "");
+      formData.append("template_name", props.template || "");
+      formData.append("html_file", html_blob);
       const response = await fetch(`${config.apiUrl}/download-report/${props.id}`, {
         method: "PUT",
-        body: JSON.stringify({
-          mission: props.mission?.toString() || "",
-          template_name: props.template || "",
-          html_file: (editorRef.current as any).getContent(),
-        }),
+        body: formData,
         headers: {
           Authorization: `Token ${getCookiePart(
                             Cookies.get('Token')!,
