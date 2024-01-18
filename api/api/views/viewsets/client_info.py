@@ -30,6 +30,8 @@ class ClientInfoViewset(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
+        client_infos = ClientInfo.objects.filter(mission__team__members__id=request.user.id)
+        self.queryset = client_infos
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
