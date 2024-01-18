@@ -121,7 +121,10 @@ export default function EditMission() {
 
     const UpdateMission = async () => {
         setOpen(true);
-        if (Team === 0) {
+        if (
+            Team === 0 &&
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3'
+        ) {
             setMessage('Please choose a team', 'error');
             return;
         }
@@ -274,6 +277,12 @@ export default function EditMission() {
                                 id="Team-select"
                                 value={Team.toString()}
                                 onChange={handleChange}
+                                disabled={
+                                    getCookiePart(
+                                        Cookies.get('Token')!,
+                                        'role'
+                                    )?.toString() === '3'
+                                } // Désactive la sélection pour le rôle '3'
                             >
                                 {teamList!.map((team) => {
                                     return (

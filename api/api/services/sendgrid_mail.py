@@ -100,3 +100,4 @@ def send_mail_to_recipients():
 
 if __name__ == "__main__":
     send_mail_to_recipients()
+

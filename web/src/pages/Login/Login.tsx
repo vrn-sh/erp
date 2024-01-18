@@ -82,9 +82,15 @@ export default function Login() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2')
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
             url += 'manager';
-        else url += 'pentester';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {

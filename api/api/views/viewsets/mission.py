@@ -13,7 +13,7 @@ from rest_framework import viewsets, permissions
 from knox.auth import TokenAuthentication
 from rest_framework.routers import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
-from api.models import Pentester
+from api.models import USER_ROLES, Pentester
 
 from api.models.mission import Credentials, Mission, NmapScan, Recon, CrtSh
 from api.permissions import IsFreelancer, IsManager, IsLinkedToData, IsPentester, ReadOnly
@@ -285,7 +285,7 @@ class CredentialViewset(viewsets.ModelViewSet):
 
         if mission := Mission.objects.filter(id=mission_id).first():  # type: ignore
 
-            if not mission.is_member(self.request.user):
+            if self.request.user.role != 3 and not mission.is_member(self.request.user):
                 return Response(status=HTTP_403_FORBIDDEN)
             request.data['mission'] = mission_id
             return super().create(request, *args, **kwargs)
@@ -365,8 +365,10 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
 
 
         if not 'team' in request.data:
-            if request.user.role == 3:
+            if USER_ROLES[request.user.role] == 'freelancer':
+
                 request.data['team'] = None
+                request.data['freelance_member'] = request.user.id
             else:
                 return Response({
                     'error': 'please specify team',
@@ -383,7 +385,7 @@ class MissionViewset(viewsets.ModelViewSet):  # pylint: disable=too-many-ancesto
     def list(self, request, *args, **kwargs):
         name_query = request.query_params.get('search', None)
 
-        if request.user.role == 2:
+        if request.user.role == 2 or request.user.role == 3:
             missions = Mission.objects.filter(created_by=request.user.id)
         else:
             missions = Mission.objects.filter(team__members__auth__id=request.user.id)

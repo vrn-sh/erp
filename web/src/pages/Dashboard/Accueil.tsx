@@ -268,6 +268,8 @@ function MissionList({
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
+    // Function to open the modal
     const [isLoad, setIsLoad] = useState(false);
     const isPentester =
         getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
@@ -361,10 +363,7 @@ export default function Accueil() {
             .get(`${config.apiUrl}/vuln-type?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(
-                        Cookies.get('Token')!,
-                        'token'
-                    )}`,
+                    Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
             .then(async (vulnT) => {
@@ -383,10 +382,7 @@ export default function Accueil() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(
-                        Cookies.get('Token')!,
-                        'token'
-                    )}`,
+                    Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
             .then((res) => {
@@ -450,10 +446,7 @@ export default function Accueil() {
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(
-                        Cookies.get('Token')!,
-                        'token'
-                    )}`,
+                    Authorization: `Token ${Cookies.get('Token')}`,
                 },
             })
             .then(async (missions) => {
@@ -473,10 +466,7 @@ export default function Accueil() {
                         .get(`${config.apiUrl}/vulnerability?page=1`, {
                             headers: {
                                 'Content-type': 'application/json',
-                                Authorization: `Token ${getCookiePart(
-                                    Cookies.get('Token')!,
-                                    'token'
-                                )}`,
+                                Authorization: `Token ${Cookies.get('Token')}`,
                             },
                         })
                         .then(async (res) => {
@@ -530,10 +520,6 @@ export default function Accueil() {
     };
 
     useEffect(() => {
-        const isp = getCookiePart(Cookies.get('Token')!, 'role');
-
-        console.log('ROLE');
-        console.log(isp);
         getVulType();
     }, []);
 
@@ -565,7 +551,13 @@ export default function Accueil() {
                         />
                     </div>
                     <div className="accueil-container">
-                        <div className="accueil-grid-3">
+                        <div
+                            className={`accueil-grid-3 ${
+                                Number(Cookies.get('Role')) === 3
+                                    ? 'role-3'
+                                    : ''
+                            }`}
+                        >
                             <div
                                 className="accueil-rect"
                                 style={{ height: '30vh' }}
@@ -663,7 +655,13 @@ export default function Accueil() {
                             </div>
                         </div>
 
-                        <div className="accueil-grid-3">
+                        <div
+                            className={`accueil-grid-3 ${
+                                Number(Cookies.get('Role')) === 3
+                                    ? 'role-3'
+                                    : ''
+                            }`}
+                        >
                             <div className="accueil-rect-long">
                                 <div className="accueil-mission-title">
                                     <h5 style={{ marginBottom: '15px' }}>
@@ -725,9 +723,9 @@ export default function Accueil() {
                             </div>
                         </div>
 
-                        <div className="accueil-grid-3">
-                            <div className="accueil-rect-long">
-                                <div className="accueil-mission-title">
+                        {role === '1' || role === '2' ? (
+                            <div className="accueil-grid-3">
+                                <div className="accueil-rect-long">
                                     <h5
                                         style={{
                                             marginBottom: '15px',
@@ -780,7 +778,7 @@ export default function Accueil() {
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        ) : null}
                     </div>
                 </div>
             </div>

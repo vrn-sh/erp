@@ -15,7 +15,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportHtml
         fields = '__all__'
-    
+
     def update(self, instance, validated_data):
         html_file = validated_data.pop('html_file')
         instance = super().update(instance, validated_data)
@@ -49,8 +49,8 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         representation['mission_title'] = instance.mission.title
         representation['updated_at'] = instance.updated_at.strftime('%Y-%m-%d at %H:%M')
 
-        # if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-        #    return representation
+        if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
+           return representation
 
         s3_client = S3Bucket()
         if instance.logo:
@@ -246,7 +246,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             </div>
         </div>
 '''
-            
+
         },
         {
             "name": "yellow",
