@@ -224,7 +224,7 @@ class PentesterViewset(viewsets.ModelViewSet): # pylint: disable=too-many-ancest
     def update(self, request, *args, **kwargs):
         if 'auth' in request.data:
 
-            if '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
+            if not '1' in (os.environ.get('CI', '0'), os.environ.get('TEST', '0')):
                 token = S3Bucket().upload_single_image_if_exists(
                     'profile_image',
                     request.data['auth'],

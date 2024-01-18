@@ -15,7 +15,7 @@ from api.serializers.client_infos import ClientInfoSerializer
 class ClientInfoViewset(viewsets.ModelViewSet):
     """CRUD for clientInfos object"""
 
-    queryset = ClientInfo.objects.all()
+    queryset = ClientInfo.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated & IsManager | permissions.IsAuthenticated & IsLinkedToData | permissions.IsAuthenticated & IsPentester & ReadOnly]
     serializer_class = ClientInfoSerializer
