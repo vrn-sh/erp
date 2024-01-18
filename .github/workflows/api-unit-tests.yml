@@ -13,9 +13,9 @@ jobs:
 
     env:
       POSTGRES_DB: voron
-      POSTGRES_USER: user_name
-      POSTGRES_PASSWORD: very_secure_password
-      POSTGRES_HOST: localhost
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: database
       POSTGRES_PORT: 5432
 
     services:
@@ -46,7 +46,7 @@ jobs:
           DEBUG: "0"
           POSTGRES_DB: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST: localhost
+          POSTGRES_HOST: database
           POSTGRES_PORT: 5432
           DJANGO_SETTINGS_MODULE: core.settings
 
@@ -80,6 +80,7 @@ jobs:
         run: |
             cd api
             pip install -r requirements.txt
+            python manage.py migrate
             pip install -U coverage
             coverage run manage.py test --parallel
             coverage report -m --format=markdown > coverage.md
