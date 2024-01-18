@@ -2,16 +2,10 @@ import { useEffect, useRef, ReactElement, useState } from 'react';
 import PSPDFKit, { Instance } from 'pspdfkit';
 import config from '../../../../../config';
 import Cookies from 'js-cookie';
-
-interface PdfViewerProps {
-  document: string; // Assuming `document` is a string representing the document URL
-  mission?: number;
-  template?: string;
-  reportId?: number;
-}
+import { IReport } from '../types';
 
 export default function PdfViewerComponent(
-  props: PdfViewerProps
+  props: IReport
 ): ReactElement {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -23,7 +17,7 @@ export default function PdfViewerComponent(
         autoSaveMode: PSPDFKit.AutoSaveMode.DISABLED,
         licenseKey: import.meta.env.VITE_REACT_APP_PSPDFKIT_LICENSE_KEY,
         container: containerRef.current!,
-        document: props.document,
+        document: props.pdf_file!,
         baseUrl: `${window.location.protocol}//${window.location.host}/assets/`,
         toolbarItems: [
           ...PSPDFKit.defaultToolbarItems.filter((item) => item.type !== "export-pdf"),
@@ -54,8 +48,8 @@ export default function PdfViewerComponent(
               formData.append("mission", props.mission?.toString() || "");
               formData.append("template_name", props.template || "");
               formData.append("file", blob);
-              await fetch(`${config.apiUrl}/download-report`, {
-                method: "POST",
+              await fetch(`${config.apiUrl}/download-report/${props.id}`, {
+                method: "PUT",
                 body: formData,
                 headers: {
                   Authorization: `Token ${Cookies.get('Token')}`,
@@ -68,7 +62,7 @@ export default function PdfViewerComponent(
     };
 
     loadPSPDFKit();
-  }, [props.document]);
+  }, [props.pdf_file]);
 
   // This div element will render the document to the DOM.
   return (
