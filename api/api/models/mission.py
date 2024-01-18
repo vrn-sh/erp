@@ -163,7 +163,7 @@ class Credentials(models.Model):
     REQUIRED_FIELDS = ['login', 'mission', 'password', 'service']
 
     class Meta:
-        ordering = ['name']
+        ordering = ['service']
         verbose_name = ['Credentials']
 
     login: models.CharField = models.CharField(max_length=128)
