@@ -222,6 +222,18 @@ export default function SignUp() {
                                         Manager
                                     </label>
                                 </div>
+                                <div className="radio-container">
+                                    <input
+                                        type="radio"
+                                        name="role"
+                                        value="freelancer"
+                                        checked={state.role === 'freelancer'}
+                                        onChange={handleChange}
+                                    />
+                                    <label style={{ zIndex: 'unset' }}>
+                                        Freelancer
+                                    </label>
+                                </div>
                             </div>
                             <div className="form-group">
                                 <label style={{ zIndex: 'unset' }}>

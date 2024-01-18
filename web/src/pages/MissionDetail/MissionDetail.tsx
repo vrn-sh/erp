@@ -4,7 +4,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
 import * as TbIcons from 'react-icons/tb';
-import { Chip } from '@mui/material';
+import { Chip, Switch } from '@mui/material';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import '../Dashboard/Dashboard.scss';
@@ -44,16 +44,22 @@ export default function MissionDetail() {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
-    const url =
-        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
-            ? `${config.apiUrl}/manager`
-            : `${config.apiUrl}/pentester`;
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
     };
 
     const getUserInfo = async () => {
+        let url = `${config.apiUrl}/`;
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
@@ -73,6 +79,16 @@ export default function MissionDetail() {
     };
 
     const handleAdd = async (val: string[]) => {
+        let url = `${config.apiUrl}/`;
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .patch(
                 `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
@@ -125,6 +141,16 @@ export default function MissionDetail() {
     };
 
     const deleteFavory = async () => {
+        let url = `${config.apiUrl}/`;
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         if (userInfo && isFavory) {
             const val = userInfo;
             for (let i = 0; i < val.length; i += 1) {
