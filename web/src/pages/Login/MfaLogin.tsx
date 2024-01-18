@@ -43,7 +43,7 @@ export default function MfaLogin() {
         else url += 'pentester';
 
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(
@@ -83,7 +83,10 @@ export default function MfaLogin() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
