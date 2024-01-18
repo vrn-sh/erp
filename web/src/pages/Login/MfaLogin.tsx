@@ -76,7 +76,6 @@ export default function MfaLogin() {
     };
 
     const handleVerifyCode = () => {
-        console.log(codeValidation.join(''));
         axios
             .post(
                 `${config.apiUrl}/mfa?mfa_code=${codeValidation.join('')}`,
@@ -86,7 +85,7 @@ export default function MfaLogin() {
                         'Content-type': 'application/json',
                         Authorization: `Token ${getCookiePart(
                             Cookies.get('Token')!,
-                            'token',
+                            'token'
                         )}`,
                     },
                 }

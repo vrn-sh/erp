@@ -68,7 +68,7 @@ export default function Login() {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(
                         Cookies.get('Token')!,
-                        'token',
+                        'token'
                     )}`,
                 },
             })
