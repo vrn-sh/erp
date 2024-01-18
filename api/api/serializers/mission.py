@@ -1,7 +1,7 @@
 from json import loads
 from django.core.cache import cache
 from rest_framework import serializers
-from api.api.services.s3 import S3Bucket
+from api.services.s3 import S3Bucket
 
 from api.models.mission import Mission, Recon, NmapScan, CrtSh
 from api.models.utils import NmapPort
