@@ -231,7 +231,7 @@ class ConfirmAccountView(APIView):
             account = Auth.objects.filter(email=email).first()
 
         if account:
-            account.is_enabled = True
+            account.is_enabled = True  # type: ignore
             account.set_password(password)
             account.save()
 
@@ -273,7 +273,7 @@ class LoginView(KnoxLoginView):
     )
 
     @csrf_exempt
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         """Logs in account, after checking if account has been disabled or not"""
 
         serializer = LoginSerializer(data=request.data)
@@ -282,14 +282,14 @@ class LoginView(KnoxLoginView):
                 'errors': serializer.errors,
             }, status=HTTP_400_BAD_REQUEST)
 
-        auth = serializer.validated_data['user']
+        auth = serializer.validated_data['user']  # type: ignore
         login(request, auth)
 
         knox_resp = super().post(request, format=None)
         user = get_user_model(auth)
 
-        knox_resp.data['role'] = auth.role
-        knox_resp.data['id'] = user.id
+        knox_resp.data['role'] = auth.role  # type: ignore
+        knox_resp.data['id'] = user.id  # type: ignore
         return knox_resp
 
 
