@@ -115,6 +115,7 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
             s3_client = S3Bucket()
             s3_client.upload_file('rootbucket', filepath, filename)
             request.data.pop('html_file')
+            request.data['pdf_file'] = s3_client.get_object_url('rootbucket', filename)
         if file := request.FILES.get('file', None):
             pdf_file = S3Bucket().upload_stream(
                 'rootbucket',
