@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction, RefCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import './Report.scss';
 import axios from 'axios';
@@ -52,7 +52,7 @@ function DocumentTemplates({
     setReportInfo
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
-    setTemplate: Dispatch<SetStateAction<number>>;
+    setTemplate: (idx: number) => void;
     reportInfo: IReport;
     setReportInfo: Dispatch<SetStateAction<IReport>>;
 
@@ -76,6 +76,7 @@ function DocumentTemplates({
 
     const handleTemplateSelection = async (templateId: number) => {
         setTemplate(templateId);
+        console.log("l79, templateId", templateId);
         axios
             .post(
                 `${config.apiUrl}/download-report`,
@@ -232,7 +233,10 @@ export default function Report() {
             {!isMDActivated && reportInfo.pdf_file === '' && (
                 <DocumentTemplates
                     setMD={setMD}
-                    setTemplate={(idx) => {setTemplateIdx(idx); setReportInfo({...reportInfo, template: templates[templateIdx].name})}}
+                    setTemplate={function (idx) {
+                        console.log("kikou fdp, template Id", idx);
+                        setTemplateIdx(idx);
+                        setReportInfo({...reportInfo, template: templates[idx].name})}}
                     reportInfo={reportInfo}
                     setReportInfo={setReportInfo}
                 />
