@@ -20,6 +20,7 @@ import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
 import Input from '../../component/Input';
+import { getCookiePart } from '../../crypto-utils';
 
 const ITEM_HEIGHT = 55;
 const ITEM_PADDING_TOP = 8;
@@ -66,7 +67,10 @@ export default function CreateTeam() {
             .get(`${config.apiUrl}/manager?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -89,7 +93,10 @@ export default function CreateTeam() {
             .get(`${config.apiUrl}/pentester?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -146,7 +153,10 @@ export default function CreateTeam() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

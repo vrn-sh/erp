@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import { Box, CircularProgress } from '@mui/material';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function Scope() {
     const [scope, setScope] = useState([]);
@@ -41,7 +42,8 @@ export default function Scope() {
         setOpen(false);
     };
 
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const recordsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
@@ -84,7 +86,10 @@ export default function Scope() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -106,7 +111,10 @@ export default function Scope() {
             .get(`${config.apiUrl}/mission/${missionId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

@@ -15,7 +15,7 @@ from api.serializers.client_infos import ClientInfoSerializer
 class ClientInfoViewset(viewsets.ModelViewSet):
     """CRUD for clientInfos object"""
 
-    queryset = ClientInfo.objects.all()
+    queryset = ClientInfo.objects.all()  # type: ignore
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated & IsManager | permissions.IsAuthenticated & IsLinkedToData | permissions.IsAuthenticated & IsPentester & ReadOnly]
     serializer_class = ClientInfoSerializer
@@ -28,12 +28,3 @@ class ClientInfoViewset(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         request.data['last_editor'] = request.user.id
         return super().update(request, *args, **kwargs)
-
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)

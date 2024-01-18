@@ -9,6 +9,7 @@ import { AlertColor, Box, Chip, CircularProgress } from '@mui/material';
 import dayjs from 'dayjs';
 import config from '../../../config';
 import DeleteConfirm from '../../../component/DeleteConfirm';
+import { getCookiePart } from '../../../crypto-utils';
 
 export default function Mission() {
     const [list, setList] = useState<
@@ -53,7 +54,8 @@ export default function Mission() {
         { id: 0, name: '' },
     ]);
     const [vulSuccess, setVulSuccess] = useState(false);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
@@ -86,7 +88,10 @@ export default function Mission() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (data) => {
@@ -136,7 +141,10 @@ export default function Mission() {
             .get(`${config.apiUrl}/vuln-type?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (data) => {
@@ -166,13 +174,14 @@ export default function Mission() {
     };
 
     const getMission = async () => {
+        const token = getCookiePart(Cookies.get('Token')!, 'token');
         setIsLoad(true);
 
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${token}`,
                 },
             })
             .then(async (data) => {
@@ -185,9 +194,7 @@ export default function Mission() {
                             {
                                 headers: {
                                     'Content-type': 'application/json',
-                                    Authorization: `Token ${Cookies.get(
-                                        'Token'
-                                    )}`,
+                                    Authorization: `Token ${token}`,
                                 },
                             }
                         )

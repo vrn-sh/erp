@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { Box, CircularProgress } from '@mui/material';
 import config from '../../config';
 import DeleteConfirm from '../../component/DeleteConfirm';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function TeamList() {
     const [list, setList] = useState<
@@ -17,15 +18,14 @@ export default function TeamList() {
             nbMission: number;
             manager: string;
         }[]
-    >([
+    >([]);
+    const [missionList, setMissionList] = useState<
         {
-            name: 'string',
-            id: 2,
-            nbMember: 2,
-            nbMission: 4,
-            manager: 'string',
-        },
-    ]);
+            name: string;
+            id: number;
+        }[]
+    >([]);
+
     const [open, setOpen] = useState(false);
     const [item, setItem] = useState<{
         id: number;
@@ -34,7 +34,8 @@ export default function TeamList() {
     }>();
     const [currentPage, setCurrentPage] = useState(1);
     const [mission, setMission] = useState(0);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const recordsPerPage = 5;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
@@ -60,26 +61,29 @@ export default function TeamList() {
         setCurrentPage(n);
     };
 
-    const getMission = async (idTeam: number) => {
+    const getMission = async () => {
         setIsLoad(true);
 
         await axios
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
-            .then((data) => {
-                const tab: any = [];
-                const missions = data.data.results;
-                for (let i = 0; i < missions.length; i += 1) {
-                    const find = missions.filter(
-                        (elem: any) => elem.team === idTeam
-                    );
-                    tab.push(find);
+            .then(async (data) => {
+                const tab = [];
+                for (let i = 0; i < data.data.results.length; i += 1) {
+                    tab.push({
+                        id: data.data.results[i].id,
+                        name: data.data.results[i].title,
+                    });
                 }
-                setMission(tab.length);
+                tab.reverse();
+                setMissionList(tab);
             })
             .catch((e) => {
                 throw e.message;
@@ -100,20 +104,28 @@ export default function TeamList() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
                 const tab = [];
                 for (let i = 0; i < data.data.length; i += 1) {
-                    getMission(data.data[i].id);
+                    let nbmission = 0;
+                    for (let j = 0; j < missionList.length; j += 1) {
+                        if (missionList[j].id === data.data[i].id)
+                            nbmission += 1;
+                    }
                     tab.push({
                         id: data.data[i].id,
                         name: data.data[i].name,
                         nbMember: data.data[i].members.length,
-                        nbMission: mission, // get info
+                        nbMission: nbmission, // get info
                         manager: data.data[i].leader.auth.username, // get info
                     });
+                    setMission(0);
                 }
                 tab.reverse();
                 setList(tab);
@@ -136,8 +148,12 @@ export default function TeamList() {
     };
 
     useEffect(() => {
-        getTeamList();
+        getMission();
     }, []);
+
+    useEffect(() => {
+        getTeamList();
+    }, [missionList]);
 
     useEffect(() => {
         getTeamList();

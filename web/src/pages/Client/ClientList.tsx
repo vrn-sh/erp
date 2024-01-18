@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function ClientList() {
     const [list, setList] = useState<
@@ -49,7 +50,10 @@ export default function ClientList() {
             .get(`${config.apiUrl}/client-info?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

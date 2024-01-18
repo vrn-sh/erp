@@ -18,6 +18,7 @@ import { FaPlus } from 'react-icons/fa6';
 import config from '../../config';
 import AddNMAP from './AddNMAP';
 import Feedbacks from '../../component/Feedback';
+import { getCookiePart } from '../../crypto-utils';
 
 export interface IRecon {
     id: number;
@@ -85,7 +86,8 @@ export default function Recon(idMission: any) {
     const nums = [...Array(npage + 1).keys()].slice(1);
     const [modal, setModal] = useState(false);
     const { id } = idMission;
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
     const [expanded, setExpanded] = React.useState<string | false>(false);
     const [message, setMess] = useState<{ mess: string; color: string }>({
         mess: '',
@@ -160,7 +162,10 @@ export default function Recon(idMission: any) {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -181,7 +186,10 @@ export default function Recon(idMission: any) {
             .get(`${config.apiUrl}/mission/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

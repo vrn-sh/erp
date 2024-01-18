@@ -18,6 +18,7 @@ class Command(BaseCommand):
                     last_name='user',
                     is_active=True,
                     password='!ChangeMe!',
+                    is_enabled=True,
                 )
             auth.set_password(auth.password)
             auth.save()

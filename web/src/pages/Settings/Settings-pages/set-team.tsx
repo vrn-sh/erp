@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import './team.scss';
 import Cookies from 'js-cookie';
+import { getCookiePart } from '../../../crypto-utils';
 
 interface Group {
     id: number;
@@ -55,7 +56,8 @@ function InvitePopup({ isOpen, onRequestClose }: InviteProps) {
 function SettingTeam({ userRole }: UserGroupsProps) {
     // eslint-disable-next-line
     const [groups, setGroups] = useState<Group[]>([]);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     // const [showPopup, setShowPopup] = useState(false);
     // const [email, setEmail] = useState('');

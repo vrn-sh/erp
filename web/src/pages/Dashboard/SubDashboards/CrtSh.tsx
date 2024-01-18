@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import config from '../../../config';
 import Feedbacks from '../../../component/Feedback';
 import SelectMission from '../../../component/SelectMission';
+import { getCookiePart } from '../../../crypto-utils';
 
 export default function CrtSh() {
     const [open, setOpen] = useState(false);
@@ -84,7 +85,10 @@ export default function CrtSh() {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             }
         )
@@ -115,7 +119,10 @@ export default function CrtSh() {
                 method: 'PATCH',
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             }
         )

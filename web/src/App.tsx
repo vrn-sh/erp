@@ -28,6 +28,7 @@ import InfoForm from './pages/SignUp/InfoForm';
 import Reset from './pages/Login/Reset';
 import MfaLogin from './pages/Login/MfaLogin';
 import ClientList from './pages/Client/ClientList';
+import UnsubscribeEmail from './pages/Home/Unsubscribe/Unsubscribe';
 
 function App() {
     return (
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/mfa_check" element={<MfaLogin />} />
                 <Route path="/confirm" element={<ConfirmEmail />} />
                 <Route path="/reset" element={<Reset />} />
+                <Route path="/unsubscribe" element={<UnsubscribeEmail />} />
                 <Route element={<PrivateRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/accueil" element={<Accueil />} />

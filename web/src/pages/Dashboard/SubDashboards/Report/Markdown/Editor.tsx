@@ -7,6 +7,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import config from '../../../../../config';
 import Tooltip from '../../../../../component/Tooltip/Tooltip';
 import MarkdownHelper from './MarkdownHelper';
+import { getCookiePart } from '../../../../../crypto-utils';
 
 function MarkdownEditor({ missionid }: { missionid: number }) {
     const [markdownText, setMarkdownText] = useState(
@@ -17,7 +18,10 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
     const fetchDataFromBackend = async () => {
         const response = await axios.get(`${config.apiUrl}/markdown-report`, {
             headers: {
-                Authorization: `Token ${Cookies.get('Token')}`,
+                Authorization: `Token ${getCookiePart(
+                    Cookies.get('Token')!,
+                    'token'
+                )}`,
             },
             params: {
                 mission: missionid,

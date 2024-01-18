@@ -8,12 +8,14 @@ from api.models.utils import NmapPort
 from api.models.mission import Credentials, Mission, Recon, NmapScan, CrtSh
 from api.models.utils import NmapPort
 
+from api.services.s3 import S3Bucket
+
 import os
 
 class StringArrayField(serializers.ListField):
     """Serializing a list of fields"""
 
-    def to_representation(self, data):
+    def to_representation(self, data):  # type: ignore
         data = super().to_representation(data)
         return ",".join([str(element) for element in data])
 
