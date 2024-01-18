@@ -8,20 +8,41 @@ import { Editor } from '@tinymce/tinymce-react';
 export default function PdfViewerComponent(
   props: IReport
 ): ReactElement {
-      const editorRef = useRef(null);
-    const log = () => {
-    if (editorRef.current) {
-        console.log((editorRef.current as any).getContent());
+    const editorRef = useRef(null);
+    const handleExportPDF = async () => {
+      const response = await fetch(`${config.apiUrl}/download-report/${props.id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          mission: props.mission?.toString() || "",
+          template_name: props.template || "",
+          html_file: (editorRef.current as any).getContent(),
+        }),
+        headers: {
+          Authorization: `Token ${Cookies.get('Token')}`,
+          'Content-Type': 'application/json'
+        },
+      });
+      response.json().then((data) => {
+        const a = document.createElement("a");
+        a.href = data.pdf_file;
+        a.style.display = "none";
+        a.download = "report.pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
     }
-  };
   return (
     <>
-    {/* TODO: add an info modal to inform that h3 title will be counted as
-              headers title in the pdf final version
-     */}
     <Editor
-      apiKey={import.meta.env.VITE_REACT_APP_TINYMCE_API_KEY}
-        onInit={(evt, editor) => (editorRef.current as any) = editor}
+       apiKey={import.meta.env.VITE_REACT_APP_TINYMCE_API_KEY}
+        onInit={(evt, editor) => {
+          (editorRef.current as any) = editor;
+          editor.ui.registry.addButton('export-pdf', {
+            text: 'Export PDF',
+            onAction: handleExportPDF, 
+          })
+        }}
         initialValue={props.html_file}
         init={{
         height: 500,
@@ -38,7 +59,6 @@ export default function PdfViewerComponent(
         // TODO: take care of content_style in case they don't take into account the font
         }}
     />
-    <button onClick={log}>Log editor content</button>
     </>
   );
 }
