@@ -56,15 +56,15 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         if instance.pdf_file:
             #cache.set(cache_key, representation)
             return representation
-        representation['pdf_file'] = self.generate_pdf_url(instance)
+        representation['pdf_file'] = self.generate_pdf_url(instance, instance.logo)
         return representation
 
-    def generate_pdf_url(self, instance):
+    def generate_pdf_url(self, instance, logo: str = "") -> str:
         filename = f'report-{instance.pk}-{instance.version}.pdf'
         filepath = f'/tmp/{filename}'
-        html_content = self.dump_academic_report(instance) \
+        html_content = self.dump_academic_report(instance, logo) \
             if instance.template.name == "academic" \
-                        else self.dump_html_report(instance)
+                        else self.dump_html_report(instance, logo)
         HTML(string=html_content).write_pdf(
             filepath,
             stylesheets=[CSS(string=instance.template.css_style)],

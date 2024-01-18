@@ -175,6 +175,7 @@ export default function Report() {
         template: '',
         mission: 0,
         logo: null,
+        pdf_file: '',
     });
     console.log("report info not in useEffect idunderstand how react works", reportInfo)
     const [templateIdx, setTemplateIdx] = useState(-1);
