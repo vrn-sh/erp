@@ -91,19 +91,25 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
         request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
-        template_name = request.data.pop('template_name')
-        if file := request.FILES.get('file', None):
-            pdf_file = S3Bucket().upload_stream(
-                'rootbucket',
-                f'report-{mission}-{uuid4().__str__()}',
-                BytesIO(file.read()) if isinstance(file, File) else file,
-                mime_type='application/pdf')
-            request.data['pdf_file'] = S3Bucket().get_object_url('rootbucket', pdf_file.object_name)
+        request.data.pop('template_name')
+
         if request.data.get('logo', ''):
             request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
+        report = ReportHtml.objects.filter(pk=kwargs.get('pk')).first()
+        if not report:
+            return Response({
+                'error': f'No report with id {kwargs.get("pk")}. Report couldn\'t be updated',
+            }, status=HTTP_404_NOT_FOUND)
+        if file := request.FILES.get('file', None):
+            pdf_file = S3Bucket().upload_stream(
+                'rootbucket',
+                f'report-{report.mission.pk}-{uuid4().__str__()}',
+                BytesIO(file.read()) if isinstance(file, File) else file,
+                mime_type='application/pdf')
+            request.data['pdf_file'] = S3Bucket().get_object_url('rootbucket', pdf_file.object_name)
         if request.data.get('logo', ''):
             request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
         return super().update(request, *args, **kwargs)
