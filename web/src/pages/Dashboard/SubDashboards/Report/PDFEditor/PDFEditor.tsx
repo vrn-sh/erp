@@ -24,7 +24,6 @@ export default function PdfViewerComponent(
                             Cookies.get('Token')!,
                             'token'
                         )}`,
-          'Content-Type': 'application/json'
         },
       });
       response.json().then((data) => {
