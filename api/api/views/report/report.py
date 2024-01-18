@@ -104,7 +104,7 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
                 'error': f'No report with id {kwargs.get("pk")}. Report couldn\'t be updated',
             }, status=HTTP_404_NOT_FOUND)
         if html_file := request.FILES.get('html_file', None):
-            request.data['html_file'] = html_file
+            request.data['html_file'] = html_file.read().decode('utf-8')
         if file := request.FILES.get('file', None):
             pdf_file = S3Bucket().upload_stream(
                 'rootbucket',
