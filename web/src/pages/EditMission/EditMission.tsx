@@ -87,6 +87,7 @@ export default function EditMission() {
                 setStart(dayjs(data.data.start));
                 setTeam(data.data.team);
                 setScope(data.data.scope);
+                setDes(data.data.description);
             })
             .catch((e) => {
                 throw e;

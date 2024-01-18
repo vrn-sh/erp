@@ -61,15 +61,18 @@ export default function InfoForm() {
             url += 'pentester';
         }
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${getCookiePart(
-                        Cookies.get('Token')!,
-                        'token'
-                    )}`,
-                },
-            })
+            .get(
+                `${url}/${Number(getCookiePart(Cookies.get('Token')!, 'id'))}`,
+                {
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
+                    },
+                }
+            )
             .then((data) => {
                 setUserInfos(data.data.auth);
             })
@@ -133,7 +136,7 @@ export default function InfoForm() {
 
         await axios
             .patch(
-                `${url}/${Cookies.get('Id')}`,
+                `${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`,
                 {
                     auth: {
                         first_name: userInfos.first_name,

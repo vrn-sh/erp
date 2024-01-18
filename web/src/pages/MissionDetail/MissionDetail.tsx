@@ -4,7 +4,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
 import * as TbIcons from 'react-icons/tb';
-import { Chip, Switch } from '@mui/material';
+import { Avatar, Chip, Switch } from '@mui/material';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import '../Dashboard/Dashboard.scss';
@@ -44,6 +44,7 @@ export default function MissionDetail() {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
+    const role = getCookiePart(Cookies.get('Token')!, 'role');
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
@@ -329,11 +330,13 @@ export default function MissionDetail() {
                     <div className="mission-detail-topline">
                         <h1>
                             {logo && (
-                                <img
-                                    src={logo}
-                                    alt="logo"
-                                    className="mission-detail-logo"
-                                />
+                                <div style={{ margin: '10px' }}>
+                                    <Avatar
+                                        alt="Logo"
+                                        sx={{ width: 60, height: 60 }}
+                                        src={logo}
+                                    />
+                                </div>
                             )}
                             {Title}
                             {isFavory ? (
@@ -358,16 +361,18 @@ export default function MissionDetail() {
                         </h1>
 
                         <div>
-                            <button
-                                type="submit"
-                                className="editBtn"
-                                onClick={() => {
-                                    NavEditMission(id);
-                                }}
-                            >
-                                Edit Mission
-                            </button>
-
+                            {role === '2' ||
+                                (role === '3' && (
+                                    <button
+                                        type="submit"
+                                        className="editBtn"
+                                        onClick={() => {
+                                            NavEditMission(id);
+                                        }}
+                                    >
+                                        Edit Mission
+                                    </button>
+                                ))}
                             <Chip
                                 label={status}
                                 color={
