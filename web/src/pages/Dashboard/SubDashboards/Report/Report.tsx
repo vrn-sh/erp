@@ -72,7 +72,7 @@ function DocumentTemplates({
                     setReportHistory(response.data.results);
                 }
             });
-    }, []);
+    }, [setTemplate]);
 
     const handleTemplateSelection = async (templateId: number) => {
         setTemplate(templateId);
@@ -176,6 +176,7 @@ export default function Report() {
         mission: 0,
         logo: null,
     });
+    console.log("report info not in useEffect idunderstand how react works", reportInfo)
     const [templateIdx, setTemplateIdx] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
 
@@ -194,16 +195,17 @@ export default function Report() {
 
     useEffect(() => {
         setReportInfo({...reportInfo, mission: location.state.missionId});
+        console.log("in useEffect lol mdr", reportInfo);
     }, []);
 
     return (
         <div>
             <div style={{ display: 'content' }}>
-                {(isMDActivated === true || reportInfo.documentURL !== '') && (
+                {(isMDActivated === true || reportInfo.pdf_file !== '') && (
                     <BackButton
                         onClick={() => {
                             setMD(false);
-                            setReportInfo({...reportInfo, documentURL: ''});
+                            setReportInfo({...reportInfo, pdf_file: ''});
                         }}
                         label="BACK TO TEMPLATES"
                     />
@@ -226,7 +228,7 @@ export default function Report() {
             </div>
 
             {isMDActivated && <MarkdownEditor missionid={reportInfo.mission!} />}
-            {!isMDActivated && reportInfo.documentURL === '' && (
+            {!isMDActivated && reportInfo.pdf_file === '' && (
                 <DocumentTemplates
                     setMD={setMD}
                     setTemplate={(idx) => {setTemplateIdx(idx); setReportInfo({...reportInfo, template: templates[templateIdx].name})}}
@@ -239,7 +241,7 @@ export default function Report() {
                     id={reportInfo.id}
                     mission={reportInfo.mission}
                     template={reportInfo.template}
-                    pdf_file={reportInfo.documentURL}
+                    pdf_file={reportInfo.pdf_file}
                      />
 
             )}
