@@ -214,7 +214,7 @@ export default function Report() {
                     <BackButton
                         onClick={() => {
                             setMD(false);
-                            setReportInfo({...reportInfo, pdf_file: ''});
+                            setReportInfo({...reportInfo, html_file: ''});
                         }}
                         label="BACK TO TEMPLATES"
                     />

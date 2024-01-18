@@ -20,6 +20,7 @@ export default function PdfViewerComponent(
               headers title in the pdf final version
      */}
     <Editor
+      apiKey={import.meta.env.VITE_REACT_APP_TINYMCE_API_KEY}
         onInit={(evt, editor) => (editorRef.current as any) = editor}
         initialValue={props.html_file}
         init={{
