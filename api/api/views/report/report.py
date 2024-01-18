@@ -111,7 +111,7 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
             print("pdf_file", report.pdf_file)
             filename = f'report-{report.mission.pk}-{uuid4().__str__()}.pdf'
             filepath = f'/tmp/{filename}'
-            HTML(string=html_file.read().encoding('utf-8')).write_pdf(
+            HTML(string=html_file.read().decode('utf-8')).write_pdf(
                 filename,
                 stylesheets=[CSS(string=report.template.css_style)],
                 font_config=FontConfiguration())
