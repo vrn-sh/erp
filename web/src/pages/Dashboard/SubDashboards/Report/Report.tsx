@@ -10,6 +10,7 @@ import HackmanitTemplate from '../../../../assets/templates/template_4.png';
 import MarkdownEditor from './Markdown/Editor';
 import BackButton from '../../../../component/BackButton';
 import config from '../../../../config';
+import { getCookiePart } from '../../../../crypto-utils';
 import { FileInput } from '../../../../component/Input';
 import PdfViewerComponent from './PDFEditor/PDFEditor';
 import SelectMission from '../../../../component/SelectMission';
@@ -73,7 +74,10 @@ function DocumentTemplates({
         axios
             .get(`${config.apiUrl}/download-report`, {
                 headers: {
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((response) => {
@@ -95,7 +99,10 @@ function DocumentTemplates({
                 },
                 {
                     headers: {
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -240,9 +247,12 @@ export default function Report() {
                     missionid={missionId}
                 />
             )}
-            {!isMDActivated && PDFDocURL !== "" && (
-                <PdfViewerComponent document={PDFDocURL} mission={missionId} template={templates[template].name} />
-
+            {!isMDActivated && PDFDocURL !== '' && (
+                <PdfViewerComponent
+                    document={PDFDocURL}
+                    mission={missionId}
+                    template={templates[template].name}
+                />
             )}
         </div>
     );

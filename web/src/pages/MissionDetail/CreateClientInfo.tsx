@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 import Feedbacks from '../../component/Feedback';
 import config from '../../config';
 import Input from '../../component/Input';
+import { getCookiePart } from '../../crypto-utils';
 
 interface CreateClientInfoProps {
     switchToMain: () => void;
@@ -60,7 +61,10 @@ export default function CreateClientInfo({
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -104,7 +108,10 @@ export default function CreateClientInfo({
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

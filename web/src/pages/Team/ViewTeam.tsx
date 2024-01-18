@@ -9,6 +9,7 @@ import { Box, CircularProgress } from '@mui/material';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 import './ViewTeam.scss';
 
 interface Member {
@@ -92,7 +93,10 @@ export default function ViewTeamDetails() {
             .get(`${config.apiUrl}/team/${teamId}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .finally(() => {

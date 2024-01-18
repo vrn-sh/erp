@@ -7,9 +7,10 @@ import { FaUser, FaCamera } from 'react-icons/fa';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
 import '../Dashboard/Dashboard.scss';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function InfoForm() {
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const navigate = useNavigate();
     const [userInfos, setUserInfos] = useState({
         first_name: '',
@@ -50,9 +51,9 @@ export default function InfoForm() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '3') {
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (Cookies.get('Role') === '2') {
+        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
             url += 'manager';
         } else {
             url += 'pentester';
@@ -61,7 +62,10 @@ export default function InfoForm() {
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -115,9 +119,9 @@ export default function InfoForm() {
     const handleSubmit = async () => {
         setOpen(true);
         let url = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '3') {
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (Cookies.get('Role') === '2') {
+        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
             url += 'manager';
         } else {
             url += 'pentester';
@@ -137,7 +141,10 @@ export default function InfoForm() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

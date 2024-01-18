@@ -4,6 +4,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import config from '../../config';
 import Feedbacks from '../../component/Feedback';
+import { getCookiePart } from '../../crypto-utils';
 
 export default function MfaLogin() {
     const [codeValidation, setCodeValidation] = useState([
@@ -33,15 +34,18 @@ export default function MfaLogin() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '2') url += 'manager';
-        else if (Cookies.get('Role') === '3') url += 'freelancer';
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') url += 'manager';
+        else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') url += 'freelancer';
         else url += 'pentester';
 
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

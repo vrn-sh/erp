@@ -9,6 +9,7 @@ import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import TableSection from './TableSection';
+import { getCookiePart } from '../../crypto-utils';
 
 type InfoProps = {
     t1: string;
@@ -33,7 +34,7 @@ function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
 }
 
 export default function ProfilePage() {
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [NumMission, setNumMission] = useState(0);
@@ -92,18 +93,21 @@ export default function ProfilePage() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '3') {
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (Cookies.get('Role') === '2') {
+        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
             url += 'manager';
         } else {
             url += 'pentester';
         }
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -119,7 +123,10 @@ export default function ProfilePage() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -153,7 +160,10 @@ export default function ProfilePage() {
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {

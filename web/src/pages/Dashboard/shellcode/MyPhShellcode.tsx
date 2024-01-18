@@ -67,102 +67,109 @@ export default function MyPhShellcode(props: {
     };
 
     return (
-        <div
-            style={{
-                height: '80%',
-            }}
-        >
+        <>
             <div
                 style={{
-                    overflowX: 'hidden',
-                    overflowY: 'auto',
-                    height: '93%',
+                    height: '50%',
                 }}
             >
-                {formRows.map((row) => (
-                    <div className="form-row">
-                        <div style={{ minWidth: '200px' }}>
-                            <InputLabel
-                                style={{
-                                    fontFamily: 'Poppins-Regular',
-                                    fontWeight: 700,
-                                }}
-                            >
-                                {row.name}
-                            </InputLabel>
-                        </div>
-                        <div style={{ minWidth: '300px' }}>
-                            <FormControl fullWidth>
-                                {row.type === 'text' && (
-                                    <TextField
-                                        id={`text-${row.id}`}
-                                        variant="outlined"
-                                        defaultValue={row.defaultValue}
-                                        onChange={(event) => {
-                                            setFormData({
-                                                ...formData,
-                                                [row.id]: event.target.value,
-                                            });
-                                        }}
-                                    />
-                                )}
-                                {row.type === 'boolean' && (
-                                    <Switch
-                                        id={`switch-${row.id}`}
-                                        checked={formData[row.id] === 'true'}
-                                        onChange={(event) => {
-                                            setFormData({
-                                                ...formData,
-                                                [row.id]: event.target.checked
-                                                    ? 'true'
-                                                    : 'false',
-                                            });
-                                        }}
-                                        inputProps={{
-                                            'aria-label': 'controlled',
-                                        }}
-                                    />
-                                )}
-                                {row.type === 'file' && (
-                                    <div className="form-group">
-                                        <input
-                                            type="file"
-                                            id={`file-${row.id}`}
-                                            className="form-control"
-                                            title="Upload your shellcode file"
-                                            onChange={(e) =>
-                                                handleFileUpload(e)
-                                            }
+                <div
+                    style={{
+                        overflowX: 'hidden',
+                        overflowY: 'auto',
+                        height: '100%',
+                    }}
+                >
+                    {formRows.map((row) => (
+                        <div className="form-row">
+                            <div style={{ minWidth: '200px' }}>
+                                <InputLabel
+                                    style={{
+                                        fontFamily: 'Poppins-Regular',
+                                        fontWeight: 700,
+                                    }}
+                                >
+                                    {row.name}
+                                </InputLabel>
+                            </div>
+                            <div style={{ minWidth: '300px' }}>
+                                <FormControl fullWidth>
+                                    {row.type === 'text' && (
+                                        <TextField
+                                            id={`text-${row.id}`}
+                                            variant="outlined"
+                                            defaultValue={row.defaultValue}
+                                            onChange={(event) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    [row.id]:
+                                                        event.target.value,
+                                                });
+                                            }}
                                         />
-                                    </div>
-                                )}
-                                {row.type === 'selection' && (
-                                    <Select
-                                        labelId={`select-${row.id}`}
-                                        id={row.id}
-                                        value={formData[row.id]}
-                                        onChange={(event) => {
-                                            setFormData({
-                                                ...formData,
-                                                [row.id]: event.target.value,
-                                            });
-                                        }}
-                                    >
-                                        {row.selection.map((element) => (
-                                            <MenuItem value={element}>
-                                                {element}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                )}
-                            </FormControl>
+                                    )}
+                                    {row.type === 'boolean' && (
+                                        <Switch
+                                            id={`switch-${row.id}`}
+                                            checked={
+                                                formData[row.id] === 'true'
+                                            }
+                                            onChange={(event) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    [row.id]: event.target
+                                                        .checked
+                                                        ? 'true'
+                                                        : 'false',
+                                                });
+                                            }}
+                                            inputProps={{
+                                                'aria-label': 'controlled',
+                                            }}
+                                        />
+                                    )}
+                                    {row.type === 'file' && (
+                                        <div className="form-group">
+                                            <input
+                                                type="file"
+                                                id={`file-${row.id}`}
+                                                className="form-control"
+                                                title="Upload your shellcode file"
+                                                onChange={(e) =>
+                                                    handleFileUpload(e)
+                                                }
+                                            />
+                                        </div>
+                                    )}
+                                    {row.type === 'selection' && (
+                                        <Select
+                                            labelId={`select-${row.id}`}
+                                            id={row.id}
+                                            value={formData[row.id]}
+                                            onChange={(event) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    [row.id]:
+                                                        event.target.value,
+                                                });
+                                            }}
+                                        >
+                                            {row.selection.map((element) => (
+                                                <MenuItem value={element}>
+                                                    {element}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    )}
+                                </FormControl>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
             <div
                 style={{
-                    marginTop: '1%',
+                    marginTop: '1rem',
                     display: 'flex',
                     flexDirection: 'row',
                     width: '50%',
@@ -194,6 +201,6 @@ export default function MyPhShellcode(props: {
                     Cancel
                 </Button>
             </div>
-        </div>
+        </>
     );
 }

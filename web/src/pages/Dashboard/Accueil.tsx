@@ -19,6 +19,7 @@ import config from '../../config';
 import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import PayLoadForm from './shellcode/PayLoadForm';
+import { getCookiePart } from '../../crypto-utils';
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
@@ -267,10 +268,10 @@ function MissionList({
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const role = Cookies.get('Role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     // Function to open the modal
     const [isLoad, setIsLoad] = useState(false);
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester = getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const openModal = () => {
         setIsModalOpen(true);

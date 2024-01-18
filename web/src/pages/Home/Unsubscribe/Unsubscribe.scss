@@ -1,0 +1,46 @@
+.unsubscribe {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: 'Fira Sans Condensed', sans-serif;
+}
+
+.unsubscribe img {
+    max-width: 100px;
+    /* Adjust as needed */
+    margin: 0 auto 30px;
+}
+
+.unsubscribe h4 {
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.unsubscribe p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.unsubscribe .btn {
+    background-color: #ff6a00;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.unsubscribe .btn:hover {
+    background-color: #e65c00;
+}
+
+.unsubscribe .btn .fa-plus {
+    margin-right: 5px;
+}

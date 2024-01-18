@@ -22,6 +22,7 @@ import Feedbacks from '../../component/Feedback';
 import TopBar from '../../component/SideBar/TopBar';
 import SideBar from '../../component/SideBar/SideBar';
 import config from '../../config';
+import { getCookiePart } from '../../crypto-utils';
 
 interface MissionData {
     title: string;
@@ -57,7 +58,10 @@ export default function CreateMission() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -113,7 +117,7 @@ export default function CreateMission() {
 
     const handleSubmit = async () => {
         setOpen(true);
-        if (Team === 0 && Cookies.get('Role') !== '3') {
+        if (Team === 0 && getCookiePart(Cookies.get('Token')!, 'role')?.toString() !== '3') {
             setMessage('Please choose a team', 'error');
             return;
         }
@@ -137,7 +141,7 @@ export default function CreateMission() {
             scope,
         };
 
-        if (Cookies.get('Role') === '3') {
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             console.log(requestData);
             // Si le rôle est égal à 3, enlève le paramètre team de la requête
             requestData = {
@@ -153,11 +157,15 @@ export default function CreateMission() {
         }
         await axios
             .post(`${config.apiUrl}/mission`, requestData, {
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
-                },
-            })
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
+                    },
+                }
+            )
             .then(async (data) => {
                 setMessage('Created!', 'success');
                 await timeout(1000);
@@ -264,7 +272,7 @@ export default function CreateMission() {
                                 id="Team-select"
                                 value={Team.toString()}
                                 onChange={handleChange}
-                                disabled={Cookies.get('Role') === '3'} // Désactive la sélection pour le rôle '3'
+                                disabled={getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3'} // Désactive la sélection pour le rôle '3'
                             >
                                 {teamList!.map((team) => {
                                     return (

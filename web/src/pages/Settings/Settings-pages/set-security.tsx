@@ -3,10 +3,11 @@ import '../Settings.scss';
 import Cookies from 'js-cookie';
 import SecurityTeam from './securityTeam';
 import SecurityUser from './securityUser';
+import { getCookiePart } from '../../../crypto-utils';
 
 export default function SecurityDetail() {
     const [active, setActive] = useState('pwdUser');
-    const role = Cookies.get('Role');
+    const role = Number(getCookiePart(Cookies.get('Token')!, 'role'));
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
@@ -16,7 +17,7 @@ export default function SecurityDetail() {
         if (active === 'pwdUser') {
             return <SecurityUser />;
         }
-        if (active === 'pwdTeam') {
+        if (active === 'pwdTeam' && role === 2) {
             return <SecurityTeam />;
         }
         return null;
@@ -27,7 +28,7 @@ export default function SecurityDetail() {
             <span className="left-side">
                 <h1>Security</h1>
             </span>
-            {role === '2' && (
+            {role === 2 && (
                 <>
                     <div className="subHeader">
                         <div className="submenu-security">
@@ -58,8 +59,8 @@ export default function SecurityDetail() {
                     {getSubSecurityDetail()}
                 </>
             )}
-            {role === '1' && <SecurityUser />}
-            {role === '3' && <SecurityUser />}
+            {role === 1 && <SecurityUser />}
+            {role === 3 && <SecurityUser />}
         </div>
     );
 }

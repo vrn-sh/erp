@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { getCookiePart } from '../../crypto-utils';
 
 function PrivateRoute() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = Cookies.get('Token');
+        const token = getCookiePart(Cookies.get('Token')!, 'token');
         const expirationDate = Cookies.get('ExpirationDate');
 
         if (!token) {

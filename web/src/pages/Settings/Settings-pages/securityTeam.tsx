@@ -13,6 +13,7 @@ import * as AiIcons from 'react-icons/ai';
 import config from '../../../config';
 import '../Settings.scss';
 import Feedbacks from '../../../component/Feedback';
+import { getCookiePart } from '../../../crypto-utils';
 
 type TeamType = {
     id: number;
@@ -69,7 +70,7 @@ export default function SecurityTeam() {
         setMess({ mess, color });
     };
 
-    const role = Cookies.get('Role');
+    const role = Number(getCookiePart(Cookies.get('Token')!, 'role'));
     const [userInfos, setUserInfos] = useState({
         username: '',
         email: '',
@@ -106,7 +107,10 @@ export default function SecurityTeam() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )
@@ -121,18 +125,22 @@ export default function SecurityTeam() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '3') {
+        if 
+        (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (Cookies.get('Role') === '2') {
+        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
             url += 'manager';
         } else {
             url += 'pentester';
         }
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -148,7 +156,10 @@ export default function SecurityTeam() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
@@ -241,7 +252,7 @@ export default function SecurityTeam() {
         const tmpTeam = teamList;
         const tmpMember = members;
         for (let i = 0; i < tmpTeam.length; i += 1) {
-            if (tmpTeam[i].leader === userInfos.email) {
+            if (tmpTeam[i]!.leader === userInfos.email) {
                 delete tmpTeam[i];
                 delete tmpMember[i];
             }
@@ -250,7 +261,7 @@ export default function SecurityTeam() {
         setMembers(tmpMember);
     }, [userInfos]);
 
-    if (role === '2') {
+    if (role === 2) {
         return (
             <div>
                 {open && (

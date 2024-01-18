@@ -8,6 +8,7 @@ import SideBarData from './SideBarData';
 import { ICardItem, ISideBarMenu } from './SideBarMenu.type';
 import config from '../../config';
 import icon from '../../assets/voron-logo.svg';
+import { getCookiePart } from '../../crypto-utils';
 
 const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
     const [subnav, setSubnav] = useState(false);
@@ -53,14 +54,18 @@ const SubMenuItem: React.FC<ICardItem> = function SubMenu({ item }) {
 
 export default function SideBar() {
     const navigate = useNavigate();
-    const isPentester = Cookies.get('Role') === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const logout = async () => {
         await axios(`${config.apiUrl}/logout`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
-                Authorization: `Token ${Cookies.get('Token')}`,
+                Authorization: `Token ${getCookiePart(
+                    Cookies.get('Token')!,
+                    'token'
+                )}`,
             },
         })
             .then(() => {
@@ -84,7 +89,7 @@ export default function SideBar() {
             <div>
                 {data.map((item: ISideBarMenu, index: number) => {
                     if (isPentester) {
-                        if (index > 1) {
+                        if (index > 1 && index < data.length - 1) {
                             return <SubMenuItem key={item.title} item={item} />;
                         }
                     } else return <SubMenuItem key={item.title} item={item} />;

@@ -5,6 +5,7 @@ import * as MdIcons from 'react-icons/md';
 import { Chip } from '@mui/material';
 import Feedbacks from '../../../component/Feedback';
 import config from '../../../config';
+import { getCookiePart } from '../../../crypto-utils';
 
 export interface IEmailV {
     status: string;
@@ -65,7 +66,10 @@ export default function HunterEmailV() {
             .get(`${config.apiUrl}/hunt?email=${email}`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((data) => {
