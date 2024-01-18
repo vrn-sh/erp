@@ -29,7 +29,9 @@ export default function SettingAccount() {
         let url = `${config.apiUrl}/`;
         if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
             url += 'manager';
         } else {
             url += 'pentester';
@@ -120,7 +122,9 @@ export default function SettingAccount() {
         let url = `${config.apiUrl}/`;
         if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
             url += 'manager';
         } else {
             url += 'pentester';

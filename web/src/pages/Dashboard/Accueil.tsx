@@ -271,7 +271,8 @@ export default function Accueil() {
     const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     // Function to open the modal
     const [isLoad, setIsLoad] = useState(false);
-    const isPentester = getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const openModal = () => {
         setIsModalOpen(true);

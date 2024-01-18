@@ -44,10 +44,6 @@ export default function MissionDetail() {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
-    const url =
-        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
-            ? `${config.apiUrl}/manager`
-            : `${config.apiUrl}/pentester`;
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
@@ -57,7 +53,9 @@ export default function MissionDetail() {
         let url = `${config.apiUrl}/`;
         if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
             url += 'manager';
         } else {
             url += 'pentester';
@@ -84,7 +82,9 @@ export default function MissionDetail() {
         let url = `${config.apiUrl}/`;
         if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
             url += 'manager';
         } else {
             url += 'pentester';
@@ -144,7 +144,9 @@ export default function MissionDetail() {
         let url = `${config.apiUrl}/`;
         if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
             url += 'freelancer';
-        } else if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2') {
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
             url += 'manager';
         } else {
             url += 'pentester';

@@ -117,7 +117,10 @@ export default function CreateMission() {
 
     const handleSubmit = async () => {
         setOpen(true);
-        if (Team === 0 && getCookiePart(Cookies.get('Token')!, 'role')?.toString() !== '3') {
+        if (
+            Team === 0 &&
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() !== '3'
+        ) {
             setMessage('Please choose a team', 'error');
             return;
         }
@@ -157,15 +160,14 @@ export default function CreateMission() {
         }
         await axios
             .post(`${config.apiUrl}/mission`, requestData, {
-                    headers: {
-                        'Content-type': 'application/json',
-                        Authorization: `Token ${getCookiePart(
-                            Cookies.get('Token')!,
-                            'token'
-                        )}`,
-                    },
-                }
-            )
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
+                },
+            })
             .then(async (data) => {
                 setMessage('Created!', 'success');
                 await timeout(1000);
@@ -272,7 +274,12 @@ export default function CreateMission() {
                                 id="Team-select"
                                 value={Team.toString()}
                                 onChange={handleChange}
-                                disabled={getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3'} // Désactive la sélection pour le rôle '3'
+                                disabled={
+                                    getCookiePart(
+                                        Cookies.get('Token')!,
+                                        'role'
+                                    )?.toString() === '3'
+                                } // Désactive la sélection pour le rôle '3'
                             >
                                 {teamList!.map((team) => {
                                     return (
