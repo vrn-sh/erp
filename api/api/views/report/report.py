@@ -16,6 +16,8 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 from api.pagination import CustomPagination
 from api.serializers.report import ReportHtmlSerializer
 
@@ -104,7 +106,15 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
                 'error': f'No report with id {kwargs.get("pk")}. Report couldn\'t be updated',
             }, status=HTTP_404_NOT_FOUND)
         if html_file := request.FILES.get('html_file', None):
-            request.data['html_file'] = html_file.read().decode('utf-8')
+            filename = report.pdf_file.split('/')[-1]
+            filepath = f'/tmp/{filename}'
+            HTML(string=html_file.read().encoding('utf-8')).write_pdf(
+                filename,
+                stylesheets=[CSS(string=report.template.css_style)],
+                font_config=FontConfiguration())
+            s3_client = S3Bucket()
+            s3_client.upload_file('rootbucket', filepath)
+            request.data.pop('html_file')
         if file := request.FILES.get('file', None):
             pdf_file = S3Bucket().upload_stream(
                 'rootbucket',

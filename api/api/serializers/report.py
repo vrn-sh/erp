@@ -18,20 +18,6 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance = super().update(instance, validated_data)
         instance.version += 1
-        filename = f'report-{instance.pk}-{instance.version}.pdf'
-        filepath = f'/tmp/{filename}'
-        if 'html_file' in validated_data:
-            HTML(string=validated_data['html_file']).write_pdf(
-                filepath,
-                stylesheets=[CSS(string=instance.template.css_style)],
-                font_config=FontConfiguration())
-            s3_client = S3Bucket()
-            s3_client.upload_file('rootbucket', filepath, filename)
-            # remove old file TOTEST lol
-            # if instance.pdf_file:
-            #     s3_client.delete_file('rootbucket', instance.pdf_file.split('/')[-1])
-            validated_data.pop('html_file')
-            instance.pdf_file = s3_client.get_object_url('rootbucket', filename)
         instance.save()
         return instance
 
@@ -58,7 +44,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         if instance.pdf_file:
             #cache.set(cache_key, representation)
             return representation
-        representation['pdf_file'], representation['html_file'] = self.assemble_report(
+        representation['pdf_file'], _ = self.assemble_report(
             instance,
             instance.logo
         )
