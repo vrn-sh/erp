@@ -79,6 +79,9 @@ class IsLinkedToData(permissions.BasePermission):
             if obj.freelance_member is not None:
                 return request.user.id == obj.freelance_member.id  # type: ignore
 
+            if not obj.team:
+                return False
+
             for m in obj.team.members.all():  # type: ignore
                 if m.auth.id == request.user.id:
                     return True

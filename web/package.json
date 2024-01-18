@@ -29,6 +29,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "axios": "^1.6.5",
     "dayjs": "^1.11.10",
+    "docker": "^0.2.14",
     "esbuild": "^0.19.11",
     "js-cookie": "^3.0.5",
     "jspdf": "^2.5.1",
