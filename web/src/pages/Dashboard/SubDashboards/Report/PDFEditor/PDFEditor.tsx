@@ -38,7 +38,7 @@ export default function PdfViewerComponent(
        apiKey={import.meta.env.VITE_REACT_APP_TINYMCE_API_KEY}
         onInit={(evt, editor) => {
           (editorRef.current as any) = editor;
-          editor.ui.registry.addButton('export-pdf', {
+          editor.ui.registry.addButton('exportPdf', {
             text: 'Export PDF',
             onAction: handleExportPDF, 
           })
@@ -48,13 +48,14 @@ export default function PdfViewerComponent(
         height: 500,
         menubar: false,
         plugins: [
-           'a11ychecker','advlist','advcode','advtable','autolink','checklist','export',
+          'exportPdf',
+           'a11ychecker','advlist','advcode','advtable','autolink','checklist',
            'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
            'powerpaste','fullscreen','formatpainter','insertdatetime','media','table','help','wordcount'
         ],
-        toolbar: 'undo redo | casechange blocks | bold italic backcolor | ' +
+        toolbar: 'undo redo | bold italic backcolor | ' +
            'alignleft aligncenter alignright alignjustify | ' +
-           'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help',
+           'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help | exportPdf',
         //content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         // TODO: take care of content_style in case they don't take into account the font
         }}
