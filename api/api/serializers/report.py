@@ -16,13 +16,12 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def update(self, instance, validated_data):
-        html_file = validated_data.pop('html_file')
         instance = super().update(instance, validated_data)
         instance.version += 1
         filename = f'report-{instance.pk}-{instance.version}.pdf'
         filepath = f'/tmp/{filename}'
-        if html_file:
-            HTML(string=html_file).write_pdf(
+        if 'html_file' in validated_data:
+            HTML(string=validated_data['html_file']).write_pdf(
                 filepath,
                 stylesheets=[CSS(string=instance.template.css_style)],
                 font_config=FontConfiguration())
