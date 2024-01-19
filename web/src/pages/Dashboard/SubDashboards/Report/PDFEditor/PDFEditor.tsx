@@ -1,14 +1,11 @@
 import { useEffect, useRef, ReactElement, useState } from 'react';
-import config from '../../../../../config';
 import Cookies from 'js-cookie';
-import { IReport } from '../types';
 import { Editor } from '@tinymce/tinymce-react';
+import config from '../../../../../config';
+import { IReport } from '../types';
 import { getCookiePart } from '../../../../../crypto-utils';
 
-
-export default function PdfViewerComponent(
-  props: IReport
-): ReactElement {
+export default function PdfViewerComponent(props: IReport): ReactElement {
     const editorRef = useRef(null);
     const handleExportPDF = async () => {
       const html_blob = new Blob([(editorRef.current as any).getContent()], { type: 'text/html' });

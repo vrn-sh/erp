@@ -516,18 +516,16 @@ export default function MissionDetail() {
                                     Crtsh
                                 </button>
                             )}
-                             <button
-                                    key={10}
-                                    id="report"
-                                    type="button"
-                                    className={
-                                        active === 'report'
-                                            ? 'active'
-                                            : undefined
-                                    }
-                                    onClick={handleClick}
-                                >
-                                    Report
+                            <button
+                                key={10}
+                                id="report"
+                                type="button"
+                                className={
+                                    active === 'report' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Report
                             </button>
                         </div>
                     </div>

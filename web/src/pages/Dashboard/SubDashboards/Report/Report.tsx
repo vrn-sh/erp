@@ -1,4 +1,10 @@
-import React, { useState, useEffect, Dispatch, SetStateAction, RefCallback } from 'react';
+import React, {
+    useState,
+    useEffect,
+    Dispatch,
+    SetStateAction,
+    RefCallback,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import './Report.scss';
 import axios from 'axios';
@@ -43,20 +49,17 @@ const templates = [
     },
 ];
 
-
-
 // type for setMD and setTemplate
 function DocumentTemplates({
     setMD,
     setTemplate,
     reportInfo,
-    setReportInfo
+    setReportInfo,
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
     setTemplate: (idx: number) => void;
     reportInfo: IReport;
     setReportInfo: Dispatch<SetStateAction<IReport>>;
-
 }) {
     const [reportHistory, setReportHistory] = useState<Array<IReport>>([]);
 
@@ -80,7 +83,7 @@ function DocumentTemplates({
 
     const handleTemplateSelection = async (templateId: number) => {
         setTemplate(templateId);
-        console.log("l79, templateId", templateId);
+        console.log('l79, templateId', templateId);
         axios
             .post(
                 `${config.apiUrl}/download-report`,
@@ -183,7 +186,7 @@ export default function Report() {
         template: '',
         mission: 0,
         logo: null,
-        html_file: ''
+        html_file: '',
     });
     const [templateIdx, setTemplateIdx] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
@@ -195,7 +198,7 @@ export default function Report() {
             reader.onload = (event) => {
                 // The result property contains the base64-encoded image data
                 const base64 = event.target?.result as string;
-                setReportInfo({...reportInfo, logo: base64});
+                setReportInfo({ ...reportInfo, logo: base64 });
             };
             reader.readAsDataURL(file);
         }
@@ -232,19 +235,28 @@ export default function Report() {
                 }}
             >
                 <SelectMission
-                    setMissionId={(mission) => setReportInfo({...reportInfo, mission: mission})}
+                    setMissionId={(mission) =>
+                        setReportInfo({ ...reportInfo, mission })
+                    }
                     missionId={reportInfo.mission!}
                 />
                 {!isMDActivated && <FileInput setImage={handleImageUpload} />}
             </div>
 
-            {isMDActivated && <MarkdownEditor missionid={reportInfo.mission!} />}
+            {isMDActivated && (
+                <MarkdownEditor missionid={reportInfo.mission!} />
+            )}
             {!isMDActivated && reportInfo.id === -1 && (
                 <DocumentTemplates
                     setMD={setMD}
+                    // eslint-disable-next-line
                     setTemplate={function (idx) {
                         setTemplateIdx(idx);
-                        setReportInfo({...reportInfo, template: templates[idx].name})}}
+                        setReportInfo({
+                            ...reportInfo,
+                            template: templates[idx].name,
+                        });
+                    }}
                     reportInfo={reportInfo}
                     setReportInfo={setReportInfo}
                 />
