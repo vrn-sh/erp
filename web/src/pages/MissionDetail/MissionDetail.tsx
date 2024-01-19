@@ -361,16 +361,15 @@ export default function MissionDetail() {
                         </h1>
 
                         <div>
-                            
-                                    <button
-                                        type="submit"
-                                        className="editBtn"
-                                        onClick={() => {
-                                            NavEditMission(id);
-                                        }}
-                                    >
-                                        Edit Mission
-                                    </button>
+                            <button
+                                type="submit"
+                                className="editBtn"
+                                onClick={() => {
+                                    NavEditMission(id);
+                                }}
+                            >
+                                Edit Mission
+                            </button>
                             <Chip
                                 label={status}
                                 color={

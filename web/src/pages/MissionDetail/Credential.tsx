@@ -179,22 +179,19 @@ export default function Credentials({ idMission }: CredentialsProps) {
     return (
         <>
             <div>
-                {/* {role === '2' ||
-                    role === '3' && ( */}
-                        <Button
-                            style={{
-                                backgroundColor: '#7c44f3',
-                                color: 'white',
-                                borderRadius: '5px',
-                                fontSize: '12px',
-                                marginLeft: '80%',
-                                marginBottom: '40px',
-                            }}
-                            onClick={() => setShowAddForm(true)}
-                        >
-                            Add test credentials
-                        </Button>
-                    {/* )} */}
+                <Button
+                    style={{
+                        backgroundColor: '#7c44f3',
+                        color: 'white',
+                        borderRadius: '5px',
+                        fontSize: '12px',
+                        marginLeft: '80%',
+                        marginBottom: '40px',
+                    }}
+                    onClick={() => setShowAddForm(true)}
+                >
+                    Add test credentials
+                </Button>
             </div>
 
             <TableContainer component={Paper}>
