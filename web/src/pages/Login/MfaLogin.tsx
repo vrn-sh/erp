@@ -34,12 +34,16 @@ export default function MfaLogin() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (Cookies.get('Role') === '2') url += 'manager';
-        else if (Cookies.get('Role') === '3') url += 'freelancer';
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2')
+            url += 'manager';
+        else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3'
+        )
+            url += 'freelancer';
         else url += 'pentester';
 
         await axios
-            .get(`${url}/${Cookies.get('Id')}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(
@@ -79,7 +83,10 @@ export default function MfaLogin() {
                 {
                     headers: {
                         'Content-type': 'application/json',
-                        Authorization: `Token ${Cookies.get('Token')}`,
+                        Authorization: `Token ${getCookiePart(
+                            Cookies.get('Token')!,
+                            'token'
+                        )}`,
                     },
                 }
             )

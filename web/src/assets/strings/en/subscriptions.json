@@ -14,7 +14,7 @@
     {
         "type": "Freelancer",
         "price": "1050",
-        "price_month":  "350€ / month",
+        "price_month":  "1050€ every 3 months",
         "recurrence": "Every season(3 months)",
         "service": [
             "Basic services",
@@ -27,7 +27,7 @@
     {
         "type": "Business",
         "price": "3800",
-        "price_month":  "316€ / month",
+        "price_month":  "3800€ / year",
         "recurrence": "Per year",
         "service": [
             "Basic services",

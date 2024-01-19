@@ -125,8 +125,15 @@ export default function SecurityTeam() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === 2) url += 'manager';
-        else url += 'pentester';
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {

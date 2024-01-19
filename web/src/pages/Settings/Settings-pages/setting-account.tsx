@@ -27,8 +27,15 @@ export default function SettingAccount() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === '2') url += 'manager';
-        else url += 'pentester';
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
@@ -113,8 +120,15 @@ export default function SettingAccount() {
     const handleSubmit = async () => {
         setOpen(true);
         let url = `${config.apiUrl}/`;
-        if (role === '2') url += 'manager';
-        else url += 'pentester';
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
 
         await axios
             .patch(

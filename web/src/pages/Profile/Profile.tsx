@@ -36,6 +36,7 @@ function GroupInfo({ t1, t2, c1, c2 }: InfoProps) {
 export default function ProfilePage() {
     const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
     const [NumMission, setNumMission] = useState(0);
     const [coworker, setCowoker] = useState(0);
     const [userInfos, setUserInfos] = useState({
@@ -71,7 +72,11 @@ export default function ProfilePage() {
             people: number;
         }[]
     >([]);
-
+    const [item, setItem] = useState<{
+        id: number;
+        title: string;
+        type: string;
+    }>();
     const [missionList, setMissionList] = useState<
         {
             id: number;
@@ -88,8 +93,15 @@ export default function ProfilePage() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (role === '2') url += 'manager';
-        else url += 'pentester';
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
+            url += 'manager';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
@@ -172,6 +184,13 @@ export default function ProfilePage() {
                 setNumMission(data.data.count);
             });
     };
+    const NavMissionDetail = (id: number) => {
+        navigate('/mission/detail', {
+            state: {
+                missionId: id,
+            },
+        });
+    };
 
     useEffect(() => {
         getUserInfos();
@@ -216,14 +235,18 @@ export default function ProfilePage() {
                                         <FaUser size={32} />
                                     </div>
                                 )}
+                                {/* eslint-disable */}
                                 <div className="profile-username">
                                     <h5>{userInfos.username}</h5>
                                     <p>
-                                        {role === '1' ? 'Pentester' : 'Manager'}
+                                        {role === '1'
+                                            ? 'Pentester'
+                                            : role === '2'
+                                            ? 'Manager'
+                                            : 'Freelancer'}
                                     </p>
                                 </div>
                             </div>
-                            {/* eslint-disable */}
                             <GroupInfo
                                 t1="First name"
                                 t2="Email"
@@ -273,38 +296,99 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
-                    <div className="page-info">
-                        <h1>Teams</h1>
-                    </div>
+                    {role !== '3' && (
+                        <>
+                            <div className="page-info">
+                                <h1>Teams</h1>
+                            </div>
 
-                    <div className="assigned-missions">
-                        <div className="profile-container">
-                            <table
-                                style={{
-                                    textAlign: 'left',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <tbody>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Manager</th>
-                                        <th>Created date</th>
-                                        <th>Members</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                    {teamList.map((teamInfo) => {
-                                        return (
-                                            <TableSection
-                                                teamInfo={teamInfo}
-                                                missionList={missionList}
-                                            />
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                            <div className="assigned-missions">
+                                <div className="profile-container">
+                                    <table
+                                        style={{
+                                            textAlign: 'left',
+                                            justifyContent: 'space-between',
+                                        }}
+                                    >
+                                        <tbody>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Manager</th>
+                                                <th>Created date</th>
+                                                <th>Members</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            {teamList.map((teamInfo) => {
+                                                return (
+                                                    <TableSection
+                                                        teamInfo={teamInfo}
+                                                        missionList={
+                                                            missionList
+                                                        }
+                                                    />
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </>
+                    )}
+
+                    {role === '3' && (
+                        <>
+                            <div className="page-info">
+                                <h1>Missions</h1>
+                            </div>
+
+                            <div className="assigned-missions">
+                                <div className="profile-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {missionList.map((mission) => (
+                                                <tr key={mission.id}>
+                                                    <td>{mission.title}</td>
+                                                    <td>{mission.status}</td>
+                                                    <td>
+                                                        <input
+                                                            type="button"
+                                                            value="Open"
+                                                            className="openBtn"
+                                                            onClick={() =>
+                                                                NavMissionDetail(
+                                                                    mission.id
+                                                                )
+                                                            }
+                                                        />
+                                                        <input
+                                                            type="button"
+                                                            value="Delete"
+                                                            className="borderBtnError"
+                                                            onClick={() => {
+                                                                setItem({
+                                                                    id: mission.id,
+                                                                    title: mission.title,
+                                                                    type: 'mission',
+                                                                });
+                                                                setOpen(true);
+                                                            }}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

@@ -66,7 +66,10 @@ export default function Login() {
             .get(`${config.apiUrl}/mfa`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(() => {
@@ -79,9 +82,15 @@ export default function Login() {
 
     const getUserInfos = async () => {
         let url = `${config.apiUrl}/`;
-        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2')
+        if (getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '3') {
+            url += 'freelancer';
+        } else if (
+            getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '2'
+        ) {
             url += 'manager';
-        else url += 'pentester';
+        } else {
+            url += 'pentester';
+        }
         await axios
             .get(`${url}/${Cookies.get('Id')}`, {
                 headers: {
@@ -119,8 +128,6 @@ export default function Login() {
                         }
                     )
                     .then((e) => {
-                        navigate('/dashboard');
-
                         Cookies.set(
                             'Token',
                             createCookie(e.data.id, e.data.token, e.data.role),

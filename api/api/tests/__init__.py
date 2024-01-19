@@ -4,6 +4,7 @@ from faker import Faker
 
 from rest_framework.test import APIClient, APITestCase
 from api.models import Freelancer
+from api.models.mission import Mission
 
 from api.tests.helpers import create_random_pentester, create_random_manager, default_user_password, \
         login_as
@@ -14,7 +15,7 @@ from api.tests.helpers import create_random_pentester, create_random_manager, de
 from .notes_tests import *
 from .vuln_tests import *
 from .mission_tests import *
-# from .report_tests import *
+# from .report_tests import * (requires S3 to run)
 
 
 
@@ -613,10 +614,9 @@ class FreelancerTestCase(APITestCase):
 
 
         #
-        # 6. request pdf generation
+        # 6. remove mission
         #
-        #TOFIX: this test is broken ; freelancer does not have a team / leader per se,
-        #       so the pdf generation fails. Attribute a team to the freelancer with himself as leader
-        #response = api.get(f'/markdown-report?mission={mission_id}', format='json')
-        #self.assertEqual(response.status_code, 200)  # type: ignore
+
+        response = api.delete(f'/mission/{mission_id}', format='json')
+        self.assertEqual(response.status_code, 204)  # type: ignore
 

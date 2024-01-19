@@ -10,6 +10,7 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.permissions import IsAuthenticated
+from django.core.mail import send_mail
 
 
 class MFAView(APIView):
@@ -44,6 +45,7 @@ class MFAView(APIView):
         user.save()
 
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
+            print(f'Generated MFA code for {user.email}: {totp.now()}')
             info(f'Passing send_mfa_mail() to {user.email}')
             return Response({'success': "MFA code generated and email sent successfully", 'mfa_code': totp.now()})
 
@@ -54,17 +56,17 @@ class MFAView(APIView):
         if not template_id:
             warning('No template detected...proceeding with default email.')
             send_mail(
-                f'{self.first_name}, this is your MFA code',
+                f'{user.first_name}, this is your MFA code',
                 f'Hello there\nThis is your MFA code: {totp.now()}',
                 os.environ['SENDGRID_SENDER'],
-                [self.email],
+                [user.email],
             )
             return Response({'success': "MFA code generated and email sent successfully", 'mfa_code': totp.now()})
 
-        mail = SendgridClient([self.email])
+        mail = SendgridClient([user.email])
         mail.set_template_data({
-            'username': self.first_name,
-            'email': self.email,
+            'username': user.first_name,
+            'email': user.email,
             'mfa_code': totp.now(),
         })
         mail.set_template_id(template_id)

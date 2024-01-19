@@ -94,7 +94,7 @@ class VulnerabilityViewset(viewsets.ModelViewSet):
     """
         CRUD to manage vulnerabilities.
     """
-    queryset = Vulnerability.objects.all()  # type: ignore
+    queryset = Vulnerability.objects.all().order_by('last_updated_date')  # type: ignore
     permissions = [
         permissions.IsAuthenticated,
         IsLinkedToData,
