@@ -1,13 +1,12 @@
 from datetime import date
 import os
 from rest_framework import serializers
-from django.core.cache import cache
 from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
 from api.models.mission import Mission
 from api.models import Team
 from api.models.report.generate_html import generate_members, generate_vulns_detail
-from api.models.report.report import ReportHtml, ReportTemplate
+from api.models.report.report import ReportHtml
 from api.services.s3 import S3Bucket
 
 class ReportHtmlSerializer(serializers.ModelSerializer):
@@ -17,29 +16,16 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        html_file = validated_data.pop('html_file')
         instance = super().update(instance, validated_data)
         instance.version += 1
-        filename = f'report-{instance.pk}-{instance.version}.pdf'
-        filepath = f'/tmp/{filename}'
-        if html_file:
-            HTML(string=html_file).write_pdf(
-                filepath,
-                stylesheets=[CSS(string=instance.template.css_style)],
-                font_config=FontConfiguration())
-        if 'pdf_file' in validated_data or html_file:
-            s3_client = S3Bucket()
-            if 'pdf_file' not in validated_data:
-                s3_client.upload_file('rootbucket', filepath, filename)
-                instance.pdf_file = s3_client.get_object_url('rootbucket', filename)
         instance.save()
         return instance
 
 
     def to_representation(self, instance):
-        cache_key = f'report_{instance.pk}'
-        if cached := cache.get(cache_key):
-            return cached
+        # cache_key = f'report_{instance.pk}'
+        # if cached := cache.get(cache_key):
+        #     return cached
 
         representation = super().to_representation(instance)
         s3_client = S3Bucket()
@@ -56,23 +42,27 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         if instance.logo:
             representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
         if instance.pdf_file:
-            cache.set(cache_key, representation)
+            #cache.set(cache_key, representation)
             return representation
+        representation['pdf_file'], representation['html_file'] = self.assemble_report(
+            instance,
+            instance.logo
+        )
+        return representation
+
+    def assemble_report(self, instance, logo: str = "") -> (str, str):
         filename = f'report-{instance.pk}-{instance.version}.pdf'
         filepath = f'/tmp/{filename}'
-        html_content = self.dump_academic_report(instance, representation['logo']) \
+        html_content = self.dump_academic_report(instance, logo) \
             if instance.template.name == "academic" \
-                        else self.dump_html_report(instance, representation['logo'])
+                        else self.dump_html_report(instance, logo)
         HTML(string=html_content).write_pdf(
             filepath,
             stylesheets=[CSS(string=instance.template.css_style)],
             font_config=FontConfiguration())
-
+        s3_client = S3Bucket()
         s3_client.upload_file('rootbucket', filepath, filename)
-        representation['pdf_file'] = s3_client.get_object_url('rootbucket', filename)
-        os.remove(filepath)
-        cache.set(cache_key, representation)
-        return representation
+        return s3_client.get_object_url('rootbucket', filename), html_content
 
     def dump_academic_report(self, instance, logo=None) -> str:
 

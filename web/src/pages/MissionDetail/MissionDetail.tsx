@@ -511,8 +511,7 @@ export default function MissionDetail() {
                                     Crtsh
                                 </button>
                             )}
-                            {isPentester && (
-                                <button
+                             <button
                                     key={10}
                                     id="report"
                                     type="button"
@@ -524,8 +523,7 @@ export default function MissionDetail() {
                                     onClick={handleClick}
                                 >
                                     Report
-                                </button>
-                            )}
+                            </button>
                         </div>
                     </div>
                     {getSubMissionDetail()}

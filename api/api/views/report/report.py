@@ -16,6 +16,8 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 from api.pagination import CustomPagination
 from api.serializers.report import ReportHtmlSerializer
 
@@ -91,23 +93,39 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
                 'error': f'No mission with id {mission_id}. Report couldn\'t be generated',
             }, status=HTTP_404_NOT_FOUND)
         request.data['template'] = ReportTemplate.objects.filter(name=request.data.get('template_name', 'hackmanit')).first().pk
-        template_name = request.data.pop('template_name')
-        if file := request.FILES.get('file', None):
-            pdf_file = S3Bucket().upload_stream(
-                'rootbucket',
-                f'report-{mission}-{uuid4().__str__()}',
-                BytesIO(file.read()) if isinstance(file, File) else file,
-                mime_type='application/pdf')
-            request.data['pdf_file'] = S3Bucket().get_object_url('rootbucket', pdf_file.object_name)
+        request.data.pop('template_name')
+
         if request.data.get('logo', ''):
             request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
+        report = ReportHtml.objects.filter(pk=kwargs.get('pk')).first()
+        if not report:
+            return Response({
+                'error': f'No report with id {kwargs.get("pk")}. Report couldn\'t be updated',
+            }, status=HTTP_404_NOT_FOUND)
+        if html_file := request.FILES.get('html_file', None):
+            filename = f'report-{report.mission.pk}-{uuid4().__str__()}.pdf'
+            filepath = f'/tmp/{filename}'
+            HTML(string=html_file.read().decode('utf-8')).write_pdf(
+                filepath,
+                stylesheets=[CSS(string=report.template.css_style)],
+                font_config=FontConfiguration())
+            s3_client = S3Bucket()
+            s3_client.upload_file('rootbucket', filepath, filename)
+            request.data.pop('html_file')
+            request.data['pdf_file'] = s3_client.get_object_url('rootbucket', filename)
+        if file := request.FILES.get('file', None):
+            pdf_file = S3Bucket().upload_stream(
+                'rootbucket',
+                f'report-{report.mission.pk}-{uuid4().__str__()}',
+                BytesIO(file.read()) if isinstance(file, File) else file,
+                mime_type='application/pdf')
+            request.data['pdf_file'] = S3Bucket().get_object_url('rootbucket', pdf_file.object_name)
         if request.data.get('logo', ''):
             request.data['logo'] = S3Bucket().upload_single_image(request.data.get('logo', ''))
         return super().update(request, *args, **kwargs)
-
 
 
 class GenerateMDReportView(APIView):
