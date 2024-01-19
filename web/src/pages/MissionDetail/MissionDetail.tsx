@@ -361,8 +361,7 @@ export default function MissionDetail() {
                         </h1>
 
                         <div>
-                            {role === '2' ||
-                                (role === '3' && (
+                            
                                     <button
                                         type="submit"
                                         className="editBtn"
@@ -372,7 +371,6 @@ export default function MissionDetail() {
                                     >
                                         Edit Mission
                                     </button>
-                                ))}
                             <Chip
                                 label={status}
                                 color={
