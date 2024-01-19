@@ -46,7 +46,7 @@ class GeneratePDFReportView(viewsets.ModelViewSet):
     serializer_class = ReportHtmlSerializer
     pagination_class = CustomPagination
     parser_classes = [MultiPartParser, JSONParser]
-    queryset = ReportHtml.objects.all().order_by('updated_at')
+    queryset = ReportHtml.objects.all().order_by('-updated_at')
 
     @swagger_auto_schema(
         operation_description="Get the mission report generated with the mission' data.",
