@@ -203,7 +203,6 @@ export default function Report() {
 
     useEffect(() => {
         setReportInfo({...reportInfo, mission: location.state.missionId});
-        console.log("in useEffect lol mdr", reportInfo);
     }, []);
 
     return (
@@ -214,7 +213,7 @@ export default function Report() {
                         onClick={() => {
                             setMD(false);
                             setReportInfo({...reportInfo, html_file: ''});
-                            const htmlReportEditor = document.getElementById('html-report-editor');
+                            const htmlReportEditor = document.getElementById('reportEditor');
                             if (htmlReportEditor) {
                                 htmlReportEditor.innerHTML = '';
                             }

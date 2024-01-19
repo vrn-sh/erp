@@ -49,7 +49,7 @@ export default function PdfViewerComponent(
         }}
         initialValue={props.html_file}
         init={{
-        selector: "report-html-editor" as any,
+        selector: "textarea#reportEditor" as any,
         height: 500,
         menubar: false,
         plugins: [
