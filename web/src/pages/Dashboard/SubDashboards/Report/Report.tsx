@@ -185,7 +185,6 @@ export default function Report() {
         logo: null,
         html_file: ''
     });
-    console.log("report info not in useEffect idunderstand how react works", reportInfo)
     const [templateIdx, setTemplateIdx] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
 
@@ -215,6 +214,10 @@ export default function Report() {
                         onClick={() => {
                             setMD(false);
                             setReportInfo({...reportInfo, html_file: ''});
+                            const htmlReportEditor = document.getElementById('html-report-editor');
+                            if (htmlReportEditor) {
+                                htmlReportEditor.innerHTML = '';
+                            }
                         }}
                         label="BACK TO TEMPLATES"
                     />
@@ -241,7 +244,6 @@ export default function Report() {
                 <DocumentTemplates
                     setMD={setMD}
                     setTemplate={function (idx) {
-                        console.log("kikou fdp, template Id", idx);
                         setTemplateIdx(idx);
                         setReportInfo({...reportInfo, template: templates[idx].name})}}
                     reportInfo={reportInfo}

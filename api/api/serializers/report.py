@@ -41,6 +41,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         s3_client = S3Bucket()
         if instance.logo:
             representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
+            instance.logo = representation['logo']
         if instance.pdf_file:
             #cache.set(cache_key, representation)
             return representation
