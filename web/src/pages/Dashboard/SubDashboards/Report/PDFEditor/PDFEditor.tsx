@@ -51,12 +51,12 @@ export default function PdfViewerComponent(props: IReport): ReactElement {
         menubar: false,
         plugins: [
           'exportPdf',
-           'advlist','autolink','checklist',
+           'advlist','autolink',
            'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
            'fullscreen','insertdatetime','media','table','help','wordcount'
         ],
         toolbar: 'undo redo | bold italic backcolor | exportPdf | ' +
-           'bullist numlist checklist | media image',
+           'bullist numlist | media image',
         content_style: props.css_style!
         }}
     />
