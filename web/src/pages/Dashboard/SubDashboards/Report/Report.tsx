@@ -188,10 +188,6 @@ export default function Report() {
         logo: null,
         html_file: '',
     });
-    console.log(
-        'report info not in useEffect idunderstand how react works',
-        reportInfo
-    );
     const [templateIdx, setTemplateIdx] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
 
@@ -209,8 +205,7 @@ export default function Report() {
     };
 
     useEffect(() => {
-        setReportInfo({ ...reportInfo, mission: location.state.missionId });
-        console.log('in useEffect lol mdr', reportInfo);
+        setReportInfo({...reportInfo, mission: location.state.missionId});
     }, []);
 
     return (
@@ -220,7 +215,11 @@ export default function Report() {
                     <BackButton
                         onClick={() => {
                             setMD(false);
-                            setReportInfo({ ...reportInfo, html_file: '' });
+                            setReportInfo({...reportInfo, html_file: ''});
+                            const htmlReportEditor = document.getElementById('reportEditor');
+                            if (htmlReportEditor) {
+                                htmlReportEditor.innerHTML = '';
+                            }
                         }}
                         label="BACK TO TEMPLATES"
                     />
@@ -252,7 +251,6 @@ export default function Report() {
                     setMD={setMD}
                     // eslint-disable-next-line
                     setTemplate={function (idx) {
-                        console.log('kikou fdp, template Id', idx);
                         setTemplateIdx(idx);
                         setReportInfo({
                             ...reportInfo,
@@ -269,7 +267,9 @@ export default function Report() {
                     mission={reportInfo.mission}
                     template={reportInfo.template}
                     html_file={reportInfo.html_file}
-                />
+                    css_style={reportInfo.css_style}
+                     />
+
             )}
         </div>
     );

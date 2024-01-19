@@ -41,6 +41,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         s3_client = S3Bucket()
         if instance.logo:
             representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
+            instance.logo = representation['logo']
         if instance.pdf_file:
             #cache.set(cache_key, representation)
             return representation
@@ -48,6 +49,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             instance,
             instance.logo
         )
+        representation['css_style'] = instance.template.css_style
         return representation
 
     def assemble_report(self, instance, logo: str = "") -> (str, str):
@@ -68,7 +70,8 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
 
         def generate_members(mission: Mission) -> str:
             team: Team = mission.team
-            members_html = f'<span>{team.leader.auth.first_name} {team.leader.auth.last_name}</span>'
+            if team.leader:
+                members_html = f'<span>{team.leader.auth.first_name} {team.leader.auth.last_name}</span>'
             for member in team.members.all():
                 members_html += f'<span>{member.auth.first_name} {member.auth.last_name}</span>'
             return members_html
@@ -310,10 +313,10 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
 
         </div>
                 '''.format(header=self.gen_header(instance, 'Project Information', logo=logo),
-                           leader_first_name=team.leader.auth.first_name,
-                           leader_last_name=team.leader.auth.last_name,
-                           leader_phone_number=team.leader.auth.phone_number,
-                           leader_email=team.leader.auth.email,
+                           leader_first_name=team.leader.auth.first_name if team.leader else "",
+                           leader_last_name=team.leader.auth.last_name if team.leader else "",
+                           leader_phone_number=team.leader.auth.phone_number if team.leader else "",
+                           leader_email=team.leader.auth.email if team.leader else "",
                            members=generate_members(team),
                            mission_start=instance.mission.start,
                            mission_end=instance.mission.end,
