@@ -154,6 +154,10 @@ export default function EditClientInfo({
         }
     };
 
+    const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setDes(event.target.value);
+    };
+
     function getObjectByMission(list: any[], missionValue: number) {
         return list.find(
             (item: { mission: number }) => item.mission === missionValue
@@ -272,12 +276,17 @@ export default function EditClientInfo({
                     setLabel={setOccupation}
                     size="medium"
                 />
-                <Input
-                    label="Description"
-                    labelState={Des}
-                    setLabel={setDes}
-                    size="medium"
-                />
+                <div className="form-group">
+                    <label>Description</label>
+                    <textarea
+                        rows={5}
+                        required
+                        placeholder="Description"
+                        className="form-control"
+                        onChange={takeContent}
+                        value={Des}
+                    />
+                </div>
                 <Input
                     label="Number of employees"
                     labelState={NbEmployee}
