@@ -3,6 +3,7 @@
 import pyotp
 import os
 from logging import info, warning
+from api.services.sendgrid_mail import SendgridClient
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -63,7 +64,7 @@ class MFAView(APIView):
             )
             return Response({'success': "MFA code generated and email sent successfully", 'mfa_code': totp.now()})
 
-        mail = SendgridClient([user.email])
+        mail = SendgridClient(recipient=user.email)
         mail.set_template_data({
             'username': user.first_name,
             'email': user.email,
