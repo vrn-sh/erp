@@ -110,7 +110,7 @@ class MFAView(APIView):
             return Response({'error': 'MFA code is required'}, status=status.HTTP_400_BAD_REQUEST)
         my_otp = pyotp.TOTP(user.mfa_secret)
         if not my_otp.verify(mfa_code, valid_window=1):
-            return Response({'error': 'Invalid MFA code'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Invalid MFA code '}, status=status.HTTP_401_UNAUTHORIZED)
         if user.has_otp is False:
             user.has_otp = True
             user.save()
