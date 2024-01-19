@@ -92,10 +92,7 @@ export default function Login() {
             url += 'pentester';
         }
         await axios
-            .get(`${url}/${getCookiePart(
-                Cookies.get('Token')!,
-                'id'
-            )}`, {
+            .get(`${url}/${getCookiePart(Cookies.get('Token')!, 'id')}`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(
