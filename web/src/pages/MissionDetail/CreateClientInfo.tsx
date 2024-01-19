@@ -76,6 +76,10 @@ export default function CreateClientInfo({
             });
     };
 
+    const takeContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setDes(event.target.value);
+    };
+
     /* eslint-disable */
     function timeout(delay: number) {
         return new Promise((res) => setTimeout(res, delay));
@@ -204,6 +208,17 @@ export default function CreateClientInfo({
                     setLabel={setDes}
                     size="medium"
                 />
+                <div className="form-group">
+                    <label>Description</label>
+                    <textarea
+                        rows={5}
+                        required
+                        placeholder="Description"
+                        className="form-control"
+                        onChange={takeContent}
+                        value={Des}
+                    />
+                </div>
                 <Input
                     label="Number of employees"
                     labelState={NbEmployee}

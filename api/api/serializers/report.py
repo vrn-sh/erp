@@ -48,6 +48,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             instance,
             instance.logo
         )
+        representation['css_style'] = instance.template.css_style
         return representation
 
     def assemble_report(self, instance, logo: str = "") -> (str, str):

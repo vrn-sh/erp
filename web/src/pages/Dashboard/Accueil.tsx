@@ -363,7 +363,10 @@ export default function Accueil() {
             .get(`${config.apiUrl}/vuln-type?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (vulnT) => {
@@ -382,7 +385,10 @@ export default function Accueil() {
             .get(`${config.apiUrl}/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then((res) => {
@@ -446,7 +452,10 @@ export default function Accueil() {
             .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Token ${Cookies.get('Token')}`,
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
                 },
             })
             .then(async (missions) => {
@@ -466,7 +475,10 @@ export default function Accueil() {
                         .get(`${config.apiUrl}/vulnerability?page=1`, {
                             headers: {
                                 'Content-type': 'application/json',
-                                Authorization: `Token ${Cookies.get('Token')}`,
+                                Authorization: `Token ${getCookiePart(
+                                    Cookies.get('Token')!,
+                                    'token'
+                                )}`,
                             },
                         })
                         .then(async (res) => {
@@ -536,26 +548,29 @@ export default function Accueil() {
                 <div className="dashboard-pages">
                     <div className="page-info">
                         <h1>Overviews</h1>
-                        <button
-                            type="button"
-                            className="borderBtn"
-                            style={{ marginRight: '5rem' }}
-                            onClick={openModal}
-                        >
-                            Generate payload
-                        </button>
+                        {role === '3' ||
+                            (role === '1' && (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="borderBtn"
+                                        style={{ marginRight: '5rem' }}
+                                        onClick={openModal}
+                                    >
+                                        Generate payload
+                                    </button>
 
-                        <PayLoadForm
-                            isModalOpen={isModalOpen}
-                            closeModal={closeModal}
-                        />
+                                    <PayLoadForm
+                                        isModalOpen={isModalOpen}
+                                        closeModal={closeModal}
+                                    />
+                                </>
+                            ))}
                     </div>
                     <div className="accueil-container">
                         <div
                             className={`accueil-grid-3 ${
-                                Number(Cookies.get('Role')) === 3
-                                    ? 'role-3'
-                                    : ''
+                                role === '3' ? 'role-3' : ''
                             }`}
                         >
                             <div
@@ -657,9 +672,7 @@ export default function Accueil() {
 
                         <div
                             className={`accueil-grid-3 ${
-                                Number(Cookies.get('Role')) === 3
-                                    ? 'role-3'
-                                    : ''
+                                role === '3' ? 'role-3' : ''
                             }`}
                         >
                             <div className="accueil-rect-long">
