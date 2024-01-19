@@ -254,6 +254,7 @@ export default function Report() {
                     mission={reportInfo.mission}
                     template={reportInfo.template}
                     html_file={reportInfo.html_file}
+                    css_style={reportInfo.css_style}
                      />
 
             )}

@@ -53,14 +53,13 @@ export default function PdfViewerComponent(
         menubar: false,
         plugins: [
           'exportPdf',
-           'a11ychecker','advlist','advcode','advtable','autolink','checklist',
+           'advlist','autolink','checklist',
            'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
-           'powerpaste','fullscreen','formatpainter','insertdatetime','media','table','help','wordcount'
+           'fullscreen','insertdatetime','media','table','help','wordcount'
         ],
-        toolbar: 'undo redo | bold italic backcolor | ' +
-           'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help | exportPdf',
-        //content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-        // TODO: take care of content_style in case they don't take into account the font
+        toolbar: 'undo redo | bold italic backcolor | exportPdf | ' +
+           'bullist numlist checklist | media image',
+        content_style: props.css_style!
         }}
     />
     </>

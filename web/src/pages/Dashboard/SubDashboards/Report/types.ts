@@ -8,5 +8,6 @@ export interface IReport {
     version?: number;
     mission_title?: string;
     updated_at?: string;
+    css_style?: string;
     documentURL?: string;
 }
