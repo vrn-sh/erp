@@ -64,14 +64,14 @@ export default function BasicShellcode(props: {
     return (
         <div
             style={{
-                height: '35em',
+                height: '50%',
             }}
         >
             <div
                 style={{
                     overflowX: 'hidden',
                     overflowY: 'auto',
-                    height: '93%',
+                    height: '100%',
                 }}
             >
                 {formRows.map((row) => (
