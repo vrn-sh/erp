@@ -215,7 +215,7 @@ export default function Report() {
                     <BackButton
                         onClick={() => {
                             setMD(false);
-                            setReportInfo({...reportInfo, html_file: ''});
+                            setReportInfo({...reportInfo, html_file: '', id: -1});
                             const htmlReportEditor = document.getElementById('reportEditor');
                             if (htmlReportEditor) {
                                 htmlReportEditor.innerHTML = '';
