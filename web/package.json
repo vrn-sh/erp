@@ -46,7 +46,7 @@
     "react-vertical-timeline-component": "^3.6.0",
     "reactstrap": "^9.2.1",
     "recharts": "^2.10.4",
-    "vite": "^4.5.1",
+    "vite": "^4.5.2",
     "yarn": "^1.22.21"
   },
   "devDependencies": {
