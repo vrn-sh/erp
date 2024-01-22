@@ -516,21 +516,17 @@ export default function MissionDetail() {
                                     Crtsh
                                 </button>
                             )}
-                            {isPentester && (
-                                <button
-                                    key={10}
-                                    id="report"
-                                    type="button"
-                                    className={
-                                        active === 'report'
-                                            ? 'active'
-                                            : undefined
-                                    }
-                                    onClick={handleClick}
-                                >
-                                    Report
-                                </button>
-                            )}
+                            <button
+                                key={10}
+                                id="report"
+                                type="button"
+                                className={
+                                    active === 'report' ? 'active' : undefined
+                                }
+                                onClick={handleClick}
+                            >
+                                Report
+                            </button>
                         </div>
                     </div>
                     {getSubMissionDetail()}

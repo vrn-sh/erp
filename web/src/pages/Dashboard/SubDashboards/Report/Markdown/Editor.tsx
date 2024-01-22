@@ -80,37 +80,18 @@ function MarkdownEditor({ missionid }: { missionid: number }) {
             alert('Please select a mission with the Select button above.');
             return;
         }
-        axios
-            .get(`${config.apiUrl}/markdown-report`, {
-                headers: {
-                    Authorization: `Token ${getCookiePart(
-                        Cookies.get('Token')!,
-                        'token'
-                    )}`,
-                },
-                params: {
-                    mission: missionid,
-                    download: true,
-                },
-                maxRedirects: 5,
-                timeout: 100000,
-            })
-            .then((response) => {
-                const blob = new Blob([response.data]);
-                const url = window.URL.createObjectURL(blob);
 
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'README.md'; // Set the desired filename here
-                a.style.display = 'none';
-                document.body.appendChild(a);
+        const blob = new Blob([markdownText]);
+        const url = window.URL.createObjectURL(blob);
 
-                a.click();
-                window.URL.revokeObjectURL(url);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-            });
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'README.md'; // Set the desired filename here
+        a.style.display = 'none';
+        document.body.appendChild(a);
+
+        a.click();
+        window.URL.revokeObjectURL(url);
     };
 
     return (

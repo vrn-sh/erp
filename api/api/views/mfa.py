@@ -3,6 +3,7 @@
 import pyotp
 import os
 from logging import info, warning
+from api.services.sendgrid_mail import SendgridClient
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -63,7 +64,7 @@ class MFAView(APIView):
             )
             return Response({'success': "MFA code generated and email sent successfully", 'mfa_code': totp.now()})
 
-        mail = SendgridClient([user.email])
+        mail = SendgridClient(recipient=user.email)
         mail.set_template_data({
             'username': user.first_name,
             'email': user.email,
@@ -109,8 +110,8 @@ class MFAView(APIView):
         if not mfa_code:
             return Response({'error': 'MFA code is required'}, status=status.HTTP_400_BAD_REQUEST)
         my_otp = pyotp.TOTP(user.mfa_secret)
-        if not my_otp.verify(mfa_code):
-            return Response({'error': 'Invalid MFA code'}, status=status.HTTP_401_UNAUTHORIZED)
+        if not my_otp.verify(mfa_code, valid_window=1):
+            return Response({'error': 'Invalid MFA code '}, status=status.HTTP_401_UNAUTHORIZED)
         if user.has_otp is False:
             user.has_otp = True
             user.save()

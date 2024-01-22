@@ -1,13 +1,12 @@
 from datetime import date
 import os
 from rest_framework import serializers
-from django.core.cache import cache
 from weasyprint import CSS, HTML
 from weasyprint.text.fonts import FontConfiguration
 from api.models.mission import Mission
 from api.models import Team
 from api.models.report.generate_html import generate_members, generate_vulns_detail
-from api.models.report.report import ReportHtml, ReportTemplate
+from api.models.report.report import ReportHtml
 from api.services.s3 import S3Bucket
 
 class ReportHtmlSerializer(serializers.ModelSerializer):
@@ -17,29 +16,16 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        html_file = validated_data.pop('html_file')
         instance = super().update(instance, validated_data)
         instance.version += 1
-        filename = f'report-{instance.pk}-{instance.version}.pdf'
-        filepath = f'/tmp/{filename}'
-        if html_file:
-            HTML(string=html_file).write_pdf(
-                filepath,
-                stylesheets=[CSS(string=instance.template.css_style)],
-                font_config=FontConfiguration())
-        if 'pdf_file' in validated_data or html_file:
-            s3_client = S3Bucket()
-            if 'pdf_file' not in validated_data:
-                s3_client.upload_file('rootbucket', filepath, filename)
-                instance.pdf_file = s3_client.get_object_url('rootbucket', filename)
         instance.save()
         return instance
 
 
     def to_representation(self, instance):
-        cache_key = f'report_{instance.pk}'
-        if cached := cache.get(cache_key):
-            return cached
+        # cache_key = f'report_{instance.pk}'
+        # if cached := cache.get(cache_key):
+        #     return cached
 
         representation = super().to_representation(instance)
         s3_client = S3Bucket()
@@ -55,30 +41,37 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         s3_client = S3Bucket()
         if instance.logo:
             representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
+            instance.logo = representation['logo']
         if instance.pdf_file:
-            cache.set(cache_key, representation)
+            #cache.set(cache_key, representation)
             return representation
+        representation['pdf_file'], representation['html_file'] = self.assemble_report(
+            instance,
+            instance.logo
+        )
+        representation['css_style'] = instance.template.css_style
+        return representation
+
+    def assemble_report(self, instance, logo: str = "") -> (str, str):
         filename = f'report-{instance.pk}-{instance.version}.pdf'
         filepath = f'/tmp/{filename}'
-        html_content = self.dump_academic_report(instance, representation['logo']) \
+        html_content = self.dump_academic_report(instance, logo) \
             if instance.template.name == "academic" \
-                        else self.dump_html_report(instance, representation['logo'])
+                        else self.dump_html_report(instance, logo)
         HTML(string=html_content).write_pdf(
             filepath,
             stylesheets=[CSS(string=instance.template.css_style)],
             font_config=FontConfiguration())
-
+        s3_client = S3Bucket()
         s3_client.upload_file('rootbucket', filepath, filename)
-        representation['pdf_file'] = s3_client.get_object_url('rootbucket', filename)
-        os.remove(filepath)
-        cache.set(cache_key, representation)
-        return representation
+        return s3_client.get_object_url('rootbucket', filename), html_content
 
     def dump_academic_report(self, instance, logo=None) -> str:
 
         def generate_members(mission: Mission) -> str:
             team: Team = mission.team
-            members_html = f'<span>{team.leader.auth.first_name} {team.leader.auth.last_name}</span>'
+            if team.leader:
+                members_html = f'<span>{team.leader.auth.first_name} {team.leader.auth.last_name}</span>'
             for member in team.members.all():
                 members_html += f'<span>{member.auth.first_name} {member.auth.last_name}</span>'
             return members_html
@@ -320,10 +313,10 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
 
         </div>
                 '''.format(header=self.gen_header(instance, 'Project Information', logo=logo),
-                           leader_first_name=team.leader.auth.first_name,
-                           leader_last_name=team.leader.auth.last_name,
-                           leader_phone_number=team.leader.auth.phone_number,
-                           leader_email=team.leader.auth.email,
+                           leader_first_name=team.leader.auth.first_name if team.leader else "",
+                           leader_last_name=team.leader.auth.last_name if team.leader else "",
+                           leader_phone_number=team.leader.auth.phone_number if team.leader else "",
+                           leader_email=team.leader.auth.email if team.leader else "",
                            members=generate_members(team),
                            mission_start=instance.mission.start,
                            mission_end=instance.mission.end,

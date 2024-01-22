@@ -73,6 +73,7 @@ h2 {
 
 /* Table Styles */
 table {
+    font-size: 8px;
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;

@@ -268,11 +268,8 @@ function MissionList({
 export default function Accueil() {
     const [numProjects, setNumProjects] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
-    // Function to open the modal
     const [isLoad, setIsLoad] = useState(false);
-    const isPentester =
-        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -568,11 +565,7 @@ export default function Accueil() {
                             ))}
                     </div>
                     <div className="accueil-container">
-                        <div
-                            className={`accueil-grid-3 ${
-                                role === '3' ? 'role-3' : ''
-                            }`}
-                        >
+                        <div className="accueil-grid-3">
                             <div
                                 className="accueil-rect"
                                 style={{ height: '30vh' }}
@@ -670,17 +663,13 @@ export default function Accueil() {
                             </div>
                         </div>
 
-                        <div
-                            className={`accueil-grid-3 ${
-                                role === '3' ? 'role-3' : ''
-                            }`}
-                        >
+                        <div className="accueil-grid-3">
                             <div className="accueil-rect-long">
                                 <div className="accueil-mission-title">
                                     <h5 style={{ marginBottom: '15px' }}>
                                         My mission
                                     </h5>
-                                    {!isPentester && (
+                                    {role !== '1' && (
                                         <button
                                             type="submit"
                                             className="accueil-create-mission"
@@ -736,9 +725,9 @@ export default function Accueil() {
                             </div>
                         </div>
 
-                        {role === '1' || role === '2' ? (
-                            <div className="accueil-grid-3">
-                                <div className="accueil-rect-long">
+                        <div className="accueil-grid-3">
+                            <div className="accueil-rect-long">
+                                <div className="accueil-mission-title">
                                     <h5
                                         style={{
                                             marginBottom: '15px',
@@ -747,7 +736,7 @@ export default function Accueil() {
                                     >
                                         Co-workers
                                     </h5>
-                                    {!isPentester && (
+                                    {role !== '1' && (
                                         <button
                                             type="submit"
                                             className="accueil-create-mission"
@@ -791,7 +780,7 @@ export default function Accueil() {
                                     </div>
                                 )}
                             </div>
-                        ) : null}
+                        </div>
                     </div>
                 </div>
             </div>

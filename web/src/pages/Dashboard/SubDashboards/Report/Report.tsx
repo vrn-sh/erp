@@ -1,4 +1,10 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, {
+    useState,
+    useEffect,
+    Dispatch,
+    SetStateAction,
+    RefCallback,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import './Report.scss';
 import axios from 'axios';
@@ -14,6 +20,7 @@ import { getCookiePart } from '../../../../crypto-utils';
 import { FileInput } from '../../../../component/Input';
 import PdfViewerComponent from './PDFEditor/PDFEditor';
 import SelectMission from '../../../../component/SelectMission';
+import { IReport } from './types';
 
 const templates = [
     {
@@ -42,30 +49,17 @@ const templates = [
     },
 ];
 
-interface IReport {
-    id: number;
-    template: string;
-    mission: number;
-    pdf_file: string;
-    html_file: string;
-    version: number;
-    mission_title: string;
-    updated_at: string;
-}
-
 // type for setMD and setTemplate
 function DocumentTemplates({
     setMD,
     setTemplate,
-    logo,
-    setPDFDocURL,
-    missionid,
+    reportInfo,
+    setReportInfo,
 }: {
     setMD: Dispatch<SetStateAction<boolean>>;
-    setTemplate: Dispatch<SetStateAction<number>>;
-    setPDFDocURL: Dispatch<SetStateAction<string>>;
-    missionid: number;
-    logo: string | null;
+    setTemplate: (idx: number) => void;
+    reportInfo: IReport;
+    setReportInfo: Dispatch<SetStateAction<IReport>>;
 }) {
     const [reportHistory, setReportHistory] = useState<Array<IReport>>([]);
 
@@ -81,21 +75,24 @@ function DocumentTemplates({
                 },
             })
             .then((response) => {
-                console.log(response);
                 if (response.data.count > 0) {
                     setReportHistory(response.data.results);
                 }
             });
     }, [setTemplate]);
+
     const handleTemplateSelection = async (templateId: number) => {
         setTemplate(templateId);
+        console.log('l79, templateId', templateId);
         axios
             .post(
                 `${config.apiUrl}/download-report`,
                 {
                     template_name: templates[templateId].name,
-                    mission: missionid,
-                    logo,
+                    mission: reportInfo.mission, // so we have several report per mission
+                    // but here we are talking about the selected mission via the select button
+                    // and it is mixed with data efjiozejfeiozjfioezjfoizejfijze
+                    logo: reportInfo.logo!, // same here
                 },
                 {
                     headers: {
@@ -107,7 +104,7 @@ function DocumentTemplates({
                 }
             )
             .then((response) => {
-                setPDFDocURL(response.data.pdf_file);
+                setReportInfo(response.data);
                 console.log(response);
             });
     };
@@ -154,12 +151,12 @@ function DocumentTemplates({
                         style={{ minWidth: '0%' }}
                         type="button"
                         onKeyDown={() => {
-                            setPDFDocURL(report.pdf_file);
+                            setReportInfo(report);
                         }}
                         key={report.id}
                         className="template"
                         onClick={() => {
-                            setPDFDocURL(report.pdf_file);
+                            setReportInfo(report);
                         }}
                     >
                         <img
@@ -184,11 +181,15 @@ function DocumentTemplates({
 
 export default function Report() {
     const location = useLocation();
-    const [missionId, setMissionId] = useState(0);
-    const [template, setTemplate] = useState(-1);
+    const [reportInfo, setReportInfo] = useState<IReport>({
+        id: -1,
+        template: '',
+        mission: 0,
+        logo: null,
+        html_file: '',
+    });
+    const [templateIdx, setTemplateIdx] = useState(-1);
     const [isMDActivated, setMD] = useState(false);
-    const [logo, setBase64Image] = useState<string | null>(null);
-    const [PDFDocURL, setPDFDocURL] = useState<string>('');
 
     const handleImageUpload = (file: any) => {
         if (file) {
@@ -197,25 +198,28 @@ export default function Report() {
             reader.onload = (event) => {
                 // The result property contains the base64-encoded image data
                 const base64 = event.target?.result as string;
-                setBase64Image(base64);
+                setReportInfo({ ...reportInfo, logo: base64 });
             };
-
             reader.readAsDataURL(file);
         }
     };
 
     useEffect(() => {
-        setMissionId(location.state.missionId);
+        setReportInfo({...reportInfo, mission: location.state.missionId});
     }, []);
 
     return (
         <div>
             <div style={{ display: 'content' }}>
-                {(isMDActivated === true || PDFDocURL !== '') && (
+                {(isMDActivated === true || reportInfo.id !== -1) && (
                     <BackButton
                         onClick={() => {
                             setMD(false);
-                            setPDFDocURL('');
+                            setReportInfo({...reportInfo, html_file: '', id: -1});
+                            const htmlReportEditor = document.getElementById('reportEditor');
+                            if (htmlReportEditor) {
+                                htmlReportEditor.innerHTML = '';
+                            }
                         }}
                         label="BACK TO TEMPLATES"
                     />
@@ -231,28 +235,41 @@ export default function Report() {
                 }}
             >
                 <SelectMission
-                    setMissionId={setMissionId}
-                    missionId={missionId}
+                    setMissionId={(mission) =>
+                        setReportInfo({ ...reportInfo, mission })
+                    }
+                    missionId={reportInfo.mission!}
                 />
                 {!isMDActivated && <FileInput setImage={handleImageUpload} />}
             </div>
 
-            {isMDActivated && <MarkdownEditor missionid={missionId} />}
-            {!isMDActivated && PDFDocURL === '' && (
+            {isMDActivated && (
+                <MarkdownEditor missionid={reportInfo.mission!} />
+            )}
+            {!isMDActivated && reportInfo.id === -1 && (
                 <DocumentTemplates
-                    logo={logo}
                     setMD={setMD}
-                    setTemplate={setTemplate}
-                    setPDFDocURL={setPDFDocURL}
-                    missionid={missionId}
+                    // eslint-disable-next-line
+                    setTemplate={function (idx) {
+                        setTemplateIdx(idx);
+                        setReportInfo({
+                            ...reportInfo,
+                            template: templates[idx].name,
+                        });
+                    }}
+                    reportInfo={reportInfo}
+                    setReportInfo={setReportInfo}
                 />
             )}
-            {!isMDActivated && PDFDocURL !== '' && (
+            {!isMDActivated && reportInfo.id !== -1 && (
                 <PdfViewerComponent
-                    document={PDFDocURL}
-                    mission={missionId}
-                    template={templates[template].name}
-                />
+                    id={reportInfo.id}
+                    mission={reportInfo.mission}
+                    template={reportInfo.template}
+                    html_file={reportInfo.html_file}
+                    css_style={reportInfo.css_style}
+                     />
+
             )}
         </div>
     );
