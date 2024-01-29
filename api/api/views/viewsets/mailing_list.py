@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from api.models.mailing_list import MailingListItem
 from api.serializers.mailing_list import MailingListItemSerializer
 from rest_framework.decorators import action
+from api.services.sendgrid_mail import SendgridClient, SendgridParameters
+
 
 class MailingListViewset(viewsets.ModelViewSet):
     queryset = MailingListItem.objects.all()
@@ -15,6 +17,14 @@ class MailingListViewset(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        email_address = serializer.validated_data['email']
+        email_client = SendgridClient(recipient=email_address)
+        email_client.mail.template_id = SendgridParameters.TEMPLATE_ID_WELCOME
+        email_client.set_template_data({
+            # template data
+        }, recipient_email=email_address)
+        response = email_client.send()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     @action(detail=False, methods=['post'], url_path='unsubscribe')
