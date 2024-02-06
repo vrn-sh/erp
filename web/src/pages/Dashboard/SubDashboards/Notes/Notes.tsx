@@ -179,8 +179,14 @@ export default function Notes() {
                                     />
                                 )}
 
-                                {list.length && !isPentester ? (
-                                    <p>Nothing to show</p>
+                                {list.length === 0 && !isPentester ? (
+                                    <h3
+                                        style={{
+                                            fontFamily: 'Poppins-Regular',
+                                        }}
+                                    >
+                                        Nothing to show
+                                    </h3>
                                 ) : (
                                     list.map((l, index) => {
                                         return (

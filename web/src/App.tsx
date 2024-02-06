@@ -46,27 +46,21 @@ function App() {
                 <Route path="/reset" element={<Reset />} />
                 <Route path="/unsubscribe" element={<UnsubscribeEmail />} />
                 <Route element={<PrivateRoute />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/accueil" element={<Accueil />} />
-                    <Route path="/vuln/add" element={<AddVulnerability />} />
-                    <Route path="/vuln/edit" element={<EditVulnerability />} />
-                    <Route
-                        path="/vuln/detail"
-                        element={<VulnerabilityDetail />}
-                    />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/mission/detail" element={<MissionDetail />} />
-                    <Route path="/mission/edit" element={<EditMission />} />
-                    <Route path="/mission/create" element={<CreateMission />} />
-                    <Route path="/team" element={<Team />} />
-                    <Route path="/team/create" element={<CreateTeam />} />
-                    <Route
-                        path="/team/view/:id"
-                        element={<ViewTeamDetails />}
-                    />
-                    <Route path="/team/edit" element={<EditTeam />} />
-                    <Route path="/client" element={<ClientList />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/accueil" element={<Accueil />} />
+                <Route path="/vuln/add" element={<AddVulnerability />} />
+                <Route path="/vuln/edit" element={<EditVulnerability />} />
+                <Route path="/vuln/detail" element={<VulnerabilityDetail />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/mission/detail" element={<MissionDetail />} />
+                <Route path="/mission/edit" element={<EditMission />} />
+                <Route path="/mission/create" element={<CreateMission />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/team/create" element={<CreateTeam />} />
+                <Route path="/team/view/:id" element={<ViewTeamDetails />} />
+                <Route path="/team/edit" element={<EditTeam />} />
+                <Route path="/client" element={<ClientList />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>

@@ -235,6 +235,7 @@ export default function ClientInfo() {
                     setIsEmpty(false);
                 }
                 setIsEmpty(true);
+                console.log('cid', data.data);
             })
             .catch((e) => {
                 throw e;

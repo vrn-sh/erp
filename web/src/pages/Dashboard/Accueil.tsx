@@ -545,24 +545,19 @@ export default function Accueil() {
                 <div className="dashboard-pages">
                     <div className="page-info">
                         <h1>Overviews</h1>
-                        {role === '3' ||
-                            (role === '1' && (
-                                <>
-                                    <button
-                                        type="button"
-                                        className="borderBtn"
-                                        style={{ marginRight: '5rem' }}
-                                        onClick={openModal}
-                                    >
-                                        Generate payload
-                                    </button>
+                        <button
+                            type="button"
+                            className="borderBtn"
+                            style={{ marginRight: '5rem' }}
+                            onClick={openModal}
+                        >
+                            Generate payload
+                        </button>
 
-                                    <PayLoadForm
-                                        isModalOpen={isModalOpen}
-                                        closeModal={closeModal}
-                                    />
-                                </>
-                            ))}
+                        <PayLoadForm
+                            isModalOpen={isModalOpen}
+                            closeModal={closeModal}
+                        />
                     </div>
                     <div className="accueil-container">
                         <div className="accueil-grid-3">
