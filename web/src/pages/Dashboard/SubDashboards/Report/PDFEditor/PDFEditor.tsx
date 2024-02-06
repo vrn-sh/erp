@@ -8,13 +8,13 @@ import { getCookiePart } from '../../../../../crypto-utils';
 export default function PdfViewerComponent(props: IReport): ReactElement {
     const editorRef = useRef(null);
     const handleExportPDF = async () => {
-        const html_blob = new Blob([(editorRef.current as any).getContent()], {
+        const htmlBlob = new Blob([(editorRef.current as any).getContent()], {
             type: 'text/html',
         });
         const formData = new FormData();
         formData.append('mission', props.mission?.toString() || '');
         formData.append('template_name', props.template || '');
-        formData.append('html_file', html_blob);
+        formData.append('html_file', htmlBlob);
         const response = await fetch(
             `${config.apiUrl}/download-report/${props.id}`,
             {
