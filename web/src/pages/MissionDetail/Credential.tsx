@@ -51,7 +51,6 @@ export default function Credentials({ idMission }: CredentialsProps) {
     });
 
     const [showAddForm, setShowAddForm] = useState(false);
-    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const [isLoad, setIsLoad] = useState(false);
     const isPentester =
         getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';

@@ -1,4 +1,4 @@
-import { useEffect, useRef, ReactElement, useState } from 'react';
+import { useEffect, useRef, ReactElement } from 'react';
 import Cookies from 'js-cookie';
 import { Editor } from '@tinymce/tinymce-react';
 import config from '../../../../../config';

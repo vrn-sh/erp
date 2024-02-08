@@ -140,9 +140,6 @@ export default function ClientList() {
                                                         <th className="md-3">
                                                             Number of employees
                                                         </th>
-                                                        <th className="md-3">
-                                                            Action
-                                                        </th>
                                                     </tr>
                                                 </thead>
                                                 {records.map((client) => {
@@ -168,18 +165,6 @@ export default function ClientList() {
                                                                     {
                                                                         client.nbEmployees
                                                                     }
-                                                                </td>
-                                                                <td className="scope-table-action">
-                                                                    <input
-                                                                        type="button"
-                                                                        value="Open"
-                                                                        className="openBtn"
-                                                                        onClick={() =>
-                                                                            NavMissionDetail(
-                                                                                client.mission
-                                                                            )
-                                                                        }
-                                                                    />
                                                                 </td>
                                                             </tr>
                                                         </tbody>

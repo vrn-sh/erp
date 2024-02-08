@@ -88,7 +88,7 @@ h5, p {
         &-vuln {
             display: flex;
             flex-direction: row;
-            overflow: scroll;
+            overflow: auto;
             margin-bottom: 1rem;
         }
     }
@@ -148,7 +148,7 @@ h5, p {
 }
 
 .rect-scroll {
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .mission-left-half {

@@ -272,15 +272,6 @@ export default function SettingAccount() {
                     />
                 </div>
                 <div className="input input-medium">
-                    <label>Email</label>
-                    <input
-                        id="input-email"
-                        type="text"
-                        readOnly
-                        placeholder={userInfos.email}
-                    />
-                </div>
-                <div className="input input-medium">
                     <label>Phone number</label>
                     <input
                         id="input-email"
