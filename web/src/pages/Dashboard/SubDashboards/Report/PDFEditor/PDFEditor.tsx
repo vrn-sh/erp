@@ -1,4 +1,4 @@
-import { useEffect, useRef, ReactElement, useState } from 'react';
+import { useEffect, useRef, ReactElement } from 'react';
 import Cookies from 'js-cookie';
 import { Editor } from '@tinymce/tinymce-react';
 import config from '../../../../../config';
@@ -8,60 +8,77 @@ import { getCookiePart } from '../../../../../crypto-utils';
 export default function PdfViewerComponent(props: IReport): ReactElement {
     const editorRef = useRef(null);
     const handleExportPDF = async () => {
-      const html_blob = new Blob([(editorRef.current as any).getContent()], { type: 'text/html' });
-      const formData = new FormData();
-      formData.append("mission", props.mission?.toString() || "");
-      formData.append("template_name", props.template || "");
-      formData.append("html_file", html_blob);
-      const response = await fetch(`${config.apiUrl}/download-report/${props.id}`, {
-        method: "PUT",
-        body: formData,
-        headers: {
-          Authorization: `Token ${getCookiePart(
-                            Cookies.get('Token')!,
-                            'token'
-                        )}`,
-        },
-      });
-      response.json().then((data) => {
-        const a = document.createElement("a");
-        a.href = data.pdf_file;
-        a.style.display = "none";
-        a.download = "report.pdf";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      });
-    }
-  return (
-    <>
-    <Editor
-       apiKey={import.meta.env.VITE_REACT_APP_TINYMCE_API_KEY}
-        onInit={(evt, editor) => {
-          (editorRef.current as any) = editor;
-          editor.ui.registry.addButton('exportPdf', {
-            text: 'Export PDF',
-            onAction: handleExportPDF, 
-          })
-        }}
-        initialValue={props.html_file}
-        init={{
-        selector: "textarea#reportEditor" as any,
-        height: 500,
-        menubar: false,
-        plugins: [
-          'exportPdf',
-           'advlist','autolink',
-           'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
-           'fullscreen','insertdatetime','media','table','help','wordcount'
-        ],
-        toolbar: 'undo redo | bold italic backcolor | exportPdf | ' +
-           'bullist numlist | media image',
-        content_style: props.css_style!
-        }}
-    />
-    </>
-  );
+        const htmlBlob = new Blob([(editorRef.current as any).getContent()], {
+            type: 'text/html',
+        });
+        const formData = new FormData();
+        formData.append('mission', props.mission?.toString() || '');
+        formData.append('template_name', props.template || '');
+        formData.append('html_file', htmlBlob);
+        const response = await fetch(
+            `${config.apiUrl}/download-report/${props.id}`,
+            {
+                method: 'PUT',
+                body: formData,
+                headers: {
+                    Authorization: `Token ${getCookiePart(
+                        Cookies.get('Token')!,
+                        'token'
+                    )}`,
+                },
+            }
+        );
+        response.json().then((data) => {
+            const a = document.createElement('a');
+            a.href = data.pdf_file;
+            a.style.display = 'none';
+            a.download = 'report.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+    };
+    return (
+        <Editor
+            apiKey={import.meta.env.VITE_REACT_APP_TINYMCE_API_KEY}
+            onInit={(evt, editor) => {
+                (editorRef.current as any) = editor;
+                editor.ui.registry.addButton('exportPdf', {
+                    text: 'Export PDF',
+                    onAction: handleExportPDF,
+                });
+            }}
+            initialValue={props.html_file}
+            init={{
+                selector: 'textarea#reportEditor' as any,
+                height: 500,
+                menubar: false,
+                plugins: [
+                    'exportPdf',
+                    'advlist',
+                    'autolink',
+                    'lists',
+                    'link',
+                    'image',
+                    'charmap',
+                    'preview',
+                    'anchor',
+                    'searchreplace',
+                    'visualblocks',
+                    'fullscreen',
+                    'insertdatetime',
+                    'media',
+                    'table',
+                    'help',
+                    'wordcount',
+                ],
+                toolbar:
+                    'undo redo | bold italic backcolor | exportPdf | ' +
+                    'bullist numlist | media image',
+                content_style: props.css_style!,
+            }}
+        />
+    );
 }
 
 /*

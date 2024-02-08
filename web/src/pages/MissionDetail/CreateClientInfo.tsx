@@ -202,12 +202,6 @@ export default function CreateClientInfo({
                     setLabel={setOccupation}
                     size="medium"
                 />
-                <Input
-                    label="Description"
-                    labelState={Des}
-                    setLabel={setDes}
-                    size="medium"
-                />
                 <div className="form-group">
                     <label>Description</label>
                     <textarea

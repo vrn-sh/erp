@@ -51,9 +51,9 @@ export default function Credentials({ idMission }: CredentialsProps) {
     });
 
     const [showAddForm, setShowAddForm] = useState(false);
-    const navigate = useNavigate();
-    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
     const [isLoad, setIsLoad] = useState(false);
+    const isPentester =
+        getCookiePart(Cookies.get('Token')!, 'role')?.toString() === '1';
 
     const addCredential = async () => {
         try {
@@ -179,22 +179,21 @@ export default function Credentials({ idMission }: CredentialsProps) {
     return (
         <>
             <div>
-                {role === '2' ||
-                    (role === '3' && (
-                        <Button
-                            style={{
-                                backgroundColor: '#7c44f3',
-                                color: 'white',
-                                borderRadius: '5px',
-                                fontSize: '12px',
-                                marginLeft: '80%',
-                                marginBottom: '40px',
-                            }}
-                            onClick={() => setShowAddForm(true)}
-                        >
-                            Add test credentials
-                        </Button>
-                    ))}
+                {!isPentester && (
+                    <Button
+                        style={{
+                            backgroundColor: '#7c44f3',
+                            color: 'white',
+                            borderRadius: '5px',
+                            fontSize: '12px',
+                            marginLeft: '80%',
+                            marginBottom: '40px',
+                        }}
+                        onClick={() => setShowAddForm(true)}
+                    >
+                        Add test credentials
+                    </Button>
+                )}
             </div>
 
             <TableContainer component={Paper}>

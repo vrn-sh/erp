@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Plan.scss';
 import * as AiIcons from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 import subscriptions from '../../../assets/strings/en/subscriptions.json';
 
 export default function Plan() {
     const [stoppedCards, setStoppedCards] = useState<number[]>([]);
+    const navigate = useNavigate();
     const cardColors = ['primary-color', 'secondary-color', 'primary-color'];
+
+    const toSignUp = () => {
+        navigate('/sign_up');
+    };
 
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -69,7 +75,11 @@ export default function Plan() {
                                 </div>
                             );
                         })}
-                        <button className="souscrire-button" type="button">
+                        <button
+                            className="souscrire-button"
+                            type="button"
+                            onClick={toSignUp}
+                        >
                             Souscrire
                         </button>
                     </div>

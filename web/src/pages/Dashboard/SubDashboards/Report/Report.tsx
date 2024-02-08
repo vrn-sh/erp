@@ -205,7 +205,7 @@ export default function Report() {
     };
 
     useEffect(() => {
-        setReportInfo({...reportInfo, mission: location.state.missionId});
+        setReportInfo({ ...reportInfo, mission: location.state.missionId });
     }, []);
 
     return (
@@ -215,8 +215,13 @@ export default function Report() {
                     <BackButton
                         onClick={() => {
                             setMD(false);
-                            setReportInfo({...reportInfo, html_file: '', id: -1});
-                            const htmlReportEditor = document.getElementById('reportEditor');
+                            setReportInfo({
+                                ...reportInfo,
+                                html_file: '',
+                                id: -1,
+                            });
+                            const htmlReportEditor =
+                                document.getElementById('reportEditor');
                             if (htmlReportEditor) {
                                 htmlReportEditor.innerHTML = '';
                             }
@@ -268,8 +273,7 @@ export default function Report() {
                     template={reportInfo.template}
                     html_file={reportInfo.html_file}
                     css_style={reportInfo.css_style}
-                     />
-
+                />
             )}
         </div>
     );

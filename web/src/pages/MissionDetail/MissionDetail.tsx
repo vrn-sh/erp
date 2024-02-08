@@ -44,7 +44,7 @@ export default function MissionDetail() {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [userInfo, setUserInfo] = useState<string[]>();
-    const role = getCookiePart(Cookies.get('Token')!, 'role');
+    const role = getCookiePart(Cookies.get('Token')!, 'role')?.toString();
 
     const handleClick = (event: any) => {
         setActive(event.target.id);
@@ -361,18 +361,17 @@ export default function MissionDetail() {
                         </h1>
 
                         <div>
-                            {role === '2' ||
-                                (role === '3' && (
-                                    <button
-                                        type="submit"
-                                        className="editBtn"
-                                        onClick={() => {
-                                            NavEditMission(id);
-                                        }}
-                                    >
-                                        Edit Mission
-                                    </button>
-                                ))}
+                            {!isPentester && (
+                                <button
+                                    type="submit"
+                                    className="editBtn"
+                                    onClick={() => {
+                                        NavEditMission(id);
+                                    }}
+                                >
+                                    Edit Mission
+                                </button>
+                            )}
                             <Chip
                                 label={status}
                                 color={
