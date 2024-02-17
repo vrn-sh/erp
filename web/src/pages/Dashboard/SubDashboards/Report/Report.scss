@@ -1,3 +1,12 @@
+/* Add this to your Report.scss file or create a new CSS file */
+.logo-image {
+  max-width: 100px;
+  /* Adjust the width as needed */
+  height: auto;
+  /* Maintain aspect ratio */
+  /* Add any additional styles you need */
+}
+
 /* Container for the "Create a Document" section */
 .report-templates-container {
   max-width: 900px;

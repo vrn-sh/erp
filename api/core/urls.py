@@ -21,6 +21,7 @@ from api.views.viewsets.vulns import NotesViewset, VulnerabilityViewset, VulnTyp
 from api.views.viewsets.mission import CredentialViewset, MissionViewset, NmapViewset, CrtShView, WappalyzerRequestView
 from api.views.viewsets.client_info import ClientInfoViewset
 from api.views.viewsets.mailing_list import MailingListViewset
+from api.views.viewsets.survey import SurveyResponseViewset
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -48,23 +49,31 @@ router.register(r'mission', MissionViewset)
 router.register(r'nmap', NmapViewset)
 router.register(r'client-info', ClientInfoViewset)
 router.register(r'credentials', CredentialViewset)
-router.register(r'download-report', GeneratePDFReportView, basename='download-report')
+router.register(r'download-report', GeneratePDFReportView,
+                basename='download-report')
 router.register(r'mailing-list', MailingListViewset)
+router.register(r'survey-responses', SurveyResponseViewset)
 
 
 urlpatterns = [
-   path(r'crtsh', CrtShView.as_view()),
-   path(r'login', LoginView.as_view(), name='knox_login'),
-   path('mfa', MFAView.as_view()),
-   path('logout', LogoutView.as_view(), name='knox_logout'),
-   path('ping', PingView.as_view()),
-   path('confirm', ConfirmAccountView.as_view()),
-   path('reset', ResetPasswordView.as_view()),
-   path('register', RegisterViewset.as_view({'post': 'create'})),
-   re_path(r'^docs/$', SchemaView.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-   path(r'markdown-report', GenerateMDReportView.as_view()),
-   path('search', SearchView.as_view()),
-   path(r'hunt', HunterView.as_view()),
-   path(r'wapp', WappProxyView.as_view()),
-   path(r'saas', SaasProxyView.as_view())
+    path(r'crtsh', CrtShView.as_view()),
+    path(r'login', LoginView.as_view(), name='knox_login'),
+    path('mfa', MFAView.as_view()),
+    path('logout', LogoutView.as_view(), name='knox_logout'),
+    path('ping', PingView.as_view()),
+    path('confirm', ConfirmAccountView.as_view()),
+    path('reset', ResetPasswordView.as_view()),
+    path('register', RegisterViewset.as_view({'post': 'create'})),
+    re_path(r'^docs/$', SchemaView.with_ui('redoc',
+            cache_timeout=0), name='schema-redoc'),
+    path(r'markdown-report', GenerateMDReportView.as_view()),
+    path('search', SearchView.as_view()),
+    path(r'hunt', HunterView.as_view()),
+    path(r'wapp', WappProxyView.as_view()),
+    path(r'saas', SaasProxyView.as_view()),
+    path('mailing-list/',
+         MailingListViewset.as_view({'post': 'create'}), name='mailing-list'),
+    path('survey-responses/count/',
+         SurveyResponseViewset.as_view({'get': 'count_responses'})),
+
 ] + router.urls

@@ -25,7 +25,9 @@ from django.db.models.deletion import CASCADE
 from django.core.mail import send_mail
 from django.core.cache import cache
 
-from api.services.sendgrid_mail import SendgridClient
+from api.services.sendgrid_mail_global_send import SendgridClient
+# from api.models.mailing_list import MailingListItem
+import requests
 
 MAX_TITLE_LENGTH = 256
 MAX_NOTE_LENGTH = 8186
@@ -35,7 +37,7 @@ NAME_LENGTH = 256
 USER_ROLES = ['unknown', 'pentester', 'manager', 'freelancer']
 
 
-CONFIRM_TOKEN_TIMEOUT_SECONDS = 15 * 60 # 15 minutes
+CONFIRM_TOKEN_TIMEOUT_SECONDS = 15 * 60  # 15 minutes
 RESETPW_TOKEN_TIMEOUT_SECONDS = 5 * 60  # 5 minutes
 
 
@@ -70,20 +72,28 @@ class Auth(AbstractUser):
     )
 
     id: models.AutoField = models.AutoField(primary_key=True)
-    role: models.PositiveSmallIntegerField = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, editable=False)
+    role: models.PositiveSmallIntegerField = models.PositiveSmallIntegerField(
+        choices=USER_TYPE_CHOICES, editable=False)
     password: models.CharField = models.CharField(max_length=128)
-    phone_number: Optional[PhoneNumberField] = PhoneNumberField(null=True, blank=True)
-    email: models.EmailField = models.EmailField(unique=True, null=False, blank=False)
-    first_name: models.CharField = models.CharField(max_length=NAME_LENGTH, null=True, blank=True)
-    last_name: models.CharField = models.CharField(max_length=NAME_LENGTH, null=True, blank=True)
-    is_enabled: models.BooleanField = models.BooleanField(default=False)  # type: ignore
-    favorites: Optional[List[CharField]] = ArrayField(models.CharField(max_length=32), blank=True, null=True, size=4)  # type: ignore
+    phone_number: Optional[PhoneNumberField] = PhoneNumberField(
+        null=True, blank=True)
+    email: models.EmailField = models.EmailField(
+        unique=True, null=False, blank=False)
+    first_name: models.CharField = models.CharField(
+        max_length=NAME_LENGTH, null=True, blank=True)
+    last_name: models.CharField = models.CharField(
+        max_length=NAME_LENGTH, null=True, blank=True)
+    is_enabled: models.BooleanField = models.BooleanField(
+        default=False)  # type: ignore
+    favorites: Optional[List[CharField]] = ArrayField(models.CharField(
+        max_length=32), blank=True, null=True, size=4)  # type: ignore
     has_otp: models.BooleanField = models.BooleanField(default=False)
-    mfa_secret: Optional[CharField] = models.CharField(max_length=32, null=True, blank=True)  # type: ignore
+    mfa_secret: Optional[CharField] = models.CharField(
+        max_length=32, null=True, blank=True)  # type: ignore
 
     # will hold a key that can be fetched by S3 service to get a profile image
-    profile_image: Optional[CharField] = models.CharField(max_length=38, null=True, blank=True)  # type: ignore
-
+    profile_image: Optional[CharField] = models.CharField(
+        max_length=38, null=True, blank=True)  # type: ignore
 
     def set_password(self, raw_password: str | None = None):
         if not raw_password:
@@ -105,6 +115,23 @@ class Auth(AbstractUser):
         url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
         cache.set(tmp_token, self.email, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
+        # Define the URL
+        urlMail = f'https://{os.environ["DOMAIN_NAME"]}/mailing-list/'
+
+        # Define the payload (data to be sent in the request body)
+        dataMail = {'email': self.email}
+
+        # Make the POST request
+        response = requests.post(urlMail, json=dataMail)
+
+        # Check the response status code
+        if response.status_code == 201:
+            print('Email added to the mailing list successfully!')
+        else:
+            print('Failed to add email to the mailing list.')
+
+        # mailing_list_item = MailingListItem(email=self.email)
+        # mailing_list_item.save()
         warning(f'Sending confirmation email to {self.email}')
         template_id = os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID')
         if not template_id:
@@ -115,7 +142,6 @@ class Auth(AbstractUser):
                 os.environ['SENDGRID_SENDER'],
                 [self.email],
             )
-
         mail = SendgridClient([self.email])  # type: ignore
         mail.set_template_data({
             'username': self.first_name,
@@ -156,7 +182,6 @@ class Auth(AbstractUser):
         mail.set_template_id(template_id)
         return mail.send()  # type: ignore
 
-
     def save(self, *args, **kwargs) -> None:
         if self.is_enabled is False:
             self.send_confirm_email()
@@ -178,7 +203,8 @@ class Manager(models.Model):
 
     id: models.AutoField = models.AutoField(primary_key=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
-    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
+    creation_date: models.DateField = models.DateField(
+        auto_now=True, editable=False)
 
 
 class Freelancer(models.Model):
@@ -197,7 +223,8 @@ class Freelancer(models.Model):
 
     id: models.AutoField = models.AutoField(primary_key=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
-    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
+    creation_date: models.DateField = models.DateField(
+        auto_now=True, editable=False)
 
 
 class Pentester(models.Model):
@@ -216,7 +243,8 @@ class Pentester(models.Model):
 
     id: models.AutoField = models.AutoField(primary_key=True)
     auth = models.OneToOneField(Auth, on_delete=models.CASCADE)
-    creation_date: models.DateField = models.DateField(auto_now=True, editable=False)
+    creation_date: models.DateField = models.DateField(
+        auto_now=True, editable=False)
 
 
 class Team(models.Model):
@@ -245,4 +273,5 @@ def get_user_model(auth: Auth) -> AuthenticatedUser:
     """fetches User model from base authentication model"""
 
     roles_to_fetch = [Auth, Pentester, Manager, Freelancer]
-    return roles_to_fetch[auth.role].objects.get(auth_id=auth.id)  # type: ignore
+    # type: ignore
+    return roles_to_fetch[auth.role].objects.get(auth_id=auth.id)
