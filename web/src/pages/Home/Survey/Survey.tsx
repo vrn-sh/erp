@@ -67,7 +67,7 @@ const SurveyPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="voron-feedback-survey-question">
-                    <label>How long have you been a part of the Voron family?</label>
+                    <label>How long have you been using voron ?</label>
                     <div className="voron-feedback-survey-checkbox-options">
                         <label htmlFor="option1"><input type="radio" id="option1" name="experience" value="<1 Month" onChange={handleInputChange} required /> &lt;1 Month</label>
                         <label htmlFor="option2"><input type="radio" id="option2" name="experience" value="1-6 Months" onChange={handleInputChange} required /> 1-6 Months</label>

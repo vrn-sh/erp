@@ -25,8 +25,7 @@ from django.db.models.deletion import CASCADE
 from django.core.mail import send_mail
 from django.core.cache import cache
 
-from api.services.sendgrid_mail_global_send import SendgridClient
-# from api.models.mailing_list import MailingListItem
+from api.services.sendgrid_mail import SendgridClient
 import requests
 
 MAX_TITLE_LENGTH = 256

@@ -71,7 +71,7 @@ urlpatterns = [
     path(r'hunt', HunterView.as_view()),
     path(r'wapp', WappProxyView.as_view()),
     path(r'saas', SaasProxyView.as_view()),
-    path('mailing-list/',
+    path('mailing-list',
          MailingListViewset.as_view({'post': 'create'}), name='mailing-list'),
     path('survey-responses/count/',
          SurveyResponseViewset.as_view({'get': 'count_responses'})),

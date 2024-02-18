@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from api.models.mailing_list import MailingListItem
 from api.serializers.mailing_list import MailingListItemSerializer
 from rest_framework.decorators import action
-from api.services.sendgrid_mail_global_send import SendgridClient, SendgridParameters
+from api.services.sendgrid_mail import SendgridClient, SendgridParameters
 
 
 class MailingListViewset(viewsets.ModelViewSet):
