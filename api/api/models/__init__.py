@@ -26,6 +26,7 @@ from django.core.mail import send_mail
 from django.core.cache import cache
 
 from api.services.sendgrid_mail import SendgridClient
+# from api.models.mailing_list import MailingListItem
 import requests
 
 MAX_TITLE_LENGTH = 256
@@ -103,9 +104,38 @@ class Auth(AbstractUser):
     def check_password(self, raw_password=None) -> bool:
         return PasswordHasher().verify(self.password, raw_password) if raw_password else False  # type: ignore
 
-    def send_confirm_email(self) -> int:
-        """sends account-confirmation email"""
+    def send_confirmation_email(self, email: str, first_name: str, url: str) -> int:
+        url_mail = f'https://{os.environ["DOMAIN_NAME"]}/mailing-list'
+        data_mail = {'email': email}
 
+        response = requests.post(url_mail, json=data_mail)
+
+        if response.status_code == 201:
+            print('Email added to the mailing list successfully!')
+        else:
+            print('Failed to add email to the mailing list.')
+
+        warning(f'Sending confirmation email to {email}')
+        template_id = os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID')
+        if not template_id:
+            warning('No template detected...proceeding with default email.')
+            return send_mail(
+                f'Welcome {first_name}!',
+                f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
+                os.environ['SENDGRID_SENDER'],
+                [email],
+            )
+
+        mail = SendgridClient([email])
+        mail.set_template_data({
+            'username': first_name,
+            'email': email,
+            'url': url
+        })
+        mail.set_template_id(template_id)
+        return mail.send()
+
+    def send_confirm_email(self) -> int:
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
             warning(f'Passing send_confirm_email() to {self.email}')
             return 1
@@ -114,72 +144,7 @@ class Auth(AbstractUser):
         url = f'https://{os.environ["DOMAIN_NAME"]}/confirm?token={tmp_token}'
         cache.set(tmp_token, self.email, CONFIRM_TOKEN_TIMEOUT_SECONDS)
 
-        # Define the URL
-        urlMail = f'https://{os.environ["DOMAIN_NAME"]}/mailing-list/'
-
-        # Define the payload (data to be sent in the request body)
-        dataMail = {'email': self.email}
-
-        # Make the POST request
-        response = requests.post(urlMail, json=dataMail)
-
-        # Check the response status code
-        if response.status_code == 201:
-            print('Email added to the mailing list successfully!')
-        else:
-            print('Failed to add email to the mailing list.')
-
-        # mailing_list_item = MailingListItem(email=self.email)
-        # mailing_list_item.save()
-        warning(f'Sending confirmation email to {self.email}')
-        template_id = os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID')
-        if not template_id:
-            warning('No template detected...proceeding with default email.')
-            return send_mail(
-                f'Welcome {self.first_name} !',
-                f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
-                os.environ['SENDGRID_SENDER'],
-                [self.email],
-            )
-        mail = SendgridClient([self.email])  # type: ignore
-        mail.set_template_data({
-            'username': self.first_name,
-            'email': self.email,
-            'url': url
-        })
-        mail.set_template_id(template_id)
-        return mail.send()  # type: ignore
-
-    def send_reset_password_email(self) -> int:
-        """sends password-reset email"""
-
-        if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):
-            info(f'Passing send_reset_password_email() to {self.email}')
-            return 1
-
-        tmp_token = uuid.uuid4().hex
-        url = f'https://{os.environ["DOMAIN_NAME"]}/reset?token={tmp_token}'
-        cache.set(tmp_token, self.email, RESETPW_TOKEN_TIMEOUT_SECONDS)
-
-        warning(f'Sending password-reset email to {self.email}')
-        template_id = os.environ.get('SENDGRID_RESET_TEMPLATE_ID')
-        if not template_id:
-            warning('No template detected...proceeding with default email.')
-            return send_mail(
-                f'{self.first_name}, reset your password',
-                f'Hello there\nPlease click on this link to reset your password: {url}',
-                os.environ['SENDGRID_SENDER'],
-                [self.email],
-            )
-
-        mail = SendgridClient(recipient=self.email)  # type: ignore
-        mail.set_template_data({
-            'username': self.first_name,
-            'email': self.email,
-            'url': url,
-        })
-        mail.set_template_id(template_id)
-        return mail.send()  # type: ignore
+        return self.send_confirmation_email(self.email, self.first_name, url)
 
     def save(self, *args, **kwargs) -> None:
         if self.is_enabled is False:
