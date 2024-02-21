@@ -126,7 +126,7 @@ function DocumentTemplates({
                             handleTemplateSelection(template.id);
                         }}
                     >
-                        <img src={template.thumbnail} alt={template.name} />
+                        <img className="logo-image" src={template.thumbnail} alt={template.name} />
                         <p className="template-name">{template.name}</p>
                         <p className="template-subtitle">{template.subtitle}</p>
                     </button>

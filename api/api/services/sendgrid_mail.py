@@ -16,6 +16,16 @@ class SendgridParameters:
         "SENDGRID_SENDER", "YOUR_SENGRID_SENDER")
     SENDGRID_API_KEY = os.getenv(
         "SENDGRID_API_KEY", "YOUR_SENGRID_KEY")
+    TEMPLATE_ID_WELCOME = os.getenv(
+        "SENDGRID_TEMPLATE_ID_WELCOME", "YOUR_TEMPLATE_ID_WELCOME")
+    TEMPLATE_ID_INFORMATION = os.getenv(
+        "SENDGRID_TEMPLATE_ID_INFORMATION", "YOUR_TEMPLATE_ID_INFORMATION")
+    TEMPLATE_ID_PROMOTION = os.getenv(
+        "SENDGRID_TEMPLATE_ID_PROMOTION", "YOUR_TEMPLATE_ID_PROMOTION")
+    TEMPLATE_ID_SURVEY = os.getenv(
+        "SENDGRID_TEMPLATE_ID_SURVEY", "YOUR_TEMPLATE_ID_SURVEY")
+    TEMPLATE_ID_SURVEY_SCRIPTING = os.getenv(
+        "SENDGRID_TEMPLATE_ID_SURVEY_SCRIPTING", "YOUR_TEMPLATE_ID_SURVEY_SCRIPTING")
 
 
 class SendgridClient:
@@ -83,14 +93,32 @@ def send_mail_to_recipients():
     recipients = get_recipients()
 
     for recipient_data in recipients:
-        email_address = recipient_data.get("email")
+        email_address = recipient_data.get("email").lower()
+
         email_client = SendgridClient(recipient=email_address)
-        email_client.mail.template_id = "YOUR_TEMPLATE_ID"
-        email_client.set_template_data({
-            "text": "Welcome to our service!",
-            "profile": "https://img.freepik.com/photos-gratuite/surface-abstraite-textures-mur-pierre-beton-blanc_74190-8189.jpg?size=626&ext=jpg&ga=GA1.1.1546980028.1703030400&semt=ais",
-            "email": email_address
-        }, recipient_email=email_address)
+
+        template_name = "welcome"
+
+        if template_name == "welcome":
+            email_client.mail.template_id = SendgridParameters.TEMPLATE_ID_WELCOME
+            email_client.set_template_data({
+                "text": """Welcome to our service!
+                
+We are thrilled to have you as part of the Voron community. Your decision to join us is a significant step towards unlocking a world of opportunities and possibilities.
+
+Our team is dedicated to providing you with the best experience possible. Whether you are a new user exploring our platform or a returning customer, we are here to assist you at every step.
+
+Feel free to navigate through our user-friendly interface, and discover the exciting features we have tailored just for you. Should you have any questions or need assistance, our support team is available 24/7 to address your queries.
+
+Thank you for choosing Voron. We look forward to serving you and making your experience with us truly exceptional.
+
+Best regards,
+The Voron Team""",
+                "profile": "",
+                "date": "31st of January",
+                "celebration": "To celebrate Voron's first year !",
+                "email": email_address
+            }, recipient_email=email_address)
 
         response = email_client.send()
 
@@ -100,4 +128,3 @@ def send_mail_to_recipients():
 
 if __name__ == "__main__":
     send_mail_to_recipients()
-

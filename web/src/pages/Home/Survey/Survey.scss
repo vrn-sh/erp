@@ -1,0 +1,81 @@
+// survey.scss
+
+$primary-color: #6a0dad; // Purple color
+
+.voron-feedback-survey-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.voron-feedback-survey-question {
+    margin-bottom: 20px;
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .voron-feedback-survey-checkbox-options {
+        label {
+            display: block;
+            margin-bottom: 5px;
+
+            input[type="radio"]:checked+label::before,
+            input[type="checkbox"]:checked+label::before {
+                border-color: $primary-color;
+                background-color: $primary-color;
+            }
+
+            input[type="radio"]:checked+label::after,
+            input[type="checkbox"]:checked+label::after {
+                border-color: #fff;
+            }
+
+            input[type="checkbox"] {
+                display: none; // Hide the actual checkbox
+            }
+
+            label::before {
+                content: '';
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                margin-right: 5px;
+                border: 1px solid #adb5bd;
+                border-radius: 3px;
+                vertical-align: middle;
+                cursor: pointer;
+            }
+        }
+    }
+
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        resize: vertical;
+    }
+}
+
+.voron-feedback-survey-button-container {
+    text-align: center;
+
+    .voron-feedback-survey-participate-button {
+        padding: 12px 24px;
+        background-color: $primary-color;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: darken($primary-color, 10%);
+        }
+    }
+}
