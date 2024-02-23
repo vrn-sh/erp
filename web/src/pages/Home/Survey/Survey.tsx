@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './survey.scss';
+import './Survey.scss';
 import config from '../../../config';
 
 const SurveyPage: React.FC = () => {
