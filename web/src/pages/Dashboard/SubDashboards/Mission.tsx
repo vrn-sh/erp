@@ -168,7 +168,7 @@ export default function Mission() {
         setIsLoad(true);
 
         await axios
-            .get(`${config.apiUrl}/mission?page=1`, {
+            .get(`http://localhost:8000/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${token}`,
@@ -180,7 +180,7 @@ export default function Mission() {
                     let VulnData: any = [];
                     await axios
                         .get(
-                            `${config.apiUrl}/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
+                            `http://localhost:8000/vulnerability?page=1&mission_id=${data.data.results[i].id}`,
                             {
                                 headers: {
                                     'Content-type': 'application/json',

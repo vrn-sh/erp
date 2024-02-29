@@ -9,16 +9,16 @@ export default function About() {
         <div id="about" className="about">
             <div className="about-main-row">
                 <div className="about-more">
-                    {strings.more.map((item) =>
+                    {strings.more.map((item, index) =>
                         item.position === 'right' ? (
-                            <div style={{ textAlign: 'right' }}>
+                            <div key={index} style={{ textAlign: 'right' }}>
                                 <h1 className="title">{item.title}</h1>
                                 <p style={{ textAlign: 'right' }}>
                                     {item.desc}
                                 </p>
                             </div>
                         ) : (
-                            <div style={{ textAlign: 'left' }}>
+                            <div key={index} style={{ textAlign: 'left' }}>
                                 <h1 className="title">{item.title}</h1>
                                 <p style={{ textAlign: 'left' }}>{item.desc}</p>
                             </div>

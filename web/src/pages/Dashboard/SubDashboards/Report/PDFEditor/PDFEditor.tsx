@@ -13,17 +13,16 @@ export default function PdfViewerComponent(props: IReport): ReactElement {
       formData.append("mission", props.mission?.toString() || "");
       formData.append("template_name", props.template || "");
       formData.append("html_file", html_blob);
-      const response = await fetch(`${config.apiUrl}/download-report/${props.id}`, {
+      const response = await fetch(`http://localhost:8000/download-report/${props.id}`, {
         method: "PUT",
         body: formData,
         headers: {
-          Authorization: `Token ${getCookiePart(
-                            Cookies.get('Token')!,
-                            'token'
-                        )}`,
+          Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
         },
       });
+
       response.json().then((data) => {
+        console.log('Success:', data); // Log the successful response data
         const a = document.createElement("a");
         a.href = data.pdf_file;
         a.style.display = "none";
@@ -31,6 +30,8 @@ export default function PdfViewerComponent(props: IReport): ReactElement {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+      }).catch(error => {
+        console.error('Error in response:', error); // Log any errors during the fetch operation
       });
     }
   return (

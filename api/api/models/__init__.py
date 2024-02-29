@@ -24,8 +24,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 from django.core.mail import send_mail
 from django.core.cache import cache
-
-from api.services.sendgrid_mail import SendgridClient
+from api.services.sendgrid_mail import SendgridClient, SendgridParameters
 # from api.models.mailing_list import MailingListItem
 import requests
 
@@ -104,36 +103,45 @@ class Auth(AbstractUser):
     def check_password(self, raw_password=None) -> bool:
         return PasswordHasher().verify(self.password, raw_password) if raw_password else False  # type: ignore
 
-    def send_confirmation_email(self, email: str, first_name: str, url: str) -> int:
-        url_mail = f'https://{os.environ["DOMAIN_NAME"]}/mailing-list'
-        data_mail = {'email': email}
+    def send_confirmation_email(self, email: str, first_name: str, url: str) -> None:
+        print(f'Sending confirmation email to {email}')
+        template_id = SendgridParameters.TEMPLATE_ID_WELCOME
 
-        response = requests.post(url_mail, json=data_mail)
+        send_mail(
+            subject=f'Welcome {first_name}!',
+            message=f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
+            from_email=os.environ['SENDGRID_SENDER'],
+            recipient_list=[email],
+        )
 
-        if response.status_code == 201:
-            print('Email added to the mailing list successfully!')
-        else:
-            print('Failed to add email to the mailing list.')
+        # Initialize SendgridClient with the recipient's email
+        email_client = SendgridClient(recipient=email)
 
-        warning(f'Sending confirmation email to {email}')
-        template_id = os.environ.get('SENDGRID_CONFIRM_TEMPLATE_ID')
-        if not template_id:
-            warning('No template detected...proceeding with default email.')
-            return send_mail(
-                f'Welcome {first_name}!',
-                f'Hello and welcome!\nPlease click on this link to confirm your account: {url}',
-                os.environ['SENDGRID_SENDER'],
-                [email],
-            )
+        # Set the email's template ID
+        email_client.mail.template_id = template_id
 
-        mail = SendgridClient([email])
-        mail.set_template_data({
-            'username': first_name,
-            'email': email,
-            'url': url
-        })
-        mail.set_template_id(template_id)
-        return mail.send()
+        # Set dynamic data for the email template
+        email_client.set_template_data({
+            "text": """Welcome to our service!
+
+We are thrilled to have you as part of the Voron community. Your decision to join us is a significant step towards unlocking a world of opportunities and possibilities.
+
+Our team is dedicated to providing you with the best experience possible. Whether you are a new user exploring our platform or a returning customer, we are here to assist you at every step.
+
+Feel free to navigate through our user-friendly interface, and discover the exciting features we have tailored just for you. Should you have any questions or need assistance, our support team is available 24/7 to address your queries.
+
+Thank you for choosing Voron. We look forward to serving you and making your experience with us truly exceptional.
+
+Best regards,
+The Voron Team"""
+        }, recipient_email=email)
+        # Send the email
+        try:
+            response = email_client.send()
+            print(
+                f'Confirmation email sent successfully to {email}. Response: {response.status_code}')
+        except Exception as e:
+            print(f'Error sending confirmation email to {email}: {str(e)}')
 
     def send_confirm_email(self) -> int:
         if '1' in (os.environ.get('TEST', '0'), os.environ.get('CI', '0')):

@@ -14,6 +14,25 @@ from pathlib import Path
 import os
 
 from datetime import timedelta
+from pusher import Pusher
+
+PUSHER_APP_ID = "1759644"
+PUSHER_KEY = "8704037a23dad6569f48"
+PUSHER_SECRET = "e3f03562b2286605f92f"
+PUSHER_CLUSTER = "eu"
+
+pusher = Pusher(
+    app_id=PUSHER_APP_ID,
+    key=PUSHER_KEY,
+    secret=PUSHER_SECRET,
+    cluster=PUSHER_CLUSTER,
+)
+
+
+# def my_view(request):
+#     pusher.trigger('my-channel', 'my-event', {'message': 'Hello world'})
+#     return HttpResponse('Event triggered')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,19 +55,19 @@ INSTALLED_APPS = [
 
 # auth-token configuration
 REST_KNOX = {
-  'AUTH_TOKEN_CHARACTER_LENGTH': 128,
-  'TOKEN_TTL': timedelta(hours=12),
+    'AUTH_TOKEN_CHARACTER_LENGTH': 128,
+    'TOKEN_TTL': timedelta(hours=12),
 }
 
 # openapi generator config
 SWAGGER_SETTINGS = {
-   'SECURITY_DEFINITIONS': {
-      'Bearer': {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header'
-      }
-   }
+        }
+    }
 }
 
 
@@ -124,15 +143,18 @@ def is_localhost(host: str) -> bool:
     return 'localhost' in host or '127.0.0.1' in host
 
 
-DOMAIN_NAME = os.environ.get('DOMAIN_NAME', f'localhost:{os.environ["REVERSE_PROXY_PORT"]}')
+DOMAIN_NAME = os.environ.get(
+    'DOMAIN_NAME', f'localhost:{os.environ["REVERSE_PROXY_PORT"]}')
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
-DEBUG = is_localhost(DOMAIN_NAME)                                           # returns true if not in production
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY', 'django-insecure-mdvq2h0e3!@5edgf)5c2qt@cin6m3(3n8f=5gi6qdy207oi-p)')
+# returns true if not in production
+DEBUG = True
 ALLOWED_HOSTS = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
 
 CORS_ALLOWED_ORIGIN = ['*' if is_localhost(DOMAIN_NAME) else DOMAIN_NAME]
-CORS_ORIGIN_ALLOW_ALL = is_localhost(DOMAIN_NAME)                           # returns true if not in production
-
+# returns true if not in production
+CORS_ORIGIN_ALLOW_ALL = is_localhost(DOMAIN_NAME)
 
 
 if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0') == '1':
@@ -144,7 +166,6 @@ if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_FILE_OVERWRITE = False
-
 
     # cache configuration
     CACHES = {
@@ -165,7 +186,7 @@ if os.environ.get('IN_CONTAINER', '0') == '1' or os.environ.get('PRODUCTION', '0
         }
     }
 
-elif os.environ.get('TEST') and os.environ.get('TEST')  == '1':
+elif os.environ.get('TEST') and os.environ.get('TEST') == '1':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -222,7 +243,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.TemplateHTMLRenderer'
     ],
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -244,3 +265,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CORS_ALLOW_ALL_ORIGINS = True

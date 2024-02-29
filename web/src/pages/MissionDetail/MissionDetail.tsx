@@ -193,7 +193,7 @@ export default function MissionDetail() {
 
     const getMissionInfo = async () => {
         await axios
-            .get(`${config.apiUrl}/mission/${id}`, {
+            .get(`http://localhost:8000/mission/${id}`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(
@@ -216,7 +216,7 @@ export default function MissionDetail() {
 
     const getTeam = async () => {
         await axios
-            .get(`${config.apiUrl}/team?page=1`, {
+            .get(`http://localhost:8000/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(

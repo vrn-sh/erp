@@ -20,6 +20,8 @@ import SideBar from '../../component/SideBar/SideBar';
 import TopBar from '../../component/SideBar/TopBar';
 import PayLoadForm from './shellcode/PayLoadForm';
 import { getCookiePart } from '../../crypto-utils';
+import Chat from '../Chat/Chat';
+import TeamList from '../Team/TeamList';
 
 Modal.setAppElement('#root'); // Make sure to set your root element here
 
@@ -118,17 +120,24 @@ function TeamMemberContainer({ name, photo }: MemberProps) {
 }
 
 function TeamListContainer({ team }: TeamProps) {
+    const [showPopup, setShowPopup] = useState(false);
     return (
         <div className="accueil-team-container">
             <p className="accueil-team-title">{team.name}</p>
-            {team.members.map((member) => {
-                return (
-                    <TeamMemberContainer
-                        name={member.auth.username}
-                        photo={member.auth.profile_image}
-                    />
-                );
-            })}
+            <button onClick={() => setShowPopup(true)}>Open Chat</button>
+            {team.members.map((member, index) => (
+                <TeamMemberContainer
+                    key={member.id}
+                    name={member.auth.username}
+                    photo={member.auth.profile_image}
+                />
+            ))}
+            {showPopup && (
+                <Modal isOpen={showPopup} onRequestClose={() => setShowPopup(false)}>
+                <Chat teamId={team.id} />
+                    <button onClick={() => setShowPopup(false)}>Close Chat</button>
+                </Modal>
+            )}
         </div>
     );
 }
@@ -759,13 +768,12 @@ export default function Accueil() {
                                     <div className="rect-scroll">
                                         {teamList && teamList.length > 0 ? (
                                             <>
-                                                {teamList.map((t) => {
-                                                    return (
-                                                        <TeamListContainer
-                                                            team={t}
-                                                        />
-                                                    );
-                                                })}
+                                            {teamList.map((t) => (
+                                                <TeamListContainer
+                                                    key={t.id} // Unique key for each team
+                                                    team={t}
+                                                />
+                                            ))}
                                             </>
                                         ) : (
                                             <p style={{ marginTop: '22vh' }}>

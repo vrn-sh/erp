@@ -19,28 +19,32 @@ class MailingListViewset(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         email_address = serializer.validated_data['email']
 
-        # Create SendgridClient and send welcome email
+        # Create SendgridClient and send information email
         try:
             email_client = SendgridClient(recipient=email_address)
-            email_client.mail.template_id = SendgridParameters.TEMPLATE_ID_WELCOME
+            email_client.mail.template_id = SendgridParameters.TEMPLATE_ID_INFORMATION
             email_client.set_template_data({
-                "text": """Welcome to our service!
+                "text": """Welcome to Our Newsletter!
 
-We are thrilled to have you as part of the Voron community. Your decision to join us is a significant step towards unlocking a world of opportunities and possibilities.
+Greetings from the Voron community! We're absolutely delighted to welcome you aboard. Your choice to connect with us marks the beginning of an exciting journey filled with endless possibilities and opportunities.
 
-Our team is dedicated to providing you with the best experience possible. Whether you are a new user exploring our platform or a returning customer, we are here to assist you at every step.
+At Voron, we're committed to ensuring that your experience with us is nothing short of extraordinary. Whether you're just getting started on our platform or you're a seasoned member of our community, we're here to support you every step of the way.
 
-Feel free to navigate through our user-friendly interface, and discover the exciting features we have tailored just for you. Should you have any questions or need assistance, our support team is available 24/7 to address your queries.
+Dive into our user-friendly platform and explore the myriad of innovative features we've designed with you in mind. If you ever have any questions or need a helping hand, remember that our dedicated support team is just a message away, ready to assist you around the clock.
 
-Thank you for choosing Voron. We look forward to serving you and making your experience with us truly exceptional.
+Thank you for joining Voron. We're thrilled to have you with us and are eager to make your journey memorable and rewarding.
 
-Best regards,
-The Voron Team"""
+Warmest regards,
+The Voron Team""",
+                "date": "31st of January",
+                "celebration": "To celebrate Voron's first year !",
+                "email": email_address
             }, recipient_email=email_address)
             response = email_client.send()
             print(f'Welcome email sent successfully to {email_address}')
         except Exception as e:
-            print(f'Error sending welcome email to {email_address}: {str(e)}')
+            print(
+                f'Error sending information email to {email_address}: {str(e)}')
             # Handle the error, raise or return an appropriate response
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

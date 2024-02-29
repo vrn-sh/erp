@@ -9,18 +9,18 @@ from api.models.report.generate_html import generate_members, generate_vulns_det
 from api.models.report.report import ReportHtml
 from api.services.s3 import S3Bucket
 
+
 class ReportHtmlSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReportHtml
         fields = '__all__'
 
-    def update(self, instance, validated_data):
-        instance = super().update(instance, validated_data)
-        instance.version += 1
-        instance.save()
-        return instance
-
+    # def update(self, instance, validated_data):
+    #     instance = super().update(instance, validated_data)
+    #     instance.version += 1
+    #     instance.save()
+    #     return instance
 
     def to_representation(self, instance):
         # cache_key = f'report_{instance.pk}'
@@ -33,17 +33,18 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         representation['logo'] = ''
         representation['template'] = instance.template.name
         representation['mission_title'] = instance.mission.title
-        representation['updated_at'] = instance.updated_at.strftime('%Y-%m-%d at %H:%M')
+        # representation['updated_at'] = instance.updated_at.strftime('%Y-%m-%d at %H:%M')
 
         if os.environ.get('CI', '0') == '1' or os.environ.get('TEST', '0') == '1':
-           return representation
+            return representation
 
         s3_client = S3Bucket()
         if instance.logo:
-            representation['logo'] = s3_client.get_object_url("rootbucket", instance.logo)
+            representation['logo'] = s3_client.get_object_url(
+                "rootbucket", instance.logo)
             instance.logo = representation['logo']
         if instance.pdf_file:
-            #cache.set(cache_key, representation)
+            # cache.set(cache_key, representation)
             return representation
         representation['pdf_file'], representation['html_file'] = self.assemble_report(
             instance,
@@ -57,7 +58,7 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         filepath = f'/tmp/{filename}'
         html_content = self.dump_academic_report(instance, logo) \
             if instance.template.name == "academic" \
-                        else self.dump_html_report(instance, logo)
+            else self.dump_html_report(instance, logo)
         HTML(string=html_content).write_pdf(
             filepath,
             stylesheets=[CSS(string=instance.template.css_style)],
@@ -94,9 +95,8 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             {vuln_details}
             '''.format(vuln_details=generate_vulns_detail(mission))
 
-
         return \
-        '''
+            '''
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -128,13 +128,13 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                    team_name=instance.mission.team.name,
                    scope=generate_scope(instance.mission),
                    weaknesses=generate_weaknesses(instance.mission),
-            )
+                   )
 
     def dump_html_report(self, instance, logo_url) -> str:
         """compile pages together to generate a report"""
         print("logo url", logo_url)
         return \
-        '''
+            '''
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -159,15 +159,16 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                 </body>
             </html>
         '''.format(
-                   cover_page=self.generate_cover(instance, logo=logo_url),
-                   members = self.generate_project_info(instance, logo=logo_url),
-                   scope=self.generate_condition_and_scope(instance, logo=logo_url),
-                   weaknesses=self.generate_weaknesses(instance, logo=logo_url),)
-
+                cover_page=self.generate_cover(instance, logo=logo_url),
+                members=self.generate_project_info(instance, logo=logo_url),
+                scope=self.generate_condition_and_scope(
+                    instance, logo=logo_url),
+                weaknesses=self.generate_weaknesses(instance, logo=logo_url),)
 
     def generate_cover(self, instance, logo: str = ""):
         if instance.template.name == "academic":
-            raise Exception("Academic posses its own class to generate Cover page.")
+            raise Exception(
+                "Academic posses its own class to generate Cover page.")
         if instance.template:
             cover_html = instance.template.cover_html.format(
                 mission_title=instance.mission.title,
@@ -182,10 +183,11 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
             </div>
             '''.format(cover=cover_html)
 
-    def gen_header(self, instance, title: str, logo:str = "") -> str:
+    def gen_header(self, instance, title: str, logo: str = "") -> str:
 
         if instance.template.name == "academic":
-            raise Exception("Academic posses its own class to generate header.")
+            raise Exception(
+                "Academic posses its own class to generate header.")
         header_templates = [
             {
                 "name": "hackmanit",
@@ -225,9 +227,9 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
       </header>
                   '''
             },
-        {
-            "name": "NASA",
-            "html_header": f'''
+            {
+                "name": "NASA",
+                "html_header": f'''
         <div class="header-content">
             <div id="page-title">
                 <h2 class="page-title-name">{title}</h2>
@@ -240,18 +242,19 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
         </div>
 '''
 
-        },
-        {
-            "name": "yellow",
-            "html_header": ''''''
-        }
+            },
+            {
+                "name": "yellow",
+                "html_header": ''''''
+            }
         ]
         return list(filter(lambda a: a['name'] == instance.template.name, header_templates))[0]['html_header']
 
     def generate_project_info(self, instance, logo: str = ""):
 
         if instance.template.name == "academic":
-            raise Exception("Academic posses its own class to generate Project Info")
+            raise Exception(
+                "Academic posses its own class to generate Project Info")
         team: Team = instance.mission.team
         return '''
         <div>
@@ -322,15 +325,15 @@ class ReportHtmlSerializer(serializers.ModelSerializer):
                            mission_end=instance.mission.end,
                            logo_path_2="",)
 
-    def generate_condition_and_scope(self, instance, logo: str="") -> str:
+    def generate_condition_and_scope(self, instance, logo: str = "") -> str:
 
-            if instance.template.name == "academic":
-                raise Exception("Academic posses its own class to generate Scope.")
-            scope_html = ""
-            for s in instance.mission.scope:
-                scope_html += f"<li><code>{s}</code></li>" if "*" in s or "$" in s else f"<li>{s}</li>"
+        if instance.template.name == "academic":
+            raise Exception("Academic posses its own class to generate Scope.")
+        scope_html = ""
+        for s in instance.mission.scope:
+            scope_html += f"<li><code>{s}</code></li>" if "*" in s or "$" in s else f"<li>{s}</li>"
 
-            return '''
+        return '''
     <div>
         {header}
         <main class="scopes" style="margin:40px;">

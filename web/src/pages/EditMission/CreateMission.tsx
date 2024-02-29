@@ -55,7 +55,7 @@ export default function CreateMission() {
 
     const getTeam = async () => {
         await axios
-            .get(`${config.apiUrl}/team?page=1`, {
+            .get(`http://localhost:8000/team?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(
@@ -159,7 +159,7 @@ export default function CreateMission() {
             };
         }
         await axios
-            .post(`${config.apiUrl}/mission`, requestData, {
+            .post(`http://localhost:8000/mission`, requestData, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(
