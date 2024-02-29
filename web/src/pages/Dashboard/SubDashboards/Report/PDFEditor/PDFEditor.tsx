@@ -13,7 +13,7 @@ export default function PdfViewerComponent(props: IReport): ReactElement {
       formData.append("mission", props.mission?.toString() || "");
       formData.append("template_name", props.template || "");
       formData.append("html_file", html_blob);
-      const response = await fetch(`http://localhost:8000/download-report/${props.id}`, {
+      const response = await fetch(`${config.apiUrl}/download-report/${props.id}`, {
         method: "PUT",
         body: formData,
         headers: {

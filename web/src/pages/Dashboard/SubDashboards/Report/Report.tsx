@@ -59,7 +59,7 @@ function DocumentTemplates({ setMD, setTemplate, reportInfo, setReportInfo }: {
     const [reportHistory, setReportHistory] = useState<Array<IReport>>([]);
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/download-report`, {
+        axios.get(`${config.apiUrl}/download-report`, {
             headers: {
                 Authorization: `Token ${getCookiePart(Cookies.get('Token')!, 'token')}`,
             },
@@ -74,7 +74,7 @@ function DocumentTemplates({ setMD, setTemplate, reportInfo, setReportInfo }: {
     const handleTemplateSelection = async (templateId: number) => {
         try {
             setTemplate(templateId);
-            const response = await axios.post(`http://localhost:8000/download-report`, {
+            const response = await axios.post(`${config.apiUrl}/download-report`, {
                 template_name: templates[templateId].name,
                 mission: reportInfo.mission,
                 logo: reportInfo.logo,

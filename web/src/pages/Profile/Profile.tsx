@@ -159,7 +159,7 @@ export default function ProfilePage() {
 
     const getMission = async () => {
         await axios
-            .get(`http://localhost:8000/mission?page=1`, {
+            .get(`${config.apiUrl}/mission?page=1`, {
                 headers: {
                     'Content-type': 'application/json',
                     Authorization: `Token ${getCookiePart(

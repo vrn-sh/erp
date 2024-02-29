@@ -57,7 +57,7 @@ class SendgridClient:
 
 
 def get_recipients():
-    url = "http://localhost:8000/mailing-list"
+    url = "https://v0ron.djnn.sh/api/mailing-list"
     response = requests.get(url)
     return response.json().get("results", [])
 
@@ -66,9 +66,9 @@ def get_recipients_with_profile(token):
     headers = {"Authorization": f"Token {token}"}
 
     pentester_data = requests.get(
-        "http://localhost:8000/pentester", headers=headers).json().get("results", [])
+        "https://v0ron.djnn.sh/api/pentester", headers=headers).json().get("results", [])
     manager_data = requests.get(
-        "http://localhost:8000/manager", headers=headers).json().get("results", [])
+        "https://v0ron.djnn.sh/api/manager", headers=headers).json().get("results", [])
 
     recipients_with_profile = {}
     for data in pentester_data + manager_data:
@@ -85,14 +85,14 @@ if __name__ == "__main__":
 
     token = 'ed43fdf24667f2bb31bc8586bc22a1250b6f45719ebcc357908eacd36f44282c73f37292b225086c9bf90e427ad2e2cf8d6feb94384a0e79eac3ae536a7174b9'
     try:
-        pentester_data = requests.get("http://localhost:8000/pentester", headers={
+        pentester_data = requests.get("https://v0ron.djnn.sh/api/pentester", headers={
             "Authorization": f"Token {token}"}).json().get("results", [])
     except requests.exceptions.ConnectionError:
         print("Error connecting to /pentester endpoint.")
         pentester_data = []
 
     try:
-        manager_data = requests.get("http://localhost:8000/manager", headers={
+        manager_data = requests.get("https://v0ron.djnn.sh/api/manager", headers={
                                     "Authorization": f"Token {token}"}).json().get("results", [])
     except requests.exceptions.ConnectionError:
         print("Error connecting to /manager endpoint.")
