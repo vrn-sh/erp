@@ -52,7 +52,7 @@ function Chat({ teamId }: { teamId: number }) {
         const channel = pusher.subscribe('chat-channel');
 
         channel.bind('chat-event', (data: { message: string; timestamp: string }) => {
-            const newMessage = { message: data.message, timestamp: data.timestamp };
+            const newMessage = { message: data.message, timestamp: data.timestamp, sender_info: 'Placeholder Sender Info' };
             setMessages((prevMessages) => [...prevMessages, newMessage]);
         });
 

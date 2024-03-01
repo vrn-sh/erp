@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/pusher-js": "^5.1.0",
     "pusher-js": "^8.4.0-rc2"
   }
 }
