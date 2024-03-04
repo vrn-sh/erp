@@ -35,6 +35,8 @@ services:
   api:
     env_file:
       - ./api/.env
+    environment:
+      - MINIO_HOST=s3:9000
     build:
       context: ./api
     ports:
