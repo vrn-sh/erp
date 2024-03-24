@@ -22,6 +22,7 @@ from api.views.viewsets.mission import CredentialViewset, MissionViewset, NmapVi
 from api.views.viewsets.client_info import ClientInfoViewset
 from api.views.viewsets.mailing_list import MailingListViewset
 from api.views.viewsets.survey import SurveyResponseViewset
+from api.views.viewsets.send_message import SendMessageViewSet
 
 # SchemaView provides view for OpenAPI specifications (using Redoc template)
 SchemaView = get_schema_view(
@@ -53,7 +54,7 @@ router.register(r'download-report', GeneratePDFReportView,
                 basename='download-report')
 router.register(r'mailing-list', MailingListViewset)
 router.register(r'survey-responses', SurveyResponseViewset)
-
+router.register(r'pusher', SendMessageViewSet, basename='pusher')
 
 urlpatterns = [
     path(r'crtsh', CrtShView.as_view()),
@@ -75,5 +76,9 @@ urlpatterns = [
          MailingListViewset.as_view({'post': 'create'}), name='mailing-list'),
     path('survey-responses/count/',
          SurveyResponseViewset.as_view({'get': 'count_responses'})),
+    path('messages', SendMessageViewSet.as_view(
+        {'get': 'all_messages'}), name='all_messages'),
+    path('messages/search_by_team/', SendMessageViewSet.as_view(
+        {'get': 'search_messages_by_team'}), name='search_messages_by_team'),
 
 ] + router.urls

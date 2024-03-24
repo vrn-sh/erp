@@ -1,0 +1,48 @@
+/* Chat.module.scss */
+
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: auto;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.messages {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* Chat.module.scss */
+.message {
+    margin-bottom: 10px;
+
+    span {
+        background-color: #e0e0e0;
+        padding: 5px 10px;
+        border-radius: 15px;
+        display: inline-block;
+    }
+}
+
+.ownMessage span {
+    background-color: #007bff;
+    /* Blue background for sender */
+    color: white;
+    /* White text color */
+}
+
+.form {
+    display: flex;
+    margin-top: 20px;
+
+    input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px 0 0 8px;
+    }
+}
